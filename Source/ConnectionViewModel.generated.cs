@@ -8,7 +8,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace LinqToDB.LINQPad.Driver
+namespace LinqToDB.LINQPad
 {
 	public partial class ConnectionViewModel : INotifyPropertyChanged
 	{

@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace LinqToDB.LINQPad.Driver
+namespace LinqToDB.LINQPad
 {
 	partial class ConnectionViewModel
 	{

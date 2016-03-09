@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <DataContextDriver>
-	<MainAssembly>linq2db.LINQPad.Driver.dll</MainAssembly>
-	<SupportUri>http://linq2db.LINQPad.Driver</SupportUri>
+	<MainAssembly>linq2db.LINQPad.dll</MainAssembly>
+	<SupportUri>http://linq2db.LINQPad</SupportUri>
 </DataContextDriver>

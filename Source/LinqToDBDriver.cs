@@ -16,7 +16,7 @@ using LINQPad.Extensibility.DataContext;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace LinqToDB.LINQPad.Driver
+namespace LinqToDB.LINQPad
 {
 	public class LinqToDBDriver : DynamicDataContextDriver
 	{

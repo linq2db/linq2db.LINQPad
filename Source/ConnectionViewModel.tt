@@ -5,7 +5,7 @@
 <#
 	Model.Usings.Add("System.Collections.ObjectModel");
 
-	Model.Namespace.Name = "LinqToDB.LINQPad.Driver";
+	Model.Namespace.Name = "LinqToDB.LINQPad";
 
 	Model.Types.Add(
 		new Class("ConnectionViewModel",

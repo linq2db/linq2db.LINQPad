@@ -7,8 +7,8 @@
     <ProjectGuid>{78E25BF7-3DE2-466A-A334-B080F2D4C3F0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LinqToDB.LINQPad.Driver</RootNamespace>
-    <AssemblyName>linq2db.LINQPad.Driver</AssemblyName>
+    <RootNamespace>LinqToDB.LINQPad</RootNamespace>
+    <AssemblyName>linq2db.LINQPad</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

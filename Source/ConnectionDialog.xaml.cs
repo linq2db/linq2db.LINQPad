@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace LinqToDB.LINQPad.Driver
+namespace LinqToDB.LINQPad
 {
 	public partial class ConnectionDialog : Window
 	{
