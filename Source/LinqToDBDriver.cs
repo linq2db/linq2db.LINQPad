@@ -32,6 +32,18 @@ namespace LinqToDB.LINQPad.Driver
 			return name ?? $"[{providerName}] {dbInfo.Server}\\{dbInfo.Database} (v.{dbInfo.DbVersion})";
 		}
 
+		public override DateTime? GetLastSchemaUpdate(IConnectionInfo cxInfo)
+		{
+			var providerName     = (string)cxInfo.DriverData.Element("providerName");
+			var connectionString = (string)cxInfo.DriverData.Element("connectionString");
+
+			if (providerName == ProviderName.SqlServer)
+				using (var db = new DataConnection(providerName, connectionString))
+					return db.Query<DateTime?>("select max(modify_date) from sys.objects").FirstOrDefault();
+
+			return null;
+		}
+
 		public override bool ShowConnectionDialog(IConnectionInfo cxInfo, bool isNewConnection)
 		{
 			var model        = new ConnectionViewModel();
@@ -116,23 +128,57 @@ namespace LinqToDB.LINQPad.Driver
 			}
 		}
 
-		ExplorerItem GetTables(string header, ExplorerIcon icon, IEnumerable<TableSchema> tables)
+		ExplorerItem GetTables(string header, ExplorerIcon icon, StringBuilder code, StringBuilder classCode, IEnumerable<TableSchema> tables)
 		{
 			return new ExplorerItem(header, ExplorerItemKind.Category, icon)
 			{
 				Children = tables
-					.Select(t => new ExplorerItem(t.TableName, ExplorerItemKind.QueryableObject, icon)
+					.Select(t =>
 					{
-						IsEnumerable = true,
-						Children     = t.Columns
-							.Select(c => new ExplorerItem(
-								c.MemberName,
-								ExplorerItemKind.Property,
-								c.IsPrimaryKey ? ExplorerIcon.Key : ExplorerIcon.Column)
+						code.AppendLine($"    public ITable<{t.TypeName}> {t.TypeName} {{ get {{ return this.GetTable<{t.TypeName}>(); }} }}");
+
+						classCode.Append($"  [Table(Name=\"{t.TableName}\"");
+
+						if (!string.IsNullOrEmpty(t.SchemaName))
+							classCode.Append($", Schema=\"{t.SchemaName}\"");
+
+						classCode
+							.AppendLine( "  )]")
+							.AppendLine($"  public class {t.TypeName}")
+							.AppendLine( "  {")
+							;
+
+						var ret = new ExplorerItem(t.TableName, ExplorerItemKind.QueryableObject, icon)
+						{
+							IsEnumerable = true,
+							Children     = t.Columns
+								.Select(c =>
 								{
-									SqlName = c.ColumnName,
+									classCode
+										.AppendLine($"    [Column(\"{c.ColumnName}\")]")
+										.AppendLine(c.IsNullable ? "    [Nullable]" : "    [NotNull]");
+
+									if (c.IsPrimaryKey) classCode.AppendLine($"   [PrimaryKey({c.PrimaryKeyOrder})]");
+									if (c.IsIdentity)   classCode.AppendLine("    [Identity]");
+
+									classCode.AppendLine($"    public {c.MemberType} {c.MemberName} {{ get; set; }}");
+
+									return new ExplorerItem(
+										c.MemberName,
+										ExplorerItemKind.Property,
+										c.IsPrimaryKey ? ExplorerIcon.Key : ExplorerIcon.Column)
+									{
+										SqlName = c.ColumnName,
+									};
 								})
-							.ToList()
+								.ToList()
+						};
+
+						classCode
+							.AppendLine("}")
+							;
+
+						return ret;
 					})
 					.ToList()
 			};
@@ -161,21 +207,25 @@ namespace LinqToDB.LINQPad.Driver
 				if (excludeSchemas != null) options.ExcludedSchemas = excludeSchemas.Split(',', ';');
 
 				schema = db.DataProvider.GetSchemaProvider().GetSchema(db, options);
+
+				Convert(schema);
 			}
 
 			code
-				.AppendLine("using System;")
-				.AppendLine("using LinqToDB.Data;")
-				.Append    ("namespace ").AppendLine(nameSpace)
-				.AppendLine("{")
-				.Append    ("  public class ").Append(typeName).AppendLine(" : DataConnection")
-				.AppendLine("  {")
-				.Append    ("    public ").Append(typeName).AppendLine("(string provider, string connectionString)")
-				.AppendLine("        : base(provider, connectionString)")
-				.AppendLine("    {}")
-				.Append    ("    public ").Append(typeName).AppendLine("()")
-				.Append    ("        : base(").Append(ToCodeString(providerName)).Append(", ").Append(ToCodeString(connectionString)).AppendLine(")")
-				.AppendLine("    {}")
+				.AppendLine( "using System;")
+				.AppendLine( "using LinqToDB;")
+				.AppendLine( "using LinqToDB.Data;")
+				.AppendLine( "using LinqToDB.Mapping;")
+				.AppendLine($"namespace {nameSpace}")
+				.AppendLine( "{")
+				.AppendLine($"  public class {typeName} : DataConnection")
+				.AppendLine( "  {")
+				.AppendLine($"    public {typeName}(string provider, string connectionString)")
+				.AppendLine( "      : base(provider, connectionString)")
+				.AppendLine( "    {}")
+				.AppendLine($"    public {typeName}()")
+				.AppendLine($"      : base({ToCodeString(providerName)}, {ToCodeString(connectionString)})")
+				.AppendLine( "    {}")
 				;
 
 			var schemas =
@@ -183,12 +233,15 @@ namespace LinqToDB.LINQPad.Driver
 				from t in schema.Tables
 				select new { t.IsDefaultSchema, t.SchemaName }
 			)
-			.Union(
+			.Union
+			(
 				from p in schema.Procedures
 				select new { p.IsDefaultSchema, p.SchemaName }
 			)
 			.Distinct()
 			.ToList();
+
+			var classCode = new StringBuilder();
 
 			foreach (var s in schemas)
 			{
@@ -196,10 +249,10 @@ namespace LinqToDB.LINQPad.Driver
 				var items  = new List<ExplorerItem>();
 
 				if (tables.Any(t => !t.IsView && !t.IsProcedureResult))
-					items.Add(GetTables("Tables", ExplorerIcon.Table, tables.Where (t => !t.IsView && !t.IsProcedureResult)));
+					items.Add(GetTables("Tables", ExplorerIcon.Table, code, classCode, tables.Where (t => !t.IsView && !t.IsProcedureResult)));
 
 				if (tables.Any(t => t.IsView))
-					items.Add(GetTables("Views", ExplorerIcon.View, tables.Where(t => t.IsView)));
+					items.Add(GetTables("Views", ExplorerIcon.View, code, classCode, tables.Where(t => t.IsView)));
 
 				if (schemas.Count == 1)
 					foreach (var item in items)
@@ -216,8 +269,53 @@ namespace LinqToDB.LINQPad.Driver
 
 			code
 				.AppendLine("  }")
+				;
+
+			code.AppendLine(classCode.ToString());
+
+			code
 				.AppendLine("}")
 				;
+		}
+
+		static string ConvertToCompilable(string name)
+		{
+			var query =
+				from c in name
+				select char.IsLetterOrDigit(c) || c == '@' ? c : '_';
+
+			return new string(query.ToArray());
+		}
+
+		static readonly HashSet<string> _keyWords = new HashSet<string>
+		{
+			"abstract", "as",       "base",     "bool",    "break",     "byte",     "case",       "catch",     "char",    "checked",
+			"class",    "const",    "continue", "decimal", "default",   "delegate", "do",         "double",    "else",    "enum",
+			"event",    "explicit", "extern",   "false",   "finally",   "fixed",    "float",      "for",       "foreach", "goto",
+			"if",       "implicit", "in",       "int",     "interface", "internal", "is",         "lock",      "long",    "new",
+			"null",     "object",   "operator", "out",     "override",  "params",   "private",    "protected", "public",  "readonly",
+			"ref",      "return",   "sbyte",    "sealed",  "short",     "sizeof",   "stackalloc", "static",    "struct",  "switch",
+			"this",     "throw",    "true",     "try",     "typeof",    "uint",     "ulong",      "unchecked", "unsafe",  "ushort",
+			"using",    "virtual",  "volatile", "void",    "while"
+		};
+
+		void Convert(DatabaseSchema schema)
+		{
+			foreach (var table in schema.Tables)
+			{
+				table.TypeName = ConvertToCompilable(table.TypeName);
+
+				foreach (var column in table.Columns)
+				{
+					column.MemberName = ConvertToCompilable(column.MemberName);
+
+					if (_keyWords.Contains(column.MemberName))
+						column.MemberName = "@" + column.MemberName;
+
+					if (column.MemberName == table.TypeName)
+						column.MemberName += "_Column";
+				}
+			}
 		}
 
 		public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo cxInfo)
@@ -235,6 +333,15 @@ namespace LinqToDB.LINQPad.Driver
 			{
 				(string)cxInfo.DriverData.Element("providerName"),
 				(string)cxInfo.DriverData.Element("connectionString"),
+			};
+		}
+
+		public override IEnumerable<string> GetAssembliesToAdd(IConnectionInfo cxInfo)
+		{
+			return new[]
+			{
+				typeof(IDbConnection). Assembly.Location,
+				typeof(DataConnection).Assembly.Location
 			};
 		}
 
@@ -260,9 +367,10 @@ namespace LinqToDB.LINQPad.Driver
 				references : references,
 				options    : new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
-			using (var ms = new MemoryStream())
+			using (var stream = new FileStream(assemblyToBuild.CodeBase, FileMode.Create))
+			//using (var stream = new MemoryStream())
 			{
-				var result = compilation.Emit(ms);
+				var result = compilation.Emit(stream);
 
 				if (!result.Success)
 				{
@@ -270,19 +378,30 @@ namespace LinqToDB.LINQPad.Driver
 						diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
 
 					foreach (var diagnostic in failures)
-						throw new Exception($"{diagnostic.Id}: {diagnostic.GetMessage()}");
+						throw new Exception(diagnostic.ToString());
 				}
-				else
-				{
-					ms.Seek(0, SeekOrigin.Begin);
-
-					var assembly = Assembly.Load(ms.ToArray());
-					var type     = assembly.GetType($"{nameSpace}.{typeName}");
-					var obj      = Activator.CreateInstance(type);
-				}
+				//else
+				//{
+				//	stream.Seek(0, SeekOrigin.Begin);
+				//
+				//	var assembly = Assembly.Load(stream.ToArray());
+				//	var type     = assembly.GetType($"{nameSpace}.{typeName}");
+				//	var obj      = Activator.CreateInstance(type);
+				//}
 			}
 
 			return items;
+		}
+
+		public override void ClearConnectionPools(IConnectionInfo cxInfo)
+		{
+			using (var db = new DataConnection(
+				(string)cxInfo.DriverData.Element("providerName"),
+				(string)cxInfo.DriverData.Element("connectionString")))
+			{
+				if (db.Connection is SqlConnection)
+					SqlConnection.ClearPool((SqlConnection)db.Connection);
+			}
 		}
 	}
 }
