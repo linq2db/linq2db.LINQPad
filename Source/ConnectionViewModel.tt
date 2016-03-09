@@ -1,0 +1,21 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#"                      #>
+<#@ output extension=".generated.cs"                                               #>
+<#@ include file="$(ProjectDir)LinqToDB.Templates\T4Model.ttinclude"               #>
+<#@ include file="$(ProjectDir)LinqToDB.Templates\NotifyPropertyChanged.ttinclude" #>
+<#
+	Model.Usings.Add("System.Collections.ObjectModel");
+
+	Model.Namespace.Name = "LinqToDB.LINQPad.Driver";
+
+	Model.Types.Add(
+		new Class("ConnectionViewModel",
+			new NotifyingProperty("string", "Name"),
+			new NotifyingProperty("int",    "SelectedProvider"),
+			new NotifyingProperty("ObservableCollection<string>", "Providers"),
+			new NotifyingProperty("string", "ConnectionString"),
+			new NotifyingProperty("string", "IncludeSchemas"),
+			new NotifyingProperty("string", "ExcludeSchemas"))
+	);
+
+	GenerateModel();
+#>

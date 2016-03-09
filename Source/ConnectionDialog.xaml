@@ -1,0 +1,44 @@
+﻿<Window x:Class="LinqToDB.LINQPad.Driver.ConnectionDialog"
+	xmlns    = "http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x  = "http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d  = "http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc = "http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:vm = "clr-namespace:LinqToDB.LINQPad.Driver"
+
+	Title                 = "LINQ to DB Connection"
+	mc:Ignorable          = "d"
+	SizeToContent         = "Height"
+	Width                 = "500"
+	ResizeMode            = "NoResize"
+	WindowStartupLocation = "CenterScreen"
+	d:DataContext         = "{d:DesignInstance vm:ConnectionViewModel, IsDesignTimeCreatable=true}">
+
+	<StackPanel Margin="10">
+		<Label Padding="0,0,0,3">Name (optional)</Label>
+		<TextBox Text="{Binding Name}" />
+		
+		<Label Padding="0,3,0,3">Provider</Label>
+		<ComboBox ItemsSource="{Binding Providers}" SelectedIndex="{Binding SelectedProvider}"></ComboBox>
+
+		<Label Padding="0,3,0,3">Connection String</Label>
+		<TextBox Text="{Binding ConnectionString}" />
+
+		<Label Padding="0,3,0,3">Include Schemas (dbo,master) (optional)</Label>
+		<TextBox Text="{Binding IncludeSchemas}" />
+
+		<Label Padding="0,3,0,3">Exclude Schemas (dbo,master) (optional)</Label>
+		<TextBox Text="{Binding ExcludeSchemas}" />
+
+		<Grid Margin="0,8,0,0">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition/>
+				<ColumnDefinition Width="65" />
+				<ColumnDefinition Width="65" />
+			</Grid.ColumnDefinitions>
+
+			<Button Grid.Column="0" Width="60" HorizontalAlignment="Left"  Content="Test"                    Click="TestClick" />
+			<Button Grid.Column="1" Width="60" HorizontalAlignment="Right" Content="OK"     IsDefault="True" Click="OKClick"   />
+			<Button Grid.Column="2" Width="60" HorizontalAlignment="Right" Content="Cancel" IsCancel="True"  />
+		</Grid>
+	</StackPanel>
+</Window>
