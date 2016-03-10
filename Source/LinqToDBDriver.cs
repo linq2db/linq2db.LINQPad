@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 
+using LinqToDB.Common;
 using LinqToDB.Data;
 using LinqToDB.SchemaProvider;
 
+using LINQPad;
 using LINQPad.Extensibility.DataContext;
 
 using Microsoft.CodeAnalysis;
@@ -20,29 +23,33 @@ namespace LinqToDB.LINQPad
 {
 	public class LinqToDBDriver : DynamicDataContextDriver
 	{
+		static LinqToDBDriver()
+		{
+		}
+
 		public override string Name   => "LINQ to DB";
 		public override string Author => "Igor Tkachev";
 
 		public override string GetConnectionDescription(IConnectionInfo cxInfo)
 		{
 			var providerName = (string)cxInfo.DriverData.Element("providerName");
-			var name         = (string)cxInfo.DriverData.Element("name");
 			var dbInfo       = cxInfo.DatabaseInfo;
 
-			return name ?? $"[{providerName}] {dbInfo.Server}\\{dbInfo.Database} (v.{dbInfo.DbVersion})";
+			return $"[{providerName}] {dbInfo.Server}\\{dbInfo.Database} (v.{dbInfo.DbVersion})";
 		}
 
 		public override DateTime? GetLastSchemaUpdate(IConnectionInfo cxInfo)
 		{
-			var providerName     = (string)cxInfo.DriverData.Element("providerName");
-			var connectionString = (string)cxInfo.DriverData.Element("connectionString");
+			var providerName = (string)cxInfo.DriverData.Element("providerName");
 
 			if (providerName == ProviderName.SqlServer)
-				using (var db = new DataConnection(providerName, connectionString))
+				using (var db = new LINQPadDataConnection(cxInfo))
 					return db.Query<DateTime?>("select max(modify_date) from sys.objects").FirstOrDefault();
 
 			return null;
 		}
+
+		#region ShowConnectionDialog
 
 		public override bool ShowConnectionDialog(IConnectionInfo cxInfo, bool isNewConnection)
 		{
@@ -52,8 +59,8 @@ namespace LinqToDB.LINQPad
 			if (providerName != null)
 				model.SelectedProvider = model.Providers.IndexOf(providerName);
 
-			model.Name             = (string)cxInfo.DriverData.Element("name");
-			model.ConnectionString = (string)cxInfo.DriverData.Element("connectionString");
+			model.Name             = cxInfo.DisplayName;
+			model.ConnectionString = string.IsNullOrWhiteSpace(cxInfo.DatabaseInfo.CustomCxString) ? (string)cxInfo.DriverData.Element("connectionString") : cxInfo.DatabaseInfo.CustomCxString;
 			model.IncludeSchemas   = (string)cxInfo.DriverData.Element("includeSchemas");
 			model.ExcludeSchemas   = (string)cxInfo.DriverData.Element("excludeSchemas");
 
@@ -64,20 +71,20 @@ namespace LinqToDB.LINQPad
 				providerName = model.Providers[model.SelectedProvider];
 
 				cxInfo.DriverData.SetElementValue("providerName",     providerName);
-				cxInfo.DriverData.SetElementValue("name",             string.IsNullOrWhiteSpace(model.Name)             ? null : model.Name);
-				cxInfo.DriverData.SetElementValue("connectionString", string.IsNullOrWhiteSpace(model.ConnectionString) ? null : model.ConnectionString);
+				cxInfo.DriverData.SetElementValue("connectionString", null);
 				cxInfo.DriverData.SetElementValue("includeSchemas",   string.IsNullOrWhiteSpace(model.IncludeSchemas)   ? null : model.IncludeSchemas);
 				cxInfo.DriverData.SetElementValue("excludeSchemas",   string.IsNullOrWhiteSpace(model.ExcludeSchemas)   ? null : model.ExcludeSchemas);
 
 				switch (providerName)
 				{
-					case ProviderName.SqlServer: _cxInfo.DatabaseInfo.Provider = typeof(SqlConnection).FullName; break;
+					case ProviderName.SqlServer: cxInfo.DatabaseInfo.Provider = typeof(SqlConnection).Namespace; break;
 				}
 
 				try
 				{
-					using (var db = new DataConnection(model.Providers[model.SelectedProvider], model.ConnectionString))
+					using (var db = new LINQPadDataConnection(providerName, model.ConnectionString))
 					{
+						cxInfo.DatabaseInfo.Provider  = db.Connection.GetType().Namespace;
 						cxInfo.DatabaseInfo.Server    = ((DbConnection)db.Connection).DataSource;
 						cxInfo.DatabaseInfo.Database  = db.Connection.Database;
 						cxInfo.DatabaseInfo.DbVersion = ((DbConnection)db.Connection).ServerVersion;
@@ -87,7 +94,9 @@ namespace LinqToDB.LINQPad
 				{
 				}
 
-				cxInfo.DisplayName = GetConnectionDescription(cxInfo);
+				cxInfo.DatabaseInfo.CustomCxString        = model.ConnectionString;
+				cxInfo.DatabaseInfo.EncryptCustomCxString = true;
+				cxInfo.DisplayName                        = string.IsNullOrWhiteSpace(model.Name) ? null : model.Name;
 
 				return true;
 			}
@@ -127,6 +136,10 @@ namespace LinqToDB.LINQPad
 				return ex;
 			}
 		}
+
+		#endregion
+
+		#region GetSchemaAndBuildAssembly
 
 		ExplorerItem GetTables(string header, ExplorerIcon icon, StringBuilder code, StringBuilder classCode, IEnumerable<TableSchema> tables)
 		{
@@ -192,7 +205,7 @@ namespace LinqToDB.LINQPad
 		IEnumerable<ExplorerItem> GetItemsAndCode(IConnectionInfo cxInfo, StringBuilder code, string nameSpace, string typeName)
 		{
 			var providerName     = (string)cxInfo.DriverData.Element("providerName");
-			var connectionString = (string)cxInfo.DriverData.Element("connectionString");
+			var connectionString = cxInfo.DatabaseInfo.CustomCxString;
 
 			DatabaseSchema schema;
 
@@ -218,7 +231,7 @@ namespace LinqToDB.LINQPad
 				.AppendLine( "using LinqToDB.Mapping;")
 				.AppendLine($"namespace {nameSpace}")
 				.AppendLine( "{")
-				.AppendLine($"  public class {typeName} : DataConnection")
+				.AppendLine($"  public class {typeName} : LinqToDB.LINQPad.LINQPadDataConnection")
 				.AppendLine( "  {")
 				.AppendLine($"    public {typeName}(string provider, string connectionString)")
 				.AppendLine( "      : base(provider, connectionString)")
@@ -318,33 +331,6 @@ namespace LinqToDB.LINQPad
 			}
 		}
 
-		public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo cxInfo)
-		{
-			return new[]
-			{
-				new ParameterDescriptor("provider",         typeof(string).FullName), 
-				new ParameterDescriptor("connectionString", typeof(string).FullName), 
-			};
-		}
-
-		public override object[] GetContextConstructorArguments(IConnectionInfo cxInfo)
-		{
-			return new object[]
-			{
-				(string)cxInfo.DriverData.Element("providerName"),
-				(string)cxInfo.DriverData.Element("connectionString"),
-			};
-		}
-
-		public override IEnumerable<string> GetAssembliesToAdd(IConnectionInfo cxInfo)
-		{
-			return new[]
-			{
-				typeof(IDbConnection). Assembly.Location,
-				typeof(DataConnection).Assembly.Location
-			};
-		}
-
 		public override List<ExplorerItem> GetSchemaAndBuildAssembly(
 			IConnectionInfo cxInfo, AssemblyName assemblyToBuild, ref string nameSpace, ref string typeName)
 		{
@@ -359,6 +345,7 @@ namespace LinqToDB.LINQPad
 				MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location),
 				MetadataReference.CreateFromFile(typeof(IDbConnection).Assembly.Location),
 				MetadataReference.CreateFromFile(typeof(DataConnection).Assembly.Location),
+				MetadataReference.CreateFromFile(typeof(LINQPadDataConnection).Assembly.Location),
 			};
 
 			var compilation = CSharpCompilation.Create(
@@ -393,15 +380,110 @@ namespace LinqToDB.LINQPad
 			return items;
 		}
 
+#endregion
+
+		public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo cxInfo)
+		{
+			return new[]
+			{
+				new ParameterDescriptor("provider",         typeof(string).FullName), 
+				new ParameterDescriptor("connectionString", typeof(string).FullName), 
+			};
+		}
+
+		public override object[] GetContextConstructorArguments(IConnectionInfo cxInfo)
+		{
+			return new object[]
+			{
+				(string)cxInfo.DriverData.Element("providerName"),
+				cxInfo.DatabaseInfo.CustomCxString,
+			};
+		}
+
+		public override IEnumerable<string> GetAssembliesToAdd(IConnectionInfo cxInfo)
+		{
+			return new[]
+			{
+				typeof(IDbConnection).        Assembly.Location,
+				typeof(DataConnection).       Assembly.Location,
+				typeof(LINQPadDataConnection).Assembly.Location,
+			};
+		}
+
+		public override IEnumerable<string> GetNamespacesToAdd(IConnectionInfo cxInfo)
+		{
+			return new[]
+			{
+				"LinqToDB",
+				"LinqToDB.Data",
+				"LinqToDB.Mapping",
+			};
+		}
+
 		public override void ClearConnectionPools(IConnectionInfo cxInfo)
 		{
-			using (var db = new DataConnection(
-				(string)cxInfo.DriverData.Element("providerName"),
-				(string)cxInfo.DriverData.Element("connectionString")))
+			using (var db = new LINQPadDataConnection(cxInfo))
 			{
 				if (db.Connection is SqlConnection)
 					SqlConnection.ClearPool((SqlConnection)db.Connection);
 			}
+		}
+
+		public override void InitializeContext(IConnectionInfo cxInfo, object context, QueryExecutionManager executionManager)
+		{
+			var conn = (DataConnection)context;
+
+			conn.OnTraceConnection = info =>
+			{
+				if (info.BeforeExecute)
+				{
+					executionManager.SqlTranslationWriter.WriteLine(info.SqlText);
+				}
+				else if (info.TraceLevel == TraceLevel.Error)
+				{
+					var sb = new StringBuilder();
+
+					for (var ex = info.Exception; ex != null; ex = ex.InnerException)
+					{
+						sb
+							.AppendLine()
+							.AppendLine("/*")
+							.AppendFormat("Exception: {0}", ex.GetType())
+							.AppendLine()
+							.AppendFormat("Message  : {0}", ex.Message)
+							.AppendLine()
+							.AppendLine(ex.StackTrace)
+							.AppendLine("*/")
+							;
+					}
+
+					executionManager.SqlTranslationWriter.WriteLine(sb.ToString());
+				}
+				else if (info.RecordsAffected != null)
+				{
+					executionManager.SqlTranslationWriter.WriteLine("-- Execution time: {0}. Records affected: {1}.\r\n".Args(info.ExecutionTime, info.RecordsAffected));
+				}
+				else
+				{
+					executionManager.SqlTranslationWriter.WriteLine("-- Execution time: {0}\r\n".Args(info.ExecutionTime));
+				}
+			};
+		}
+
+		public override void TearDownContext(IConnectionInfo cxInfo, object context, QueryExecutionManager executionManager, object[] constructorArguments)
+		{
+			((DataConnection)context).Dispose();
+		}
+
+		public override IDbConnection GetIDbConnection(IConnectionInfo cxInfo)
+		{
+			using (var conn = new LINQPadDataConnection(cxInfo))
+				return conn.DataProvider.CreateConnection(conn.ConnectionString);
+		}
+
+		public override void ExecuteESqlQuery(IConnectionInfo cxInfo, string query)
+		{
+			throw new Exception ("ESQL queries are not supported for this type of connection");
 		}
 	}
 }

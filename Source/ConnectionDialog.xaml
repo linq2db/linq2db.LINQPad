@@ -21,7 +21,7 @@
 		<ComboBox ItemsSource="{Binding Providers}" SelectedIndex="{Binding SelectedProvider}"></ComboBox>
 
 		<Label Padding="0,3,0,3">Connection String</Label>
-		<TextBox Text="{Binding ConnectionString}" />
+		<TextBox Text="{Binding ConnectionString}" MinLines="3" MaxLines="3" TextWrapping="Wrap" AcceptsReturn="True" />
 
 		<Label Padding="0,3,0,3">Include Schemas (dbo,master) (optional)</Label>
 		<TextBox Text="{Binding IncludeSchemas}" />
