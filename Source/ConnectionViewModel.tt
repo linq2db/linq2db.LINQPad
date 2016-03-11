@@ -13,6 +13,12 @@
 			new NotifyingProperty("int",    "SelectedProvider"),
 			new NotifyingProperty("ObservableCollection<string>", "Providers"),
 			new NotifyingProperty("string", "ConnectionString"),
+			new NotifyingProperty("bool",   "Persist"),
+			new NotifyingProperty("bool",   "IsProduction"),
+			new NotifyingProperty("bool",   "Pluralize"),
+			new NotifyingProperty("bool",   "Capitalize"),
+			new NotifyingProperty("bool",   "IncludeRoutines"),
+			new NotifyingProperty("bool",   "EncryptConnectionString"),
 			new NotifyingProperty("string", "IncludeSchemas"),
 			new NotifyingProperty("string", "ExcludeSchemas"))
 	);

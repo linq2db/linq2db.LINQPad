@@ -7,38 +7,84 @@
 
 	Title                 = "LINQ to DB Connection"
 	mc:Ignorable          = "d"
-	SizeToContent         = "Height"
 	Width                 = "500"
+	SizeToContent         = "Height"
 	ResizeMode            = "NoResize"
 	WindowStartupLocation = "CenterScreen"
+	FontSize              = "14"
 	d:DataContext         = "{d:DesignInstance vm:ConnectionViewModel, IsDesignTimeCreatable=true}">
 
-	<StackPanel Margin="10">
-		<Label Padding="0,0,0,3">Name (optional)</Label>
-		<TextBox Text="{Binding Name}" />
-		
-		<Label Padding="0,3,0,3">Provider</Label>
-		<ComboBox ItemsSource="{Binding Providers}" SelectedIndex="{Binding SelectedProvider}"></ComboBox>
+	<Grid Margin="10">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
 
-		<Label Padding="0,3,0,3">Connection String</Label>
-		<TextBox Text="{Binding ConnectionString}" MinLines="3" MaxLines="3" TextWrapping="Wrap" AcceptsReturn="True" />
+		<GroupBox Grid.Row="0" Header="Data Connection Options">
+			<Grid Margin="5">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+				
+				<StackPanel Grid.Row="0" Margin="0,0,0,5">
+					<Label Padding="0,0,0,3">Data Provider</Label>
+					<ComboBox ItemsSource="{Binding Providers}" SelectedIndex="{Binding SelectedProvider}"></ComboBox>
+				</StackPanel>
 
-		<Label Padding="0,3,0,3">Include Schemas (dbo,master) (optional)</Label>
-		<TextBox Text="{Binding IncludeSchemas}" />
+				<StackPanel Grid.Row="1" Margin="0,0,0,5">
+					<Label Padding="0,0,0,3">Connection String</Label>
+					<TextBox Text="{Binding ConnectionString}" TextWrapping="Wrap" Height="60" VerticalScrollBarVisibility="Auto" />
+				</StackPanel>
 
-		<Label Padding="0,3,0,3">Exclude Schemas (dbo,master) (optional)</Label>
-		<TextBox Text="{Binding ExcludeSchemas}" />
+				<CheckBox Grid.Row="2" Content="Encrypt Connection String" FontSize="12" IsChecked="{Binding EncryptConnectionString}" Margin="0,5" />
 
-		<Grid Margin="0,8,0,0">
+				<StackPanel Grid.Row="3" Margin="0,0,0,5">
+					<Label Padding="0,0,0,3">Include Schemas (dbo,master) (optional)</Label>
+					<TextBox Text="{Binding IncludeSchemas}" />
+				</StackPanel>
+
+				<StackPanel Grid.Row="4" Margin="0,0,0,0">
+					<Label Padding="0,0,0,3">Exclude Schemas (dbo,master) (optional)</Label>
+					<TextBox Text="{Binding ExcludeSchemas}" />
+				</StackPanel>
+			</Grid>
+		</GroupBox>
+
+		<GroupBox Grid.Row="1" Header="Data Context Options">
+			<StackPanel Margin="5">
+				<CheckBox Content="Pluralize Table properties"              FontSize="12" IsChecked="{Binding Pluralize}" />
+				<CheckBox Content="Capitalize property names"               FontSize="12" IsChecked="{Binding Capitalize}" Margin="0,5" />
+				<CheckBox Content="Include Stored Procedures and Functions" FontSize="12" IsChecked="{Binding IncludeRoutines}" />
+			</StackPanel>
+		</GroupBox>
+
+		<GroupBox Grid.Row="2" Header="Connection Options">
+			<StackPanel Margin="5">
+				<Label Padding="0,0,0,3">Friendly Name for this connection (optional)</Label>
+				<TextBox Text="{Binding Name}" />
+				<CheckBox Content="Remember this connection" FontSize="12" IsChecked="{Binding Persist}" Margin="0,5" />
+				<CheckBox Content="Contains production data" FontSize="12" IsChecked="{Binding IsProduction}" />
+			</StackPanel>
+		</GroupBox>
+
+		<Grid Grid.Row="3" Margin="0,8,0,5">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition/>
-				<ColumnDefinition Width="65" />
-				<ColumnDefinition Width="65" />
+				<ColumnDefinition Width="70" />
+				<ColumnDefinition Width="70" />
 			</Grid.ColumnDefinitions>
 
-			<Button Grid.Column="0" Width="60" HorizontalAlignment="Left"  Content="Test"                    Click="TestClick" />
-			<Button Grid.Column="1" Width="60" HorizontalAlignment="Right" Content="OK"     IsDefault="True" Click="OKClick"   />
-			<Button Grid.Column="2" Width="60" HorizontalAlignment="Right" Content="Cancel" IsCancel="True"  />
+			<Button Grid.Column="0" Width="65" HorizontalAlignment="Left"  Content="Test"                    Click="TestClick" />
+			<Button Grid.Column="1" Width="65" HorizontalAlignment="Right" Content="OK"     IsDefault="True" Click="OKClick"   />
+			<Button Grid.Column="2" Width="65" HorizontalAlignment="Right" Content="Cancel" IsCancel="True"  />
 		</Grid>
-	</StackPanel>
+	</Grid>
+
 </Window>

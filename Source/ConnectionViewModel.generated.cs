@@ -160,6 +160,228 @@ namespace LinqToDB.LINQPad
 
 		#endregion
 
+		#region Persist : bool
+
+		private bool _persist;
+		public  bool  Persist
+		{
+			get { return _persist; }
+			set
+			{
+				if (_persist != value)
+				{
+					BeforePersistChanged(value);
+					_persist = value;
+					AfterPersistChanged();
+
+					OnPersistChanged();
+				}
+			}
+		}
+
+		#region INotifyPropertyChanged support
+
+		partial void BeforePersistChanged(bool newValue);
+		partial void AfterPersistChanged ();
+
+		public const string NameOfPersist = "Persist";
+
+		private static readonly PropertyChangedEventArgs _persistChangedEventArgs = new PropertyChangedEventArgs(NameOfPersist);
+
+		private void OnPersistChanged()
+		{
+			OnPropertyChanged(_persistChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
+		#region IsProduction : bool
+
+		private bool _isProduction;
+		public  bool  IsProduction
+		{
+			get { return _isProduction; }
+			set
+			{
+				if (_isProduction != value)
+				{
+					BeforeIsProductionChanged(value);
+					_isProduction = value;
+					AfterIsProductionChanged();
+
+					OnIsProductionChanged();
+				}
+			}
+		}
+
+		#region INotifyPropertyChanged support
+
+		partial void BeforeIsProductionChanged(bool newValue);
+		partial void AfterIsProductionChanged ();
+
+		public const string NameOfIsProduction = "IsProduction";
+
+		private static readonly PropertyChangedEventArgs _isProductionChangedEventArgs = new PropertyChangedEventArgs(NameOfIsProduction);
+
+		private void OnIsProductionChanged()
+		{
+			OnPropertyChanged(_isProductionChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
+		#region Pluralize : bool
+
+		private bool _pluralize;
+		public  bool  Pluralize
+		{
+			get { return _pluralize; }
+			set
+			{
+				if (_pluralize != value)
+				{
+					BeforePluralizeChanged(value);
+					_pluralize = value;
+					AfterPluralizeChanged();
+
+					OnPluralizeChanged();
+				}
+			}
+		}
+
+		#region INotifyPropertyChanged support
+
+		partial void BeforePluralizeChanged(bool newValue);
+		partial void AfterPluralizeChanged ();
+
+		public const string NameOfPluralize = "Pluralize";
+
+		private static readonly PropertyChangedEventArgs _pluralizeChangedEventArgs = new PropertyChangedEventArgs(NameOfPluralize);
+
+		private void OnPluralizeChanged()
+		{
+			OnPropertyChanged(_pluralizeChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
+		#region Capitalize : bool
+
+		private bool _capitalize;
+		public  bool  Capitalize
+		{
+			get { return _capitalize; }
+			set
+			{
+				if (_capitalize != value)
+				{
+					BeforeCapitalizeChanged(value);
+					_capitalize = value;
+					AfterCapitalizeChanged();
+
+					OnCapitalizeChanged();
+				}
+			}
+		}
+
+		#region INotifyPropertyChanged support
+
+		partial void BeforeCapitalizeChanged(bool newValue);
+		partial void AfterCapitalizeChanged ();
+
+		public const string NameOfCapitalize = "Capitalize";
+
+		private static readonly PropertyChangedEventArgs _capitalizeChangedEventArgs = new PropertyChangedEventArgs(NameOfCapitalize);
+
+		private void OnCapitalizeChanged()
+		{
+			OnPropertyChanged(_capitalizeChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
+		#region IncludeRoutines : bool
+
+		private bool _includeRoutines;
+		public  bool  IncludeRoutines
+		{
+			get { return _includeRoutines; }
+			set
+			{
+				if (_includeRoutines != value)
+				{
+					BeforeIncludeRoutinesChanged(value);
+					_includeRoutines = value;
+					AfterIncludeRoutinesChanged();
+
+					OnIncludeRoutinesChanged();
+				}
+			}
+		}
+
+		#region INotifyPropertyChanged support
+
+		partial void BeforeIncludeRoutinesChanged(bool newValue);
+		partial void AfterIncludeRoutinesChanged ();
+
+		public const string NameOfIncludeRoutines = "IncludeRoutines";
+
+		private static readonly PropertyChangedEventArgs _includeRoutinesChangedEventArgs = new PropertyChangedEventArgs(NameOfIncludeRoutines);
+
+		private void OnIncludeRoutinesChanged()
+		{
+			OnPropertyChanged(_includeRoutinesChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
+		#region EncryptConnectionString : bool
+
+		private bool _encryptConnectionString;
+		public  bool  EncryptConnectionString
+		{
+			get { return _encryptConnectionString; }
+			set
+			{
+				if (_encryptConnectionString != value)
+				{
+					BeforeEncryptConnectionStringChanged(value);
+					_encryptConnectionString = value;
+					AfterEncryptConnectionStringChanged();
+
+					OnEncryptConnectionStringChanged();
+				}
+			}
+		}
+
+		#region INotifyPropertyChanged support
+
+		partial void BeforeEncryptConnectionStringChanged(bool newValue);
+		partial void AfterEncryptConnectionStringChanged ();
+
+		public const string NameOfEncryptConnectionString = "EncryptConnectionString";
+
+		private static readonly PropertyChangedEventArgs _encryptConnectionStringChangedEventArgs = new PropertyChangedEventArgs(NameOfEncryptConnectionString);
+
+		private void OnEncryptConnectionStringChanged()
+		{
+			OnPropertyChanged(_encryptConnectionStringChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
 		#region IncludeSchemas : string
 
 		private string _includeSchemas;
