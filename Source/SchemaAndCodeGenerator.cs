@@ -7,6 +7,7 @@ using LinqToDB.Data;
 using LinqToDB.DataProvider;
 using LinqToDB.SchemaProvider;
 using LinqToDB.SqlProvider;
+
 using LINQPad.Extensibility.DataContext;
 
 namespace LinqToDB.LINQPad
@@ -16,23 +17,27 @@ namespace LinqToDB.LINQPad
 		public SchemaAndCodeGenerator(IConnectionInfo cxInfo)
 		{
 			_cxInfo = cxInfo;
+
+			_useProviderSpecificTypes = ((string)_cxInfo.DriverData.Element("useProviderSpecificTypes") ?? "").ToLower() == "true";
+			_providerName             = (string)_cxInfo.DriverData.Element("providerName");
 		}
 
 		readonly IConnectionInfo _cxInfo;
 		readonly StringBuilder   _classCode = new StringBuilder();
+		readonly bool            _useProviderSpecificTypes;
+		readonly string          _providerName;
 
 		DatabaseSchema _schema;
 		IDataProvider  _dataProvider;
 		ISqlBuilder    _sqlBuilder;
-		
+
 		public readonly StringBuilder Code = new StringBuilder();
 
 		public IEnumerable<ExplorerItem> GetItemsAndCode(string nameSpace, string typeName)
 		{
-			var providerName     = (string)_cxInfo.DriverData.Element("providerName");
 			var connectionString = _cxInfo.DatabaseInfo.CustomCxString;
 
-			using (var db = new DataConnection(providerName, connectionString))
+			using (var db = new DataConnection(_providerName, connectionString))
 			{
 				_dataProvider = db.DataProvider;
 				_sqlBuilder   = _dataProvider.CreateSqlBuilder();
@@ -51,10 +56,21 @@ namespace LinqToDB.LINQPad
 			}
 
 			Code
-				.AppendLine( "using System;")
-				.AppendLine( "using LinqToDB;")
-				.AppendLine( "using LinqToDB.Data;")
-				.AppendLine( "using LinqToDB.Mapping;")
+				.AppendLine("using System;")
+				.AppendLine("using LinqToDB;")
+				.AppendLine("using LinqToDB.Data;")
+				.AppendLine("using LinqToDB.Mapping;")
+				;
+
+			if (_useProviderSpecificTypes)
+			{
+				switch (_providerName)
+				{
+					case ProviderName.SqlServer : Code.AppendLine("using System.Data.SqlTypes;"); break;
+				}
+			}
+
+			Code
 				.AppendLine($"namespace {nameSpace}")
 				.AppendLine( "{")
 				.AppendLine($"  public class {typeName} : LinqToDB.LINQPad.LINQPadDataConnection")
@@ -63,7 +79,7 @@ namespace LinqToDB.LINQPad
 				.AppendLine( "      : base(provider, connectionString)")
 				.AppendLine( "    {}")
 				.AppendLine($"    public {typeName}()")
-				.AppendLine($"      : base({ToCodeString(providerName)}, {ToCodeString(connectionString)})")
+				.AppendLine($"      : base({ToCodeString(_providerName)}, {ToCodeString(connectionString)})")
 				.AppendLine( "    {}")
 				;
 
@@ -156,13 +172,7 @@ namespace LinqToDB.LINQPad
 									if (c.IsPrimaryKey) _classCode.AppendLine($"   [PrimaryKey({c.PrimaryKeyOrder})]");
 									if (c.IsIdentity)   _classCode.AppendLine("    [Identity]");
 
-									var memberType = c.MemberType;
-
-									switch (memberType)
-									{
-										case "decimal" :
-										case "decimal?": memberType = "System.Data.SqlTypes.SqlDecimal"; break;
-									}
+									var memberType = MapMemberType(c.MemberType);
 
 									_classCode.AppendLine($"    public {memberType} {c.MemberName} {{ get; set; }}");
 
@@ -193,6 +203,23 @@ namespace LinqToDB.LINQPad
 			};
 		}
 
+		string MapMemberType(string memberType)
+		{
+			if (_useProviderSpecificTypes)
+			{
+				switch (memberType)
+				{
+					case "decimal" :
+					case "decimal?":
+
+						if (_providerName == ProviderName.SqlServer)
+							return "SqlDecimal";
+						break;
+				}
+			}
+
+			return memberType;
+		}
 
 		static readonly HashSet<string> _keyWords = new HashSet<string>
 		{

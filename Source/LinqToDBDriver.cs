@@ -59,16 +59,18 @@ namespace LinqToDB.LINQPad
 			if (providerName != null)
 				model.SelectedProvider = model.Providers.IndexOf(providerName);
 
-			model.Name                    = cxInfo.DisplayName;
-			model.Persist                 = cxInfo.Persist;
-			model.IsProduction            = cxInfo.IsProduction;
-			model.EncryptConnectionString = cxInfo.DatabaseInfo.EncryptCustomCxString;
-			model.Pluralize               = !cxInfo.DynamicSchemaOptions.NoPluralization;
-			model.Capitalize              = !cxInfo.DynamicSchemaOptions.NoCapitalization;
-			model.IncludeRoutines         = !cxInfo.DynamicSchemaOptions.ExcludeRoutines;
-			model.ConnectionString        = string.IsNullOrWhiteSpace(cxInfo.DatabaseInfo.CustomCxString) ? (string)cxInfo.DriverData.Element("connectionString") : cxInfo.DatabaseInfo.CustomCxString;
-			model.IncludeSchemas          = (string)cxInfo.DriverData.Element("includeSchemas");
-			model.ExcludeSchemas          = (string)cxInfo.DriverData.Element("excludeSchemas");
+			model.Name                     = cxInfo.DisplayName;
+			model.Persist                  = cxInfo.Persist;
+			model.IsProduction             = cxInfo.IsProduction;
+			model.EncryptConnectionString  = cxInfo.DatabaseInfo.EncryptCustomCxString;
+			model.Pluralize                = !cxInfo.DynamicSchemaOptions.NoPluralization;
+			model.Capitalize               = !cxInfo.DynamicSchemaOptions.NoCapitalization;
+			model.IncludeRoutines          = !cxInfo.DynamicSchemaOptions.ExcludeRoutines;
+			model.ConnectionString         = string.IsNullOrWhiteSpace(cxInfo.DatabaseInfo.CustomCxString) ? (string)cxInfo.DriverData.Element("connectionString") : cxInfo.DatabaseInfo.CustomCxString;
+			model.IncludeSchemas           = (string)cxInfo.DriverData.Element("includeSchemas");
+			model.ExcludeSchemas           = (string)cxInfo.DriverData.Element("excludeSchemas");
+			model.UseProviderSpecificTypes = ((string)cxInfo.DriverData.Element("useProviderSpecificTypes") ?? "").ToLower() == "true";
+			model.UseCustomFormatter       = isNewConnection || ((string)cxInfo.DriverData.Element("useCustomFormatter")       ?? "").ToLower() == "true";
 
 			_cxInfo = cxInfo;
 
@@ -76,10 +78,12 @@ namespace LinqToDB.LINQPad
 			{
 				providerName = model.Providers[model.SelectedProvider];
 
-				cxInfo.DriverData.SetElementValue("providerName",     providerName);
-				cxInfo.DriverData.SetElementValue("connectionString", null);
-				cxInfo.DriverData.SetElementValue("includeSchemas",   string.IsNullOrWhiteSpace(model.IncludeSchemas)   ? null : model.IncludeSchemas);
-				cxInfo.DriverData.SetElementValue("excludeSchemas",   string.IsNullOrWhiteSpace(model.ExcludeSchemas)   ? null : model.ExcludeSchemas);
+				cxInfo.DriverData.SetElementValue("providerName",             providerName);
+				cxInfo.DriverData.SetElementValue("connectionString",         null);
+				cxInfo.DriverData.SetElementValue("includeSchemas",           string.IsNullOrWhiteSpace(model.IncludeSchemas)   ? null : model.IncludeSchemas);
+				cxInfo.DriverData.SetElementValue("excludeSchemas",           string.IsNullOrWhiteSpace(model.ExcludeSchemas)   ? null : model.ExcludeSchemas);
+				cxInfo.DriverData.SetElementValue("useProviderSpecificTypes", model.UseProviderSpecificTypes ? "true" : null);
+				cxInfo.DriverData.SetElementValue("useCustomFormatter",       model.UseCustomFormatter       ? "true" : null);
 
 				switch (providerName)
 				{
@@ -248,13 +252,15 @@ namespace LinqToDB.LINQPad
 
 		IDataProvider _dataProvider;
 		MappingSchema _mappingSchema;
+		bool          _useCustomFormatter;
 
 		public override void InitializeContext(IConnectionInfo cxInfo, object context, QueryExecutionManager executionManager)
 		{
 			var conn = (DataConnection)context;
 
-			_dataProvider  = conn.DataProvider;
-			_mappingSchema = conn.MappingSchema;
+			_dataProvider       = conn.DataProvider;
+			_mappingSchema      = conn.MappingSchema;
+			_useCustomFormatter = ((string)cxInfo.DriverData.Element("useCustomFormatter") ?? "").ToLower() == "true";
 
 			conn.OnTraceConnection = info =>
 			{
@@ -311,7 +317,10 @@ namespace LinqToDB.LINQPad
 
 		public override void PreprocessObjectToWrite (ref object objectToWrite, ObjectGraphInfo info)
 		{
-			objectToWrite = XmlFormatter.Format(_mappingSchema, objectToWrite);
+			if (_useCustomFormatter)
+				objectToWrite = XmlFormatter.Format(_mappingSchema, objectToWrite);
+			else
+				objectToWrite = XmlFormatter.FormatValue(objectToWrite, info);
 		}
 	}
 }

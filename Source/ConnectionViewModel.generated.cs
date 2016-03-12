@@ -382,6 +382,80 @@ namespace LinqToDB.LINQPad
 
 		#endregion
 
+		#region UseCustomFormatter : bool
+
+		private bool _useCustomFormatter;
+		public  bool  UseCustomFormatter
+		{
+			get { return _useCustomFormatter; }
+			set
+			{
+				if (_useCustomFormatter != value)
+				{
+					BeforeUseCustomFormatterChanged(value);
+					_useCustomFormatter = value;
+					AfterUseCustomFormatterChanged();
+
+					OnUseCustomFormatterChanged();
+				}
+			}
+		}
+
+		#region INotifyPropertyChanged support
+
+		partial void BeforeUseCustomFormatterChanged(bool newValue);
+		partial void AfterUseCustomFormatterChanged ();
+
+		public const string NameOfUseCustomFormatter = "UseCustomFormatter";
+
+		private static readonly PropertyChangedEventArgs _useCustomFormatterChangedEventArgs = new PropertyChangedEventArgs(NameOfUseCustomFormatter);
+
+		private void OnUseCustomFormatterChanged()
+		{
+			OnPropertyChanged(_useCustomFormatterChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
+		#region UseProviderSpecificTypes : bool
+
+		private bool _useProviderSpecificTypes;
+		public  bool  UseProviderSpecificTypes
+		{
+			get { return _useProviderSpecificTypes; }
+			set
+			{
+				if (_useProviderSpecificTypes != value)
+				{
+					BeforeUseProviderSpecificTypesChanged(value);
+					_useProviderSpecificTypes = value;
+					AfterUseProviderSpecificTypesChanged();
+
+					OnUseProviderSpecificTypesChanged();
+				}
+			}
+		}
+
+		#region INotifyPropertyChanged support
+
+		partial void BeforeUseProviderSpecificTypesChanged(bool newValue);
+		partial void AfterUseProviderSpecificTypesChanged ();
+
+		public const string NameOfUseProviderSpecificTypes = "UseProviderSpecificTypes";
+
+		private static readonly PropertyChangedEventArgs _useProviderSpecificTypesChangedEventArgs = new PropertyChangedEventArgs(NameOfUseProviderSpecificTypes);
+
+		private void OnUseProviderSpecificTypesChanged()
+		{
+			OnPropertyChanged(_useProviderSpecificTypesChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
 		#region IncludeSchemas : string
 
 		private string _includeSchemas;
