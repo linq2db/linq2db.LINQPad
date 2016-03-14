@@ -1,23 +1,22 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Data.OleDb;
 using System.Data.SqlClient;
-using System.Data.SqlTypes;
+using System.Data.SqlServerCe;
+using System.Data.SQLite;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Windows;
-using System.Xml.Linq;
+
 using LinqToDB.Common;
 using LinqToDB.Data;
 using LinqToDB.DataProvider;
-using LinqToDB.Extensions;
 using LinqToDB.Mapping;
-using LINQPad;
+
 using LINQPad.Extensibility.DataContext;
 
 using Microsoft.CodeAnalysis;
@@ -67,10 +66,10 @@ namespace LinqToDB.LINQPad
 			model.Capitalize               = !cxInfo.DynamicSchemaOptions.NoCapitalization;
 			model.IncludeRoutines          = !cxInfo.DynamicSchemaOptions.ExcludeRoutines;
 			model.ConnectionString         = string.IsNullOrWhiteSpace(cxInfo.DatabaseInfo.CustomCxString) ? (string)cxInfo.DriverData.Element("connectionString") : cxInfo.DatabaseInfo.CustomCxString;
-			model.IncludeSchemas           = (string)cxInfo.DriverData.Element("includeSchemas");
-			model.ExcludeSchemas           = (string)cxInfo.DriverData.Element("excludeSchemas");
-			model.UseProviderSpecificTypes = ((string)cxInfo.DriverData.Element("useProviderSpecificTypes") ?? "").ToLower() == "true";
-			model.UseCustomFormatter       = isNewConnection || ((string)cxInfo.DriverData.Element("useCustomFormatter")       ?? "").ToLower() == "true";
+			model.IncludeSchemas           = cxInfo.DriverData.Element("includeSchemas")          ?.Value;
+			model.ExcludeSchemas           = cxInfo.DriverData.Element("excludeSchemas")          ?.Value;
+			model.UseProviderSpecificTypes = cxInfo.DriverData.Element("useProviderSpecificTypes")?.Value.ToLower() == "true";
+			model.UseCustomFormatter       = cxInfo.DriverData.Element("useCustomFormatter")      ?.Value.ToLower() == "true";
 
 			_cxInfo = cxInfo;
 
@@ -80,14 +79,17 @@ namespace LinqToDB.LINQPad
 
 				cxInfo.DriverData.SetElementValue("providerName",             providerName);
 				cxInfo.DriverData.SetElementValue("connectionString",         null);
-				cxInfo.DriverData.SetElementValue("includeSchemas",           string.IsNullOrWhiteSpace(model.IncludeSchemas)   ? null : model.IncludeSchemas);
-				cxInfo.DriverData.SetElementValue("excludeSchemas",           string.IsNullOrWhiteSpace(model.ExcludeSchemas)   ? null : model.ExcludeSchemas);
+				cxInfo.DriverData.SetElementValue("includeSchemas",           string.IsNullOrWhiteSpace(model.IncludeSchemas) ? null : model.IncludeSchemas);
+				cxInfo.DriverData.SetElementValue("excludeSchemas",           string.IsNullOrWhiteSpace(model.ExcludeSchemas) ? null : model.ExcludeSchemas);
 				cxInfo.DriverData.SetElementValue("useProviderSpecificTypes", model.UseProviderSpecificTypes ? "true" : null);
 				cxInfo.DriverData.SetElementValue("useCustomFormatter",       model.UseCustomFormatter       ? "true" : null);
 
 				switch (providerName)
 				{
-					case ProviderName.SqlServer: cxInfo.DatabaseInfo.Provider = typeof(SqlConnection).Namespace; break;
+					case ProviderName.Access   : cxInfo.DatabaseInfo.Provider = typeof(OleDbConnection). Namespace; break;
+					case ProviderName.SqlCe    : cxInfo.DatabaseInfo.Provider = typeof(SqlCeConnection). Namespace; break;
+					case ProviderName.SQLite   : cxInfo.DatabaseInfo.Provider = typeof(SQLiteConnection).Namespace; break;
+					case ProviderName.SqlServer: cxInfo.DatabaseInfo.Provider = typeof(SqlConnection).   Namespace; break;
 				}
 
 				try
@@ -164,10 +166,10 @@ namespace LinqToDB.LINQPad
 
 			var references = new MetadataReference[]
 			{
-				MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-				MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location),
-				MetadataReference.CreateFromFile(typeof(IDbConnection).Assembly.Location),
-				MetadataReference.CreateFromFile(typeof(DataConnection).Assembly.Location),
+				MetadataReference.CreateFromFile(typeof(object).               Assembly.Location),
+				MetadataReference.CreateFromFile(typeof(Enumerable).           Assembly.Location),
+				MetadataReference.CreateFromFile(typeof(IDbConnection).        Assembly.Location),
+				MetadataReference.CreateFromFile(typeof(DataConnection).       Assembly.Location),
 				MetadataReference.CreateFromFile(typeof(LINQPadDataConnection).Assembly.Location),
 			};
 
@@ -260,7 +262,7 @@ namespace LinqToDB.LINQPad
 
 			_dataProvider       = conn.DataProvider;
 			_mappingSchema      = conn.MappingSchema;
-			_useCustomFormatter = ((string)cxInfo.DriverData.Element("useCustomFormatter") ?? "").ToLower() == "true";
+			_useCustomFormatter = cxInfo.DriverData.Element("useCustomFormatter")?.Value.ToLower() == "true";
 
 			conn.OnTraceConnection = info =>
 			{
