@@ -35,7 +35,7 @@
 				
 				<StackPanel Grid.Row="0" Margin="0,0,0,5">
 					<Label Padding="0,0,0,3">Data Provider</Label>
-					<ComboBox ItemsSource="{Binding Providers}" SelectedIndex="{Binding SelectedProvider}"></ComboBox>
+					<ComboBox ItemsSource="{Binding Providers}" SelectedValue="{Binding SelectedProvider}" DisplayMemberPath="Description" />
 				</StackPanel>
 
 				<StackPanel Grid.Row="1" Margin="0,0,0,5">

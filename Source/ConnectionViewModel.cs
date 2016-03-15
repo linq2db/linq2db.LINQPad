@@ -6,25 +6,31 @@ namespace LinqToDB.LINQPad
 {
 	partial class ConnectionViewModel
 	{
+		public class ProviderInfo
+		{
+			public string Name        { get; set; }
+			public string Description { get; set; }
+		}
+
 		public ConnectionViewModel()
 		{
-			_providers = new ObservableCollection<string>(new []
+			_providers = new ObservableCollection<ProviderInfo>(new []
 			{
-				ProviderName.Access,
-				ProviderName.DB2,
-				ProviderName.DB2LUW,
-				ProviderName.DB2zOS,
-				ProviderName.Firebird,
-				ProviderName.Informix,
-				ProviderName.SqlServer,
-				ProviderName.MySql,
-				ProviderName.Oracle,
-				ProviderName.PostgreSQL,
-				ProviderName.SqlCe,
-				ProviderName.SQLite,
-				ProviderName.Sybase,
-				ProviderName.SapHana,
-			}.OrderBy(s => s.ToLower()));
+				new ProviderInfo { Name = ProviderName.Access,        Description = "Microsoft Access", },
+				new ProviderInfo { Name = ProviderName.DB2LUW,        Description = "DB2 for Linux, UNIX and Windows", },
+				new ProviderInfo { Name = ProviderName.DB2zOS,        Description = "DB2 for z/OS", },
+				new ProviderInfo { Name = ProviderName.Firebird,      Description = "Firebird", },
+				new ProviderInfo { Name = ProviderName.Informix,      Description = "IBM Informix", },
+				new ProviderInfo { Name = ProviderName.SqlServer,     Description = "Microsoft SQL Server", },
+				new ProviderInfo { Name = ProviderName.MySql,         Description = "MySql", },
+				new ProviderInfo { Name = ProviderName.OracleNative,  Description = "Oracle ODP.NET", },
+				new ProviderInfo { Name = ProviderName.OracleManaged, Description = "Oracle Managed Driver", },
+				new ProviderInfo { Name = ProviderName.PostgreSQL,    Description = "PostgreSQL", },
+				new ProviderInfo { Name = ProviderName.SqlCe,         Description = "Microsoft SQL Server Compact", },
+				new ProviderInfo { Name = ProviderName.SQLite,        Description = "SQLite", },
+				new ProviderInfo { Name = ProviderName.Sybase,        Description = "SAP Sybase ASE", },
+				new ProviderInfo { Name = ProviderName.SapHana,       Description = "SAP HANA", },
+			}.OrderBy(s => s.Description.ToLower()));
 		}
 	}
 }

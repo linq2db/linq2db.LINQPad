@@ -53,10 +53,12 @@ namespace LinqToDB.LINQPad
 		public override bool ShowConnectionDialog(IConnectionInfo cxInfo, bool isNewConnection)
 		{
 			var model        = new ConnectionViewModel();
-			var providerName = (string)cxInfo.DriverData.Element("providerName");
+			var providerName = isNewConnection
+				? ProviderName.SqlServer
+				: (string)cxInfo.DriverData.Element("providerName");
 
 			if (providerName != null)
-				model.SelectedProvider = model.Providers.IndexOf(providerName);
+				model.SelectedProvider = model.Providers.FirstOrDefault(p => p.Name == providerName);
 
 			model.Name                     = cxInfo.DisplayName;
 			model.Persist                  = cxInfo.Persist;
@@ -75,7 +77,7 @@ namespace LinqToDB.LINQPad
 
 			if (ConnectionDialog.Show(this, model))
 			{
-				providerName = model.Providers[model.SelectedProvider];
+				providerName = model.SelectedProvider?.Name;
 
 				cxInfo.DriverData.SetElementValue("providerName",             providerName);
 				cxInfo.DriverData.SetElementValue("connectionString",         null);
@@ -106,13 +108,13 @@ namespace LinqToDB.LINQPad
 				{
 				}
 
-				cxInfo.DatabaseInfo.CustomCxString           = model.ConnectionString;
-				cxInfo.DatabaseInfo.EncryptCustomCxString    = model.EncryptConnectionString;
+				cxInfo.DatabaseInfo.CustomCxString           =  model.ConnectionString;
+				cxInfo.DatabaseInfo.EncryptCustomCxString    =  model.EncryptConnectionString;
 				cxInfo.DynamicSchemaOptions.NoPluralization  = !model.Pluralize;
 				cxInfo.DynamicSchemaOptions.NoCapitalization = !model.Capitalize;
 				cxInfo.DynamicSchemaOptions.ExcludeRoutines  = !model.IncludeRoutines;
-				cxInfo.Persist                               = model.Persist;
-				cxInfo.IsProduction                          = model.IsProduction;
+				cxInfo.Persist                               =  model.Persist;
+				cxInfo.IsProduction                          =  model.IsProduction;
 				cxInfo.DisplayName                           = string.IsNullOrWhiteSpace(model.Name) ? null : model.Name;
 
 				return true;
@@ -142,7 +144,7 @@ namespace LinqToDB.LINQPad
 
 			try
 			{
-				using (var db = new DataConnection(model.Providers[model.SelectedProvider], model.ConnectionString))
+				using (var db = new DataConnection(model.SelectedProvider?.Name, model.ConnectionString))
 				{
 					var conn = db.Connection;
 					return null;
@@ -164,7 +166,7 @@ namespace LinqToDB.LINQPad
 			var text       = gen.Code.ToString();
 			var syntaxTree = CSharpSyntaxTree.ParseText(text);
 
-			var references = new MetadataReference[]
+			var references = new List<MetadataReference>
 			{
 				MetadataReference.CreateFromFile(typeof(object).               Assembly.Location),
 				MetadataReference.CreateFromFile(typeof(Enumerable).           Assembly.Location),
@@ -173,11 +175,13 @@ namespace LinqToDB.LINQPad
 				MetadataReference.CreateFromFile(typeof(LINQPadDataConnection).Assembly.Location),
 			};
 
+			references.AddRange(gen.References.Select(r => MetadataReference.CreateFromFile(r)));
+
 			var compilation = CSharpCompilation.Create(
 				assemblyToBuild.Name,
-				syntaxTrees: new[] { syntaxTree },
-				references : references,
-				options    : new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+				syntaxTrees : new[] { syntaxTree },
+				references  : references,
+				options     : new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
 			using (var stream = new FileStream(assemblyToBuild.CodeBase, FileMode.Create))
 			//using (var stream = new MemoryStream())

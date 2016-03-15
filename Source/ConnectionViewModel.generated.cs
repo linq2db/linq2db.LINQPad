@@ -49,10 +49,10 @@ namespace LinqToDB.LINQPad
 
 		#endregion
 
-		#region SelectedProvider : int
+		#region SelectedProvider : ProviderInfo
 
-		private int _selectedProvider;
-		public  int  SelectedProvider
+		private ProviderInfo _selectedProvider;
+		public  ProviderInfo  SelectedProvider
 		{
 			get { return _selectedProvider; }
 			set
@@ -70,7 +70,7 @@ namespace LinqToDB.LINQPad
 
 		#region INotifyPropertyChanged support
 
-		partial void BeforeSelectedProviderChanged(int newValue);
+		partial void BeforeSelectedProviderChanged(ProviderInfo newValue);
 		partial void AfterSelectedProviderChanged ();
 
 		public const string NameOfSelectedProvider = "SelectedProvider";
@@ -86,10 +86,10 @@ namespace LinqToDB.LINQPad
 
 		#endregion
 
-		#region Providers : ObservableCollection<string>
+		#region Providers : ObservableCollection<ProviderInfo>
 
-		private ObservableCollection<string> _providers;
-		public  ObservableCollection<string>  Providers
+		private ObservableCollection<ProviderInfo> _providers;
+		public  ObservableCollection<ProviderInfo>  Providers
 		{
 			get { return _providers; }
 			set
@@ -107,7 +107,7 @@ namespace LinqToDB.LINQPad
 
 		#region INotifyPropertyChanged support
 
-		partial void BeforeProvidersChanged(ObservableCollection<string> newValue);
+		partial void BeforeProvidersChanged(ObservableCollection<ProviderInfo> newValue);
 		partial void AfterProvidersChanged ();
 
 		public const string NameOfProviders = "Providers";

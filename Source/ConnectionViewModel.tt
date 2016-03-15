@@ -9,20 +9,20 @@
 
 	Model.Types.Add(
 		new Class("ConnectionViewModel",
-			new NotifyingProperty("string", "Name"),
-			new NotifyingProperty("int",    "SelectedProvider"),
-			new NotifyingProperty("ObservableCollection<string>", "Providers"),
-			new NotifyingProperty("string", "ConnectionString"),
-			new NotifyingProperty("bool",   "Persist"),
-			new NotifyingProperty("bool",   "IsProduction"),
-			new NotifyingProperty("bool",   "Pluralize"),
-			new NotifyingProperty("bool",   "Capitalize"),
-			new NotifyingProperty("bool",   "IncludeRoutines"),
-			new NotifyingProperty("bool",   "EncryptConnectionString"),
-			new NotifyingProperty("bool",   "UseCustomFormatter"),
-			new NotifyingProperty("bool",   "UseProviderSpecificTypes"),
-			new NotifyingProperty("string", "IncludeSchemas"),
-			new NotifyingProperty("string", "ExcludeSchemas"))
+			new NotifyingProperty("string",       "Name"),
+			new NotifyingProperty("ProviderInfo", "SelectedProvider"),
+			new NotifyingProperty("ObservableCollection<ProviderInfo>", "Providers"),
+			new NotifyingProperty("string",       "ConnectionString"),
+			new NotifyingProperty("bool",         "Persist"),
+			new NotifyingProperty("bool",         "IsProduction"),
+			new NotifyingProperty("bool",         "Pluralize"),
+			new NotifyingProperty("bool",         "Capitalize"),
+			new NotifyingProperty("bool",         "IncludeRoutines"),
+			new NotifyingProperty("bool",         "EncryptConnectionString"),
+			new NotifyingProperty("bool",         "UseCustomFormatter"),
+			new NotifyingProperty("bool",         "UseProviderSpecificTypes"),
+			new NotifyingProperty("string",       "IncludeSchemas"),
+			new NotifyingProperty("string",       "ExcludeSchemas"))
 	);
 
 	GenerateModel();

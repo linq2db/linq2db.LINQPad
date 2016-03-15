@@ -18,14 +18,16 @@ namespace LinqToDB.LINQPad
 		{
 			_cxInfo = cxInfo;
 
-			_useProviderSpecificTypes = ((string)_cxInfo.DriverData.Element("useProviderSpecificTypes") ?? "").ToLower() == "true";
-			_providerName             = (string)_cxInfo.DriverData.Element("providerName");
+			UseProviderSpecificTypes = ((string)_cxInfo.DriverData.Element("useProviderSpecificTypes"))?.ToLower() == "true";
+			ProviderName             =  (string)_cxInfo.DriverData.Element("providerName");
 		}
+
+		public readonly bool         UseProviderSpecificTypes;
+		public readonly string       ProviderName;
+		public readonly List<string> References = new List<string>();
 
 		readonly IConnectionInfo _cxInfo;
 		readonly StringBuilder   _classCode = new StringBuilder();
-		readonly bool            _useProviderSpecificTypes;
-		readonly string          _providerName;
 
 		DatabaseSchema _schema;
 		IDataProvider  _dataProvider;
@@ -37,7 +39,7 @@ namespace LinqToDB.LINQPad
 		{
 			var connectionString = _cxInfo.DatabaseInfo.CustomCxString;
 
-			using (var db = new DataConnection(_providerName, connectionString))
+			using (var db = new DataConnection(ProviderName, connectionString))
 			{
 				_dataProvider = db.DataProvider;
 				_sqlBuilder   = _dataProvider.CreateSqlBuilder();
@@ -62,11 +64,19 @@ namespace LinqToDB.LINQPad
 				.AppendLine("using LinqToDB.Mapping;")
 				;
 
-			if (_useProviderSpecificTypes)
+			if (UseProviderSpecificTypes)
 			{
-				switch (_providerName)
+				switch (ProviderName)
 				{
-					case ProviderName.SqlServer : Code.AppendLine("using System.Data.SqlTypes;"); break;
+					case LinqToDB.ProviderName.SqlServer :
+						Code
+							.AppendLine("using System.Data.SqlTypes;")
+							.AppendLine("using Microsoft.SqlServer.Types;")
+							;
+
+						References.Add(typeof(Microsoft.SqlServer.Types.SqlHierarchyId).Assembly.Location);
+
+						break;
 				}
 			}
 
@@ -79,7 +89,7 @@ namespace LinqToDB.LINQPad
 				.AppendLine( "      : base(provider, connectionString)")
 				.AppendLine( "    {}")
 				.AppendLine($"    public {typeName}()")
-				.AppendLine($"      : base({ToCodeString(_providerName)}, {ToCodeString(connectionString)})")
+				.AppendLine($"      : base({ToCodeString(ProviderName)}, {ToCodeString(connectionString)})")
 				.AppendLine( "    {}")
 				;
 
@@ -205,14 +215,14 @@ namespace LinqToDB.LINQPad
 
 		string MapMemberType(string memberType)
 		{
-			if (_useProviderSpecificTypes)
+			if (UseProviderSpecificTypes)
 			{
 				switch (memberType)
 				{
 					case "decimal" :
 					case "decimal?":
 
-						if (_providerName == ProviderName.SqlServer)
+						if (ProviderName == LinqToDB.ProviderName.SqlServer)
 							return "SqlDecimal";
 						break;
 				}
