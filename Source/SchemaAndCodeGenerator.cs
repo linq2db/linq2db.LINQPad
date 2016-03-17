@@ -71,6 +71,10 @@ namespace LinqToDB.LINQPad
 
 			switch (ProviderName)
 			{
+				case LinqToDB.ProviderName.MySql :
+					References.Add(typeof(MySql.Data.MySqlClient.MySqlConnection).Assembly.Location);
+					break;
+
 				case LinqToDB.ProviderName.PostgreSQL :
 					References.Add(typeof(Npgsql.NpgsqlConnection).Assembly.Location);
 					break;

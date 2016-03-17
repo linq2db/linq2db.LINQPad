@@ -11,7 +11,6 @@
 		new Class("ConnectionViewModel",
 			new NotifyingProperty("string",       "Name"),
 			new NotifyingProperty("ProviderInfo", "SelectedProvider"),
-			new NotifyingProperty("ObservableCollection<ProviderInfo>", "Providers"),
 			new NotifyingProperty("string",       "ConnectionString"),
 			new NotifyingProperty("bool",         "Persist"),
 			new NotifyingProperty("bool",         "IsProduction"),
@@ -22,7 +21,8 @@
 			new NotifyingProperty("bool",         "UseCustomFormatter"),
 			new NotifyingProperty("bool",         "UseProviderSpecificTypes"),
 			new NotifyingProperty("string",       "IncludeSchemas"),
-			new NotifyingProperty("string",       "ExcludeSchemas"))
+			new NotifyingProperty("string",       "ExcludeSchemas"),
+			new NotifyingProperty("ObservableCollection<ProviderInfo>", "Providers"))
 	);
 
 	GenerateModel();

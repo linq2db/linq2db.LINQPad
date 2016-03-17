@@ -86,43 +86,6 @@ namespace LinqToDB.LINQPad
 
 		#endregion
 
-		#region Providers : ObservableCollection<ProviderInfo>
-
-		private ObservableCollection<ProviderInfo> _providers;
-		public  ObservableCollection<ProviderInfo>  Providers
-		{
-			get { return _providers; }
-			set
-			{
-				if (_providers != value)
-				{
-					BeforeProvidersChanged(value);
-					_providers = value;
-					AfterProvidersChanged();
-
-					OnProvidersChanged();
-				}
-			}
-		}
-
-		#region INotifyPropertyChanged support
-
-		partial void BeforeProvidersChanged(ObservableCollection<ProviderInfo> newValue);
-		partial void AfterProvidersChanged ();
-
-		public const string NameOfProviders = "Providers";
-
-		private static readonly PropertyChangedEventArgs _providersChangedEventArgs = new PropertyChangedEventArgs(NameOfProviders);
-
-		private void OnProvidersChanged()
-		{
-			OnPropertyChanged(_providersChangedEventArgs);
-		}
-
-		#endregion
-
-		#endregion
-
 		#region ConnectionString : string
 
 		private string _connectionString;
@@ -524,6 +487,43 @@ namespace LinqToDB.LINQPad
 		private void OnExcludeSchemasChanged()
 		{
 			OnPropertyChanged(_excludeSchemasChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
+		#region Providers : ObservableCollection<ProviderInfo>
+
+		private ObservableCollection<ProviderInfo> _providers;
+		public  ObservableCollection<ProviderInfo>  Providers
+		{
+			get { return _providers; }
+			set
+			{
+				if (_providers != value)
+				{
+					BeforeProvidersChanged(value);
+					_providers = value;
+					AfterProvidersChanged();
+
+					OnProvidersChanged();
+				}
+			}
+		}
+
+		#region INotifyPropertyChanged support
+
+		partial void BeforeProvidersChanged(ObservableCollection<ProviderInfo> newValue);
+		partial void AfterProvidersChanged ();
+
+		public const string NameOfProviders = "Providers";
+
+		private static readonly PropertyChangedEventArgs _providersChangedEventArgs = new PropertyChangedEventArgs(NameOfProviders);
+
+		private void OnProvidersChanged()
+		{
+			OnPropertyChanged(_providersChangedEventArgs);
 		}
 
 		#endregion
