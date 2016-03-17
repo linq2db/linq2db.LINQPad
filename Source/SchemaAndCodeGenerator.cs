@@ -71,6 +71,11 @@ namespace LinqToDB.LINQPad
 
 			switch (ProviderName)
 			{
+				case LinqToDB.ProviderName.DB2LUW :
+				case LinqToDB.ProviderName.DB2zOS :
+					References.Add(typeof(IBM.Data.DB2.DB2Connection).Assembly.Location);
+					break;
+
 				case LinqToDB.ProviderName.Firebird :
 					References.Add(typeof(FirebirdSql.Data.FirebirdClient.FbConnection).Assembly.Location);
 					break;

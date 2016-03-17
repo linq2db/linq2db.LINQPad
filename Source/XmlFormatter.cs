@@ -173,6 +173,7 @@ namespace LinqToDB.LINQPad
 				value is System.Data.SqlTypes.          INullable && ((System.Data.SqlTypes.          INullable)value).IsNull ||
 				value is Oracle.DataAccess.Types.       INullable && ((Oracle.DataAccess.Types.       INullable)value).IsNull ||
 				value is Oracle.ManagedDataAccess.Types.INullable && ((Oracle.ManagedDataAccess.Types.INullable)value).IsNull ||
+				value is IBM.Data.DB2Types.             INullable && ((IBM.Data.DB2Types.             INullable)value).IsNull ||
 
 				value is NpgsqlTypes.NpgsqlDateTime && ((NpgsqlTypes.NpgsqlDateTime)value).Kind == DateTimeKind.Unspecified ||
 
@@ -188,6 +189,7 @@ namespace LinqToDB.LINQPad
 				value is System.Data.SqlTypes.          INullable ||
 				value is Oracle.DataAccess.Types.       INullable ||
 				value is Oracle.ManagedDataAccess.Types.INullable ||
+				value is IBM.Data.DB2Types.             INullable ||
 				value is MySql.Data.Types.MySqlGeometry
 				;
 		}
@@ -273,6 +275,8 @@ namespace LinqToDB.LINQPad
 			VF<Oracle.ManagedDataAccess.Types.OracleDate>    (dt => Format(dt.Value)),
 			VF              <MySql.Data.Types.MySqlDateTime> (dt => Format(dt.Value)),
 			VF                   <NpgsqlTypes.NpgsqlDateTime>(dt => Format((DateTime)dt)),
+			VF                <IBM.Data.DB2Types.DB2DateTime>(dt => Format(dt.Value)),
+			VF                <IBM.Data.DB2Types.DB2Date>    (dt => Format(dt.Value)),
 
 			VF<                        Guid>(v => v.      ToString("B").ToUpper(), font:"consolas", size:"110%"),
 			VF<System.Data.SqlTypes.SqlGuid>(v => v.Value.ToString("B").ToUpper(), font:"consolas", size:"110%"),
@@ -281,30 +285,38 @@ namespace LinqToDB.LINQPad
 
 		static readonly Dictionary<Type,NumberFormatter> _numberFormatters = new Dictionary<Type, NumberFormatter>(new[]
 		{
-			NF<Int16,  Int64>                                              (value => v => v + value,                  v => n => v /       n),
-			NF<Int32,  Int64>                                              (value => v => v + value,                  v => n => v /       n),
-			NF<Int64,  Int64>                                              (value => v => v + value,                  v => n => v /       n),
-			NF<UInt16, UInt64>                                             (value => v => v + value,                  v => n => v / (uint)n),
-			NF<UInt32, UInt64>                                             (value => v => v + value,                  v => n => v / (uint)n),
-			NF<UInt64, UInt64>                                             (value => v => v + value,                  v => n => v / (uint)n),
-			NF<SByte,  Int32>                                              (value => v => v + value,                  v => n => v /       n),
-			NF<Byte,   Int64>                                              (value => v => v + value,                  v => n => v /       n),
-			NF<Decimal,Decimal>                                            (value => v => v + value,                  v => n => v /       n),
-			NF<Double, Double>                                             (value => v => v + value,                  v => n => v /       n),
-			NF<Single, Single>                                             (value => v => v + value,                  v => n => v /       n),
+			NF<Int16,  Int64>                               (value => v => v + value,                  v => n => v /       n),
+			NF<Int32,  Int64>                               (value => v => v + value,                  v => n => v /       n),
+			NF<Int64,  Int64>                               (value => v => v + value,                  v => n => v /       n),
+			NF<UInt16, UInt64>                              (value => v => v + value,                  v => n => v / (uint)n),
+			NF<UInt32, UInt64>                              (value => v => v + value,                  v => n => v / (uint)n),
+			NF<UInt64, UInt64>                              (value => v => v + value,                  v => n => v / (uint)n),
+			NF<SByte,  Int32>                               (value => v => v + value,                  v => n => v /       n),
+			NF<Byte,   Int64>                               (value => v => v + value,                  v => n => v /       n),
+			NF<Decimal,Decimal>                             (value => v => v + value,                  v => n => v /       n),
+			NF<Double, Double>                              (value => v => v + value,                  v => n => v /       n),
+			NF<Single, Single>                              (value => v => v + value,                  v => n => v /       n),
 
-			NF<System.Data.SqlTypes.SqlDecimal>                            (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
-			NF<System.Data.SqlTypes.SqlDouble>                             (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
-			NF<System.Data.SqlTypes.SqlSingle>                             (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
-			NF<System.Data.SqlTypes.SqlInt16,System.Data.SqlTypes.SqlInt64>(value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
-			NF<System.Data.SqlTypes.SqlInt32,System.Data.SqlTypes.SqlInt64>(value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
-			NF<System.Data.SqlTypes.SqlInt64,System.Data.SqlTypes.SqlInt64>(value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
-			NF<System.Data.SqlTypes.SqlByte, System.Data.SqlTypes.SqlInt64>(value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
+			NF<System.Data.SqlTypes.SqlInt16,Int64>         (value => v => v + value.Value,            v => n => v / n),
+			NF<System.Data.SqlTypes.SqlInt32,Int64>         (value => v => v + value.Value,            v => n => v / n),
+			NF<System.Data.SqlTypes.SqlInt64,Int64>         (value => v => v + value.Value,            v => n => v / n),
+			NF<System.Data.SqlTypes.SqlByte, Int64>         (value => v => v + value.Value,            v => n => v / n),
+			NF<System.Data.SqlTypes.SqlDecimal>             (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
+			NF<System.Data.SqlTypes.SqlDouble>              (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
+			NF<System.Data.SqlTypes.SqlSingle>              (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
 
-			NF<Oracle.DataAccess.Types.OracleDecimal>                      (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
-			NF<Oracle.ManagedDataAccess.Types.OracleDecimal>               (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
+			NF<Oracle.DataAccess.       Types.OracleDecimal>(value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
+			NF<Oracle.ManagedDataAccess.Types.OracleDecimal>(value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
 
-			NF<MySql.Data.Types.MySqlDecimal,Decimal>                      (value => v => v + value.Value, v => n => v / n),
+			NF<IBM.Data.DB2Types.DB2Int16,       Int64>     (value => v => v + value.Value,            v => n => v / n),
+			NF<IBM.Data.DB2Types.DB2Int32,       Int64>     (value => v => v + value.Value,            v => n => v / n),
+			NF<IBM.Data.DB2Types.DB2Int64,       Int64>     (value => v => v + value.Value,            v => n => v / n),
+			NF<IBM.Data.DB2Types.DB2Decimal>                (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
+			NF<IBM.Data.DB2Types.DB2DecimalFloat,Decimal>   (value => v => v + value.Value,            v => n => v / n),
+			NF<IBM.Data.DB2Types.DB2Double,      Double>    (value => v => v + value.Value,            v => n => v / n),
+			NF<IBM.Data.DB2Types.DB2Real,        Double>    (value => v => v + value.Value,            v => n => v / n),
+
+			NF<MySql.Data.Types.MySqlDecimal,Decimal>       (value => v => v + value.Value,            v => n => v / n),
 		}
 		.ToDictionary(f => f.Type));
 
