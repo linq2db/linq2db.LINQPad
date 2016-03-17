@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -54,41 +55,49 @@ namespace LinqToDB.LINQPad
 
 				_schema = _dataProvider.GetSchemaProvider().GetSchema(db, options);
 
-				ConvertSchema();
+				ConvertSchema(typeName);
 			}
 
 			Code
 				.AppendLine("using System;")
+				.AppendLine("using System.Collections;")
 				.AppendLine("using LinqToDB;")
 				.AppendLine("using LinqToDB.Data;")
 				.AppendLine("using LinqToDB.Mapping;")
 				;
 
-			if (UseProviderSpecificTypes)
+			if (!string.IsNullOrWhiteSpace(_schema.ProviderSpecificTypeNamespace))
+				Code.AppendLine($"using {_schema.ProviderSpecificTypeNamespace};");
+
+			switch (ProviderName)
 			{
-				switch (ProviderName)
-				{
-					case LinqToDB.ProviderName.SqlServer :
-						Code
-							.AppendLine("using System.Data.SqlTypes;")
-							.AppendLine("using Microsoft.SqlServer.Types;")
-							;
+				case LinqToDB.ProviderName.PostgreSQL :
+					References.Add(typeof(Npgsql.NpgsqlConnection).Assembly.Location);
+					break;
 
-						References.Add(typeof(Microsoft.SqlServer.Types.SqlHierarchyId).Assembly.Location);
+				case LinqToDB.ProviderName.SqlCe :
+					References.Add(typeof(System.Data.SqlServerCe.SqlCeConnection).Assembly.Location);
+					break;
 
-						break;
-				}
+				case LinqToDB.ProviderName.SQLite :
+					References.Add(typeof(System.Data.SQLite.SQLiteConnection).Assembly.Location);
+					break;
+
+				case LinqToDB.ProviderName.SqlServer :
+					Code.AppendLine("using Microsoft.SqlServer.Types;");
+					References.Add(typeof(Microsoft.SqlServer.Types.SqlHierarchyId).Assembly.Location);
+					break;
 			}
 
 			Code
 				.AppendLine($"namespace {nameSpace}")
 				.AppendLine( "{")
-				.AppendLine($"  public class {typeName} : LinqToDB.LINQPad.LINQPadDataConnection")
+				.AppendLine($"  public class @{typeName} : LinqToDB.LINQPad.LINQPadDataConnection")
 				.AppendLine( "  {")
-				.AppendLine($"    public {typeName}(string provider, string connectionString)")
+				.AppendLine($"    public @{typeName}(string provider, string connectionString)")
 				.AppendLine( "      : base(provider, connectionString)")
 				.AppendLine( "    {}")
-				.AppendLine($"    public {typeName}()")
+				.AppendLine($"    public @{typeName}()")
 				.AppendLine($"      : base({ToCodeString(ProviderName)}, {ToCodeString(connectionString)})")
 				.AppendLine( "    {}")
 				;
@@ -96,33 +105,28 @@ namespace LinqToDB.LINQPad
 			var schemas =
 			(
 				from t in _schema.Tables
-				select new { t.IsDefaultSchema, t.SchemaName }
+				group t by new { t.IsDefaultSchema, t.SchemaName } into gr
+				orderby !gr.Key.IsDefaultSchema, gr.Key.SchemaName
+				select new { gr.Key, Items = gr.ToList() }
 			)
-			.Union
-			(
-				from p in _schema.Procedures
-				select new { p.IsDefaultSchema, p.SchemaName }
-			)
-			.Distinct()
 			.ToList();
 
 			foreach (var s in schemas)
 			{
-				var tables = _schema.Tables.Where(t => s.IsDefaultSchema == t.IsDefaultSchema && s.SchemaName == t.SchemaName).ToList();
-				var items  = new List<ExplorerItem>();
+				var items = new List<ExplorerItem>();
 
-				if (tables.Any(t => !t.IsView && !t.IsProcedureResult))
-					items.Add(GetTables("Tables", ExplorerIcon.Table, tables.Where(t => !t.IsView && !t.IsProcedureResult)));
+				if (s.Items.Any(t => !t.IsView && !t.IsProcedureResult))
+					items.Add(GetTables("Tables", ExplorerIcon.Table, s.Items.Where(t => !t.IsView && !t.IsProcedureResult)));
 
-				if (tables.Any(t => t.IsView))
-					items.Add(GetTables("Views", ExplorerIcon.View, tables.Where(t => t.IsView)));
+				if (s.Items.Any(t => t.IsView))
+					items.Add(GetTables("Views", ExplorerIcon.View, s.Items.Where(t => t.IsView)));
 
 				if (schemas.Count == 1)
 					foreach (var item in items)
 						yield return item;
 				else
 					yield return new ExplorerItem(
-						string.IsNullOrEmpty(s.SchemaName) ? s.IsDefaultSchema ? "(default)" : "empty" : s.SchemaName,
+						string.IsNullOrEmpty(s.Key.SchemaName) ? s.Key.IsDefaultSchema ? "(default)" : "empty" : s.Key.SchemaName,
 						ExplorerItemKind.Schema,
 						ExplorerIcon.Schema)
 					{
@@ -135,6 +139,10 @@ namespace LinqToDB.LINQPad
 				.AppendLine(_classCode.ToString())
 				.AppendLine("}")
 				;
+
+#if DEBUG
+			Debug.WriteLine(Code.ToString());
+#endif
 		}
 
 		ExplorerItem GetTables(string header, ExplorerIcon icon, IEnumerable<TableSchema> tables)
@@ -144,10 +152,7 @@ namespace LinqToDB.LINQPad
 				Children = tables
 					.Select(t =>
 					{
-						var memberName = t.TypeName;
-
-						if (!_cxInfo.DynamicSchemaOptions.NoPluralization)
-							memberName = Pluralization.ToPlural(memberName);
+						var memberName = _contextMembers[t];
 
 						Code.AppendLine($"    public ITable<{t.TypeName}> {memberName} {{ get {{ return this.GetTable<{t.TypeName}>(); }} }}");
 
@@ -186,7 +191,7 @@ namespace LinqToDB.LINQPad
 
 									_classCode.AppendLine($"    public {memberType} {c.MemberName} {{ get; set; }}");
 
-									var sqlName = (string)_sqlBuilder.Convert(c.MemberName, ConvertType.NameToQueryField);
+									var sqlName = (string)_sqlBuilder.Convert(c.ColumnName, ConvertType.NameToQueryField);
 
 									return new ExplorerItem(
 										c.MemberName,
@@ -243,11 +248,38 @@ namespace LinqToDB.LINQPad
 			"using",    "virtual",  "volatile", "void",    "while"
 		};
 
-		void ConvertSchema()
+		string GetName(HashSet<string> names, string proposedName)
 		{
+			var name = proposedName;
+			var n    = 0;
+
+			while (names.Contains(name))
+				name = proposedName + ++n;
+
+			names.Add(name);
+
+			return name;
+		}
+
+		readonly Dictionary<TableSchema,string> _contextMembers = new Dictionary<TableSchema,string>();
+
+		void ConvertSchema(string typeName)
+		{
+			var typeNames          = new HashSet<string> { typeName };
+			var contextMemberNames = new HashSet<string> { typeName };
+
 			foreach (var table in _schema.Tables)
 			{
-				table.TypeName = ConvertToCompilable(table.TypeName);
+				table.TypeName = GetName(typeNames, ConvertToCompilable(table.TypeName));
+
+				{
+					var contextMemberName = table.TypeName;
+
+					if (!_cxInfo.DynamicSchemaOptions.NoPluralization)
+						contextMemberName = Pluralization.ToPlural(contextMemberName);
+
+					_contextMembers[table] = GetName(contextMemberNames, contextMemberName);
+				}
 
 				foreach (var column in table.Columns)
 				{
