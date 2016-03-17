@@ -79,6 +79,14 @@ namespace LinqToDB.LINQPad
 					References.Add(typeof(MySql.Data.MySqlClient.MySqlConnection).Assembly.Location);
 					break;
 
+				case LinqToDB.ProviderName.OracleNative :
+					References.Add(typeof(Oracle.DataAccess.Client.OracleConnection).Assembly.Location);
+					break;
+
+				case LinqToDB.ProviderName.OracleManaged :
+					References.Add(typeof(Oracle.ManagedDataAccess.Client.OracleConnection).Assembly.Location);
+					break;
+
 				case LinqToDB.ProviderName.PostgreSQL :
 					References.Add(typeof(Npgsql.NpgsqlConnection).Assembly.Location);
 					break;
@@ -198,7 +206,7 @@ namespace LinqToDB.LINQPad
 									if (c.IsPrimaryKey) _classCode.AppendLine($"   [PrimaryKey({c.PrimaryKeyOrder})]");
 									if (c.IsIdentity)   _classCode.AppendLine("    [Identity]");
 
-									var memberType = MapMemberType(c.MemberType);
+									var memberType = UseProviderSpecificTypes ? (c.ProviderSpecificType ?? c.MemberType) : c.MemberType;
 
 									_classCode.AppendLine($"    public {memberType} {c.MemberName} {{ get; set; }}");
 
@@ -227,24 +235,6 @@ namespace LinqToDB.LINQPad
 					})
 					.ToList()
 			};
-		}
-
-		string MapMemberType(string memberType)
-		{
-			if (UseProviderSpecificTypes)
-			{
-				switch (memberType)
-				{
-					case "decimal" :
-					case "decimal?":
-
-						if (ProviderName == LinqToDB.ProviderName.SqlServer)
-							return "SqlDecimal";
-						break;
-				}
-			}
-
-			return memberType;
 		}
 
 		static readonly HashSet<string> _keyWords = new HashSet<string>

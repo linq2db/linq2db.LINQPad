@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Data.SqlTypes;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -45,14 +45,12 @@ namespace LinqToDB.LINQPad
 			if (objectToWrite == null || objectToWrite is string || objectToWrite is XElement)
 				return objectToWrite;
 
-			if (objectToWrite is DBNull || objectToWrite is INullable && ((INullable)objectToWrite).IsNull)
-			{
+			if (IsNull(objectToWrite))
 				return null;
-			}
 
-			if (objectToWrite is SqlDecimal)
+			if (objectToWrite is System.Data.SqlTypes.SqlDecimal)
 			{
-				var value = (SqlDecimal)objectToWrite;
+				var value = (System.Data.SqlTypes.SqlDecimal)objectToWrite;
 				return Util.RawHtml($"<div class=\"n\">{value}</div>");
 			}
 
@@ -167,125 +165,241 @@ namespace LinqToDB.LINQPad
 			return type.Name;
 		}
 
+		static bool IsNull(object value)
+		{
+			return
+				value == null   ||
+				value is DBNull ||
+				value is System.Data.SqlTypes.          INullable && ((System.Data.SqlTypes.          INullable)value).IsNull ||
+				value is Oracle.DataAccess.Types.       INullable && ((Oracle.DataAccess.Types.       INullable)value).IsNull ||
+				value is Oracle.ManagedDataAccess.Types.INullable && ((Oracle.ManagedDataAccess.Types.INullable)value).IsNull ||
+
+				value is NpgsqlTypes.NpgsqlDateTime && ((NpgsqlTypes.NpgsqlDateTime)value).Kind == DateTimeKind.Unspecified ||
+
+				value is MySql.Data.Types.MySqlDecimal  && ((MySql.Data.Types.MySqlDecimal) value).IsNull ||
+				value is MySql.Data.Types.MySqlDateTime && ((MySql.Data.Types.MySqlDateTime)value).IsNull ||
+				value is MySql.Data.Types.MySqlGeometry && ((MySql.Data.Types.MySqlGeometry)value).IsNull
+				;
+		}
+
+		static bool IsValue(object value)
+		{
+			return
+				value is System.Data.SqlTypes.          INullable ||
+				value is Oracle.DataAccess.Types.       INullable ||
+				value is Oracle.ManagedDataAccess.Types.INullable ||
+				value is MySql.Data.Types.MySqlGeometry
+				;
+		}
+
 		static XElement FormatValue(Total total, object value)
 		{
-			if (value == null || value is DBNull || value is INullable && ((INullable)value).IsNull)
+			if (IsNull(value))
 				return new XElement("td", new XAttribute("style", "text-align:center;"), new XElement("i", "null"));
 
-			var found = true;
+			NumberFormatter nf;
 
-			switch (Type.GetTypeCode(value.GetType()))
+			if (_numberFormatters.TryGetValue(value.GetType(), out nf))
 			{
-				case TypeCode.Int16   : total.Add<Int64>  (v => v + (Int16)  value, v => n => v /       n); break;
-				case TypeCode.Int32   : total.Add<Int64>  (v => v + (Int32)  value, v => n => v /       n); break;
-				case TypeCode.Int64   : total.Add<Int64>  (v => v + (Int64)  value, v => n => v /       n); break;
-				case TypeCode.UInt16  : total.Add<UInt64> (v => v + (UInt16) value, v => n => v / (uint)n); break;
-				case TypeCode.UInt32  : total.Add<UInt64> (v => v + (UInt32) value, v => n => v / (uint)n); break;
-				case TypeCode.UInt64  : total.Add<UInt64> (v => v + (UInt64) value, v => n => v / (uint)n); break;
-				case TypeCode.SByte   : total.Add<Int32>  (v => v + (SByte)  value, v => n => v /       n); break;
-				case TypeCode.Byte    : total.Add<Int64>  (v => v + (Byte)   value, v => n => v /       n); break;
-				case TypeCode.Decimal : total.Add<Decimal>(v => v + (Decimal)value, v => n => v /       n); break;
-				case TypeCode.Double  : total.Add<Double> (v => v + (Double) value, v => n => v /       n); break;
-				case TypeCode.Single  : total.Add<Single> (v => v + (Single) value, v => n => v /       n); break;
-				default               : found = false; break;
+				nf.AddTotal(total, value);
+				return new XElement("td", new XAttribute("class", "n"), value);
 			}
 
-			if (!found)
+			ValueFormatter vf;
+
+			if (_valueFormatters.TryGetValue(value.GetType(), out vf))
 			{
-				if (value is SqlDateTime)
-					value = ((SqlDateTime)value).Value;
+				var list = new List<object>();
 
-				if (value is DateTime)
-				{
-					var dt = (DateTime)value;
+				if (vf.NoWrap)
+					list.Add(new XAttribute("nowrap", "nowrap"));
 
-					return new XElement("td",
-						new XAttribute("nowrap", "nowrap"),
-						dt.Hour == 0 && dt.Minute == 0 && dt.Second == 0
-							? dt.ToString("yyyy-MM-dd")
-							: dt.ToString("yyyy-MM-dd HH:mm:ss"));
-				}
+				var style = "";
 
-				if (value is SqlGuid)
-					value = ((SqlGuid)value).Value;
+				if (vf.Font != null) style += $"font-family:{vf.Font};";
+				if (vf.Size != null) style += $"font-size:{vf.Size};";
 
-				if (value is Guid)
-				{
-					return new XElement("td",
-						new XAttribute("nowrap", "nowrap"),
-						new XAttribute("style",  "font-family:consolas;font-size:110%;"),
-						((Guid)value).ToString("B").ToUpper());
-				}
+				if (style.Length > 0)
+					list.Add(new XAttribute("style",  style));
 
-				     if (value is SqlDecimal) total.Add<SqlDecimal>(v => (v.IsNull ? 0 : v) + (SqlDecimal)value, v => n => v / n);
-				else if (value is SqlDouble)  total.Add<SqlDouble> (v => (v.IsNull ? 0 : v) + (SqlDouble) value, v => n => v / n);
-				else if (value is SqlSingle)  total.Add<SqlSingle> (v => (v.IsNull ? 0 : v) + (SqlSingle) value, v => n => v / n);
-				else if (value is SqlInt16)   total.Add<SqlInt64>  (v => (v.IsNull ? 0 : v) + (SqlInt16)  value, v => n => v / n);
-				else if (value is SqlInt32)   total.Add<SqlInt64>  (v => (v.IsNull ? 0 : v) + (SqlInt32)  value, v => n => v / n);
-				else if (value is SqlInt64)   total.Add<SqlInt64>  (v => (v.IsNull ? 0 : v) + (SqlInt64)  value, v => n => v / n);
-				else if (value is SqlByte)    total.Add<SqlInt64>  (v => (v.IsNull ? 0 : v) + (SqlByte)   value, v => n => v / n);
+				list.Add(vf.FormatValue(value));
+
+				return new XElement("td", list.ToArray());
 			}
 
-			return total.IsNumber ?
-				new XElement("td", new XAttribute("class", "n"), value) :
-				new XElement("td", value);
+			return new XElement("td", value);
 		}
 
 		public static object FormatValue(object value, ObjectGraphInfo info)
 		{
-			if (value == null || value is DBNull || value is INullable && ((INullable)value).IsNull)
+			if (IsNull(value))
 				return Util.RawHtml(new XElement("span", new XAttribute("style", "text-align:center;"), new XElement("i", "null")));
 
-			if (value is SqlDateTime)
-				value = ((SqlDateTime)value).Value;
+			NumberFormatter nf;
 
-			if (value is DateTime)
+			if (_numberFormatters.TryGetValue(value.GetType(), out nf))
+				return Util.RawHtml(nf.GetElement(value));
+
+			ValueFormatter vf;
+
+			if (_valueFormatters.TryGetValue(value.GetType(), out vf))
 			{
-				var dt = (DateTime)value;
+				var style = "";
+
+				if (vf.NoWrap)       style += "white-space:nowrap;";
+				if (vf.Font != null) style += $"font-family:{vf.Font};";
+				if (vf.Size != null) style += $"font-size:{vf.Size};";
 
 				return Util.RawHtml(new XElement("span",
-					new XAttribute("style", "white-space:nowrap;"),
-					dt.Hour == 0 && dt.Minute == 0 && dt.Second == 0
-						? dt.ToString("yyyy-MM-dd")
-						: dt.ToString("yyyy-MM-dd HH:mm:ss")));
+					new XAttribute("style", style),
+					vf.FormatValue(value)));
 			}
 
-			if (value is SqlGuid)
-				value = ((SqlGuid)value).Value;
-
-			if (value is Guid)
-			{
-				return Util.RawHtml(new XElement("span",
-					new XAttribute("style", "white-space:nowrap;font-family:consolas;font-size:110%;"),
-					((Guid)value).ToString("B").ToUpper()));
-			}
-
-			if (value is SqlDecimal)
-			{
-//				var sb = new StringBuilder();
-//
-//				sb
-//					.AppendLine(info.ToString())
-//					.AppendLine(info.Heading);
-//
-//				foreach (var parent in info.ParentHierarchy)
-//				{
-//					sb.AppendLine(parent.ToString());
-//				}
-//
-//				MessageBox.Show(sb.ToString());
-
-				return Util.RawHtml(new XElement("span", value));
-			}
-
-			if (value is SqlDouble)  return Util.RawHtml(new XElement("span", value));
-			if (value is SqlSingle)  return Util.RawHtml(new XElement("span", value));
-			if (value is SqlInt16)   return Util.RawHtml(new XElement("span", value));
-			if (value is SqlInt32)   return Util.RawHtml(new XElement("span", value));
-			if (value is SqlInt64)   return Util.RawHtml(new XElement("span", value));
-			if (value is SqlByte)    return Util.RawHtml(new XElement("span", value));
-
-			return value;
+			return IsValue(value) ? Util.RawHtml(new XElement("span", value)) : value;
 		}
+
+		static string Format(DateTime dt)
+		{
+			return dt.Hour == 0 && dt.Minute == 0 && dt.Second == 0
+				? dt.ToString("yyyy-MM-dd")
+				: dt.ToString("yyyy-MM-dd HH:mm:ss");
+		}
+
+		static readonly Dictionary<Type,ValueFormatter> _valueFormatters = new Dictionary<Type, ValueFormatter>(new[]
+		{
+			VF                                     <DateTime>(      Format),
+			VF             <System.Data.SqlTypes.SqlDateTime>(dt => Format(dt.Value)),
+			VF       <Oracle.DataAccess.Types.OracleDate>    (dt => Format(dt.Value)),
+			VF<Oracle.ManagedDataAccess.Types.OracleDate>    (dt => Format(dt.Value)),
+			VF              <MySql.Data.Types.MySqlDateTime> (dt => Format(dt.Value)),
+			VF                   <NpgsqlTypes.NpgsqlDateTime>(dt => Format((DateTime)dt)),
+
+			VF<                        Guid>(v => v.      ToString("B").ToUpper(), font:"consolas", size:"110%"),
+			VF<System.Data.SqlTypes.SqlGuid>(v => v.Value.ToString("B").ToUpper(), font:"consolas", size:"110%"),
+		}
+		.ToDictionary(f => f.Type));
+
+		static readonly Dictionary<Type,NumberFormatter> _numberFormatters = new Dictionary<Type, NumberFormatter>(new[]
+		{
+			NF<Int16,  Int64>                                              (value => v => v + value,                  v => n => v /       n),
+			NF<Int32,  Int64>                                              (value => v => v + value,                  v => n => v /       n),
+			NF<Int64,  Int64>                                              (value => v => v + value,                  v => n => v /       n),
+			NF<UInt16, UInt64>                                             (value => v => v + value,                  v => n => v / (uint)n),
+			NF<UInt32, UInt64>                                             (value => v => v + value,                  v => n => v / (uint)n),
+			NF<UInt64, UInt64>                                             (value => v => v + value,                  v => n => v / (uint)n),
+			NF<SByte,  Int32>                                              (value => v => v + value,                  v => n => v /       n),
+			NF<Byte,   Int64>                                              (value => v => v + value,                  v => n => v /       n),
+			NF<Decimal,Decimal>                                            (value => v => v + value,                  v => n => v /       n),
+			NF<Double, Double>                                             (value => v => v + value,                  v => n => v /       n),
+			NF<Single, Single>                                             (value => v => v + value,                  v => n => v /       n),
+
+			NF<System.Data.SqlTypes.SqlDecimal>                            (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
+			NF<System.Data.SqlTypes.SqlDouble>                             (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
+			NF<System.Data.SqlTypes.SqlSingle>                             (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
+			NF<System.Data.SqlTypes.SqlInt16,System.Data.SqlTypes.SqlInt64>(value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
+			NF<System.Data.SqlTypes.SqlInt32,System.Data.SqlTypes.SqlInt64>(value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
+			NF<System.Data.SqlTypes.SqlInt64,System.Data.SqlTypes.SqlInt64>(value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
+			NF<System.Data.SqlTypes.SqlByte, System.Data.SqlTypes.SqlInt64>(value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
+
+			NF<Oracle.DataAccess.Types.OracleDecimal>                      (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
+			NF<Oracle.ManagedDataAccess.Types.OracleDecimal>               (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
+
+			NF<MySql.Data.Types.MySqlDecimal,Decimal>                      (value => v => v + value.Value, v => n => v / n),
+		}
+		.ToDictionary(f => f.Type));
+
+		#region ValueFormatter
+
+		static ValueFormatter VF<T>(Func<T,string> format, string font = null, string size = null, bool nowrap = true)
+		{
+			return new ValueFormatter<T> { Format = format, NoWrap = nowrap };
+		}
+
+		abstract class ValueFormatter
+		{
+			public abstract Type   Type { get; }
+
+			public string Font;
+			public string Size;
+			public bool   NoWrap;
+
+			public abstract string FormatValue(object value);
+		}
+
+		class ValueFormatter<T> : ValueFormatter
+		{
+			public override Type Type => typeof(T);
+
+			public Func<T,string> Format;
+
+			public override string FormatValue(object value)
+			{
+				return Format((T)value);
+			}
+		}
+
+		#endregion
+
+		#region NumberFormatter
+
+		static NumberFormatter NF<T>(Func<T,Func<T,T>> add, Func<T,Func<int,object>> avr)
+		{
+			return new NumberFormatter<T> { Add = add, Avarege = avr, Format = v => new XElement("span", v) };
+		}
+
+		static NumberFormatter NF<T,TT>(Func<T,Func<TT,TT>> add, Func<TT,Func<int,object>> avr)
+		{
+			return new NumberFormatter<T,TT> { Add = add, Avarege = avr, Format = v => new XElement("span", v) };
+		}
+
+		abstract class NumberFormatter
+		{
+			public abstract Type Type { get; }
+
+			public abstract void     AddTotal  (Total total, object value);
+			public abstract XElement GetElement(object value);
+		}
+
+		class NumberFormatter<T> : NumberFormatter
+		{
+			public override Type Type => typeof(T);
+
+			public Func<T,Func<T,T>>        Add;
+			public Func<T,Func<int,object>> Avarege;
+
+			public override void AddTotal(Total total, object value)
+			{
+				total.Add(Add((T)value), Avarege);
+			}
+
+			public Func<T,XElement> Format;
+
+			public override XElement GetElement(object value)
+			{
+				return Format((T)value);
+			}
+		}
+
+		class NumberFormatter<T,TT> : NumberFormatter
+		{
+			public override Type Type => typeof(T);
+
+			public Func<T,Func<TT,TT>>       Add;
+			public Func<TT,Func<int,object>> Avarege;
+
+			public override void AddTotal(Total total, object value)
+			{
+				total.Add<TT>(Add((T)value), Avarege);
+			}
+
+			public Func<T,XElement> Format;
+
+			public override XElement GetElement(object value)
+			{
+				return Format((T)value);
+			}
+		}
+
+		#endregion
 	}
 }
