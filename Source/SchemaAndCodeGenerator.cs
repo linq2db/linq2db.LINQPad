@@ -71,6 +71,10 @@ namespace LinqToDB.LINQPad
 
 			switch (ProviderName)
 			{
+				case LinqToDB.ProviderName.Firebird :
+					References.Add(typeof(FirebirdSql.Data.FirebirdClient.FbConnection).Assembly.Location);
+					break;
+
 				case LinqToDB.ProviderName.MySql :
 					References.Add(typeof(MySql.Data.MySqlClient.MySqlConnection).Assembly.Location);
 					break;
@@ -100,10 +104,13 @@ namespace LinqToDB.LINQPad
 				.AppendLine( "  {")
 				.AppendLine($"    public @{typeName}(string provider, string connectionString)")
 				.AppendLine( "      : base(provider, connectionString)")
-				.AppendLine( "    {}")
+				.AppendLine( "    {")
+				.AppendLine( "      LinqToDB.DataProvider.Firebird.FirebirdConfiguration.QuoteIdentifiers = true;")
+				.AppendLine( "    }")
 				.AppendLine($"    public @{typeName}()")
-				.AppendLine($"      : base({ToCodeString(ProviderName)}, {ToCodeString(connectionString)})")
-				.AppendLine( "    {}")
+				.AppendLine($"      : this({ToCodeString(ProviderName)}, {ToCodeString(connectionString)})")
+				.AppendLine( "    {")
+				.AppendLine( "    }")
 				;
 
 			var schemas =
