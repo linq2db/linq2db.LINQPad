@@ -356,6 +356,7 @@ namespace LinqToDB.LINQPad
 			NF<IBM.Data.DB2Types.DB2Real,        Double>    (value => v => v + value.Value,            v => n => v / n),
 
 			NF<Sybase.Data.AseClient.AseDecimal, Double>    (value => v => v + value.ToDouble(),       v => n => v / n),
+			NF<Sap.Data.Hana.HanaDecimal,        Decimal>   (value => v => v + value.ToDecimal(),      v => n => v / n),
 
 			NF<MySql.Data.Types.MySqlDecimal,Decimal>       (value => v => v + value.Value,            v => n => v / n),
 		}

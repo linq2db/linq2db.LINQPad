@@ -116,6 +116,10 @@ namespace LinqToDB.LINQPad
 				case LinqToDB.ProviderName.Sybase :
 					References.Add(typeof(Sybase.Data.AseClient.AseConnection).Assembly.Location);
 					break;
+
+				case LinqToDB.ProviderName.SapHana :
+					References.Add(typeof(Sap.Data.Hana.HanaConnection).Assembly.Location);
+					break;
 			}
 
 			Code

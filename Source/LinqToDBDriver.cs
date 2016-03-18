@@ -34,6 +34,7 @@ using SQLiteType        = System.Data.SQLite.SQLiteConnection;
 using SqlServerType     = System.Data.SqlClient.SqlConnection;
 using SqlTypesType      = Microsoft.SqlServer.Types.SqlHierarchyId;
 using SybaseType        = Sybase.Data.AseClient.AseConnection;
+using SapHanaType       = Sap.Data.Hana.HanaConnection;
 
 namespace LinqToDB.LINQPad
 {
@@ -115,6 +116,7 @@ namespace LinqToDB.LINQPad
 					case ProviderName.SQLite       : cxInfo.DatabaseInfo.Provider = typeof(SQLiteType).       Namespace; break;
 					case ProviderName.SqlServer    : cxInfo.DatabaseInfo.Provider = typeof(SqlServerType).    Namespace; break;
 					case ProviderName.Sybase       : cxInfo.DatabaseInfo.Provider = typeof(SybaseType).       Namespace; break;
+					case ProviderName.SapHana      : cxInfo.DatabaseInfo.Provider = typeof(SapHanaType).      Namespace; break;
 				}
 
 				try
@@ -273,6 +275,7 @@ namespace LinqToDB.LINQPad
 				case ProviderName.SqlCe        : yield return typeof(SqlCeType).        Assembly.Location; break;
 				case ProviderName.SQLite       : yield return typeof(SQLiteType).       Assembly.Location; break;
 				case ProviderName.Sybase       : yield return typeof(SybaseType).       Assembly.Location; break;
+				case ProviderName.SapHana      : yield return typeof(SapHanaType).      Assembly.Location; break;
 				case ProviderName.SqlServer    :
 					yield return typeof(SqlServerType).Assembly.Location;
 					yield return typeof(SqlTypesType). Assembly.Location;
