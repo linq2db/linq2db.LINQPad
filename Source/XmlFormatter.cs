@@ -176,11 +176,13 @@ namespace LinqToDB.LINQPad
 				value is Oracle.ManagedDataAccess.Types.INullable && ((Oracle.ManagedDataAccess.Types.INullable)value).IsNull ||
 				value is IBM.Data.DB2Types.             INullable && ((IBM.Data.DB2Types.             INullable)value).IsNull ||
 
-				value is NpgsqlTypes.NpgsqlDateTime && ((NpgsqlTypes.NpgsqlDateTime)value).Kind == DateTimeKind.Unspecified ||
+				value is NpgsqlTypes.NpgsqlDateTime       && ((NpgsqlTypes.NpgsqlDateTime)value).Kind == DateTimeKind.Unspecified ||
 
-				value is MySql.Data.Types.MySqlDecimal  && ((MySql.Data.Types.MySqlDecimal) value).IsNull ||
-				value is MySql.Data.Types.MySqlDateTime && ((MySql.Data.Types.MySqlDateTime)value).IsNull ||
-				value is MySql.Data.Types.MySqlGeometry && ((MySql.Data.Types.MySqlGeometry)value).IsNull
+				value is Sybase.Data.AseClient.AseDecimal && ((Sybase.Data.AseClient.AseDecimal)value).IsNull ||
+
+				value is MySql.Data.Types.MySqlDecimal    && ((MySql.Data.Types.MySqlDecimal) value).IsNull ||
+				value is MySql.Data.Types.MySqlDateTime   && ((MySql.Data.Types.MySqlDateTime)value).IsNull ||
+				value is MySql.Data.Types.MySqlGeometry   && ((MySql.Data.Types.MySqlGeometry)value).IsNull
 				;
 		}
 
@@ -290,7 +292,7 @@ namespace LinqToDB.LINQPad
 			int i;
 
 			for (i = 0; i < value.Length && i < 10; i++)
-				sb.Append($"{value[i]:X}:");
+				sb.Append($"{value[i]:X2}:");
 
 			if (i > 0)
 				sb.Length--;
@@ -352,6 +354,8 @@ namespace LinqToDB.LINQPad
 			NF<IBM.Data.DB2Types.DB2DecimalFloat,Decimal>   (value => v => v + value.Value,            v => n => v / n),
 			NF<IBM.Data.DB2Types.DB2Double,      Double>    (value => v => v + value.Value,            v => n => v / n),
 			NF<IBM.Data.DB2Types.DB2Real,        Double>    (value => v => v + value.Value,            v => n => v / n),
+
+			NF<Sybase.Data.AseClient.AseDecimal, Double>    (value => v => v + value.ToDouble(),       v => n => v / n),
 
 			NF<MySql.Data.Types.MySqlDecimal,Decimal>       (value => v => v + value.Value,            v => n => v / n),
 		}

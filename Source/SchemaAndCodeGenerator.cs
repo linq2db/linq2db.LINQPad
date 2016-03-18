@@ -112,6 +112,10 @@ namespace LinqToDB.LINQPad
 					Code.AppendLine("using Microsoft.SqlServer.Types;");
 					References.Add(typeof(Microsoft.SqlServer.Types.SqlHierarchyId).Assembly.Location);
 					break;
+
+				case LinqToDB.ProviderName.Sybase :
+					References.Add(typeof(Sybase.Data.AseClient.AseConnection).Assembly.Location);
+					break;
 			}
 
 			Code

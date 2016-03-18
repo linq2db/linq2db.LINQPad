@@ -33,6 +33,7 @@ using SqlCeType         = System.Data.SqlServerCe.SqlCeConnection;
 using SQLiteType        = System.Data.SQLite.SQLiteConnection;
 using SqlServerType     = System.Data.SqlClient.SqlConnection;
 using SqlTypesType      = Microsoft.SqlServer.Types.SqlHierarchyId;
+using SybaseType        = Sybase.Data.AseClient.AseConnection;
 
 namespace LinqToDB.LINQPad
 {
@@ -113,6 +114,7 @@ namespace LinqToDB.LINQPad
 					case ProviderName.SqlCe        : cxInfo.DatabaseInfo.Provider = typeof(SqlCeType).        Namespace; break;
 					case ProviderName.SQLite       : cxInfo.DatabaseInfo.Provider = typeof(SQLiteType).       Namespace; break;
 					case ProviderName.SqlServer    : cxInfo.DatabaseInfo.Provider = typeof(SqlServerType).    Namespace; break;
+					case ProviderName.Sybase       : cxInfo.DatabaseInfo.Provider = typeof(SybaseType).       Namespace; break;
 				}
 
 				try
@@ -270,6 +272,7 @@ namespace LinqToDB.LINQPad
 				case ProviderName.MySql        : yield return typeof(MySqlType).        Assembly.Location; break;
 				case ProviderName.SqlCe        : yield return typeof(SqlCeType).        Assembly.Location; break;
 				case ProviderName.SQLite       : yield return typeof(SQLiteType).       Assembly.Location; break;
+				case ProviderName.Sybase       : yield return typeof(SybaseType).       Assembly.Location; break;
 				case ProviderName.SqlServer    :
 					yield return typeof(SqlServerType).Assembly.Location;
 					yield return typeof(SqlTypesType). Assembly.Location;
