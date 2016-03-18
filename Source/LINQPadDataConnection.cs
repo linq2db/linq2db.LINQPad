@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 using LinqToDB.Data;
 
@@ -8,6 +9,16 @@ namespace LinqToDB.LINQPad
 {
 	public class LINQPadDataConnection : DataConnection
 	{
+		static LINQPadDataConnection()
+		{
+			AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
+			{
+				Console.WriteLine(args.Name);
+				Debug.WriteLine(args.Name);
+				return null;
+			};
+		}
+
 		public LINQPadDataConnection()
 		{
 			TurnTraceSwitchOn();

@@ -76,6 +76,10 @@ namespace LinqToDB.LINQPad
 					References.Add(typeof(IBM.Data.DB2.DB2Connection).Assembly.Location);
 					break;
 
+				case LinqToDB.ProviderName.Informix :
+					References.Add(typeof(IBM.Data.Informix.IfxConnection).Assembly.Location);
+					break;
+
 				case LinqToDB.ProviderName.Firebird :
 					References.Add(typeof(FirebirdSql.Data.FirebirdClient.FbConnection).Assembly.Location);
 					break;

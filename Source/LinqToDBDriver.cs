@@ -23,6 +23,7 @@ using Microsoft.CodeAnalysis.CSharp;
 
 using AccessType        = System.Data.OleDb.OleDbConnection;
 using DB2Type           = IBM.Data.DB2.DB2Connection;
+using InformixType      = IBM.Data.Informix.IfxConnection;
 using FirebirdType      = FirebirdSql.Data.FirebirdClient.FbConnection;
 using PostgreSQLType    = Npgsql.NpgsqlConnection;
 using OracleNativeType  = Oracle.DataAccess.Client.OracleConnection;
@@ -103,6 +104,7 @@ namespace LinqToDB.LINQPad
 					case ProviderName.DB2          :
 					case ProviderName.DB2LUW       :
 					case ProviderName.DB2zOS       : cxInfo.DatabaseInfo.Provider = typeof(DB2Type).          Namespace; break;
+					case ProviderName.Informix     : cxInfo.DatabaseInfo.Provider = typeof(InformixType).     Namespace; break;
 					case ProviderName.Firebird     : cxInfo.DatabaseInfo.Provider = typeof(FirebirdType).     Namespace; break;
 					case ProviderName.PostgreSQL   : cxInfo.DatabaseInfo.Provider = typeof(PostgreSQLType).   Namespace; break;
 					case ProviderName.OracleNative : cxInfo.DatabaseInfo.Provider = typeof(OracleNativeType). Namespace; break;
@@ -260,6 +262,7 @@ namespace LinqToDB.LINQPad
 				case ProviderName.DB2          :
 				case ProviderName.DB2LUW       :
 				case ProviderName.DB2zOS       : yield return typeof(DB2Type).          Assembly.Location; break;
+				case ProviderName.Informix     : yield return typeof(InformixType).     Assembly.Location; break;
 				case ProviderName.Firebird     : yield return typeof(FirebirdType).     Assembly.Location; break;
 				case ProviderName.PostgreSQL   : yield return typeof(PostgreSQLType).   Assembly.Location; break;
 				case ProviderName.OracleNative : yield return typeof(OracleNativeType). Assembly.Location; break;
