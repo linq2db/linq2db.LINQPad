@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Xml.Linq;
 
 using LinqToDB.Extensions;
@@ -196,46 +197,61 @@ namespace LinqToDB.LINQPad
 
 		static XElement FormatValue(Total total, object value)
 		{
-			if (IsNull(value))
-				return new XElement("td", new XAttribute("style", "text-align:center;"), new XElement("i", "null"));
-
-			NumberFormatter nf;
-
-			if (_numberFormatters.TryGetValue(value.GetType(), out nf))
+			try
 			{
-				nf.AddTotal(total, value);
-				return new XElement("td", new XAttribute("class", "n"), value);
+				if (IsNull(value))
+					return new XElement("td", new XAttribute("style", "text-align:center;"), new XElement("i", "null"));
+
+				NumberFormatter nf;
+
+				if (_numberFormatters.TryGetValue(value.GetType(), out nf))
+				{
+					nf.AddTotal(total, value);
+					return new XElement("td", new XAttribute("class", "n"), value);
+				}
+
+				ValueFormatter vf;
+
+				if (_valueFormatters.TryGetValue(value.GetType(), out vf))
+				{
+					var list = new List<object>();
+
+					if (vf.NoWrap)
+						list.Add(new XAttribute("nowrap", "nowrap"));
+
+					var style = "";
+
+					if (vf.Font != null) style += $"font-family:{vf.Font};";
+					if (vf.Size != null) style += $"font-size:{vf.Size};";
+
+					if (style.Length > 0)
+						list.Add(new XAttribute("style",  style));
+
+					list.Add(vf.FormatValue(value));
+
+					return new XElement("td", list.ToArray());
+				}
+
+				return new XElement("td", value.ToString());
 			}
-
-			ValueFormatter vf;
-
-			if (_valueFormatters.TryGetValue(value.GetType(), out vf))
+			catch (Exception ex)
 			{
-				var list = new List<object>();
-
-				if (vf.NoWrap)
-					list.Add(new XAttribute("nowrap", "nowrap"));
-
-				var style = "";
-
-				if (vf.Font != null) style += $"font-family:{vf.Font};";
-				if (vf.Size != null) style += $"font-size:{vf.Size};";
-
-				if (style.Length > 0)
-					list.Add(new XAttribute("style",  style));
-
-				list.Add(vf.FormatValue(value));
-
-				return new XElement("td", list.ToArray());
+				return new XElement("td",
+					new XAttribute("style", "color:red"),
+					ex.Message);
 			}
-
-			return new XElement("td", value);
 		}
 
 		public static object FormatValue(object value, ObjectGraphInfo info)
 		{
 			if (IsNull(value))
 				return Util.RawHtml(new XElement("span", new XAttribute("style", "text-align:center;"), new XElement("i", "null")));
+
+			if (value is IBM.Data.DB2Types.DB2Xml)
+			{
+				var doc = XDocument.Parse(((IBM.Data.DB2Types.DB2Xml)value).GetString());
+				return doc;
+			}
 
 			NumberFormatter nf;
 
@@ -267,16 +283,37 @@ namespace LinqToDB.LINQPad
 				: dt.ToString("yyyy-MM-dd HH:mm:ss");
 		}
 
+		static string Format(byte[] value)
+		{
+			var sb = new StringBuilder($" Len:{value.Length} ");
+
+			int i;
+
+			for (i = 0; i < value.Length && i < 10; i++)
+				sb.Append($"{value[i]:X}:");
+
+			if (i > 0)
+				sb.Length--;
+
+			if (i < value.Length)
+				sb.Append("...");
+
+			return sb.ToString();
+		}
+
 		static readonly Dictionary<Type,ValueFormatter> _valueFormatters = new Dictionary<Type, ValueFormatter>(new[]
 		{
 			VF                                     <DateTime>(      Format),
 			VF             <System.Data.SqlTypes.SqlDateTime>(dt => Format(dt.Value)),
 			VF       <Oracle.DataAccess.Types.OracleDate>    (dt => Format(dt.Value)),
 			VF<Oracle.ManagedDataAccess.Types.OracleDate>    (dt => Format(dt.Value)),
-			VF              <MySql.Data.Types.MySqlDateTime> (dt => Format(dt.Value)),
+			VF               <MySql.Data.Types.MySqlDateTime>(dt => Format(dt.Value)),
 			VF                   <NpgsqlTypes.NpgsqlDateTime>(dt => Format((DateTime)dt)),
 			VF                <IBM.Data.DB2Types.DB2DateTime>(dt => Format(dt.Value)),
 			VF                <IBM.Data.DB2Types.DB2Date>    (dt => Format(dt.Value)),
+
+			VF<byte[]>(Format),
+			VF<IBM.Data.DB2Types.DB2Blob>(v => Format(v.Value)),
 
 			VF<                        Guid>(v => v.      ToString("B").ToUpper(), font:"consolas", size:"110%"),
 			VF<System.Data.SqlTypes.SqlGuid>(v => v.Value.ToString("B").ToUpper(), font:"consolas", size:"110%"),
@@ -311,7 +348,7 @@ namespace LinqToDB.LINQPad
 			NF<IBM.Data.DB2Types.DB2Int16,       Int64>     (value => v => v + value.Value,            v => n => v / n),
 			NF<IBM.Data.DB2Types.DB2Int32,       Int64>     (value => v => v + value.Value,            v => n => v / n),
 			NF<IBM.Data.DB2Types.DB2Int64,       Int64>     (value => v => v + value.Value,            v => n => v / n),
-			NF<IBM.Data.DB2Types.DB2Decimal>                (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
+			NF<IBM.Data.DB2Types.DB2Decimal,     Decimal>   (value => v => v + value.Value,            v => n => v / n),
 			NF<IBM.Data.DB2Types.DB2DecimalFloat,Decimal>   (value => v => v + value.Value,            v => n => v / n),
 			NF<IBM.Data.DB2Types.DB2Double,      Double>    (value => v => v + value.Value,            v => n => v / n),
 			NF<IBM.Data.DB2Types.DB2Real,        Double>    (value => v => v + value.Value,            v => n => v / n),

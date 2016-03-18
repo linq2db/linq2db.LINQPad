@@ -5,7 +5,6 @@ using System.Data.Common;
 using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Data.SqlServerCe;
-using System.Data.SQLite;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -21,6 +20,18 @@ using LINQPad.Extensibility.DataContext;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+
+using AccessType        = System.Data.OleDb.OleDbConnection;
+using DB2Type           = IBM.Data.DB2.DB2Connection;
+using FirebirdType      = FirebirdSql.Data.FirebirdClient.FbConnection;
+using PostgreSQLType    = Npgsql.NpgsqlConnection;
+using OracleNativeType  = Oracle.DataAccess.Client.OracleConnection;
+using OracleManagedType = Oracle.ManagedDataAccess.Client.OracleConnection;
+using MySqlType         = MySql.Data.MySqlClient.MySqlConnection;
+using SqlCeType         = System.Data.SqlServerCe.SqlCeConnection;
+using SQLiteType        = System.Data.SQLite.SQLiteConnection;
+using SqlServerType     = System.Data.SqlClient.SqlConnection;
+using SqlTypesType      = Microsoft.SqlServer.Types.SqlHierarchyId;
 
 namespace LinqToDB.LINQPad
 {
@@ -88,10 +99,18 @@ namespace LinqToDB.LINQPad
 
 				switch (providerName)
 				{
-					case ProviderName.Access   : cxInfo.DatabaseInfo.Provider = typeof(OleDbConnection). Namespace; break;
-					case ProviderName.SqlCe    : cxInfo.DatabaseInfo.Provider = typeof(SqlCeConnection). Namespace; break;
-					case ProviderName.SQLite   : cxInfo.DatabaseInfo.Provider = typeof(SQLiteConnection).Namespace; break;
-					case ProviderName.SqlServer: cxInfo.DatabaseInfo.Provider = typeof(SqlConnection).   Namespace; break;
+					case ProviderName.Access       : cxInfo.DatabaseInfo.Provider = typeof(AccessType).       Namespace; break;
+					case ProviderName.DB2          :
+					case ProviderName.DB2LUW       :
+					case ProviderName.DB2zOS       : cxInfo.DatabaseInfo.Provider = typeof(DB2Type).          Namespace; break;
+					case ProviderName.Firebird     : cxInfo.DatabaseInfo.Provider = typeof(FirebirdType).     Namespace; break;
+					case ProviderName.PostgreSQL   : cxInfo.DatabaseInfo.Provider = typeof(PostgreSQLType).   Namespace; break;
+					case ProviderName.OracleNative : cxInfo.DatabaseInfo.Provider = typeof(OracleNativeType). Namespace; break;
+					case ProviderName.OracleManaged: cxInfo.DatabaseInfo.Provider = typeof(OracleManagedType).Namespace; break;
+					case ProviderName.MySql        : cxInfo.DatabaseInfo.Provider = typeof(MySqlType).        Namespace; break;
+					case ProviderName.SqlCe        : cxInfo.DatabaseInfo.Provider = typeof(SqlCeType).        Namespace; break;
+					case ProviderName.SQLite       : cxInfo.DatabaseInfo.Provider = typeof(SQLiteType).       Namespace; break;
+					case ProviderName.SqlServer    : cxInfo.DatabaseInfo.Provider = typeof(SqlServerType).    Namespace; break;
 				}
 
 				try
@@ -229,12 +248,30 @@ namespace LinqToDB.LINQPad
 
 		public override IEnumerable<string> GetAssembliesToAdd(IConnectionInfo cxInfo)
 		{
-			return new[]
+			yield return typeof(IDbConnection).        Assembly.Location;
+			yield return typeof(DataConnection).       Assembly.Location;
+			yield return typeof(LINQPadDataConnection).Assembly.Location;
+
+			var providerName = (string)cxInfo.DriverData.Element("providerName");
+
+			switch (providerName)
 			{
-				typeof(IDbConnection).        Assembly.Location,
-				typeof(DataConnection).       Assembly.Location,
-				typeof(LINQPadDataConnection).Assembly.Location,
-			};
+				case ProviderName.Access       : yield return typeof(AccessType).       Assembly.Location; break;
+				case ProviderName.DB2          :
+				case ProviderName.DB2LUW       :
+				case ProviderName.DB2zOS       : yield return typeof(DB2Type).          Assembly.Location; break;
+				case ProviderName.Firebird     : yield return typeof(FirebirdType).     Assembly.Location; break;
+				case ProviderName.PostgreSQL   : yield return typeof(PostgreSQLType).   Assembly.Location; break;
+				case ProviderName.OracleNative : yield return typeof(OracleNativeType). Assembly.Location; break;
+				case ProviderName.OracleManaged: yield return typeof(OracleManagedType).Assembly.Location; break;
+				case ProviderName.MySql        : yield return typeof(MySqlType).        Assembly.Location; break;
+				case ProviderName.SqlCe        : yield return typeof(SqlCeType).        Assembly.Location; break;
+				case ProviderName.SQLite       : yield return typeof(SQLiteType).       Assembly.Location; break;
+				case ProviderName.SqlServer    :
+					yield return typeof(SqlServerType).Assembly.Location;
+					yield return typeof(SqlTypesType). Assembly.Location;
+					break;
+			}
 		}
 
 		public override IEnumerable<string> GetNamespacesToAdd(IConnectionInfo cxInfo)
