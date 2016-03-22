@@ -61,6 +61,7 @@ namespace LinqToDB.LINQPad
 			Code
 				.AppendLine("using System;")
 				.AppendLine("using System.Collections;")
+				.AppendLine("using System.Collections.Generic;")
 				.AppendLine("using LinqToDB;")
 				.AppendLine("using LinqToDB.Data;")
 				.AppendLine("using LinqToDB.Mapping;")
@@ -181,9 +182,12 @@ namespace LinqToDB.LINQPad
 #endif
 		}
 
-		ExplorerItem GetTables(string header, ExplorerIcon icon, IEnumerable<TableSchema> tables)
+		ExplorerItem GetTables(string header, ExplorerIcon icon, IEnumerable<TableSchema> tableSource)
 		{
-			return new ExplorerItem(header, ExplorerItemKind.Category, icon)
+			var tables = tableSource.ToList();
+			var dic    = new Dictionary<TableSchema,ExplorerItem>();
+
+			var items = new ExplorerItem(header, ExplorerItemKind.Category, icon)
 			{
 				Children = tables
 					.Select(t =>
@@ -211,7 +215,7 @@ namespace LinqToDB.LINQPad
 							t.SchemaName == null ? null : (string)_sqlBuilder.Convert(t.SchemaName, ConvertType.NameToOwner),
 							(string)_sqlBuilder.Convert(t.TableName,  ConvertType.NameToQueryTable)).ToString();
 
-						Debug.WriteLine($"Table: [{t.SchemaName}].[{t.TableName}] - ${tableSqlName}");
+						//Debug.WriteLine($"Table: [{t.SchemaName}].[{t.TableName}] - ${tableSqlName}");
 
 						var ret = new ExplorerItem(memberName, ExplorerItemKind.QueryableObject, icon)
 						{
@@ -252,14 +256,79 @@ namespace LinqToDB.LINQPad
 								.ToList()
 						};
 
+						foreach (var key in t.ForeignKeys)
+						{
+							_classCode
+								.Append( "    [Association(")
+								.Append($"ThisKey=\"{string.Join(", ", (from c in key.ThisColumns select c.MemberName).ToArray())}\"")
+								.Append($", OtherKey=\"{string.Join(", ", (from c in key.OtherColumns select c.MemberName).ToArray())}\"")
+								.Append($", CanBeNull={(key.CanBeNull ? "true" : "false")}")
+								;
+
+								if (key.BackReference != null)
+								{
+									if (!string.IsNullOrEmpty(key.KeyName))
+										_classCode.Append($", KeyName=\"{key.KeyName}\"");
+									if (!string.IsNullOrEmpty(key.BackReference.KeyName))
+										_classCode.Append($", BackReferenceName=\"{key.BackReference.MemberName}\"");
+								}
+								else
+								{
+									_classCode.Append(", IsBackReference=true");
+								}
+
+							_classCode.AppendLine(")]");
+
+							var typeName = key.AssociationType == AssociationType.OneToMany
+								? $"List<{key.OtherTable.TypeName}>"
+								: key.OtherTable.TypeName;
+
+							_classCode.AppendLine($"    public {typeName} @{key.MemberName} {{ get; set; }}");
+						}
+
 						_classCode
 							.AppendLine("  }")
 							;
+
+						dic[t] = ret;
 
 						return ret;
 					})
 					.ToList()
 			};
+
+			foreach (var table in tables)
+			{
+				var entry = dic[table];
+
+				foreach (var key in table.ForeignKeys)
+				{
+					var typeName = key.AssociationType == AssociationType.OneToMany
+						? $"List<{key.OtherTable.TypeName}>"
+						: key.OtherTable.TypeName;
+
+					entry.Children.Add(
+						new ExplorerItem(
+							key.MemberName,
+							key.AssociationType == AssociationType.OneToMany
+								? ExplorerItemKind.CollectionLink
+								: ExplorerItemKind.ReferenceLink,
+							key.AssociationType == AssociationType.OneToMany
+								? ExplorerIcon.OneToMany
+								: key.AssociationType == AssociationType.ManyToOne
+									? ExplorerIcon.ManyToOne
+									: ExplorerIcon.OneToOne)
+						{
+							DragText        = key.MemberName,
+							ToolTipText     = typeName + (key.BackReference == null ? " // Back Reference" : ""),
+							SqlName         = key.KeyName,
+							IsEnumerable    = key.AssociationType == AssociationType.OneToMany,
+							HyperlinkTarget = dic[key.OtherTable],
+						});
+				}
+			}
+
+			return items;
 		}
 
 		string GetName(HashSet<string> names, string proposedName)
@@ -302,6 +371,16 @@ namespace LinqToDB.LINQPad
 					//Debug.WriteLine($"{table.TypeName}.{column.MemberName}");
 
 					column.MemberName = GetName(classMemberNames, column.MemberName);
+				}
+
+				foreach (var key in table.ForeignKeys)
+				{
+					if (!_cxInfo.DynamicSchemaOptions.NoPluralization)
+						key.MemberName = key.AssociationType == AssociationType.OneToMany
+							? Pluralization.ToPlural  (key.MemberName)
+							: Pluralization.ToSingular(key.MemberName);
+
+					key.MemberName = GetName(classMemberNames, key.MemberName);
 				}
 			}
 		}
