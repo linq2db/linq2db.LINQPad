@@ -2,6 +2,7 @@
 using System.Diagnostics;
 
 using LinqToDB.Data;
+using LinqToDB.DataProvider.Firebird;
 
 using LINQPad.Extensibility.DataContext;
 
@@ -21,19 +22,25 @@ namespace LinqToDB.LINQPad
 
 		public LINQPadDataConnection()
 		{
-			TurnTraceSwitchOn();
+			Init();
 		}
 
-		public LINQPadDataConnection(string provaderName, string connectionString)
-			: base(provaderName, connectionString)
+		public LINQPadDataConnection(string providerName, string connectionString)
+			: base(providerName, connectionString)
 		{
-			TurnTraceSwitchOn();
+			Init();
 		}
 
 		public LINQPadDataConnection(IConnectionInfo cxInfo)
 			: base((string)cxInfo.DriverData.Element("providerName"), cxInfo.DatabaseInfo.CustomCxString)
 		{
+			Init();
+		}
+
+		static void Init()
+		{
 			TurnTraceSwitchOn();
+			FirebirdSqlBuilder.IdentifierQuoteMode = FirebirdIdentifierQuoteMode.Auto;
 		}
 	}
 }

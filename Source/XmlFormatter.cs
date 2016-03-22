@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -274,6 +275,11 @@ namespace LinqToDB.LINQPad
 					new XAttribute("style", style),
 					vf.FormatValue(value)));
 			}
+
+			if (value is Microsoft.SqlServer.Types.SqlHierarchyId)
+				return value.ToString();
+
+			//Debug.WriteLine($"{value.GetType()}: {value} {IsValue(value)}");
 
 			return IsValue(value) ? Util.RawHtml(new XElement("span", value)) : value;
 		}

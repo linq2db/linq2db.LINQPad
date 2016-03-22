@@ -369,10 +369,9 @@ namespace LinqToDB.LINQPad
 
 		public override void PreprocessObjectToWrite (ref object objectToWrite, ObjectGraphInfo info)
 		{
-			if (_useCustomFormatter)
-				objectToWrite = XmlFormatter.Format(_mappingSchema, objectToWrite);
-			else
-				objectToWrite = XmlFormatter.FormatValue(objectToWrite, info);
+			objectToWrite = _useCustomFormatter
+				? XmlFormatter.Format(_mappingSchema, objectToWrite)
+				: XmlFormatter.FormatValue(objectToWrite, info);
 		}
 	}
 }

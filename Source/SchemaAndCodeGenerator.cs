@@ -190,42 +190,50 @@ namespace LinqToDB.LINQPad
 					{
 						var memberName = _contextMembers[t];
 
-						Code.AppendLine($"    public ITable<{t.TypeName}> {memberName} {{ get {{ return this.GetTable<{t.TypeName}>(); }} }}");
+						Code.AppendLine($"    public ITable<@{t.TypeName}> @{memberName} {{ get {{ return this.GetTable<@{t.TypeName}>(); }} }}");
 
-						_classCode.Append($"  [Table(Name=\"{t.TableName}\"");
+						_classCode
+							.AppendLine()
+							.Append($"  [Table(Name=\"{t.TableName}\"");
 
 						if (!string.IsNullOrEmpty(t.SchemaName))
 							_classCode.Append($", Schema=\"{t.SchemaName}\"");
 
 						_classCode
 							.AppendLine( "  )]")
-							.AppendLine($"  public class {t.TypeName}")
+							.AppendLine($"  public class @{t.TypeName}")
 							.AppendLine( "  {")
 							;
+
+						var tableSqlName = _sqlBuilder.BuildTableName(
+							new StringBuilder(),
+							null,
+							t.SchemaName == null ? null : (string)_sqlBuilder.Convert(t.SchemaName, ConvertType.NameToOwner),
+							(string)_sqlBuilder.Convert(t.TableName,  ConvertType.NameToQueryTable)).ToString();
+
+						Debug.WriteLine($"Table: [{t.SchemaName}].[{t.TableName}] - ${tableSqlName}");
 
 						var ret = new ExplorerItem(memberName, ExplorerItemKind.QueryableObject, icon)
 						{
 							DragText     = memberName,
 							ToolTipText  = $"ITable<{t.TypeName}>",
-							SqlName      = _sqlBuilder.BuildTableName(
-								new StringBuilder(),
-								null,
-								t.SchemaName == null ? null : (string)_sqlBuilder.Convert(t.SchemaName, ConvertType.NameToOwner),
-								(string)_sqlBuilder.Convert(t.TableName,  ConvertType.NameToQueryTable)).ToString(),
+							SqlName      = tableSqlName,
 							IsEnumerable = true,
 							Children     = t.Columns
 								.Select(c =>
 								{
 									_classCode
-										.AppendLine($"    [Column(\"{c.ColumnName}\")]")
-										.AppendLine(c.IsNullable ? "    [Nullable]" : "    [NotNull]");
+										.Append($"    [Column(\"{c.ColumnName}\"), ")
+										.Append(c.IsNullable ? "Nullable" : "NotNull");
 
-									if (c.IsPrimaryKey) _classCode.AppendLine($"   [PrimaryKey({c.PrimaryKeyOrder})]");
-									if (c.IsIdentity)   _classCode.AppendLine("    [Identity]");
+									if (c.IsPrimaryKey) _classCode.Append($", PrimaryKey({c.PrimaryKeyOrder})");
+									if (c.IsIdentity)   _classCode.Append(", Identity");
+
+									_classCode.AppendLine("]");
 
 									var memberType = UseProviderSpecificTypes ? (c.ProviderSpecificType ?? c.MemberType) : c.MemberType;
 
-									_classCode.AppendLine($"    public {memberType} {c.MemberName} {{ get; set; }}");
+									_classCode.AppendLine($"    public {memberType} @{c.MemberName} {{ get; set; }}");
 
 									var sqlName = (string)_sqlBuilder.Convert(c.ColumnName, ConvertType.NameToQueryField);
 
@@ -245,7 +253,7 @@ namespace LinqToDB.LINQPad
 						};
 
 						_classCode
-							.AppendLine("}")
+							.AppendLine("  }")
 							;
 
 						return ret;
@@ -254,21 +262,9 @@ namespace LinqToDB.LINQPad
 			};
 		}
 
-		static readonly HashSet<string> _keyWords = new HashSet<string>
-		{
-			"abstract", "as",       "base",     "bool",    "break",     "byte",     "case",       "catch",     "char",    "checked",
-			"class",    "const",    "continue", "decimal", "default",   "delegate", "do",         "double",    "else",    "enum",
-			"event",    "explicit", "extern",   "false",   "finally",   "fixed",    "float",      "for",       "foreach", "goto",
-			"if",       "implicit", "in",       "int",     "interface", "internal", "is",         "lock",      "long",    "new",
-			"null",     "object",   "operator", "out",     "override",  "params",   "private",    "protected", "public",  "readonly",
-			"ref",      "return",   "sbyte",    "sealed",  "short",     "sizeof",   "stackalloc", "static",    "struct",  "switch",
-			"this",     "throw",    "true",     "try",     "typeof",    "uint",     "ulong",      "unchecked", "unsafe",  "ushort",
-			"using",    "virtual",  "volatile", "void",    "while"
-		};
-
 		string GetName(HashSet<string> names, string proposedName)
 		{
-			var name = proposedName;
+			var name = proposedName = ConvertToCompilable(proposedName);
 			var n    = 0;
 
 			while (names.Contains(name))
@@ -288,7 +284,7 @@ namespace LinqToDB.LINQPad
 
 			foreach (var table in _schema.Tables)
 			{
-				table.TypeName = GetName(typeNames, ConvertToCompilable(table.TypeName));
+				table.TypeName = GetName(typeNames, table.TypeName);
 
 				{
 					var contextMemberName = table.TypeName;
@@ -299,15 +295,13 @@ namespace LinqToDB.LINQPad
 					_contextMembers[table] = GetName(contextMemberNames, contextMemberName);
 				}
 
+				var classMemberNames = new HashSet<string> { table.TypeName };
+
 				foreach (var column in table.Columns)
 				{
-					column.MemberName = ConvertToCompilable(column.MemberName);
+					//Debug.WriteLine($"{table.TypeName}.{column.MemberName}");
 
-					if (_keyWords.Contains(column.MemberName))
-						column.MemberName = "@" + column.MemberName;
-
-					if (column.MemberName == table.TypeName)
-						column.MemberName += "_Column";
+					column.MemberName = GetName(classMemberNames, column.MemberName);
 				}
 			}
 		}
