@@ -4,11 +4,13 @@ using System.Data.Entity.Design.PluralizationServices;
 using System.Globalization;
 using System.Linq;
 
+using CodeJam;
+
 namespace LinqToDB.LINQPad
 {
 	static class Pluralization
 	{
-		static PluralizationService _service = PluralizationService.CreateService(CultureInfo.GetCultureInfo("en"));
+		static readonly PluralizationService _service = PluralizationService.CreateService(CultureInfo.GetCultureInfo("en"));
 
 		static readonly Dictionary<string,string> _dictionary = new Dictionary<string,string>
 		{
@@ -55,7 +57,7 @@ namespace LinqToDB.LINQPad
 
 		static string GetLastWord(string str)
 		{
-			if (string.IsNullOrWhiteSpace(str))
+			if (str.IsNullOrWhiteSpace())
 				return string.Empty;
 
 			var i       = str.Length - 1;

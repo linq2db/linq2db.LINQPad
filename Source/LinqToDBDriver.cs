@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Data.OleDb;
 using System.Data.SqlClient;
-using System.Data.SqlServerCe;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+
+using CodeJam;
+
+using JetBrains.Annotations;
 
 using LinqToDB.Common;
 using LinqToDB.Data;
@@ -38,6 +40,7 @@ using SapHanaType       = Sap.Data.Hana.HanaConnection;
 
 namespace LinqToDB.LINQPad
 {
+	[UsedImplicitly]
 	public class LinqToDBDriver : DynamicDataContextDriver
 	{
 		public override string Name   => "LINQ to DB";
@@ -81,7 +84,7 @@ namespace LinqToDB.LINQPad
 			model.Pluralize                = !cxInfo.DynamicSchemaOptions.NoPluralization;
 			model.Capitalize               = !cxInfo.DynamicSchemaOptions.NoCapitalization;
 			model.IncludeRoutines          = !cxInfo.DynamicSchemaOptions.ExcludeRoutines;
-			model.ConnectionString         = string.IsNullOrWhiteSpace(cxInfo.DatabaseInfo.CustomCxString) ? (string)cxInfo.DriverData.Element("connectionString") : cxInfo.DatabaseInfo.CustomCxString;
+			model.ConnectionString         = cxInfo.DatabaseInfo.CustomCxString.IsNullOrWhiteSpace() ? (string)cxInfo.DriverData.Element("connectionString") : cxInfo.DatabaseInfo.CustomCxString;
 			model.IncludeSchemas           = cxInfo.DriverData.Element("includeSchemas")          ?.Value;
 			model.ExcludeSchemas           = cxInfo.DriverData.Element("excludeSchemas")          ?.Value;
 			model.UseProviderSpecificTypes = cxInfo.DriverData.Element("useProviderSpecificTypes")?.Value.ToLower() == "true";
@@ -95,8 +98,8 @@ namespace LinqToDB.LINQPad
 
 				cxInfo.DriverData.SetElementValue("providerName",             providerName);
 				cxInfo.DriverData.SetElementValue("connectionString",         null);
-				cxInfo.DriverData.SetElementValue("includeSchemas",           string.IsNullOrWhiteSpace(model.IncludeSchemas) ? null : model.IncludeSchemas);
-				cxInfo.DriverData.SetElementValue("excludeSchemas",           string.IsNullOrWhiteSpace(model.ExcludeSchemas) ? null : model.ExcludeSchemas);
+				cxInfo.DriverData.SetElementValue("includeSchemas",           model.IncludeSchemas.IsNullOrWhiteSpace() ? null : model.IncludeSchemas);
+				cxInfo.DriverData.SetElementValue("excludeSchemas",           model.ExcludeSchemas.IsNullOrWhiteSpace() ? null : model.ExcludeSchemas);
 				cxInfo.DriverData.SetElementValue("useProviderSpecificTypes", model.UseProviderSpecificTypes ? "true" : null);
 				cxInfo.DriverData.SetElementValue("useCustomFormatter",       model.UseCustomFormatter       ? "true" : null);
 
@@ -140,7 +143,7 @@ namespace LinqToDB.LINQPad
 				cxInfo.DynamicSchemaOptions.ExcludeRoutines  = !model.IncludeRoutines;
 				cxInfo.Persist                               =  model.Persist;
 				cxInfo.IsProduction                          =  model.IsProduction;
-				cxInfo.DisplayName                           = string.IsNullOrWhiteSpace(model.Name) ? null : model.Name;
+				cxInfo.DisplayName                           =  model.Name.IsNullOrWhiteSpace() ? null : model.Name;
 
 				return true;
 			}
@@ -169,11 +172,16 @@ namespace LinqToDB.LINQPad
 
 			try
 			{
-				using (var db = new DataConnection(model.SelectedProvider?.Name, model.ConnectionString))
+				if (model.SelectedProvider != null)
 				{
-					var conn = db.Connection;
-					return null;
+					using (var db = new DataConnection(model.SelectedProvider?.Name, model.ConnectionString))
+					{
+						var conn = db.Connection;
+						return null;
+					}
 				}
+
+				throw new InvalidOperationException();
 			}
 			catch (Exception ex)
 			{
@@ -297,8 +305,9 @@ namespace LinqToDB.LINQPad
 		{
 			using (var db = new LINQPadDataConnection(cxInfo))
 			{
-				if (db.Connection is SqlConnection)
-					SqlConnection.ClearPool((SqlConnection)db.Connection);
+				var connection = db.Connection as SqlConnection;
+				if (connection != null)
+					SqlConnection.ClearPool(connection);
 			}
 		}
 

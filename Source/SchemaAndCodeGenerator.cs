@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
+using CodeJam;
+
 using LinqToDB.Data;
 using LinqToDB.DataProvider;
 using LinqToDB.SchemaProvider;
@@ -67,7 +69,7 @@ namespace LinqToDB.LINQPad
 				.AppendLine("using LinqToDB.Mapping;")
 				;
 
-			if (!string.IsNullOrWhiteSpace(_schema.ProviderSpecificTypeNamespace))
+			if (_schema.ProviderSpecificTypeNamespace.NotNullNorWhiteSpace())
 				Code.AppendLine($"using {_schema.ProviderSpecificTypeNamespace};");
 
 			switch (ProviderName)
@@ -141,10 +143,24 @@ namespace LinqToDB.LINQPad
 
 			var schemas =
 			(
-				from t in _schema.Tables
+				from t in
+					(
+						from t in _schema.Tables
+						select new { t.IsDefaultSchema, t.SchemaName, Table = t, Procedure = (ProcedureSchema)null }
+					)
+					.Union
+					(
+						from p in _schema.Procedures
+						select new { p.IsDefaultSchema, p.SchemaName, Table = (TableSchema)null, Procedure = p }
+					)
 				group t by new { t.IsDefaultSchema, t.SchemaName } into gr
 				orderby !gr.Key.IsDefaultSchema, gr.Key.SchemaName
-				select new { gr.Key, Items = gr.ToList() }
+				select new
+				{
+					gr.Key,
+					Tables     = gr.Where(t => t.Table     != null).Select(t => t.Table).    ToList(),
+					Procedures = gr.Where(t => t.Procedure != null).Select(t => t.Procedure).ToList(),
+				}
 			)
 			.ToList();
 
@@ -152,23 +168,30 @@ namespace LinqToDB.LINQPad
 			{
 				var items = new List<ExplorerItem>();
 
-				if (s.Items.Any(t => !t.IsView && !t.IsProcedureResult))
-					items.Add(GetTables("Tables", ExplorerIcon.Table, s.Items.Where(t => !t.IsView && !t.IsProcedureResult)));
+				if (s.Tables.Any(t => !t.IsView && !t.IsProcedureResult))
+					items.Add(GetTables("Tables", ExplorerIcon.Table, s.Tables.Where(t => !t.IsView && !t.IsProcedureResult)));
 
-				if (s.Items.Any(t => t.IsView))
-					items.Add(GetTables("Views", ExplorerIcon.View, s.Items.Where(t => t.IsView)));
+				if (s.Tables.Any(t => t.IsView))
+					items.Add(GetTables("Views", ExplorerIcon.View, s.Tables.Where(t => t.IsView)));
+
+				if (s.Procedures.Any())
+					items.Add(GetProcedures("Stored Procs", ExplorerIcon.StoredProc, s.Procedures));
 
 				if (schemas.Count == 1)
+				{
 					foreach (var item in items)
 						yield return item;
+				}
 				else
+				{
 					yield return new ExplorerItem(
-						string.IsNullOrEmpty(s.Key.SchemaName) ? s.Key.IsDefaultSchema ? "(default)" : "empty" : s.Key.SchemaName,
+						s.Key.SchemaName.IsNullOrEmpty() ? s.Key.IsDefaultSchema ? "(default)" : "empty" : s.Key.SchemaName,
 						ExplorerItemKind.Schema,
 						ExplorerIcon.Schema)
 					{
 						Children = items
 					};
+				}
 			}
 
 			Code
@@ -180,6 +203,26 @@ namespace LinqToDB.LINQPad
 #if DEBUG
 			Debug.WriteLine(Code.ToString());
 #endif
+		}
+
+		ExplorerItem GetProcedures(string header, ExplorerIcon icon, List<ProcedureSchema> procedures)
+		{
+			var items = new ExplorerItem(header, ExplorerItemKind.Category, icon)
+			{
+				Children = procedures
+					.Select(p =>
+					{
+						var ret = new ExplorerItem(p.MemberName, ExplorerItemKind.QueryableObject, icon)
+						{
+						
+						};
+
+						return ret;
+					})
+					.ToList(),
+			};
+
+			return items;
 		}
 
 		ExplorerItem GetTables(string header, ExplorerIcon icon, IEnumerable<TableSchema> tableSource)
@@ -200,7 +243,7 @@ namespace LinqToDB.LINQPad
 							.AppendLine()
 							.Append($"  [Table(Name=\"{t.TableName}\"");
 
-						if (!string.IsNullOrEmpty(t.SchemaName))
+						if (t.SchemaName.NotNullNorEmpty())
 							_classCode.Append($", Schema=\"{t.SchemaName}\"");
 
 						_classCode
@@ -267,9 +310,9 @@ namespace LinqToDB.LINQPad
 
 								if (key.BackReference != null)
 								{
-									if (!string.IsNullOrEmpty(key.KeyName))
+									if (key.KeyName.NotNullNorEmpty())
 										_classCode.Append($", KeyName=\"{key.KeyName}\"");
-									if (!string.IsNullOrEmpty(key.BackReference.KeyName))
+									if (key.BackReference.KeyName.NotNullNorEmpty())
 										_classCode.Append($", BackReferenceName=\"{key.BackReference.MemberName}\"");
 								}
 								else
@@ -331,7 +374,7 @@ namespace LinqToDB.LINQPad
 			return items;
 		}
 
-		string GetName(HashSet<string> names, string proposedName)
+		static string GetName(HashSet<string> names, string proposedName)
 		{
 			var name = proposedName = ConvertToCompilable(proposedName);
 			var n    = 0;
@@ -383,9 +426,19 @@ namespace LinqToDB.LINQPad
 					key.MemberName = GetName(classMemberNames, key.MemberName);
 				}
 			}
+
+			foreach (var procedure in _schema.Procedures)
+			{
+				procedure.MemberName = GetName(typeNames, procedure.MemberName);
+
+				if (procedure.ResultTable != null && !_contextMembers.ContainsKey(procedure.ResultTable))
+				{
+					procedure.ResultTable.TypeName = GetName(typeNames, procedure.ResultTable.TypeName);
+				}
+			}
 		}
 
-		string ToCodeString(string text)
+		static string ToCodeString(string text)
 		{
 			return "\"" + text.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
 		}
@@ -394,7 +447,7 @@ namespace LinqToDB.LINQPad
 		{
 			var query =
 				from c in name
-				select char.IsLetterOrDigit(c) || c == '@' ? c : '_';
+				select c.IsLetterOrDigit() || c == '@' ? c : '_';
 
 			return new string(query.ToArray());
 		}
