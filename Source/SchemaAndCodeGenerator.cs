@@ -174,8 +174,11 @@ namespace LinqToDB.LINQPad
 				if (s.Tables.Any(t => t.IsView))
 					items.Add(GetTables("Views", ExplorerIcon.View, s.Tables.Where(t => t.IsView)));
 
-				if (s.Procedures.Any())
-					items.Add(GetProcedures("Stored Procs", ExplorerIcon.StoredProc, s.Procedures));
+				if (!_cxInfo.DynamicSchemaOptions.ExcludeRoutines && s.Procedures.Any(p => p.IsLoaded || p.IsFunction && !p.IsTableFunction))
+					items.Add(GetProcedures(
+						"Stored Procs",
+						ExplorerIcon.StoredProc,
+						s.Procedures.Where(p => p.IsLoaded || p.IsFunction && !p.IsTableFunction).ToList()));
 
 				if (schemas.Count == 1)
 				{
@@ -212,10 +215,66 @@ namespace LinqToDB.LINQPad
 				Children = procedures
 					.Select(p =>
 					{
+						var sprocSqlName = _sqlBuilder.BuildTableName(
+							new StringBuilder(),
+							null,
+							p.SchemaName == null ? null : (string)_sqlBuilder.Convert(p.SchemaName, ConvertType.NameToOwner),
+							(string)_sqlBuilder.Convert(p.ProcedureName,  ConvertType.NameToQueryTable)).ToString();
+
 						var ret = new ExplorerItem(p.MemberName, ExplorerItemKind.QueryableObject, icon)
 						{
-						
+							DragText = p.MemberName,
+							SqlName  = sprocSqlName,
+							Children = p.Parameters
+								.Select(pr => new ExplorerItem(
+									$"{pr.ParameterName} ({pr.ParameterType})",
+									ExplorerItemKind.Parameter,
+									ExplorerIcon.Parameter))
+								.ToList(),
 						};
+
+						Code.AppendLine();
+
+						if (p.IsTableFunction)
+						{
+							Code.Append($"    [Sql.TableFunction(Name=\"{p.ProcedureName}\"");
+
+							if (p.SchemaName != null)
+								Code.Append($", Schema=\"{p.SchemaName}\")");
+
+							Code
+								.AppendLine("]")
+								.Append($"    public ITable<{p.ResultTable.TypeName}>")
+								;
+						}
+						else if (p.IsFunction)
+						{
+							Code
+								.AppendLine($"    [Sql.Function(Name=\"{sprocSqlName}\", ServerSideOnly=true)]")
+								.Append    ($"    public static {p.Parameters.Single(pr => pr.IsResult).ParameterType}");
+						}
+						else
+						{
+							var type = p.ResultTable == null ? "int" : $"IEnumerable<{p.ResultTable.TypeName}>";
+
+							Code.Append($"    public {type}");
+						}
+
+						Code
+							.Append($" {p.MemberName}(")
+							.Append(p.Parameters
+								.Where (pr => !pr.IsResult)
+								.Select(pr => $"{(pr.IsOut ? pr.IsIn ? "ref " : "out " : "")}{pr.ParameterType} {pr.ParameterName}")
+								.ToArray().Join(", "))
+							.AppendLine(")")
+							.AppendLine("    {")
+							;
+
+						Code.AppendLine("      throw new InvalidOperationException();");
+
+						Code
+							.AppendLine("    }")
+							;
 
 						return ret;
 					})
