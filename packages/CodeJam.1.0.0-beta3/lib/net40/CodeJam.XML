@@ -434,6 +434,36 @@
             State assertion
             </summary>
         </member>
+        <member name="M:CodeJam.Code.DisposedIf``1(System.Boolean,``0)">
+            <summary>
+            Assertion for object disposal
+            </summary>
+        </member>
+        <member name="M:CodeJam.Code.DisposedIf``1(System.Boolean,``0,System.String)">
+            <summary>
+            Assertion for object disposal
+            </summary>
+        </member>
+        <member name="M:CodeJam.Code.DisposedIf``1(System.Boolean,``0,System.String,System.Object[])">
+            <summary>
+            Assertion for object disposal
+            </summary>
+        </member>
+        <member name="M:CodeJam.Code.DisposedIfNull``2(``0,``1)">
+            <summary>
+            Assertion for object disposal
+            </summary>
+        </member>
+        <member name="M:CodeJam.Code.DisposedIfNull``2(``0,``1,System.String)">
+            <summary>
+            Assertion for object disposal
+            </summary>
+        </member>
+        <member name="M:CodeJam.Code.DisposedIfNull``2(``0,``1,System.String,System.Object[])">
+            <summary>
+            Assertion for object disposal
+            </summary>
+        </member>
         <member name="T:CodeJam.CodeExceptions">
             <summary>
             Exception factory class
@@ -479,7 +509,7 @@
             Creates <seealso cref="T:System.InvalidOperationException"/>
             </summary>
         </member>
-        <member name="M:CodeJam.CodeExceptions.UnexpectedValue(System.Object)">
+        <member name="M:CodeJam.CodeExceptions.UnexpectedValue``1(``0)">
             <summary>
             Creates <seealso cref="T:System.InvalidOperationException"/>.
             Used to be thrown from the default: switch clause
@@ -489,6 +519,16 @@
             <summary>
             Creates <seealso cref="T:System.InvalidOperationException"/>.
             Used to be thrown from default: switch clause
+            </summary>
+        </member>
+        <member name="M:CodeJam.CodeExceptions.ObjectDisposed(System.Type)">
+            <summary>
+            Throw this if the object is disposed.
+            </summary>
+        </member>
+        <member name="M:CodeJam.CodeExceptions.ObjectDisposed(System.Type,System.String,System.Object[])">
+            <summary>
+            Throw this if the object is disposed.
             </summary>
         </member>
         <member name="M:CodeJam.CodeExceptions.Unreachable(System.String,System.Object[])">
@@ -1249,6 +1289,20 @@
             <param name="childrenSelector">A function used to retrieve the children of an element.</param>
             <returns>
             A flat sequence of elements produced from the elements in the source hierarchy.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.TakeLast``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            Returns a specified number of contiguous elements from the end of a sequence.
+            </summary>
+            <remarks>
+            This operator uses deferred execution and streams its results.
+            </remarks>
+            <typeparam name="TSource">The type of the elements of <paramref name="source"/>.</typeparam>
+            <param name="source">The sequence to return the last element of.</param>
+            <param name="count">The number of elements to return.</param>
+            <returns>
+            An <see cref="T:System.Collections.Generic.IEnumerable`1"/> that contains the specified number of elements from the end of the input sequence.
             </returns>
         </member>
         <member name="M:CodeJam.Collections.EnumerableExtensions.Split``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
@@ -2202,12 +2256,6 @@
             <paramref name="dictionary"/>
             </summary>
         </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IReadOnlyDictionary{``0,``1},``0)">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or default(TValue) if key does not exists in
-            <paramref name="dictionary"/>
-            </summary>
-        </member>
         <member name="M:CodeJam.Collections.DictionaryExtensions.GetOrAdd``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1)">
             <summary>
               Adds a key/value pair to the <see cref="T:System.Collections.Generic.IDictionary`2"/> if the key does not already exist.
@@ -2271,6 +2319,11 @@
             <summary>
             Base class for temp file|directory objects.
             Contains logic to proof the removal will be performed even on resource leak.
+            </summary>
+        </member>
+        <member name="M:CodeJam.IO.TempData.TempBase.AssertNotDisposed">
+            <summary>
+            Assertion on object dispose
             </summary>
         </member>
         <member name="M:CodeJam.IO.TempData.TempBase.#ctor(System.String)">
@@ -2627,7 +2680,7 @@
             Reflection extension methods.
             </summary>
         </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsInstantiableType(System.Type)">
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsInstantiable(System.Type)">
             <summary>
             Gets a value indicating whether the <paramref name="type"/> can be instantiated.
             </summary>
@@ -3295,6 +3348,70 @@
             <returns>
             A <see cref="T:System.String"/> containing a fully qualified type name.
             </returns>
+        </member>
+        <member name="T:CodeJam.Threading.AsyncOperationHelper">
+            <summary>
+            Extension and utility methods for <see cref="T:System.ComponentModel.AsyncOperationManager"/> ans <see cref="T:System.ComponentModel.AsyncOperation"/>
+            </summary>
+        </member>
+        <member name="M:CodeJam.Threading.AsyncOperationHelper.CreateOperation">
+            <summary>
+            Returns an <see cref="T:System.ComponentModel.AsyncOperation"/> for tracking the duration of a particular asynchronous operation.
+            </summary>
+            <returns>
+            An <see cref="T:System.ComponentModel.AsyncOperation"/> that you can use to track the duration of an asynchronous method invocation.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Threading.AsyncOperationHelper.Post(System.ComponentModel.AsyncOperation,System.Action)">
+            <summary>
+            Invokes a <paramref name="runner"/> on the thread or context appropriate for the application model.
+            </summary>
+            <param name="asyncOp"></param>
+            <param name="runner">
+            A <see cref="T:System.Action"/> that wraps the delegate to be called when the operation ends.
+            </param>
+        </member>
+        <member name="M:CodeJam.Threading.AsyncOperationHelper.PostOperationCompleted(System.ComponentModel.AsyncOperation,System.Action)">
+            <summary>
+            Ends the lifetime of an asynchronous operation.
+            </summary>
+            <param name="asyncOp"></param>
+            <param name="runner">A <see cref="T:System.Action"/> that wraps the delegate to be called when the operation ends.</param>
+        </member>
+        <member name="M:CodeJam.Threading.AsyncOperationHelper.Send(System.ComponentModel.AsyncOperation,System.Action)">
+            <summary>
+            Invokes a <paramref name="runner"/> on the thread or context appropriate for the application model and waits for
+            it completion.
+            </summary>
+            <param name="asyncOp"></param>
+            <param name="runner">
+            A <see cref="T:System.Action"/> that wraps the delegate to be called when the operation ends.
+            </param>
+        </member>
+        <member name="M:CodeJam.Threading.AsyncOperationHelper.Send``1(System.ComponentModel.AsyncOperation,System.Func{``0})">
+            <summary>
+            Invokes a <paramref name="runner"/> on the thread or context appropriate for the application model and returns
+            result.
+            </summary>
+            <param name="asyncOp"></param>
+            <param name="runner">
+            A <see cref="T:System.Func`1"/> that wraps the delegate to be called when the operation ends.
+            </param>
+        </member>
+        <member name="M:CodeJam.Threading.AsyncOperationHelper.RunAsync(System.Action{System.ComponentModel.AsyncOperation})">
+            <summary>
+            Gets thread from pool and run <paramref name="runner"/> inside it.
+            </summary>
+            <param name="runner">Action to run inside created thread</param>
+        </member>
+        <member name="M:CodeJam.Threading.AsyncOperationHelper.RunAsync(System.Action{System.ComponentModel.AsyncOperation},System.Action)">
+            <summary>
+            Gets thread from pool and run <paramref name="runner"/> inside it.
+            </summary>
+            <param name="runner">Action to run inside created thread</param>
+            <param name="completeHandler">
+            Action called after <paramref name="runner"/> complete execution. Synchronized with method calling thread.
+            </param>
         </member>
         <member name="T:CodeJam.Threading.ConcurrentLazyDictionary`2">
             <summary>
