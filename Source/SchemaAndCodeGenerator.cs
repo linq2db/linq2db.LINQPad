@@ -64,7 +64,10 @@ namespace LinqToDB.LINQPad
 				.AppendLine("using System;")
 				.AppendLine("using System.Collections;")
 				.AppendLine("using System.Collections.Generic;")
+				.AppendLine("using System.Data;")
+				.AppendLine("using System.Reflection;")
 				.AppendLine("using LinqToDB;")
+				.AppendLine("using LinqToDB.Common;")
 				.AppendLine("using LinqToDB.Data;")
 				.AppendLine("using LinqToDB.Mapping;")
 				;
@@ -174,11 +177,23 @@ namespace LinqToDB.LINQPad
 				if (s.Tables.Any(t => t.IsView))
 					items.Add(GetTables("Views", ExplorerIcon.View, s.Tables.Where(t => t.IsView)));
 
-				if (!_cxInfo.DynamicSchemaOptions.ExcludeRoutines && s.Procedures.Any(p => p.IsLoaded || p.IsFunction && !p.IsTableFunction))
+				if (!_cxInfo.DynamicSchemaOptions.ExcludeRoutines && s.Procedures.Any(p => p.IsLoaded && !p.IsFunction))
 					items.Add(GetProcedures(
 						"Stored Procs",
 						ExplorerIcon.StoredProc,
-						s.Procedures.Where(p => p.IsLoaded || p.IsFunction && !p.IsTableFunction).ToList()));
+						s.Procedures.Where(p => p.IsLoaded && !p.IsFunction).ToList()));
+
+				if (s.Procedures.Any(p => p.IsLoaded && p.IsTableFunction))
+					items.Add(GetProcedures(
+						"Table Functions",
+						ExplorerIcon.TableFunction,
+						s.Procedures.Where(p => p.IsLoaded && p.IsTableFunction).ToList()));
+
+				if (s.Procedures.Any(p => p.IsFunction && !p.IsTableFunction))
+					items.Add(GetProcedures(
+						"Scalar Functions",
+						ExplorerIcon.ScalarFunction,
+						s.Procedures.Where(p => p.IsFunction && !p.IsTableFunction).ToList()));
 
 				if (schemas.Count == 1)
 				{
@@ -208,8 +223,183 @@ namespace LinqToDB.LINQPad
 #endif
 		}
 
+		void CodeProcedure(StringBuilder code, ProcedureSchema p, string sprocSqlName)
+		{
+			code.AppendLine();
+
+			if (p.IsTableFunction)
+			{
+				code.Append($"    [Sql.TableFunction(Name=\"{p.ProcedureName}\"");
+
+				if (p.SchemaName != null)
+					code.Append($", Schema=\"{p.SchemaName}\")");
+
+				code
+					.AppendLine("]")
+					.Append($"    public ITable<{p.ResultTable?.TypeName}>")
+					;
+			}
+			else if (p.IsFunction)
+			{
+				code
+					.AppendLine($"    [Sql.Function(Name=\"{sprocSqlName}\", ServerSideOnly=true)]")
+					.Append    ($"    public static {p.Parameters.Single(pr => pr.IsResult).ParameterType}");
+			}
+			else
+			{
+				var type = p.ResultTable == null ? "int" : $"IEnumerable<{p.ResultTable.TypeName}>";
+
+				code.Append($"    public {type}");
+			}
+
+			code
+				.Append($" {p.MemberName}(")
+				.Append(p.Parameters
+					.Where (pr => !pr.IsResult)
+					.Select(pr => $"{(pr.IsOut ? pr.IsIn ? "ref " : "out " : "")}{pr.ParameterType} {pr.ParameterName}")
+					.Join(", "))
+				.AppendLine(")")
+				.AppendLine("    {")
+				;
+
+			if (p.IsTableFunction)
+			{
+				code
+					.Append    ($"      return this.GetTable<{p.ResultTable?.TypeName}>(this, (MethodInfo)MethodBase.GetCurrentMethod()")
+					.AppendLine(p.Parameters.Count == 0 ? ");" : ",")
+					;
+
+				for (var i = 0; i < p.Parameters.Count; i++)
+					code.AppendLine($"        {p.Parameters[i].ParameterName}{(i + 1 == p.Parameters.Count ? ");" : ",")}");
+			}
+			else if (p.IsFunction)
+			{
+				code.AppendLine("      throw new InvalidOperationException();");
+			}
+			else
+			{
+				var spName = $"\"{sprocSqlName.Replace("\"", "\\\"")}\"";
+
+				var inputParameters  = p.Parameters.Where(pp => pp.IsIn). ToList();
+				var outputParameters = p.Parameters.Where(pp => pp.IsOut).ToList();
+
+				spName += inputParameters.Count == 0 ? ");" : ",";
+
+				var retName = "ret";
+				var retNo   = 0;
+
+				while (p.Parameters.Any(pp => pp.ParameterName == retName))
+					retName = "ret" + ++retNo;
+
+				var hasOut = outputParameters.Any(pr => pr.IsOut);
+				var prefix = hasOut ? $"var {retName} =" : "return";
+
+				if (p.ResultTable == null)
+				{
+					code.Append($"      {prefix} this.ExecuteProc({spName}");
+				}
+				else
+				{
+					var hashSet      = new HashSet<string>();
+					var hasDuplicate = false;
+
+					foreach (var column in p.ResultTable.Columns)
+					{
+						if (hashSet.Contains(column.ColumnName))
+						{
+							hasDuplicate = true;
+							break;
+						}
+
+						hashSet.Add(column.ColumnName);
+					}
+
+					if (hasDuplicate)
+					{
+						code.AppendLine( "      var ms = this.MappingSchema;");
+						code.AppendLine($"      {prefix} this.QueryProc(dataReader =>");
+						code.AppendLine($"        new {p.ResultTable.TypeName}");
+						code.AppendLine( "        {");
+
+						var n = 0;
+
+						foreach (var c in p.ResultTable.Columns)
+						{
+							code.AppendLine($"          {c.MemberName} = Converter.ChangeTypeTo<{c.MemberType}>(dataReader.GetValue({n++}), ms),");
+						}
+
+						code.AppendLine( "        },");
+						code.AppendLine($"        {spName}");
+					}
+					else
+					{
+						code.AppendLine($"      {prefix} this.QueryProc<{p.ResultTable.TypeName}>({spName}");
+					}
+				}
+
+				for (var i = 0; i < inputParameters.Count; i++)
+				{
+					var pr = inputParameters[i];
+
+					var str = $"        new DataParameter(\"{pr.SchemaName}\", {pr.ParameterName}, DataType.{pr.DataType})";
+
+					if (pr.IsOut)
+					{
+						str += " { Direction = " + (pr.IsIn ? "ParameterDirection.InputOutput" : "ParameterDirection.Output");
+
+						if (pr.Size != null && pr.Size.Value != 0)
+							str += ", Size = " + pr.Size.Value;
+
+						str += " }";
+					}
+
+					str += i + 1 == inputParameters.Count ? ");" : ",";
+
+					code.AppendLine(str);
+				}
+
+				if (hasOut)
+				{
+					code.AppendLine();
+
+					foreach (var pr in p.Parameters.Where(_ => _.IsOut))
+					{
+						var str = $"      {pr.ParameterName} = Converter.ChangeTypeTo<{pr.ParameterType}>(((IDbDataParameter)this.Command.Parameters[\"{pr.SchemaName}\"]).Value);";
+						code.AppendLine(str);
+					}
+
+					code
+						.AppendLine()
+						.AppendLine($"      return {retName};")
+						;
+				}
+			}
+
+			code.AppendLine("    }");
+		}
+
+		ExplorerItem GetColumnItem(ColumnSchema column)
+		{
+			var memberType = UseProviderSpecificTypes ? (column.ProviderSpecificType ?? column.MemberType) : column.MemberType;
+			var sqlName    = (string)_sqlBuilder.Convert(column.ColumnName, ConvertType.NameToQueryField);
+
+			return new ExplorerItem(
+				column.MemberName,
+				ExplorerItemKind.Property,
+				column.IsPrimaryKey ? ExplorerIcon.Key : ExplorerIcon.Column)
+			{
+				Text               = $"{column.MemberName} : {memberType}",
+				ToolTipText        = $"{sqlName} {column.ColumnType} {(column.IsNullable ? "NULL" : "NOT NULL")}{(column.IsIdentity ? " IDENTITY" : "")}",
+				DragText           = column.MemberName,
+				SqlName            = sqlName,
+				SqlTypeDeclaration = $"{column.ColumnType} {(column.IsNullable ? "NULL" : "NOT NULL")}{(column.IsIdentity ? " IDENTITY" : "")}",
+			};
+		}
+
 		ExplorerItem GetProcedures(string header, ExplorerIcon icon, List<ProcedureSchema> procedures)
 		{
+			var results = new HashSet<TableSchema>();
+
 			var items = new ExplorerItem(header, ExplorerItemKind.Category, icon)
 			{
 				Children = procedures
@@ -221,60 +411,45 @@ namespace LinqToDB.LINQPad
 							p.SchemaName == null ? null : (string)_sqlBuilder.Convert(p.SchemaName, ConvertType.NameToOwner),
 							(string)_sqlBuilder.Convert(p.ProcedureName,  ConvertType.NameToQueryTable)).ToString();
 
-						var ret = new ExplorerItem(p.MemberName, ExplorerItemKind.QueryableObject, icon)
+						var memberName = p.MemberName;
+
+						if (p.IsFunction && !p.IsTableFunction)
 						{
-							DragText = p.MemberName,
-							SqlName  = sprocSqlName,
-							Children = p.Parameters
-								.Select(pr => new ExplorerItem(
-									$"{pr.ParameterName} ({pr.ParameterType})",
-									ExplorerItemKind.Parameter,
-									ExplorerIcon.Parameter))
+							var res = p.Parameters.FirstOrDefault(pr => pr.IsResult);
+
+							if (res != null)
+								memberName += $" -> {res.ParameterType}";
+						}
+
+						var ret = new ExplorerItem(memberName, ExplorerItemKind.QueryableObject, icon)
+						{
+							DragText     = $"{p.MemberName}(" +
+								p.Parameters
+									.Where (pr => !pr.IsResult)
+									.Select(pr => $"{(pr.IsOut ? pr.IsIn ? "ref " : "out " : "")}{pr.ParameterName}")
+									.Join(", ") +
+								")",
+							SqlName      = sprocSqlName,
+							IsEnumerable = p.ResultTable != null,
+							Children     = p.Parameters
+								.Where (pr => !pr.IsResult)
+								.Select(pr =>
+									new ExplorerItem(
+										$"{pr.ParameterName} ({pr.ParameterType})",
+										ExplorerItemKind.Parameter,
+										ExplorerIcon.Parameter))
+								.Union(p.ResultTable?.Columns.Select(GetColumnItem) ?? new ExplorerItem[0])
 								.ToList(),
 						};
 
-						Code.AppendLine();
-
-						if (p.IsTableFunction)
+						if (p.ResultTable != null && !results.Contains(p.ResultTable))
 						{
-							Code.Append($"    [Sql.TableFunction(Name=\"{p.ProcedureName}\"");
+							results.Add(p.ResultTable);
 
-							if (p.SchemaName != null)
-								Code.Append($", Schema=\"{p.SchemaName}\")");
-
-							Code
-								.AppendLine("]")
-								.Append($"    public ITable<{p.ResultTable.TypeName}>")
-								;
-						}
-						else if (p.IsFunction)
-						{
-							Code
-								.AppendLine($"    [Sql.Function(Name=\"{sprocSqlName}\", ServerSideOnly=true)]")
-								.Append    ($"    public static {p.Parameters.Single(pr => pr.IsResult).ParameterType}");
-						}
-						else
-						{
-							var type = p.ResultTable == null ? "int" : $"IEnumerable<{p.ResultTable.TypeName}>";
-
-							Code.Append($"    public {type}");
+							CodeTable(Code, p.ResultTable, false);
 						}
 
-						Code
-							.Append($" {p.MemberName}(")
-							.Append(p.Parameters
-								.Where (pr => !pr.IsResult)
-								.Select(pr => $"{(pr.IsOut ? pr.IsIn ? "ref " : "out " : "")}{pr.ParameterType} {pr.ParameterName}")
-								.ToArray().Join(", "))
-							.AppendLine(")")
-							.AppendLine("    {")
-							;
-
-						Code.AppendLine("      throw new InvalidOperationException();");
-
-						Code
-							.AppendLine("    }")
-							;
+						CodeProcedure(Code, p, sprocSqlName);
 
 						return ret;
 					})
@@ -282,6 +457,74 @@ namespace LinqToDB.LINQPad
 			};
 
 			return items;
+		}
+
+		void CodeTable(StringBuilder classCode, TableSchema table, bool addTableAttribute)
+		{
+			classCode.AppendLine();
+
+			if (addTableAttribute)
+			{
+				classCode.Append($"  [Table(Name=\"{table.TableName}\"");
+
+				if (table.SchemaName.NotNullNorEmpty())
+					classCode.Append($", Schema=\"{table.SchemaName}\"");
+
+				classCode.AppendLine(")]");
+			}
+
+			classCode
+				.AppendLine($"  public class @{table.TypeName}")
+				.AppendLine( "  {")
+				;
+
+			foreach (var c in table.Columns)
+			{
+				classCode
+					.Append($"    [Column(\"{c.ColumnName}\"), ")
+					.Append(c.IsNullable ? "Nullable" : "NotNull");
+
+				if (c.IsPrimaryKey) classCode.Append($", PrimaryKey({c.PrimaryKeyOrder})");
+				if (c.IsIdentity)   classCode.Append(", Identity");
+
+				classCode.AppendLine("]");
+
+				var memberType = UseProviderSpecificTypes ? (c.ProviderSpecificType ?? c.MemberType) : c.MemberType;
+
+				classCode.AppendLine($"    public {memberType} @{c.MemberName} {{ get; set; }}");
+			}
+
+			foreach (var key in table.ForeignKeys)
+			{
+				classCode
+					.Append( "    [Association(")
+					.Append($"ThisKey=\"{(key.ThisColumns.Select(c => c.MemberName)).Join(", ")}\"")
+					.Append($", OtherKey=\"{(key.OtherColumns.Select(c => c.MemberName)).Join(", ")}\"")
+					.Append($", CanBeNull={(key.CanBeNull ? "true" : "false")}")
+					;
+
+				if (key.BackReference != null)
+				{
+					if (key.KeyName.NotNullNorEmpty())
+						classCode.Append($", KeyName=\"{key.KeyName}\"");
+					if (key.BackReference.KeyName.NotNullNorEmpty())
+						classCode.Append($", BackReferenceName=\"{key.BackReference.MemberName}\"");
+				}
+				else
+				{
+					classCode.Append(", IsBackReference=true");
+				}
+
+				classCode.AppendLine(")]");
+
+				var typeName = key.AssociationType == AssociationType.OneToMany
+					? $"List<{key.OtherTable.TypeName}>"
+					: key.OtherTable.TypeName;
+
+				classCode.AppendLine($"    public {typeName} @{key.MemberName} {{ get; set; }}");
+			}
+
+			classCode.AppendLine("  }");
 		}
 
 		ExplorerItem GetTables(string header, ExplorerIcon icon, IEnumerable<TableSchema> tableSource)
@@ -298,18 +541,7 @@ namespace LinqToDB.LINQPad
 
 						Code.AppendLine($"    public ITable<@{t.TypeName}> @{memberName} {{ get {{ return this.GetTable<@{t.TypeName}>(); }} }}");
 
-						_classCode
-							.AppendLine()
-							.Append($"  [Table(Name=\"{t.TableName}\"");
-
-						if (t.SchemaName.NotNullNorEmpty())
-							_classCode.Append($", Schema=\"{t.SchemaName}\"");
-
-						_classCode
-							.AppendLine( "  )]")
-							.AppendLine($"  public class @{t.TypeName}")
-							.AppendLine( "  {")
-							;
+						CodeTable(_classCode, t, true);
 
 						var tableSqlName = _sqlBuilder.BuildTableName(
 							new StringBuilder(),
@@ -325,72 +557,8 @@ namespace LinqToDB.LINQPad
 							ToolTipText  = $"ITable<{t.TypeName}>",
 							SqlName      = tableSqlName,
 							IsEnumerable = true,
-							Children     = t.Columns
-								.Select(c =>
-								{
-									_classCode
-										.Append($"    [Column(\"{c.ColumnName}\"), ")
-										.Append(c.IsNullable ? "Nullable" : "NotNull");
-
-									if (c.IsPrimaryKey) _classCode.Append($", PrimaryKey({c.PrimaryKeyOrder})");
-									if (c.IsIdentity)   _classCode.Append(", Identity");
-
-									_classCode.AppendLine("]");
-
-									var memberType = UseProviderSpecificTypes ? (c.ProviderSpecificType ?? c.MemberType) : c.MemberType;
-
-									_classCode.AppendLine($"    public {memberType} @{c.MemberName} {{ get; set; }}");
-
-									var sqlName = (string)_sqlBuilder.Convert(c.ColumnName, ConvertType.NameToQueryField);
-
-									return new ExplorerItem(
-										c.MemberName,
-										ExplorerItemKind.Property,
-										c.IsPrimaryKey ? ExplorerIcon.Key : ExplorerIcon.Column)
-									{
-										Text               = $"{c.MemberName} : {memberType}",
-										ToolTipText        = $"{sqlName} {c.ColumnType} {(c.IsNullable ? "NULL" : "NOT NULL")}{(c.IsIdentity ? " IDENTITY" : "")}",
-										DragText           = c.MemberName,
-										SqlName            = sqlName,
-										SqlTypeDeclaration = $"{c.ColumnType} {(c.IsNullable ? "NULL" : "NOT NULL")}{(c.IsIdentity ? " IDENTITY" : "")}",
-									};
-								})
-								.ToList()
+							Children     = t.Columns.Select(GetColumnItem).ToList()
 						};
-
-						foreach (var key in t.ForeignKeys)
-						{
-							_classCode
-								.Append( "    [Association(")
-								.Append($"ThisKey=\"{string.Join(", ", (from c in key.ThisColumns select c.MemberName).ToArray())}\"")
-								.Append($", OtherKey=\"{string.Join(", ", (from c in key.OtherColumns select c.MemberName).ToArray())}\"")
-								.Append($", CanBeNull={(key.CanBeNull ? "true" : "false")}")
-								;
-
-								if (key.BackReference != null)
-								{
-									if (key.KeyName.NotNullNorEmpty())
-										_classCode.Append($", KeyName=\"{key.KeyName}\"");
-									if (key.BackReference.KeyName.NotNullNorEmpty())
-										_classCode.Append($", BackReferenceName=\"{key.BackReference.MemberName}\"");
-								}
-								else
-								{
-									_classCode.Append(", IsBackReference=true");
-								}
-
-							_classCode.AppendLine(")]");
-
-							var typeName = key.AssociationType == AssociationType.OneToMany
-								? $"List<{key.OtherTable.TypeName}>"
-								: key.OtherTable.TypeName;
-
-							_classCode.AppendLine($"    public {typeName} @{key.MemberName} {{ get; set; }}");
-						}
-
-						_classCode
-							.AppendLine("  }")
-							;
 
 						dic[t] = ret;
 
@@ -493,6 +661,14 @@ namespace LinqToDB.LINQPad
 				if (procedure.ResultTable != null && !_contextMembers.ContainsKey(procedure.ResultTable))
 				{
 					procedure.ResultTable.TypeName = GetName(typeNames, procedure.ResultTable.TypeName);
+
+					var classMemberNames = new HashSet<string> { procedure.ResultTable.TypeName };
+
+					foreach (var column in procedure.ResultTable.Columns)
+					{
+						var memberName = column.MemberName.IsNullOrWhiteSpace() ? "Column" : column.MemberName;
+						column.MemberName = GetName(classMemberNames, memberName);
+					}
 				}
 			}
 		}

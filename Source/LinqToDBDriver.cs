@@ -217,7 +217,6 @@ namespace LinqToDB.LINQPad
 				options     : new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
 			using (var stream = new FileStream(assemblyToBuild.CodeBase, FileMode.Create))
-			//using (var stream = new MemoryStream())
 			{
 				var result = compilation.Emit(stream);
 
@@ -229,14 +228,6 @@ namespace LinqToDB.LINQPad
 					foreach (var diagnostic in failures)
 						throw new Exception(diagnostic.ToString());
 				}
-				//else
-				//{
-				//	stream.Seek(0, SeekOrigin.Begin);
-				//
-				//	var assembly = Assembly.Load(stream.ToArray());
-				//	var type     = assembly.GetType($"{nameSpace}.{typeName}");
-				//	var obj      = Activator.CreateInstance(type);
-				//}
 			}
 
 			return items;
