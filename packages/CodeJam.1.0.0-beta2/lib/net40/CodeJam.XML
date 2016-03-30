@@ -376,6 +376,24 @@
             <param name="h8">Hash code 8</param>
             <returns>Combined hash code</returns>
         </member>
+        <member name="M:CodeJam.HashCode.CombineValues``1(``0[])">
+            <summary>
+            Combines hash codes.
+            </summary>
+            <param name="values">The collection to combine hash codes.</param>
+            <returns>
+            Combined hash code.
+            </returns>
+        </member>
+        <member name="M:CodeJam.HashCode.CombineValues``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Combines hash codes.
+            </summary>
+            <param name="values">The sequence to combine hash codes.</param>
+            <returns>
+            Combined hash code.
+            </returns>
+        </member>
         <member name="T:CodeJam.Code">
             <summary>
             Assertions class.
@@ -1218,64 +1236,20 @@
             <exception cref="T:System.ArgumentNullException">
             <paramref name="array" /> is null.-or-<paramref name="match" /> is null.</exception>
         </member>
-        <member name="T:CodeJam.Collections.LazyDictionary">
-            <summary>
-            Provides static methods for <see cref="T:CodeJam.Collections.ILazyDictionary`2"/>.
-            </summary>
-        </member>
-        <member name="M:CodeJam.Collections.LazyDictionary.Create``2(System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``0},System.Boolean)">
-            <summary>
-            Creates implementation of <see cref="T:CodeJam.Collections.ILazyDictionary`2"/>.
-            </summary>
-            <typeparam name="TKey">Type of key</typeparam>
-            <typeparam name="TValue">Type of value</typeparam>
-            <param name="valueFactory">Function to create value on demand.</param>
-            <param name="comparer">Key comparer.</param>
-            <param name="threadSafe">If true, creates a thread safe impementation</param>
-            <returns><see cref="T:CodeJam.Collections.ILazyDictionary`2"/> implementation.</returns>
-        </member>
-        <member name="M:CodeJam.Collections.LazyDictionary.Create``2(System.Func{``0,``1},System.Boolean)">
-            <summary>
-            Creates implementation of <see cref="T:CodeJam.Collections.ILazyDictionary`2"/>.
-            </summary>
-            <typeparam name="TKey">Type of key</typeparam>
-            <typeparam name="TValue">Type of value</typeparam>
-            <param name="valueFactory">Function to create value on demand.</param>
-            <param name="threadSafe">If true, creates a thread safe impementation</param>
-            <returns><see cref="T:CodeJam.Collections.ILazyDictionary`2"/> implementation.</returns>
-        </member>
-        <member name="T:CodeJam.Collections.LazyDictionary`2">
-            <summary>
-            Dictionary with lazy values initialization.
-            </summary>
-        </member>
-        <member name="M:CodeJam.Collections.LazyDictionary`2.#ctor(System.Func{`0,`1},System.Collections.Generic.IEqualityComparer{`0})">
-            <summary>
-            Initialize instance.
-            </summary>
-            <param name="valueFactory">Function to create value on demand.</param>
-            <param name="comparer">Key comparer.</param>
-        </member>
-        <member name="M:CodeJam.Collections.LazyDictionary`2.#ctor(System.Func{`0,`1})">
-            <summary>
-            Initialize instance.
-            </summary>
-            <param name="valueFactory">Function to create value on demand.</param>
-        </member>
-        <member name="M:CodeJam.Collections.LazyDictionary`2.Get(`0)">
-            <summary>
-            Returns existing value associated to a key, or creates new.
-            </summary>
-        </member>
-        <member name="M:CodeJam.Collections.LazyDictionary`2.Clear">
-            <summary>
-            Clears all created values
-            </summary>
-        </member>
         <member name="T:CodeJam.Collections.EnumerableExtensions">
             <summary>
             Extensions for <see cref="T:System.Collections.Generic.IEnumerable`1"/>
             </summary>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.Flatten``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Collections.Generic.IEnumerable{``0}})">
+            <summary>
+            Returns a flattened sequence from a graph or hierarchy of elements by using the specified children selector.
+            </summary>
+            <param name="source">The source hierarchy to flatten.</param>
+            <param name="childrenSelector">A function used to retrieve the children of an element.</param>
+            <returns>
+            A flat sequence of elements produced from the elements in the source hierarchy.
+            </returns>
         </member>
         <member name="M:CodeJam.Collections.EnumerableExtensions.Split``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
             <summary>
@@ -1286,6 +1260,86 @@
             <returns>
             A sequence of chunks of the specified size.
             </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Byte})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with minimum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Byte}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with minimum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.SByte})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with minimum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.SByte}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with minimum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int16})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with minimum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int16}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with minimum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt16})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with minimum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt16}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with minimum value in the sequence.</returns>
         </member>
         <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32})">
             <summary>
@@ -1307,6 +1361,26 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt32})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with minimum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt32}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with minimum value in the sequence.</returns>
+        </member>
         <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int64})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
@@ -1318,6 +1392,26 @@
             <returns>The item with minimum value in the sequence.</returns>
         </member>
         <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int64}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with minimum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt64})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with minimum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt64}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1387,7 +1481,7 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int16})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Byte})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1397,7 +1491,7 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int16}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Byte}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1407,7 +1501,7 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.SByte})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.SByte})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1417,7 +1511,7 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.SByte}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.SByte}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1427,7 +1521,7 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt32})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int16})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1437,7 +1531,7 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt32}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int16}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1447,7 +1541,7 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt64})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt16})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1457,47 +1551,7 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt64}})">
-            <summary>
-            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
-            and returns the item with minimum value.
-            </summary>
-            <typeparam name="TSource">The type of the elements of source.</typeparam>
-            <param name="source">A sequence of values to determine the minimum value of.</param>
-            <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
-        </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt16})">
-            <summary>
-            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
-            and returns the item with minimum value.
-            </summary>
-            <typeparam name="TSource">The type of the elements of source.</typeparam>
-            <param name="source">A sequence of values to determine the minimum value of.</param>
-            <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
-        </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt16}})">
-            <summary>
-            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
-            and returns the item with minimum value.
-            </summary>
-            <typeparam name="TSource">The type of the elements of source.</typeparam>
-            <param name="source">A sequence of values to determine the minimum value of.</param>
-            <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
-        </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Byte})">
-            <summary>
-            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
-            and returns the item with minimum value.
-            </summary>
-            <typeparam name="TSource">The type of the elements of source.</typeparam>
-            <param name="source">A sequence of values to determine the minimum value of.</param>
-            <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
-        </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Byte}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt16}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1527,6 +1581,26 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt32})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with minimum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt32}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with minimum value in the sequence.</returns>
+        </member>
         <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int64})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
@@ -1538,6 +1612,26 @@
             <returns>The item with minimum value in the sequence.</returns>
         </member>
         <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int64}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with minimum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt64})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with minimum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt64}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1607,126 +1701,6 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int16})">
-            <summary>
-            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
-            and returns the item with minimum value.
-            </summary>
-            <typeparam name="TSource">The type of the elements of source.</typeparam>
-            <param name="source">A sequence of values to determine the minimum value of.</param>
-            <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
-        </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int16}})">
-            <summary>
-            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
-            and returns the item with minimum value.
-            </summary>
-            <typeparam name="TSource">The type of the elements of source.</typeparam>
-            <param name="source">A sequence of values to determine the minimum value of.</param>
-            <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
-        </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.SByte})">
-            <summary>
-            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
-            and returns the item with minimum value.
-            </summary>
-            <typeparam name="TSource">The type of the elements of source.</typeparam>
-            <param name="source">A sequence of values to determine the minimum value of.</param>
-            <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
-        </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.SByte}})">
-            <summary>
-            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
-            and returns the item with minimum value.
-            </summary>
-            <typeparam name="TSource">The type of the elements of source.</typeparam>
-            <param name="source">A sequence of values to determine the minimum value of.</param>
-            <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
-        </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt32})">
-            <summary>
-            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
-            and returns the item with minimum value.
-            </summary>
-            <typeparam name="TSource">The type of the elements of source.</typeparam>
-            <param name="source">A sequence of values to determine the minimum value of.</param>
-            <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
-        </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt32}})">
-            <summary>
-            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
-            and returns the item with minimum value.
-            </summary>
-            <typeparam name="TSource">The type of the elements of source.</typeparam>
-            <param name="source">A sequence of values to determine the minimum value of.</param>
-            <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
-        </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt64})">
-            <summary>
-            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
-            and returns the item with minimum value.
-            </summary>
-            <typeparam name="TSource">The type of the elements of source.</typeparam>
-            <param name="source">A sequence of values to determine the minimum value of.</param>
-            <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
-        </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt64}})">
-            <summary>
-            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
-            and returns the item with minimum value.
-            </summary>
-            <typeparam name="TSource">The type of the elements of source.</typeparam>
-            <param name="source">A sequence of values to determine the minimum value of.</param>
-            <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
-        </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt16})">
-            <summary>
-            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
-            and returns the item with minimum value.
-            </summary>
-            <typeparam name="TSource">The type of the elements of source.</typeparam>
-            <param name="source">A sequence of values to determine the minimum value of.</param>
-            <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
-        </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt16}})">
-            <summary>
-            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
-            and returns the item with minimum value.
-            </summary>
-            <typeparam name="TSource">The type of the elements of source.</typeparam>
-            <param name="source">A sequence of values to determine the minimum value of.</param>
-            <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
-        </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Byte})">
-            <summary>
-            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
-            and returns the item with minimum value.
-            </summary>
-            <typeparam name="TSource">The type of the elements of source.</typeparam>
-            <param name="source">A sequence of values to determine the minimum value of.</param>
-            <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
-        </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Byte}})">
-            <summary>
-            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
-            and returns the item with minimum value.
-            </summary>
-            <typeparam name="TSource">The type of the elements of source.</typeparam>
-            <param name="source">A sequence of values to determine the minimum value of.</param>
-            <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
-        </member>
         <member name="M:CodeJam.Collections.EnumerableExtensions.TopoSort``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Collections.Generic.IEnumerable{``0}})">
             <summary>
             Performs topological sort on <paramref name="source"/>.
@@ -1787,6 +1761,26 @@
             to comparing values in the set, or <c>null</c> to use tghe default implementation for the set type.</param>
             <returns>
             A <see cref="T:System.Collections.Generic.HashSet`1"/> that contains elements from the input sequence.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.OrderBy``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Sorts the elements of a sequence in ascending order.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to order.</param>
+            <returns>
+            An <see cref="T:System.Linq.IOrderedEnumerable`1"/> whose elements are sorted.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.OrderByDescending``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Sorts the elements of a sequence in descending order.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to order.</param>
+            <returns>
+            An <see cref="T:System.Linq.IOrderedEnumerable`1"/> whose elements are sorted.
             </returns>
         </member>
         <member name="M:CodeJam.Collections.EnumerableExtensions.DistinctBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
@@ -1959,6 +1953,60 @@
             <param name="selector">A transform function to apply to each element.</param>
             <param name="comparer">The <see cref="T:System.Collections.Generic.IComparer`1"/> to compare values.</param>
             <returns>The item with maximum value in the sequence.</returns>
+        </member>
+        <member name="T:CodeJam.Collections.LazyDictionary">
+            <summary>
+            Provides static methods for <see cref="T:CodeJam.Collections.ILazyDictionary`2"/>.
+            </summary>
+        </member>
+        <member name="M:CodeJam.Collections.LazyDictionary.Create``2(System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``0},System.Boolean)">
+            <summary>
+            Creates implementation of <see cref="T:CodeJam.Collections.ILazyDictionary`2"/>.
+            </summary>
+            <typeparam name="TKey">Type of key</typeparam>
+            <typeparam name="TValue">Type of value</typeparam>
+            <param name="valueFactory">Function to create value on demand.</param>
+            <param name="comparer">Key comparer.</param>
+            <param name="threadSafe">If true, creates a thread safe impementation</param>
+            <returns><see cref="T:CodeJam.Collections.ILazyDictionary`2"/> implementation.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.LazyDictionary.Create``2(System.Func{``0,``1},System.Boolean)">
+            <summary>
+            Creates implementation of <see cref="T:CodeJam.Collections.ILazyDictionary`2"/>.
+            </summary>
+            <typeparam name="TKey">Type of key</typeparam>
+            <typeparam name="TValue">Type of value</typeparam>
+            <param name="valueFactory">Function to create value on demand.</param>
+            <param name="threadSafe">If true, creates a thread safe impementation</param>
+            <returns><see cref="T:CodeJam.Collections.ILazyDictionary`2"/> implementation.</returns>
+        </member>
+        <member name="T:CodeJam.Collections.LazyDictionary`2">
+            <summary>
+            Dictionary with lazy values initialization.
+            </summary>
+        </member>
+        <member name="M:CodeJam.Collections.LazyDictionary`2.#ctor(System.Func{`0,`1},System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Initialize instance.
+            </summary>
+            <param name="valueFactory">Function to create value on demand.</param>
+            <param name="comparer">Key comparer.</param>
+        </member>
+        <member name="M:CodeJam.Collections.LazyDictionary`2.#ctor(System.Func{`0,`1})">
+            <summary>
+            Initialize instance.
+            </summary>
+            <param name="valueFactory">Function to create value on demand.</param>
+        </member>
+        <member name="M:CodeJam.Collections.LazyDictionary`2.Get(`0)">
+            <summary>
+            Returns existing value associated to a key, or creates new.
+            </summary>
+        </member>
+        <member name="M:CodeJam.Collections.LazyDictionary`2.Clear">
+            <summary>
+            Clears all created values
+            </summary>
         </member>
         <member name="T:CodeJam.Collections.KeyEqualityComparer">
             <summary>
@@ -2315,6 +2363,361 @@
             Creates stream and returns disposable handler.
             </summary>
         </member>
+        <member name="T:CodeJam.Reflection.AssemblyExtensions">
+            <summary>
+            The <see cref="T:System.Reflection.Assembly"/> extensions.
+            </summary>
+        </member>
+        <member name="M:CodeJam.Reflection.AssemblyExtensions.GetRequiredResourceStream(System.Reflection.Assembly,System.String)">
+            <summary>
+            Loads the specified manifest resource from this assembly, and checks if it exists.
+            </summary>
+            <param name="assembly">Resource assembly.</param>
+            <param name="name">The case-sensitive name of the manifest resource being requested.</param>
+            <returns>The manifest resource.</returns>
+            <exception cref="T:System.ArgumentNullException">The name parameter is null.</exception>
+            <exception cref="T:System.ArgumentException">Resource with specified name not found</exception>
+        </member>
+        <member name="M:CodeJam.Reflection.AssemblyExtensions.GetAssemblyPath(System.Reflection.Assembly)">
+            <summary>
+            Returns path to assembly <paramref name="assembly"/> file.
+            </summary>
+            <param name="assembly">Assembly.</param>
+        </member>
+        <member name="M:CodeJam.Reflection.AssemblyExtensions.GetAssemblyDirectory(System.Reflection.Assembly)">
+            <summary>
+            Returns directory part of path to assembly <paramref name="assembly"/> file.
+            </summary>
+            <param name="assembly">Assembly.</param>
+        </member>
+        <member name="T:CodeJam.Reflection.EnumHelper">
+            <summary>
+            Helper methods for enumeration.
+            </summary>
+        </member>
+        <member name="M:CodeJam.Reflection.EnumHelper.GetNames``1">
+            <summary>
+            Retrieves an array of the names of the constants in a specified enumeration.
+            </summary>
+            <typeparam name="T">An enumeration type.</typeparam>
+            <returns>A string array of the names of the constants in enumType.</returns>
+        </member>
+        <member name="M:CodeJam.Reflection.EnumHelper.GetName``1(``0)">
+            <summary>
+            Retrieves the name of the constant in the specified enumeration that has the specified value.
+            </summary>
+            <param name="value">The value of a particular enumerated constant in terms of its underlying type.</param>
+            <typeparam name="T">An enumeration type.</typeparam>
+            <returns>
+            A string containing the name of the enumerated constant in enumType whose value is value;
+            or null if no such constant is found.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.EnumHelper.GetValues``1">
+            <summary>
+            Retrieves an array of the values of the constants in a specified enumeration.
+            </summary>
+            <typeparam name="T">An enumeration type.</typeparam>
+            <returns>An array that contains the values of the constants in enumType.</returns>
+        </member>
+        <member name="M:CodeJam.Reflection.EnumHelper.IsDefined``1(``0)">
+            <summary>
+            Returns an indication whether a constant with a specified value exists in a specified enumeration.
+            </summary>
+            <param name="value">The value or name of a constant in <typeparamref name="T"/>.</param>
+            <typeparam name="T">An enumeration type.</typeparam>
+            <returns>true if a constant in enumType has a value equal to value; otherwise, false.</returns>
+        </member>
+        <member name="M:CodeJam.Reflection.EnumHelper.Parse``1(System.String,System.Boolean)">
+            <summary>
+            Converts the string representation of the name or numeric <paramref name="value"/> of one or more
+            enumerated constants to an equivalent enumerated object. A parameter <paramref name="ignoreCase"/> specifies
+            whether the operation is case-insensitive.
+            </summary>
+            <param name="value">A string containing the name or value to convert.</param>
+            <param name="ignoreCase">true to ignore case; false to regard case.</param>
+            <typeparam name="T">An enumeration type.</typeparam>
+            <returns>An object of type enumType whose value is represented by value.</returns>
+        </member>
+        <member name="T:CodeJam.Reflection.ExpressionHelper">
+            <summary>
+            Provides a helper class to get the property, field, ctor or method from an expression.
+            </summary>
+        </member>
+        <member name="M:CodeJam.Reflection.ExpressionHelper.GetProperty(System.Linq.Expressions.LambdaExpression)">
+            <summary>
+            Returns the property.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.PropertyInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ExpressionHelper.GetField(System.Linq.Expressions.LambdaExpression)">
+            <summary>
+            Returns the field.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.FieldInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ExpressionHelper.GetPropertyOrField(System.Linq.Expressions.LambdaExpression)">
+            <summary>
+            Returns the property or field.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.MemberInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ExpressionHelper.GetConstructor(System.Linq.Expressions.LambdaExpression)">
+            <summary>
+            Returns the contsructor.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.ConstructorInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ExpressionHelper.GetMethod(System.Linq.Expressions.LambdaExpression)">
+            <summary>
+            Returns the method.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.MethodInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ExpressionHelper.GetPropertyName(System.Linq.Expressions.LambdaExpression)">
+            <summary>
+            Returns a name of the property.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            A name of the property.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ExpressionHelper.GetFullPropertyName(System.Linq.Expressions.LambdaExpression)">
+            <summary>
+            Returns a composited name of the property.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            A composited name of the property.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ExpressionHelper.GetMethodName(System.Linq.Expressions.LambdaExpression)">
+            <summary>
+            Returns a name of the method.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            A name of the method.
+            </returns>
+        </member>
+        <member name="T:CodeJam.Reflection.InfoOf">
+            <summary>
+            Provides a helper class to get the property, field, ctor or method from an expression.
+            </summary>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf.Property``1(System.Linq.Expressions.Expression{System.Func{``0}})">
+            <summary>
+            Returns the property.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.PropertyInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf.Field``1(System.Linq.Expressions.Expression{System.Func{``0}})">
+            <summary>
+            Returns the field.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.FieldInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf.PropertyOrField``1(System.Linq.Expressions.Expression{System.Func{``0}})">
+            <summary>
+            Returns the property or field.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.MemberInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf.Constructor``1(System.Linq.Expressions.Expression{System.Func{``0}})">
+            <summary>
+            Returns the contsructor.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.ConstructorInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf.Method(System.Linq.Expressions.Expression{System.Action})">
+            <summary>
+            Returns the method.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.MethodInfo"/> instance.
+            </returns>
+        </member>
+        <member name="T:CodeJam.Reflection.InfoOf`1">
+            <summary>
+            Provides a helper class to get the property, field, ctor or method from an expression.
+            </summary>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf`1.Property``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Returns the property.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.PropertyInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf`1.Field``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Returns the field.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.FieldInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf`1.PropertyOrField``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Returns the property or field.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.MemberInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf`1.Constructor(System.Linq.Expressions.Expression{System.Func{`0}})">
+            <summary>
+            Returns the contsructor.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.ConstructorInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf`1.Method(System.Linq.Expressions.Expression{System.Action{`0}})">
+            <summary>
+            Returns the method.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.MethodInfo"/> instance.
+            </returns>
+        </member>
+        <member name="T:CodeJam.Reflection.ReflectionExtensions">
+            <summary>
+            Reflection extension methods.
+            </summary>
+        </member>
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsInstantiableType(System.Type)">
+            <summary>
+            Gets a value indicating whether the <paramref name="type"/> can be instantiated.
+            </summary>
+            <param name="type">The <see cref="T:System.Type"/> to test.</param>
+            <returns>
+            A value indicating whether the <paramref name="type"/> can be instantiated.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsStatic(System.Type)">
+            <summary>
+            Gets a value indicating whether the <paramref name="type"/> is declared static.
+            </summary>
+            <param name="type">The <see cref="T:System.Type"/> to test.</param>
+            <returns>
+            A value indicating whether the <paramref name="type"/> is declared static.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsNullable(System.Type)">
+            <summary>
+            Gets a value indicating whether the <paramref name="type"/> is Nullable&#60;&#62; type.
+            </summary>
+            <param name="type">The <see cref="T:System.Type"/> to test.</param>
+            <returns>
+            A value indicating whether the <paramref name="type"/> is Nullable&#60;&#62;.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsSubClass(System.Type,System.Type)">
+            <summary>
+            Determines whether the <paramref name="type"/> derives from the specified <paramref name="check"/>.
+            </summary>
+            <remarks>
+            This method also returns false if <paramref name="type"/> and the <paramref name="check"/> are equal.
+            </remarks>
+            <param name="type">The type to test.</param>
+            <param name="check">The type to compare with. </param>
+            <returns>
+            true if the <paramref name="type"/> derives from <paramref name="check"/>; otherwise, false.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.GetCustomAttribute``1(System.Reflection.ICustomAttributeProvider,System.Boolean)">
+            <summary>
+            Returns custom attribute defined on this <paramref name="member"/>, identified by type <typeparamref name="T"/>,
+            or null if there are no custom attribute of that type.
+            </summary>
+            <typeparam name="T">The type of the custom attribute.</typeparam>
+            <param name="member">Member, on which custom attribute is looking for.</param>
+            <param name="inherit">When true, look up the hierarchy chain for the inherited custom attribute.</param>
+            <returns>An instance of custom attribute, or null.</returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.GetCustomAttributes``1(System.Reflection.ICustomAttributeProvider,System.Boolean)">
+            <summary>
+            Returns an array of custom attributes defined on this <paramref name="member"/>,
+            identified by type <typeparamref name="T"/>,  or empty array if there are no custom attribute of that type.
+            </summary>
+            <typeparam name="T">The type of the custom attributes.</typeparam>
+            <param name="member">Member, on which custom attributes is looking for.</param>
+            <param name="inherit">When true, look up the hierarchy chain for the inherited custom attributes.</param>
+            <returns>An array of custom attributes, or empty array.</returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.HasCustomAttribute(System.Reflection.ICustomAttributeProvider,System.Type,System.Boolean)">
+            <summary>
+            Returns true if at least one attribute of type <paramref name="attrType"/> specified in <paramref name="member"/>
+            exists.
+            </summary>
+            <param name="member">Member, on which custom attributes is looking for.</param>
+            <param name="attrType">The type of the custom attribute.</param>
+            <param name="inherit">When true, look up the hierarchy chain for the inherited custom attributes.</param>
+        </member>
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.HasCustomAttribute``1(System.Reflection.ICustomAttributeProvider,System.Boolean)">
+            <summary>
+            Returns true if at least one attribute of type <typeparamref name="T"/> specified in <paramref name="member"/>
+            exists.
+            </summary>
+            <param name="member">Member, on which custom attributes is looking for.</param>
+            <param name="inherit">When true, look up the hierarchy chain for the inherited custom attributes.</param>
+        </member>
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.HasCustomAttribute(System.Reflection.ICustomAttributeProvider,System.Type,System.Func{System.Attribute,System.Boolean},System.Boolean)">
+            <summary>
+            Returns true if at least one attribute of type <paramref name="attrType"/> specified in <paramref name="member"/>
+            corresponds to <paramref name="predicate"/>.
+            </summary>
+            <param name="member">Member, on which custom attributes is looking for.</param>
+            <param name="attrType">The type of the custom attribute.</param>
+            <param name="predicate">A function to test each attribute for a condition</param>
+            <param name="inherit">When true, look up the hierarchy chain for the inherited custom attributes.</param>
+        </member>
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.HasCustomAttribute``1(System.Reflection.ICustomAttributeProvider,System.Func{``0,System.Boolean},System.Boolean)">
+            <summary>
+            Returns true if at least one attribute of type <typeparamref name="T"/> specified in <paramref name="member"/>
+            corresponds to <paramref name="predicate"/>.
+            </summary>
+            <param name="member">Member, on which custom attributes is looking for.</param>
+            <typeparam name="T">The type of the custom attribute.</typeparam>
+            <param name="predicate">A function to test each attribute for a condition</param>
+            <param name="inherit">When true, look up the hierarchy chain for the inherited custom attributes.</param>
+        </member>
         <member name="T:CodeJam.TupleStruct">
             <summary>
             Provides static methods for creating tuple structs.
@@ -2434,7 +2837,7 @@
         </member>
         <member name="T:CodeJam.TupleStruct`2">
             <summary>
-            Creates a new 2-tuple.
+            Represents a 2-tuple.
             </summary>
             <typeparam name="T1">The type of the component 1 of the tuple.</typeparam>
             <typeparam name="T2">The type of the component 2 of the tuple.</typeparam>
@@ -2481,7 +2884,7 @@
         </member>
         <member name="T:CodeJam.TupleStruct`3">
             <summary>
-            Creates a new 3-tuple.
+            Represents a 3-tuple.
             </summary>
             <typeparam name="T1">The type of the component 1 of the tuple.</typeparam>
             <typeparam name="T2">The type of the component 2 of the tuple.</typeparam>
@@ -2534,7 +2937,7 @@
         </member>
         <member name="T:CodeJam.TupleStruct`4">
             <summary>
-            Creates a new 4-tuple.
+            Represents a 4-tuple.
             </summary>
             <typeparam name="T1">The type of the component 1 of the tuple.</typeparam>
             <typeparam name="T2">The type of the component 2 of the tuple.</typeparam>
@@ -2593,7 +2996,7 @@
         </member>
         <member name="T:CodeJam.TupleStruct`5">
             <summary>
-            Creates a new 5-tuple.
+            Represents a 5-tuple.
             </summary>
             <typeparam name="T1">The type of the component 1 of the tuple.</typeparam>
             <typeparam name="T2">The type of the component 2 of the tuple.</typeparam>
@@ -2658,7 +3061,7 @@
         </member>
         <member name="T:CodeJam.TupleStruct`6">
             <summary>
-            Creates a new 6-tuple.
+            Represents a 6-tuple.
             </summary>
             <typeparam name="T1">The type of the component 1 of the tuple.</typeparam>
             <typeparam name="T2">The type of the component 2 of the tuple.</typeparam>
@@ -2729,7 +3132,7 @@
         </member>
         <member name="T:CodeJam.TupleStruct`7">
             <summary>
-            Creates a new 7-tuple.
+            Represents a 7-tuple.
             </summary>
             <typeparam name="T1">The type of the component 1 of the tuple.</typeparam>
             <typeparam name="T2">The type of the component 2 of the tuple.</typeparam>
@@ -2806,7 +3209,7 @@
         </member>
         <member name="T:CodeJam.TupleStruct`8">
             <summary>
-            Creates a new 8-tuple.
+            Represents a 8-tuple.
             </summary>
             <typeparam name="T1">The type of the component 1 of the tuple.</typeparam>
             <typeparam name="T2">The type of the component 2 of the tuple.</typeparam>
@@ -3204,34 +3607,50 @@
             Gets the function that always returns false.
             </summary>
         </member>
+        <member name="T:CodeJam.Fn`1">
+            <summary>
+            Helper methods for <see cref="T:System.Func`1"/>
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
         <member name="F:CodeJam.Fn`1.True">
             <summary>
-            Gets the function that always returns true.
+            The function that always returns true.
             </summary>
         </member>
         <member name="F:CodeJam.Fn`1.False">
             <summary>
-            Gets the function that returns false.
+            The function that returns false.
             </summary>
         </member>
         <member name="F:CodeJam.Fn`1.TruePredicate">
             <summary>
-            Gets the function that returns true.
+            The function that returns true.
             </summary>
         </member>
         <member name="F:CodeJam.Fn`1.FalsePredicate">
             <summary>
-            Gets the function that always returns false.
+            The function that always returns false.
             </summary>
         </member>
         <member name="F:CodeJam.Fn`1.Identity">
             <summary>
-            Gets the function that returns the same object which was passed as parameter.
+            The function that returns the same object which was passed as parameter.
             </summary>
         </member>
         <member name="F:CodeJam.Fn`1.IdentityConverter">
             <summary>
-            Gets the function that returns the same object which was passed as parameter.
+            The function that returns the same object which was passed as parameter.
+            </summary>
+        </member>
+        <member name="F:CodeJam.Fn`1.IsNull">
+            <summary>
+            The function that returns true if an object is null.
+            </summary>
+        </member>
+        <member name="F:CodeJam.Fn`1.IsNotNull">
+            <summary>
+            The function that returns true if an object is not null.
             </summary>
         </member>
         <member name="T:CodeJam.ObjectPools.SharedPools">
@@ -3587,347 +4006,6 @@
             Converts <paramref name="option"/> value to another option with <paramref name="selectFunc"/>.
             </summary>
         </member>
-        <member name="T:CodeJam.Reflection.EnumHelper">
-            <summary>
-            Helper methods for enumeration.
-            </summary>
-        </member>
-        <member name="M:CodeJam.Reflection.EnumHelper.GetNames``1">
-            <summary>
-            Retrieves an array of the names of the constants in a specified enumeration.
-            </summary>
-            <typeparam name="T">An enumeration type.</typeparam>
-            <returns>A string array of the names of the constants in enumType.</returns>
-        </member>
-        <member name="M:CodeJam.Reflection.EnumHelper.GetName``1(``0)">
-            <summary>
-            Retrieves the name of the constant in the specified enumeration that has the specified value.
-            </summary>
-            <param name="value">The value of a particular enumerated constant in terms of its underlying type.</param>
-            <typeparam name="T">An enumeration type.</typeparam>
-            <returns>
-            A string containing the name of the enumerated constant in enumType whose value is value;
-            or null if no such constant is found.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.EnumHelper.GetValues``1">
-            <summary>
-            Retrieves an array of the values of the constants in a specified enumeration.
-            </summary>
-            <typeparam name="T">An enumeration type.</typeparam>
-            <returns>An array that contains the values of the constants in enumType.</returns>
-        </member>
-        <member name="M:CodeJam.Reflection.EnumHelper.IsDefined``1(``0)">
-            <summary>
-            Returns an indication whether a constant with a specified value exists in a specified enumeration.
-            </summary>
-            <param name="value">The value or name of a constant in <typeparamref name="T"/>.</param>
-            <typeparam name="T">An enumeration type.</typeparam>
-            <returns>true if a constant in enumType has a value equal to value; otherwise, false.</returns>
-        </member>
-        <member name="M:CodeJam.Reflection.EnumHelper.Parse``1(System.String,System.Boolean)">
-            <summary>
-            Converts the string representation of the name or numeric <paramref name="value"/> of one or more
-            enumerated constants to an equivalent enumerated object. A parameter <paramref name="ignoreCase"/> specifies
-            whether the operation is case-insensitive.
-            </summary>
-            <param name="value">A string containing the name or value to convert.</param>
-            <param name="ignoreCase">true to ignore case; false to regard case.</param>
-            <typeparam name="T">An enumeration type.</typeparam>
-            <returns>An object of type enumType whose value is represented by value.</returns>
-        </member>
-        <member name="T:CodeJam.Reflection.ExpressionHelper">
-            <summary>
-            Provides a helper class to get the property, field, ctor or method from an expression.
-            </summary>
-        </member>
-        <member name="M:CodeJam.Reflection.ExpressionHelper.GetProperty(System.Linq.Expressions.LambdaExpression)">
-            <summary>
-            Returns the property.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.PropertyInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ExpressionHelper.GetField(System.Linq.Expressions.LambdaExpression)">
-            <summary>
-            Returns the field.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.FieldInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ExpressionHelper.GetPropertyOrField(System.Linq.Expressions.LambdaExpression)">
-            <summary>
-            Returns the property or field.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.MemberInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ExpressionHelper.GetConstructor(System.Linq.Expressions.LambdaExpression)">
-            <summary>
-            Returns the contsructor.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.ConstructorInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ExpressionHelper.GetMethod(System.Linq.Expressions.LambdaExpression)">
-            <summary>
-            Returns the method.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.MethodInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ExpressionHelper.GetPropertyName(System.Linq.Expressions.LambdaExpression)">
-            <summary>
-            Returns a name of the property.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            A name of the property.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ExpressionHelper.GetFullPropertyName(System.Linq.Expressions.LambdaExpression)">
-            <summary>
-            Returns a composited name of the property.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            A composited name of the property.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ExpressionHelper.GetMethodName(System.Linq.Expressions.LambdaExpression)">
-            <summary>
-            Returns a name of the method.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            A name of the method.
-            </returns>
-        </member>
-        <member name="T:CodeJam.Reflection.InfoOf">
-            <summary>
-            Provides a helper class to get the property, field, ctor or method from an expression.
-            </summary>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf.Property``1(System.Linq.Expressions.Expression{System.Func{``0}})">
-            <summary>
-            Returns the property.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.PropertyInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf.Field``1(System.Linq.Expressions.Expression{System.Func{``0}})">
-            <summary>
-            Returns the field.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.FieldInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf.PropertyOrField``1(System.Linq.Expressions.Expression{System.Func{``0}})">
-            <summary>
-            Returns the property or field.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.MemberInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf.Constructor``1(System.Linq.Expressions.Expression{System.Func{``0}})">
-            <summary>
-            Returns the contsructor.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.ConstructorInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf.Method(System.Linq.Expressions.Expression{System.Action})">
-            <summary>
-            Returns the method.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.MethodInfo"/> instance.
-            </returns>
-        </member>
-        <member name="T:CodeJam.Reflection.InfoOf`1">
-            <summary>
-            Provides a helper class to get the property, field, ctor or method from an expression.
-            </summary>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf`1.Property``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
-            <summary>
-            Returns the property.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.PropertyInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf`1.Field``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
-            <summary>
-            Returns the field.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.FieldInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf`1.PropertyOrField``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
-            <summary>
-            Returns the property or field.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.MemberInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf`1.Constructor(System.Linq.Expressions.Expression{System.Func{`0}})">
-            <summary>
-            Returns the contsructor.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.ConstructorInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf`1.Method(System.Linq.Expressions.Expression{System.Action{`0}})">
-            <summary>
-            Returns the method.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.MethodInfo"/> instance.
-            </returns>
-        </member>
-        <member name="T:CodeJam.Reflection.ReflectionExtensions">
-            <summary>
-            Reflection extension methods.
-            </summary>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsInstantiableType(System.Type)">
-            <summary>
-            Gets a value indicating whether the <paramref name="type"/> can be instantiated.
-            </summary>
-            <param name="type">The <see cref="T:System.Type"/> to test.</param>
-            <returns>
-            A value indicating whether the <paramref name="type"/> can be instantiated.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsStatic(System.Type)">
-            <summary>
-            Gets a value indicating whether the <paramref name="type"/> is declared static.
-            </summary>
-            <param name="type">The <see cref="T:System.Type"/> to test.</param>
-            <returns>
-            A value indicating whether the <paramref name="type"/> is declared static.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsSubClass(System.Type,System.Type)">
-            <summary>
-            Determines whether the <paramref name="type"/> derives from the specified <paramref name="check"/>.
-            </summary>
-            <remarks>
-            This method also returns false if <paramref name="type"/> and the <paramref name="check"/> are equal.
-            </remarks>
-            <param name="type">The type to test.</param>
-            <param name="check">The type to compare with. </param>
-            <returns>
-            true if the <paramref name="type"/> derives from <paramref name="check"/>; otherwise, false.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.GetCustomAttribute``1(System.Reflection.ICustomAttributeProvider,System.Boolean)">
-            <summary>
-            Returns custom attribute defined on this <paramref name="member"/>, identified by type <typeparamref name="T"/>,
-            or null if there are no custom attribute of that type.
-            </summary>
-            <typeparam name="T">The type of the custom attribute.</typeparam>
-            <param name="member">Member, on which custom attribute is looking for.</param>
-            <param name="inherit">When true, look up the hierarchy chain for the inherited custom attribute.</param>
-            <returns>An instance of custom attribute, or null.</returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.GetCustomAttributes``1(System.Reflection.ICustomAttributeProvider,System.Boolean)">
-            <summary>
-            Returns an array of custom attributes defined on this <paramref name="member"/>,
-            identified by type <typeparamref name="T"/>,  or empty array if there are no custom attribute of that type.
-            </summary>
-            <typeparam name="T">The type of the custom attributes.</typeparam>
-            <param name="member">Member, on which custom attributes is looking for.</param>
-            <param name="inherit">When true, look up the hierarchy chain for the inherited custom attributes.</param>
-            <returns>An array of custom attributes, or empty array.</returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.HasCustomAttribute(System.Reflection.ICustomAttributeProvider,System.Type,System.Boolean)">
-            <summary>
-            Returns true if at least one attribute of type <paramref name="attrType"/> specified in <paramref name="member"/>
-            exists.
-            </summary>
-            <param name="member">Member, on which custom attributes is looking for.</param>
-            <param name="attrType">The type of the custom attribute.</param>
-            <param name="inherit">When true, look up the hierarchy chain for the inherited custom attributes.</param>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.HasCustomAttribute``1(System.Reflection.ICustomAttributeProvider,System.Boolean)">
-            <summary>
-            Returns true if at least one attribute of type <typeparamref name="T"/> specified in <paramref name="member"/>
-            exists.
-            </summary>
-            <param name="member">Member, on which custom attributes is looking for.</param>
-            <param name="inherit">When true, look up the hierarchy chain for the inherited custom attributes.</param>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.HasCustomAttribute(System.Reflection.ICustomAttributeProvider,System.Type,System.Func{System.Attribute,System.Boolean},System.Boolean)">
-            <summary>
-            Returns true if at least one attribute of type <paramref name="attrType"/> specified in <paramref name="member"/>
-            corresponds to <paramref name="predicate"/>.
-            </summary>
-            <param name="member">Member, on which custom attributes is looking for.</param>
-            <param name="attrType">The type of the custom attribute.</param>
-            <param name="predicate">A function to test each attribute for a condition</param>
-            <param name="inherit">When true, look up the hierarchy chain for the inherited custom attributes.</param>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.HasCustomAttribute``1(System.Reflection.ICustomAttributeProvider,System.Func{``0,System.Boolean},System.Boolean)">
-            <summary>
-            Returns true if at least one attribute of type <typeparamref name="T"/> specified in <paramref name="member"/>
-            corresponds to <paramref name="predicate"/>.
-            </summary>
-            <param name="member">Member, on which custom attributes is looking for.</param>
-            <typeparam name="T">The type of the custom attribute.</typeparam>
-            <param name="predicate">A function to test each attribute for a condition</param>
-            <param name="inherit">When true, look up the hierarchy chain for the inherited custom attributes.</param>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.GetRequiredResourceStream(System.Reflection.Assembly,System.String)">
-            <summary>
-            Loads the specified manifest resource from this assembly, and checks if it exists.
-            </summary>
-            <param name="assembly">Resource assembly.</param>
-            <param name="name">The case-sensitive name of the manifest resource being requested.</param>
-            <returns>The manifest resource.</returns>
-            <exception cref="T:System.ArgumentNullException">The name parameter is null.</exception>
-            <exception cref="T:System.ArgumentException">Resource with specified name not found</exception>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.GetAssemblyPath(System.Reflection.Assembly)">
-            <summary>
-            Returns path to assembly <paramref name="asm"/> file.
-            </summary>
-            <param name="asm">Assembly.</param>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.GetAssemblyDirectory(System.Reflection.Assembly)">
-            <summary>
-            Returns directory part of path to assembly <paramref name="asm"/> file.
-            </summary>
-            <param name="asm">Assembly.</param>
-        </member>
         <member name="T:CodeJam.CharExtensions">
             <summary>
             <see cref="T:System.Char"/> structure extensions.
@@ -4159,12 +4237,22 @@
             Trims <paramref name="str"/> prefix if it equals to <paramref name="suffix"/>.
             </summary>
         </member>
-        <member name="M:CodeJam.StringExtensions.ToByteSizeString(System.Int64,System.IFormatProvider)">
+        <member name="M:CodeJam.StringExtensions.ToByteSizeString(System.Int32)">
+            <summary>
+            Returns size in bytes string representation.
+            </summary>
+        </member>
+        <member name="M:CodeJam.StringExtensions.ToByteSizeString(System.Int32,System.IFormatProvider)">
             <summary>
             Returns size in bytes string representation.
             </summary>
         </member>
         <member name="M:CodeJam.StringExtensions.ToByteSizeString(System.Int64)">
+            <summary>
+            Returns size in bytes string representation.
+            </summary>
+        </member>
+        <member name="M:CodeJam.StringExtensions.ToByteSizeString(System.Int64,System.IFormatProvider)">
             <summary>
             Returns size in bytes string representation.
             </summary>
@@ -4188,6 +4276,41 @@
             <summary>
             Returns true if argument is not null nor whitespace.
             </summary>
+        </member>
+        <member name="M:CodeJam.StringExtensions.FormatWith(System.String,System.Object)">
+            <summary>
+            Replaces one or more format items in a specified string with the string representation of a specified object.
+            </summary>
+            <param name="format">A composite format string.</param>
+            <param name="arg">The object to format.</param>
+            <returns>
+            A copy of <paramref name="format"/> in which any format items are replaced by the string representation of <paramref name="arg"/>.
+            </returns>
+        </member>
+        <member name="M:CodeJam.StringExtensions.FormatWith(System.String,System.Object,System.Object)">
+            <summary>
+            Replaces the format items in a specified string with the string representation of two specified objects.
+            </summary>
+            <param name="format">A composite format string.</param>
+            <param name="arg0">The first object to format.</param>
+            <param name="arg1">The second object to format.</param>
+            <returns>
+            A copy of <paramref name="format"/> in which format items are replaced by the string representations
+            of <paramref name="arg0"/> and <paramref name="arg1"/>.
+            </returns>
+        </member>
+        <member name="M:CodeJam.StringExtensions.FormatWith(System.String,System.Object,System.Object,System.Object)">
+            <summary>
+            Replaces the format items in a specified string with the string representation of three specified objects.
+            </summary>
+            <param name="format">A composite format string.</param>
+            <param name="arg0">The first object to format.</param>
+            <param name="arg1">The second object to format.</param>
+            <param name="arg2">The third object to format.</param>
+            <returns>
+            A copy of <paramref name="format"/> in which the format items have been replaced by the string representations
+            of <paramref name="arg0"/>, <paramref name="arg1"/>, and <paramref name="arg2"/>.
+            </returns>
         </member>
         <member name="M:CodeJam.StringExtensions.FormatWith(System.String,System.Object[])">
             <summary>
