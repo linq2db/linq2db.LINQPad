@@ -380,13 +380,15 @@ namespace LinqToDB.LINQPad
 			code.AppendLine("    }");
 		}
 
+		HashSet<string> _explorerNames = new HashSet<string>();
+
 		ExplorerItem GetColumnItem(ColumnSchema column)
 		{
 			var memberType = UseProviderSpecificTypes ? (column.ProviderSpecificType ?? column.MemberType) : column.MemberType;
 			var sqlName    = (string)_sqlBuilder.Convert(column.ColumnName, ConvertType.NameToQueryField);
 
 			return new ExplorerItem(
-				column.MemberName,
+				GetUniqueName(_explorerNames, column.MemberName),
 				ExplorerItemKind.Property,
 				column.IsPrimaryKey ? ExplorerIcon.Key : ExplorerIcon.Column)
 			{
@@ -423,7 +425,7 @@ namespace LinqToDB.LINQPad
 								memberName += $" -> {res.ParameterType}";
 						}
 
-						var ret = new ExplorerItem(memberName, ExplorerItemKind.QueryableObject, icon)
+						var ret = new ExplorerItem(GetUniqueName(_explorerNames, memberName), ExplorerItemKind.QueryableObject, icon)
 						{
 							DragText     = $"{p.MemberName}(" +
 								p.Parameters
@@ -437,7 +439,7 @@ namespace LinqToDB.LINQPad
 								.Where (pr => !pr.IsResult)
 								.Select(pr =>
 									new ExplorerItem(
-										$"{pr.ParameterName} ({pr.ParameterType})",
+										GetUniqueName(_explorerNames, $"{pr.ParameterName} ({pr.ParameterType})"),
 										ExplorerItemKind.Parameter,
 										ExplorerIcon.Parameter))
 								.Union(p.ResultTable?.Columns.Select(GetColumnItem) ?? new ExplorerItem[0])
@@ -553,7 +555,7 @@ namespace LinqToDB.LINQPad
 
 						//Debug.WriteLine($"Table: [{t.SchemaName}].[{t.TableName}] - ${tableSqlName}");
 
-						var ret = new ExplorerItem(memberName, ExplorerItemKind.QueryableObject, icon)
+						var ret = new ExplorerItem(GetUniqueName(_explorerNames, memberName), ExplorerItemKind.QueryableObject, icon)
 						{
 							DragText     = memberName,
 							ToolTipText  = $"ITable<{t.TypeName}>",
@@ -581,7 +583,7 @@ namespace LinqToDB.LINQPad
 
 					entry.Children.Add(
 						new ExplorerItem(
-							key.MemberName,
+							GetUniqueName(_explorerNames, key.MemberName),
 							key.AssociationType == AssociationType.OneToMany
 								? ExplorerItemKind.CollectionLink
 								: ExplorerItemKind.ReferenceLink,
@@ -603,9 +605,9 @@ namespace LinqToDB.LINQPad
 			return items;
 		}
 
-		static string GetName(HashSet<string> names, string proposedName)
+		static string GetUniqueName(HashSet<string> names, string proposedName)
 		{
-			var name = proposedName = ConvertToCompilable(proposedName);
+			var name = proposedName;
 			var n    = 0;
 
 			while (names.Contains(name))
@@ -614,6 +616,11 @@ namespace LinqToDB.LINQPad
 			names.Add(name);
 
 			return name;
+		}
+
+		static string GetName(HashSet<string> names, string proposedName)
+		{
+			return GetUniqueName(names, ConvertToCompilable(proposedName));
 		}
 
 		readonly Dictionary<TableSchema,string> _contextMembers = new Dictionary<TableSchema,string>();
