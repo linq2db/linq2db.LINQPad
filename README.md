@@ -16,20 +16,23 @@ linq2db.LINQPad is a driver for [LINQPad](http://www.linqpad.net) that supports 
 - **SAP HANA** *(client software must be installed)*
 - **Sybase ASE**
 
----
+## Download
 
-Releases are hosted on [Github](https://github.com/linq2db/linq2db.LINQPad/releases).
+Releases are hosted on [Github](https://github.com/linq2db/linq2db.LINQPad/releases
+
 Latest build is hosted on [AppVeyor](https://ci.appveyor.com/project/igor-tkachev/linq2db-linqpad/build/artifacts).
 
----
+## Installation:
 
-Installation:
+- Download latest **.lpx** file from the link provided above.
+- Click "Add connection" in LINQPad.
+- In the "Choose Data Context" dialog, press the "View more drivers..." button.
+- In the "Choose a Driver" dialog, press "Browse..." button.
+- Select the downloaded "linq2db.LINQPad.lpx" and click "Open" button.
+- In the "Choose Data Context" dialog, select "LINQ to DB" driver and click the next button.
+- In the "LINQ to DB connection" dialog, supply your connection information.
+- You're done.
 
-1. Download latest **.lpx** file from the link provided above.
-2. Click "Add connection" in LINQPad.
-3. In the "Choose Data Context" dialog, press the "View more drivers..." button.
-4. In the "Choose a Driver" dialog, press "Browse..." button.
-5. Select the downloaded "linq2db.LINQPad.lpx" and click "Open" button.
-6. In the "Choose Data Context" dialog, select "LINQ to DB" driver and click the next button.
-7. In the "LINQ to DB connection" dialog, supply your connection information.
-8. You're done.
+## Project Build Status
+
+[![Build status](https://ci.appveyor.com/api/projects/status/gn51dtu4378xnte2/branch/master?svg=true)](https://ci.appveyor.com/project/igor-tkachev/linq2db-linqpad/branch/master)
