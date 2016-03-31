@@ -15,3 +15,20 @@ linq2db.LINQPad is a driver for [LINQPad](http://www.linqpad.net) that supports 
 - **SQLite**
 - **SAP HANA** *(client software must be installed)*
 - **Sybase ASE**
+
+---
+
+Releases are hosted on Github: https://github.com/linq2db/linq2db.LINQPad/releases
+
+---
+
+Installation:
+
+1. Download latest **.lpx** file from the link provided above.
+2. Click "Add connection" in LINQPad.
+3. In the "Choose Data Context" dialog, press the "View more drivers..." button.
+4. In the "Choose a Driver" dialog, press "Browse..." button.
+5. Select the downloaded "linq2db.LINQPad.lpx" and click "Open" button.
+6. In the "Choose Data Context" dialog, select "LINQ to DB" driver and click the next button.
+7. In the "LINQ to DB connection" dialog, supply your connection information.
+8. You're done.
