@@ -18,7 +18,7 @@ linq2db.LINQPad is a driver for [LINQPad](http://www.linqpad.net) that supports 
 
 ## Download
 
-Releases are hosted on [Github](https://github.com/linq2db/linq2db.LINQPad/releases
+Releases are hosted on [Github](https://github.com/linq2db/linq2db.LINQPad/releases).
 
 Latest build is hosted on [AppVeyor](https://ci.appveyor.com/project/igor-tkachev/linq2db-linqpad/build/artifacts).
 
