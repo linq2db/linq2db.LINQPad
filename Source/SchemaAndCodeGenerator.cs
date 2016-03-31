@@ -205,7 +205,7 @@ namespace LinqToDB.LINQPad
 				else
 				{
 					yield return new ExplorerItem(
-						s.Key.SchemaName.IsNullOrEmpty() ? s.Key.IsDefaultSchema ? "(default)" : "empty" : s.Key.SchemaName,
+						GetUniqueName(_explorerNames, s.Key.SchemaName.IsNullOrEmpty() ? s.Key.IsDefaultSchema ? "(default)" : "empty" : s.Key.SchemaName),
 						ExplorerItemKind.Schema,
 						ExplorerIcon.Schema)
 					{
@@ -404,7 +404,7 @@ namespace LinqToDB.LINQPad
 		{
 			var results = new HashSet<TableSchema>();
 
-			var items = new ExplorerItem(header, ExplorerItemKind.Category, icon)
+			var items = new ExplorerItem(GetUniqueName(_explorerNames, header), ExplorerItemKind.Category, icon)
 			{
 				Children = procedures
 					.Select(p =>
@@ -536,7 +536,7 @@ namespace LinqToDB.LINQPad
 			var tables = tableSource.ToList();
 			var dic    = new Dictionary<TableSchema,ExplorerItem>();
 
-			var items = new ExplorerItem(header, ExplorerItemKind.Category, icon)
+			var items = new ExplorerItem(GetUniqueName(_explorerNames, header), ExplorerItemKind.Category, icon)
 			{
 				Children = tables
 					.Select(t =>
