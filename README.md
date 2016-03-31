@@ -7,7 +7,7 @@ linq2db.LINQPad is a driver for [LINQPad](http://www.linqpad.net) that supports 
 - **Informix** *(client software must be installed)*
 - **Microsoft Access**
 - **Microsoft Sql Azure**
-- **Microsoft Sql Server 2000+
+- **Microsoft Sql Server** 2000+
 - **Microsoft SqlCe**
 - **MySql**
 - **Oracle** *(client software must be installed if native driver is used)*
