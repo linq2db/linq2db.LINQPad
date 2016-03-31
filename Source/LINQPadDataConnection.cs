@@ -32,7 +32,9 @@ namespace LinqToDB.LINQPad
 		}
 
 		public LINQPadDataConnection(IConnectionInfo cxInfo)
-			: base((string)cxInfo.DriverData.Element("providerName"), cxInfo.DatabaseInfo.CustomCxString)
+			: base(
+				(string)(cxInfo.DriverData.Element("providerVersion") ?? cxInfo.DriverData.Element("providerName")),
+				cxInfo.DatabaseInfo.CustomCxString)
 		{
 			Init();
 		}

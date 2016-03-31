@@ -23,10 +23,12 @@ namespace LinqToDB.LINQPad
 
 			UseProviderSpecificTypes = ((string)_cxInfo.DriverData.Element("useProviderSpecificTypes"))?.ToLower() == "true";
 			ProviderName             =  (string)_cxInfo.DriverData.Element("providerName");
+			ProviderVersion          =  (string)_cxInfo.DriverData.Element("providerVersion");
 		}
 
 		public readonly bool         UseProviderSpecificTypes;
 		public readonly string       ProviderName;
+		public readonly string       ProviderVersion;
 		public readonly List<string> References = new List<string>();
 
 		readonly IConnectionInfo _cxInfo;
@@ -139,7 +141,7 @@ namespace LinqToDB.LINQPad
 				.AppendLine( "      LinqToDB.DataProvider.Firebird.FirebirdConfiguration.QuoteIdentifiers = true;")
 				.AppendLine( "    }")
 				.AppendLine($"    public @{typeName}()")
-				.AppendLine($"      : this({ToCodeString(ProviderName)}, {ToCodeString(connectionString)})")
+				.AppendLine($"      : base({ToCodeString(ProviderVersion ?? ProviderName)}, {ToCodeString(connectionString)})")
 				.AppendLine( "    {")
 				.AppendLine( "    }")
 				;

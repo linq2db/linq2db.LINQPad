@@ -122,6 +122,8 @@ namespace LinqToDB.LINQPad
 					case ProviderName.SapHana      : cxInfo.DatabaseInfo.Provider = typeof(SapHanaType).      Namespace; break;
 				}
 
+				string providerVersion = null;
+
 				try
 				{
 					using (var db = new LINQPadDataConnection(providerName, model.ConnectionString))
@@ -130,11 +132,34 @@ namespace LinqToDB.LINQPad
 						cxInfo.DatabaseInfo.Server    = ((DbConnection)db.Connection).DataSource;
 						cxInfo.DatabaseInfo.Database  = db.Connection.Database;
 						cxInfo.DatabaseInfo.DbVersion = ((DbConnection)db.Connection).ServerVersion;
+
+						if (providerName == ProviderName.SqlServer)
+						{
+							int version;
+
+							if (int.TryParse(cxInfo.DatabaseInfo.DbVersion?.Split('.')[0], out version))
+							{
+								switch (version)
+								{
+									case  8 : providerVersion = ProviderName.SqlServer2000; break;
+									case  9 : providerVersion = ProviderName.SqlServer2005; break;
+									case 10 : providerVersion = ProviderName.SqlServer2008; break;
+									case 11 : providerVersion = ProviderName.SqlServer2012; break;
+									case 12 : providerVersion = ProviderName.SqlServer2014; break;
+									default :
+										if (version > 12)
+											providerVersion = ProviderName.SqlServer2014;
+										break;
+								}
+							}
+						}
 					}
 				}
 				catch
 				{
 				}
+
+				cxInfo.DriverData.SetElementValue("providerVersion", providerVersion);
 
 				cxInfo.DatabaseInfo.CustomCxString           =  model.ConnectionString;
 				cxInfo.DatabaseInfo.EncryptCustomCxString    =  model.EncryptConnectionString;
@@ -246,7 +271,7 @@ namespace LinqToDB.LINQPad
 		{
 			return new object[]
 			{
-				(string)cxInfo.DriverData.Element("providerName"),
+				(string)(cxInfo.DriverData.Element("providerVersion") ?? cxInfo.DriverData.Element("providerName")),
 				cxInfo.DatabaseInfo.CustomCxString,
 			};
 		}
