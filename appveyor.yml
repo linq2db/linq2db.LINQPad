@@ -12,3 +12,6 @@ before_build:
 build:
   project: linq2db.LINQPad.sln
   verbosity: minimal
+artifacts:
+- path: Source\bin\Release\linq2db.LINQPad.lpx
+  name: linq2db.LINQPad
