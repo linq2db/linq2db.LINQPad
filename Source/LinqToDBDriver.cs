@@ -220,52 +220,51 @@ namespace LinqToDB.LINQPad
 		public override List<ExplorerItem> GetSchemaAndBuildAssembly(
 			IConnectionInfo cxInfo, AssemblyName assemblyToBuild, ref string nameSpace, ref string typeName)
 		{
-			List<ExplorerItem> items = null;
-try
-{
-			var gen        = new SchemaAndCodeGenerator(cxInfo);
-			    items      = gen.GetItemsAndCode(nameSpace, typeName).ToList();
-			var text       = gen.Code.ToString();
-			var syntaxTree = CSharpSyntaxTree.ParseText(text);
-
-			var references = new List<MetadataReference>
+			try
 			{
-				MetadataReference.CreateFromFile(typeof(object).               Assembly.Location),
-				MetadataReference.CreateFromFile(typeof(Enumerable).           Assembly.Location),
-				MetadataReference.CreateFromFile(typeof(IDbConnection).        Assembly.Location),
-				MetadataReference.CreateFromFile(typeof(DataConnection).       Assembly.Location),
-				MetadataReference.CreateFromFile(typeof(LINQPadDataConnection).Assembly.Location),
-			};
+				var gen        = new SchemaAndCodeGenerator(cxInfo);
+				var items      = gen.GetItemsAndCode(nameSpace, typeName).ToList();
+				var text       = gen.Code.ToString();
+				var syntaxTree = CSharpSyntaxTree.ParseText(text);
 
-			references.AddRange(gen.References.Select(r => MetadataReference.CreateFromFile(r)));
-
-			var compilation = CSharpCompilation.Create(
-				assemblyToBuild.Name,
-				syntaxTrees : new[] { syntaxTree },
-				references  : references,
-				options     : new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
-
-			using (var stream = new FileStream(assemblyToBuild.CodeBase, FileMode.Create))
-			{
-				var result = compilation.Emit(stream);
-
-				if (!result.Success)
+				var references = new List<MetadataReference>
 				{
-					var failures = result.Diagnostics.Where(diagnostic =>
-						diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
+					MetadataReference.CreateFromFile(typeof(object).               Assembly.Location),
+					MetadataReference.CreateFromFile(typeof(Enumerable).           Assembly.Location),
+					MetadataReference.CreateFromFile(typeof(IDbConnection).        Assembly.Location),
+					MetadataReference.CreateFromFile(typeof(DataConnection).       Assembly.Location),
+					MetadataReference.CreateFromFile(typeof(LINQPadDataConnection).Assembly.Location),
+				};
 
-					foreach (var diagnostic in failures)
-						throw new Exception(diagnostic.ToString());
+				references.AddRange(gen.References.Select(r => MetadataReference.CreateFromFile(r)));
+
+				var compilation = CSharpCompilation.Create(
+					assemblyToBuild.Name,
+					syntaxTrees : new[] { syntaxTree },
+					references  : references,
+					options     : new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+
+				using (var stream = new FileStream(assemblyToBuild.CodeBase, FileMode.Create))
+				{
+					var result = compilation.Emit(stream);
+
+					if (!result.Success)
+					{
+						var failures = result.Diagnostics.Where(diagnostic =>
+							diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
+
+						foreach (var diagnostic in failures)
+							throw new Exception(diagnostic.ToString());
+					}
 				}
-			}
-	
-}
-catch(Exception ex)
-{
-	MessageBox.Show($"{ex}\n{ex.StackTrace}");
-}
 
-			return items;
+				return items;
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show($"{ex}\n{ex.StackTrace}");
+				throw;
+			}
 		}
 
 		public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo cxInfo)

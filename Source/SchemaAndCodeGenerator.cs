@@ -205,7 +205,7 @@ namespace LinqToDB.LINQPad
 				else
 				{
 					yield return new ExplorerItem(
-						GetUniqueName(_explorerNames, s.Key.SchemaName.IsNullOrEmpty() ? s.Key.IsDefaultSchema ? "(default)" : "empty" : s.Key.SchemaName),
+						s.Key.SchemaName.IsNullOrEmpty() ? s.Key.IsDefaultSchema ? "(default)" : "empty" : s.Key.SchemaName,
 						ExplorerItemKind.Schema,
 						ExplorerIcon.Schema)
 					{
@@ -380,15 +380,13 @@ namespace LinqToDB.LINQPad
 			code.AppendLine("    }");
 		}
 
-		HashSet<string> _explorerNames = new HashSet<string>();
-
 		ExplorerItem GetColumnItem(ColumnSchema column)
 		{
 			var memberType = UseProviderSpecificTypes ? (column.ProviderSpecificType ?? column.MemberType) : column.MemberType;
 			var sqlName    = (string)_sqlBuilder.Convert(column.ColumnName, ConvertType.NameToQueryField);
 
 			return new ExplorerItem(
-				GetUniqueName(_explorerNames, column.MemberName),
+				column.MemberName,
 				ExplorerItemKind.Property,
 				column.IsPrimaryKey ? ExplorerIcon.Key : ExplorerIcon.Column)
 			{
@@ -404,7 +402,7 @@ namespace LinqToDB.LINQPad
 		{
 			var results = new HashSet<TableSchema>();
 
-			var items = new ExplorerItem(GetUniqueName(_explorerNames, header), ExplorerItemKind.Category, icon)
+			var items = new ExplorerItem(header, ExplorerItemKind.Category, icon)
 			{
 				Children = procedures
 					.Select(p =>
@@ -425,7 +423,7 @@ namespace LinqToDB.LINQPad
 								memberName += $" -> {res.ParameterType}";
 						}
 
-						var ret = new ExplorerItem(GetUniqueName(_explorerNames, memberName), ExplorerItemKind.QueryableObject, icon)
+						var ret = new ExplorerItem(memberName, ExplorerItemKind.QueryableObject, icon)
 						{
 							DragText     = $"{p.MemberName}(" +
 								p.Parameters
@@ -439,7 +437,7 @@ namespace LinqToDB.LINQPad
 								.Where (pr => !pr.IsResult)
 								.Select(pr =>
 									new ExplorerItem(
-										GetUniqueName(_explorerNames, $"{pr.ParameterName} ({pr.ParameterType})"),
+										$"{pr.ParameterName} ({pr.ParameterType})",
 										ExplorerItemKind.Parameter,
 										ExplorerIcon.Parameter))
 								.Union(p.ResultTable?.Columns.Select(GetColumnItem) ?? new ExplorerItem[0])
@@ -536,7 +534,7 @@ namespace LinqToDB.LINQPad
 			var tables = tableSource.ToList();
 			var dic    = new Dictionary<TableSchema,ExplorerItem>();
 
-			var items = new ExplorerItem(GetUniqueName(_explorerNames, header), ExplorerItemKind.Category, icon)
+			var items = new ExplorerItem(header, ExplorerItemKind.Category, icon)
 			{
 				Children = tables
 					.Select(t =>
@@ -555,7 +553,7 @@ namespace LinqToDB.LINQPad
 
 						//Debug.WriteLine($"Table: [{t.SchemaName}].[{t.TableName}] - ${tableSqlName}");
 
-						var ret = new ExplorerItem(GetUniqueName(_explorerNames, memberName), ExplorerItemKind.QueryableObject, icon)
+						var ret = new ExplorerItem(memberName, ExplorerItemKind.QueryableObject, icon)
 						{
 							DragText     = memberName,
 							ToolTipText  = $"ITable<{t.TypeName}>",
@@ -571,7 +569,7 @@ namespace LinqToDB.LINQPad
 					.ToList()
 			};
 
-			foreach (var table in tables)
+			foreach (var table in tables.Where(t => dic.ContainsKey(t)))
 			{
 				var entry = dic[table];
 
@@ -583,7 +581,7 @@ namespace LinqToDB.LINQPad
 
 					entry.Children.Add(
 						new ExplorerItem(
-							GetUniqueName(_explorerNames, key.MemberName),
+							key.MemberName,
 							key.AssociationType == AssociationType.OneToMany
 								? ExplorerItemKind.CollectionLink
 								: ExplorerItemKind.ReferenceLink,
@@ -597,7 +595,7 @@ namespace LinqToDB.LINQPad
 							ToolTipText     = typeName + (key.BackReference == null ? " // Back Reference" : ""),
 							SqlName         = key.KeyName,
 							IsEnumerable    = key.AssociationType == AssociationType.OneToMany,
-							HyperlinkTarget = dic[key.OtherTable],
+							HyperlinkTarget = dic.ContainsKey(key.OtherTable) ? dic[key.OtherTable] : null,
 						});
 				}
 			}
