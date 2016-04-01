@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Windows;
 
 using CodeJam;
 
@@ -219,8 +220,11 @@ namespace LinqToDB.LINQPad
 		public override List<ExplorerItem> GetSchemaAndBuildAssembly(
 			IConnectionInfo cxInfo, AssemblyName assemblyToBuild, ref string nameSpace, ref string typeName)
 		{
+			List<ExplorerItem> items = null;
+try
+{
 			var gen        = new SchemaAndCodeGenerator(cxInfo);
-			var items      = gen.GetItemsAndCode(nameSpace, typeName).ToList();
+			    items      = gen.GetItemsAndCode(nameSpace, typeName).ToList();
 			var text       = gen.Code.ToString();
 			var syntaxTree = CSharpSyntaxTree.ParseText(text);
 
@@ -254,6 +258,12 @@ namespace LinqToDB.LINQPad
 						throw new Exception(diagnostic.ToString());
 				}
 			}
+	
+}
+catch(Exception ex)
+{
+	MessageBox.Show($"{ex}\n{ex.StackTrace}");
+}
 
 			return items;
 		}
