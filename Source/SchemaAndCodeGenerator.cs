@@ -688,10 +688,18 @@ namespace LinqToDB.LINQPad
 		static string ConvertToCompilable(string name)
 		{
 			var query =
-				from c in name
-				select c.IsLetterOrDigit() || c == '@' ? c : '_';
+				from c in name.TrimStart('@')
+				select c.IsLetterOrDigit() ? c : '_';
 
-			return new string(query.ToArray());
+			var arr = query.ToArray();
+
+			if (arr.Length == 0)
+				arr = new[] { '_' };
+
+			if (arr[0].IsDigit())
+				return '_' + new string(arr);
+
+			return new string(arr);
 		}
 	}
 }
