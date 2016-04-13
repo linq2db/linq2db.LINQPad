@@ -123,6 +123,43 @@ namespace LinqToDB.LINQPad
 
 		#endregion
 
+		#region CommandTimeout : int
+
+		private int _commandTimeout;
+		public  int  CommandTimeout
+		{
+			get { return _commandTimeout; }
+			set
+			{
+				if (_commandTimeout != value)
+				{
+					BeforeCommandTimeoutChanged(value);
+					_commandTimeout = value;
+					AfterCommandTimeoutChanged();
+
+					OnCommandTimeoutChanged();
+				}
+			}
+		}
+
+		#region INotifyPropertyChanged support
+
+		partial void BeforeCommandTimeoutChanged(int newValue);
+		partial void AfterCommandTimeoutChanged ();
+
+		public const string NameOfCommandTimeout = "CommandTimeout";
+
+		private static readonly PropertyChangedEventArgs _commandTimeoutChangedEventArgs = new PropertyChangedEventArgs(NameOfCommandTimeout);
+
+		private void OnCommandTimeoutChanged()
+		{
+			OnPropertyChanged(_commandTimeoutChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
 		#region Persist : bool
 
 		private bool _persist;

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using CodeJam;
+using CodeJam.Xml;
 
 using LinqToDB.Data;
 using LinqToDB.DataProvider;
@@ -24,8 +25,14 @@ namespace LinqToDB.LINQPad
 			UseProviderSpecificTypes = ((string)_cxInfo.DriverData.Element("useProviderSpecificTypes"))?.ToLower() == "true";
 			ProviderName             =  (string)_cxInfo.DriverData.Element("providerName");
 			ProviderVersion          =  (string)_cxInfo.DriverData.Element("providerVersion");
+			CommandTimeout           = _cxInfo.DriverData.OptionalElementValue("commandTimeout", x =>
+			{
+				int n;
+				return int.TryParse(x.Value, out n) ? n : 0;
+			}, 0);;
 		}
 
+		public readonly int          CommandTimeout;
 		public readonly bool         UseProviderSpecificTypes;
 		public readonly string       ProviderName;
 		public readonly string       ProviderVersion;
@@ -46,6 +53,8 @@ namespace LinqToDB.LINQPad
 
 			using (var db = new DataConnection(ProviderName, connectionString))
 			{
+				db.CommandTimeout = CommandTimeout;
+
 				_dataProvider = db.DataProvider;
 				_sqlBuilder   = _dataProvider.CreateSqlBuilder();
 
@@ -138,11 +147,12 @@ namespace LinqToDB.LINQPad
 				.AppendLine($"    public @{typeName}(string provider, string connectionString)")
 				.AppendLine( "      : base(provider, connectionString)")
 				.AppendLine( "    {")
-				.AppendLine( "      LinqToDB.DataProvider.Firebird.FirebirdConfiguration.QuoteIdentifiers = true;")
+				.AppendLine($"      CommandTimeout = {CommandTimeout};")
 				.AppendLine( "    }")
 				.AppendLine($"    public @{typeName}()")
 				.AppendLine($"      : base({ToCodeString(ProviderVersion ?? ProviderName)}, {ToCodeString(connectionString)})")
 				.AppendLine( "    {")
+				.AppendLine($"      CommandTimeout = {CommandTimeout};")
 				.AppendLine( "    }")
 				;
 

@@ -12,6 +12,7 @@
 			new NotifyingProperty("string",       "Name"),
 			new NotifyingProperty("ProviderInfo", "SelectedProvider"),
 			new NotifyingProperty("string",       "ConnectionString"),
+			new NotifyingProperty("int",          "CommandTimeout"),
 			new NotifyingProperty("bool",         "Persist"),
 			new NotifyingProperty("bool",         "IsProduction"),
 			new NotifyingProperty("bool",         "Pluralize"),

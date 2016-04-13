@@ -11,6 +11,7 @@ using System.Text;
 using System.Windows;
 
 using CodeJam;
+using CodeJam.Xml;
 
 using JetBrains.Annotations;
 
@@ -90,6 +91,11 @@ namespace LinqToDB.LINQPad
 			model.ExcludeSchemas           = cxInfo.DriverData.Element("excludeSchemas")          ?.Value;
 			model.UseProviderSpecificTypes = cxInfo.DriverData.Element("useProviderSpecificTypes")?.Value.ToLower() == "true";
 			model.UseCustomFormatter       = cxInfo.DriverData.Element("useCustomFormatter")      ?.Value.ToLower() == "true";
+			model.CommandTimeout           = cxInfo.DriverData.OptionalElementValue("commandTimeout", x =>
+			{
+				int n;
+				return int.TryParse(x.Value, out n) ? n : 0;
+			}, 0);
 
 			_cxInfo = cxInfo;
 
@@ -103,6 +109,7 @@ namespace LinqToDB.LINQPad
 				cxInfo.DriverData.SetElementValue("excludeSchemas",           model.ExcludeSchemas.IsNullOrWhiteSpace() ? null : model.ExcludeSchemas);
 				cxInfo.DriverData.SetElementValue("useProviderSpecificTypes", model.UseProviderSpecificTypes ? "true" : null);
 				cxInfo.DriverData.SetElementValue("useCustomFormatter",       model.UseCustomFormatter       ? "true" : null);
+				cxInfo.DriverData.SetElementValue("commandTimeout",           model.CommandTimeout.ToString());
 
 				switch (providerName)
 				{
@@ -129,6 +136,8 @@ namespace LinqToDB.LINQPad
 				{
 					using (var db = new LINQPadDataConnection(providerName, model.ConnectionString))
 					{
+						db.CommandTimeout = model.CommandTimeout;
+
 						cxInfo.DatabaseInfo.Provider  = db.Connection.GetType().Namespace;
 						cxInfo.DatabaseInfo.Server    = ((DbConnection)db.Connection).DataSource;
 						cxInfo.DatabaseInfo.Database  = db.Connection.Database;
