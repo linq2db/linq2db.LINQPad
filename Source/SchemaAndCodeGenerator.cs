@@ -455,6 +455,7 @@ namespace LinqToDB.LINQPad
 
 						return ret;
 					})
+					.OrderBy(p => p.Text)
 					.ToList(),
 			};
 
@@ -566,6 +567,7 @@ namespace LinqToDB.LINQPad
 
 						return ret;
 					})
+					.OrderBy(t => t.Text)
 					.ToList()
 			};
 
