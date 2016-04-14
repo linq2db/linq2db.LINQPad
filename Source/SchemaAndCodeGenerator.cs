@@ -25,11 +25,7 @@ namespace LinqToDB.LINQPad
 			UseProviderSpecificTypes = ((string)_cxInfo.DriverData.Element("useProviderSpecificTypes"))?.ToLower() == "true";
 			ProviderName             =  (string)_cxInfo.DriverData.Element("providerName");
 			ProviderVersion          =  (string)_cxInfo.DriverData.Element("providerVersion");
-			CommandTimeout           = _cxInfo.DriverData.OptionalElementValue("commandTimeout", x =>
-			{
-				int n;
-				return int.TryParse(x.Value, out n) ? n : 0;
-			}, 0);;
+			CommandTimeout           = _cxInfo.DriverData.OptionalElementValue("commandTimeout", str => str.ToInt() ?? 0, 0);
 		}
 
 		public readonly int          CommandTimeout;

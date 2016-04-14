@@ -57,11 +57,7 @@ namespace LinqToDB.LINQPad
 			model.ExcludeSchemas           = cxInfo.DriverData.Element("excludeSchemas")          ?.Value;
 			model.UseProviderSpecificTypes = cxInfo.DriverData.Element("useProviderSpecificTypes")?.Value.ToLower() == "true";
 			model.UseCustomFormatter       = cxInfo.DriverData.Element("useCustomFormatter")      ?.Value.ToLower() == "true";
-			model.CommandTimeout           = cxInfo.DriverData.OptionalElementValue("commandTimeout", x =>
-			{
-				int n;
-				return int.TryParse(x.Value, out n) ? n : 0;
-			}, 0);
+			model.CommandTimeout           = cxInfo.DriverData.OptionalElementValue("commandTimeout", str => str.ToInt() ?? 0, 0);
 
 			if (ConnectionDialog.Show(model, isDynamic ? (Func<ConnectionViewModel,Exception>)TestConnection : null))
 			{

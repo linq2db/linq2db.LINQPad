@@ -38,10 +38,7 @@ namespace LinqToDB.LINQPad
 			var configuration = cxInfo.DriverData.Element("customConfiguration")?.Value;
 
 			if (configuration != null)
-				return new[]
-				{
-					new ParameterDescriptor("configuration", typeof(string).FullName),
-				};
+				return new[] { new ParameterDescriptor("configuration", typeof(string).FullName) };
 
 			return base.GetContextConstructorParameters(cxInfo);
 		}
@@ -65,5 +62,10 @@ namespace LinqToDB.LINQPad
 					SqlConnection.ClearPool(connection);
 			}
 		}
+
+//		public override void PreprocessObjectToWrite(ref object objectToWrite, ObjectGraphInfo info)
+//		{
+//			objectToWrite = XmlFormatter.FormatValue(objectToWrite, info);
+//		}
 	}
 }

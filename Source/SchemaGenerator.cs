@@ -1,5 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Windows.Media.Animation;
+
+using LinqToDB.SchemaProvider;
+using LinqToDB.SqlProvider;
 
 using LINQPad.Extensibility.DataContext;
 
@@ -18,7 +25,115 @@ namespace LinqToDB.LINQPad
 
 		public IEnumerable<ExplorerItem> GetSchema()
 		{
-			yield break;
+			var tables = _customType.GetProperties()
+				.Where(p =>
+					!p.GetCustomAttributes().Any(a => IsSame(a.GetType(), typeof(ObsoleteAttribute))) &&
+					IsIQueriable(p.PropertyType))
+				.ToList();
+
+			var items = new List<ExplorerItem>();
+
+			if (tables.Any())
+				items.Add(GetTables("Tables", ExplorerIcon.Table, tables));
+
+			return items;
+		}
+
+		bool IsSame(Type type1, Type type2)
+		{
+			return type1.FullName == type2.FullName;
+		}
+
+		bool IsIQueriable(Type type)
+		{
+			do
+			{
+				if (type.IsGenericType)
+				{
+					var gtype = type.GetGenericTypeDefinition();
+
+					if (IsSame(gtype, typeof(IQueryable<>)))
+						return true;
+				}
+
+				foreach (var inf in type.GetInterfaces())
+					if (IsIQueriable(inf))
+						return true;
+
+				type = type.BaseType;
+				
+			} while(type != null);
+
+			return false;
+		}
+
+		ExplorerItem GetTables(string header, ExplorerIcon icon, IEnumerable<PropertyInfo> tableSource)
+		{
+			var tables = tableSource.ToList();
+			var dic    = new Dictionary<TableSchema,ExplorerItem>();
+
+			var items = new ExplorerItem(header, ExplorerItemKind.Category, icon)
+			{
+				Children = tables
+					.Select(t =>
+					{
+						var memberName = t.Name;
+
+//						var tableSqlName = _sqlBuilder.BuildTableName(
+//							new StringBuilder(),
+//							null,
+//							t.SchemaName == null ? null : (string)_sqlBuilder.Convert(t.SchemaName, ConvertType.NameToOwner),
+//							(string)_sqlBuilder.Convert(t.TableName,  ConvertType.NameToQueryTable)).ToString();
+
+						//Debug.WriteLine($"Table: [{t.SchemaName}].[{t.TableName}] - ${tableSqlName}");
+
+						var ret = new ExplorerItem(memberName, ExplorerItemKind.QueryableObject, icon)
+						{
+							DragText     = memberName,
+//							ToolTipText  = $"ITable<{t.TypeName}>",
+//							SqlName      = tableSqlName,
+							IsEnumerable = true,
+//							Children     = t.Columns.Select(GetColumnItem).ToList()
+						};
+
+						return ret;
+					})
+					.OrderBy(t => t.Text)
+					.ToList()
+			};
+
+//			foreach (var table in tables.Where(t => dic.ContainsKey(t)))
+//			{
+//				var entry = dic[table];
+//
+//				foreach (var key in table.ForeignKeys)
+//				{
+//					var typeName = key.AssociationType == AssociationType.OneToMany
+//						? $"List<{key.OtherTable.TypeName}>"
+//						: key.OtherTable.TypeName;
+//
+//					entry.Children.Add(
+//						new ExplorerItem(
+//							key.MemberName,
+//							key.AssociationType == AssociationType.OneToMany
+//								? ExplorerItemKind.CollectionLink
+//								: ExplorerItemKind.ReferenceLink,
+//							key.AssociationType == AssociationType.OneToMany
+//								? ExplorerIcon.OneToMany
+//								: key.AssociationType == AssociationType.ManyToOne
+//									? ExplorerIcon.ManyToOne
+//									: ExplorerIcon.OneToOne)
+//						{
+//							DragText        = key.MemberName,
+//							ToolTipText     = typeName + (key.BackReference == null ? " // Back Reference" : ""),
+//							SqlName         = key.KeyName,
+//							IsEnumerable    = key.AssociationType == AssociationType.OneToMany,
+//							HyperlinkTarget = dic.ContainsKey(key.OtherTable) ? dic[key.OtherTable] : null,
+//						});
+//				}
+//			}
+
+			return items;
 		}
 
 		/*public IEnumerable<ExplorerItem> GetItemsAndCode(string nameSpace, string typeName)
@@ -170,76 +285,6 @@ namespace LinqToDB.LINQPad
 			return items;
 		}
 
-		ExplorerItem GetTables(string header, ExplorerIcon icon, IEnumerable<TableSchema> tableSource)
-		{
-			var tables = tableSource.ToList();
-			var dic    = new Dictionary<TableSchema,ExplorerItem>();
-
-			var items = new ExplorerItem(header, ExplorerItemKind.Category, icon)
-			{
-				Children = tables
-					.Select(t =>
-					{
-						var memberName = _contextMembers[t];
-
-						var tableSqlName = _sqlBuilder.BuildTableName(
-							new StringBuilder(),
-							null,
-							t.SchemaName == null ? null : (string)_sqlBuilder.Convert(t.SchemaName, ConvertType.NameToOwner),
-							(string)_sqlBuilder.Convert(t.TableName,  ConvertType.NameToQueryTable)).ToString();
-
-						//Debug.WriteLine($"Table: [{t.SchemaName}].[{t.TableName}] - ${tableSqlName}");
-
-						var ret = new ExplorerItem(memberName, ExplorerItemKind.QueryableObject, icon)
-						{
-							DragText     = memberName,
-							ToolTipText  = $"ITable<{t.TypeName}>",
-							SqlName      = tableSqlName,
-							IsEnumerable = true,
-							Children     = t.Columns.Select(GetColumnItem).ToList()
-						};
-
-						dic[t] = ret;
-
-						return ret;
-					})
-					.OrderBy(t => t.Text)
-					.ToList()
-			};
-
-			foreach (var table in tables.Where(t => dic.ContainsKey(t)))
-			{
-				var entry = dic[table];
-
-				foreach (var key in table.ForeignKeys)
-				{
-					var typeName = key.AssociationType == AssociationType.OneToMany
-						? $"List<{key.OtherTable.TypeName}>"
-						: key.OtherTable.TypeName;
-
-					entry.Children.Add(
-						new ExplorerItem(
-							key.MemberName,
-							key.AssociationType == AssociationType.OneToMany
-								? ExplorerItemKind.CollectionLink
-								: ExplorerItemKind.ReferenceLink,
-							key.AssociationType == AssociationType.OneToMany
-								? ExplorerIcon.OneToMany
-								: key.AssociationType == AssociationType.ManyToOne
-									? ExplorerIcon.ManyToOne
-									: ExplorerIcon.OneToOne)
-						{
-							DragText        = key.MemberName,
-							ToolTipText     = typeName + (key.BackReference == null ? " // Back Reference" : ""),
-							SqlName         = key.KeyName,
-							IsEnumerable    = key.AssociationType == AssociationType.OneToMany,
-							HyperlinkTarget = dic.ContainsKey(key.OtherTable) ? dic[key.OtherTable] : null,
-						});
-				}
-			}
-
-			return items;
-		}
 		*/
 	}
 }
