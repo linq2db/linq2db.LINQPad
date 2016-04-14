@@ -293,11 +293,11 @@ namespace LinqToDB.LINQPad
 
 				spName += inputParameters.Count == 0 ? ");" : ",";
 
-				var retName = "ret";
+				var retName = "__ret__";
 				var retNo   = 0;
 
 				while (p.Parameters.Any(pp => pp.ParameterName == retName))
-					retName = "ret" + ++retNo;
+					retName = "__ret__" + ++retNo;
 
 				var hasOut = outputParameters.Any(pr => pr.IsOut);
 				var prefix = hasOut ? $"var {retName} =" : "return";
