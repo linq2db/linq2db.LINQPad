@@ -1554,7 +1554,7 @@
             A sequence of chunks of the specified size.
             </returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Byte})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Byte})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1564,7 +1564,20 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Byte}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Byte})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Byte}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1574,7 +1587,20 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.SByte})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Byte}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.SByte})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1584,7 +1610,20 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.SByte}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.SByte})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.SByte}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1594,7 +1633,20 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int16})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.SByte}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int16})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1604,7 +1656,20 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int16}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int16})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int16}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1614,7 +1679,20 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt16})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int16}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt16})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1624,7 +1702,20 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt16}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt16})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt16}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1634,7 +1725,20 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt16}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1644,7 +1748,20 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int32}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int32}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1654,7 +1771,20 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt32})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int32}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt32})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1664,7 +1794,20 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt32}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt32})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt32}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1674,7 +1817,20 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int64})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt32}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int64})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1684,7 +1840,20 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int64}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int64})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int64}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1694,7 +1863,20 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt64})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int64}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt64})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1704,7 +1886,20 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt64}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt64})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt64}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1714,7 +1909,20 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Single})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt64}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Single})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1724,7 +1932,20 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Single}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Single})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Single}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1734,7 +1955,20 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Double})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Single}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Double})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1744,7 +1978,20 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Double}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Double})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Double}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1754,7 +2001,20 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Decimal})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Double}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Decimal})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1764,7 +2024,20 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Decimal}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Decimal})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Decimal}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1774,7 +2047,7 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Byte})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Decimal}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1782,9 +2055,12 @@
             <typeparam name="TSource">The type of the elements of source.</typeparam>
             <param name="source">A sequence of values to determine the minimum value of.</param>
             <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Byte}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Byte})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1792,9 +2068,9 @@
             <typeparam name="TSource">The type of the elements of source.</typeparam>
             <param name="source">A sequence of values to determine the minimum value of.</param>
             <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
+            <returns>The item with maximum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.SByte})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Byte})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1802,9 +2078,12 @@
             <typeparam name="TSource">The type of the elements of source.</typeparam>
             <param name="source">A sequence of values to determine the minimum value of.</param>
             <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.SByte}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Byte}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1812,9 +2091,9 @@
             <typeparam name="TSource">The type of the elements of source.</typeparam>
             <param name="source">A sequence of values to determine the minimum value of.</param>
             <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
+            <returns>The item with maximum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int16})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Byte}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1822,9 +2101,12 @@
             <typeparam name="TSource">The type of the elements of source.</typeparam>
             <param name="source">A sequence of values to determine the minimum value of.</param>
             <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int16}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.SByte})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1832,9 +2114,9 @@
             <typeparam name="TSource">The type of the elements of source.</typeparam>
             <param name="source">A sequence of values to determine the minimum value of.</param>
             <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
+            <returns>The item with maximum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt16})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.SByte})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1842,9 +2124,12 @@
             <typeparam name="TSource">The type of the elements of source.</typeparam>
             <param name="source">A sequence of values to determine the minimum value of.</param>
             <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt16}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.SByte}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1852,9 +2137,9 @@
             <typeparam name="TSource">The type of the elements of source.</typeparam>
             <param name="source">A sequence of values to determine the minimum value of.</param>
             <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
+            <returns>The item with maximum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.SByte}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1862,9 +2147,12 @@
             <typeparam name="TSource">The type of the elements of source.</typeparam>
             <param name="source">A sequence of values to determine the minimum value of.</param>
             <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int32}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int16})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1872,9 +2160,9 @@
             <typeparam name="TSource">The type of the elements of source.</typeparam>
             <param name="source">A sequence of values to determine the minimum value of.</param>
             <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
+            <returns>The item with maximum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt32})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int16})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1882,9 +2170,12 @@
             <typeparam name="TSource">The type of the elements of source.</typeparam>
             <param name="source">A sequence of values to determine the minimum value of.</param>
             <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt32}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int16}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1892,9 +2183,9 @@
             <typeparam name="TSource">The type of the elements of source.</typeparam>
             <param name="source">A sequence of values to determine the minimum value of.</param>
             <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
+            <returns>The item with maximum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int64})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int16}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1902,9 +2193,12 @@
             <typeparam name="TSource">The type of the elements of source.</typeparam>
             <param name="source">A sequence of values to determine the minimum value of.</param>
             <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int64}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt16})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1912,9 +2206,9 @@
             <typeparam name="TSource">The type of the elements of source.</typeparam>
             <param name="source">A sequence of values to determine the minimum value of.</param>
             <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
+            <returns>The item with maximum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt64})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt16})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1922,9 +2216,12 @@
             <typeparam name="TSource">The type of the elements of source.</typeparam>
             <param name="source">A sequence of values to determine the minimum value of.</param>
             <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt64}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt16}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1932,9 +2229,9 @@
             <typeparam name="TSource">The type of the elements of source.</typeparam>
             <param name="source">A sequence of values to determine the minimum value of.</param>
             <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
+            <returns>The item with maximum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Single})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt16}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1942,9 +2239,12 @@
             <typeparam name="TSource">The type of the elements of source.</typeparam>
             <param name="source">A sequence of values to determine the minimum value of.</param>
             <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Single}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1952,9 +2252,9 @@
             <typeparam name="TSource">The type of the elements of source.</typeparam>
             <param name="source">A sequence of values to determine the minimum value of.</param>
             <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
+            <returns>The item with maximum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Double})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1962,9 +2262,12 @@
             <typeparam name="TSource">The type of the elements of source.</typeparam>
             <param name="source">A sequence of values to determine the minimum value of.</param>
             <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Double}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int32}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1972,9 +2275,9 @@
             <typeparam name="TSource">The type of the elements of source.</typeparam>
             <param name="source">A sequence of values to determine the minimum value of.</param>
             <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
+            <returns>The item with maximum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Decimal})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int32}})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1982,9 +2285,12 @@
             <typeparam name="TSource">The type of the elements of source.</typeparam>
             <param name="source">A sequence of values to determine the minimum value of.</param>
             <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Decimal}})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt32})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -1992,7 +2298,273 @@
             <typeparam name="TSource">The type of the elements of source.</typeparam>
             <param name="source">A sequence of values to determine the minimum value of.</param>
             <param name="selector">A transform function to apply to each element.</param>
-            <returns>The item with minimum value in the sequence.</returns>
+            <returns>The item with maximum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt32})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt32}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with maximum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt32}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int64})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with maximum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int64})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int64}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with maximum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int64}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt64})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with maximum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.UInt64})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt64}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with maximum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.UInt64}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Single})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with maximum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Single})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Single}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with maximum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Single}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Double})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with maximum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Double})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Double}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with maximum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Double}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Decimal})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with maximum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Decimal})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Decimal}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The item with maximum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Decimal}})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
         </member>
         <member name="M:CodeJam.Collections.EnumerableExtensions.TopoSort``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Collections.Generic.IEnumerable{``0}})">
             <summary>
@@ -2211,7 +2783,7 @@
             Returns string representations of <paramref name="source"/> items.
             </summary>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -2221,8 +2793,24 @@
             <param name="source">A sequence of values to determine the minimum value of.</param>
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with minimum value in the sequence.</returns>
+            <exception cref="T:System.InvalidOperationException"><paramref name="source"/> has no not null elements</exception>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MinItem``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <typeparam name="TValue">Type of the value</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+            <exception cref="T:System.InvalidOperationException"><paramref name="source"/> has no not null elements</exception>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with minimum value.
@@ -2233,8 +2821,24 @@
             <param name="selector">A transform function to apply to each element.</param>
             <param name="comparer">The <see cref="T:System.Collections.Generic.IComparer`1"/> to compare values.</param>
             <returns>The item with minimum value in the sequence.</returns>
+            <exception cref="T:System.InvalidOperationException"><paramref name="source"/> has no not null elements</exception>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MinByOrDefault``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with minimum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <typeparam name="TValue">Type of the value</typeparam>
+            <param name="source">A sequence of values to determine the minimum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <param name="comparer">The <see cref="T:System.Collections.Generic.IComparer`1"/> to compare values.</param>
+            <returns>
+            The item with minimum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with maximum value.
@@ -2245,7 +2849,21 @@
             <param name="selector">A transform function to apply to each element.</param>
             <returns>The item with maximum value in the sequence.</returns>
         </member>
-        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxItem``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with maximum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <typeparam name="TValue">Type of the value</typeparam>
+            <param name="source">A sequence of values to determine the maximum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
             <summary>
             Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
             and returns the item with maximum value.
@@ -2256,6 +2874,21 @@
             <param name="selector">A transform function to apply to each element.</param>
             <param name="comparer">The <see cref="T:System.Collections.Generic.IComparer`1"/> to compare values.</param>
             <returns>The item with maximum value in the sequence.</returns>
+        </member>
+        <member name="M:CodeJam.Collections.EnumerableExtensions.MaxByOrDefault``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+            <summary>
+            Invokes a <paramref name="selector"/> on each element of a <paramref name="source"/>
+            and returns the item with maximum value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <typeparam name="TValue">Type of the value</typeparam>
+            <param name="source">A sequence of values to determine the maximum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <param name="comparer">The <see cref="T:System.Collections.Generic.IComparer`1"/> to compare values.</param>
+            <returns>
+            The item with maximum value in the sequence or <typeparamref name="TSource"/> default value if
+            <paramref name="source"/> has no not null elements.
+            </returns>
         </member>
         <member name="T:CodeJam.Collections.IndexedItem`1">
             <summary>
@@ -3910,6 +4543,13 @@
             <item>If the member is an event, returns <see cref="P:System.Reflection.EventInfo.EventHandlerType"/>.</item>
             </list>
             </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsAnonymous(System.Type)">
+            <summary>
+            Checks if <paramref name="type"/> is an anonymous type.
+            </summary>
+            <param name="type">Type to check.</param>
+            <returns>True, if <paramref name="type"/> is an anonymous type.</returns>
         </member>
         <member name="M:CodeJam.Reflection.ReflectionExtensions.CreateInstance(System.Type,CodeJam.Reflection.ParamInfo[])">
             <summary>
@@ -6119,6 +6759,52 @@
             <param name="str">The string containing the characters to encode.</param>
             <returns>A byte array containing the results of encoding the specified set of characters.</returns>
         </member>
+        <member name="M:CodeJam.StringExtensions.ToInt(System.String,System.Globalization.NumberStyles,System.IFormatProvider)">
+            <summary>
+            Converts the string representation of a number in a specified style and culture-specific format to its 32-bit
+            signed integer equivalent. A return value indicates whether the conversion succeeded.
+            </summary>
+            <param name="str">
+            A string containing a number to convert. The string is interpreted using the style specified by
+            <paramref name="numberStyle"/>.
+            </param>
+            <param name="numberStyle">
+            A bitwise combination of enumeration values that indicates the style elements that can be present in
+            <paramref name="str"/>. Default value is Integer.
+            </param>
+            <param name="provider">
+            An object that supplies culture-specific formatting information about <paramref name="str"/>.
+            </param>
+            <returns>
+            When this method returns, contains the 32-bit signed integer value equivalent of the number contained in
+            <paramref name="str"/>, if the conversion succeeded, or null if the conversion failed. The conversion fails if
+            the <paramref name="str"/> parameter is null or String.Empty, is not in a format compliant withstyle, or
+            represents a number less than <see cref="F:System.Int32.MinValue"/> or greater than <see cref="F:System.Int32.MaxValue"/>.
+            </returns>
+        </member>
+        <member name="M:CodeJam.StringExtensions.ToDouble(System.String,System.Globalization.NumberStyles,System.IFormatProvider)">
+            <summary>
+            Converts the string representation of a number in a specified style and culture-specific format to its
+            <see cref="T:System.Double"/> equivalent. A return value indicates whether the conversion succeeded.
+            </summary>
+            <param name="str">
+            A string containing a number to convert. The string is interpreted using the style specified by
+            <paramref name="numberStyle"/>.
+            </param>
+            <param name="numberStyle">
+            A bitwise combination of enumeration values that indicates the style elements that can be present in
+            <paramref name="str"/>. Default value is Float.
+            </param>
+            <param name="provider">
+            An object that supplies culture-specific formatting information about <paramref name="str"/>.
+            </param>
+            <returns>
+            When this method returns, contains the <see cref="T:System.Double"/> value equivalent of the number contained in
+            <paramref name="str"/>, if the conversion succeeded, or null if the conversion failed. The conversion fails if
+            the <paramref name="str"/> parameter is null or String.Empty, is not in a format compliant withstyle, or
+            represents a number less than <see cref="F:System.Double.MinValue"/> or greater than <see cref="F:System.Double.MaxValue"/>.
+            </returns>
+        </member>
         <member name="T:CodeJam.StringOrigin">
             <summary>
             String functions relative parameters origin
@@ -6217,6 +6903,16 @@
             </summary>
             <param name="parent">Parent element.</param>
             <param name="valueSelector">Function to select element value</param>
+            <param name="defaultValue">Default value.</param>
+            <param name="name">Element name.</param>
+            <returns>Selected element value or <paramref name="defaultValue"/> if element does not exist</returns>
+        </member>
+        <member name="M:CodeJam.Xml.XNodeExtensions.OptionalElementValue``1(System.Xml.Linq.XElement,System.Xml.Linq.XName,System.Func{System.String,``0},``0)">
+            <summary>
+            Returns value of optional element.
+            </summary>
+            <param name="parent">Parent element.</param>
+            <param name="valueSelector">Function to parse element value</param>
             <param name="defaultValue">Default value.</param>
             <param name="name">Element name.</param>
             <returns>Selected element value or <paramref name="defaultValue"/> if element does not exist</returns>
