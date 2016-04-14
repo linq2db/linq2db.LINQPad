@@ -4,6 +4,7 @@
 <#@ include file="$(ProjectDir)LinqToDB.Templates\NotifyPropertyChanged.ttinclude" #>
 <#
 	Model.Usings.Add("System.Collections.ObjectModel");
+	Model.Usings.Add("System.Windows");
 
 	Model.Namespace.Name = "LinqToDB.LINQPad";
 
@@ -23,6 +24,13 @@
 			new NotifyingProperty("bool",         "UseProviderSpecificTypes"),
 			new NotifyingProperty("string",       "IncludeSchemas"),
 			new NotifyingProperty("string",       "ExcludeSchemas"),
+			new NotifyingProperty("string",       "CustomAssemblyPath"),
+			new NotifyingProperty("string",       "CustomTypeName"),
+			new NotifyingProperty("string",       "AppConfigPath"),
+			new NotifyingProperty("string",       "CustomConfiguration"),
+			new NotifyingProperty("bool",         "IsDynamic", "IsDynamic", "DynamicVisibility", "StaticVisibility"),
+			new NotifyingProperty("Visibility",   "DynamicVisibility").InitGetter("IsDynamic ? Visibility.Visible : Visibility.Collapsed"),
+			new NotifyingProperty("Visibility",   "StaticVisibility").InitGetter("!IsDynamic ? Visibility.Visible : Visibility.Collapsed"),
 			new NotifyingProperty("ObservableCollection<ProviderInfo>", "Providers"))
 	);
 

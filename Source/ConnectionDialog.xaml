@@ -25,8 +25,60 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<GroupBox Grid.Row="0" Header="Data Connection Options">
+		<GroupBox Grid.Row="0" Header="Custom Assembly Options" Visibility="{Binding StaticVisibility}">
 			<Grid Margin="5">
+				<Grid.RowDefinitions>
+					<RowDefinition/>
+					<RowDefinition/>
+					<RowDefinition/>
+					<RowDefinition/>
+					<RowDefinition/>
+					<RowDefinition/>
+					<RowDefinition/>
+					<RowDefinition/>
+				</Grid.RowDefinitions>
+
+				<DockPanel Grid.Row="0">
+					<Label Padding="0,0,0,3" DockPanel.Dock="Right">
+						<Hyperlink Click="BrowseAssembly">Browse...</Hyperlink>
+					</Label>
+					<Label Padding="1,0,1,3">Path to custom assembly</Label>
+				</DockPanel>
+				<TextBox Grid.Row="1" Text="{Binding CustomAssemblyPath}" />
+
+				<DockPanel Grid.Row="2">
+					<Label Padding="0,3,0,3" DockPanel.Dock="Right">
+						<Hyperlink Click="ChooseType">Choose...</Hyperlink>
+					</Label>
+					<Label Padding="1,3,1,3">Full name of custome type</Label>
+				</DockPanel>
+				<TextBox Grid.Row="3" Text="{Binding CustomTypeName}" />
+
+				<DockPanel Grid.Row="4">
+					<Label Padding="0,3,0,3" DockPanel.Dock="Right">
+						<Hyperlink Click="BrowseAppConfig">Browse...</Hyperlink>
+					</Label>
+					<Label Padding="1,3,1,3">Application config file (if required)</Label>
+				</DockPanel>
+				<TextBox Grid.Row="5" Text="{Binding AppConfigPath}" />
+
+				<DockPanel Grid.Row="6">
+					<Label Padding="0,3,0,3" DockPanel.Dock="Right">
+						<Hyperlink Click="ChooseConfiguration">Choose...</Hyperlink>
+					</Label>
+					<Label Padding="1,3,1,3">Configuration (optional)</Label>
+				</DockPanel>
+				<TextBox Grid.Row="7" Text="{Binding CustomConfiguration}" />
+			</Grid>
+		</GroupBox>
+
+		<GroupBox Grid.Row="1" Header="Data Connection Options" Visibility="{Binding DynamicVisibility}">
+			<Grid Margin="5">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="87*"/>
+					<ColumnDefinition Width="52*"/>
+					<ColumnDefinition Width="363*"/>
+				</Grid.ColumnDefinitions>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
@@ -34,24 +86,24 @@
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
-				
-				<StackPanel Grid.Row="0" Margin="0,0,0,5">
+
+				<StackPanel Grid.Row="0" Margin="0,0,0,5" Grid.ColumnSpan="3">
 					<Label Padding="0,0,0,3">Data Provider</Label>
 					<ComboBox ItemsSource="{Binding Providers}" SelectedValue="{Binding SelectedProvider}" DisplayMemberPath="Description" />
 				</StackPanel>
 
-				<StackPanel Grid.Row="1" Margin="0,0,0,5">
+				<StackPanel Grid.Row="1" Margin="0,0,0,5" Grid.ColumnSpan="3">
 					<Label Padding="0,0,0,3">Connection String</Label>
 					<TextBox Text="{Binding ConnectionString}" TextWrapping="Wrap" Height="60" VerticalScrollBarVisibility="Auto" />
 				</StackPanel>
 
-				<Grid Grid.Row="2">
+				<Grid Grid.Row="2" Grid.ColumnSpan="3">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition/>
 						<ColumnDefinition/>
 					</Grid.ColumnDefinitions>
-					
-					<CheckBox Grid.Column="0" Content="Encrypt Connection String" FontSize="12" IsChecked="{Binding EncryptConnectionString}" Margin="0,5" />
+
+					<CheckBox Grid.Column="0" Content="Encrypt Connection String" FontSize="12" IsChecked="{Binding EncryptConnectionString}" Margin="0,5,0,0" />
 
 					<StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
 						<xctk:IntegerUpDown Value="{Binding CommandTimeout}" Increment="1" Minimum="0" Width="50" Height="20" FontSize="12" />
@@ -59,19 +111,19 @@
 					</StackPanel>
 				</Grid>
 
-				<StackPanel Grid.Row="3" Margin="0,0,0,5">
+				<StackPanel Grid.Row="3" Margin="0,5,0,5" Grid.ColumnSpan="3" >
 					<Label Padding="0,0,0,3">Include Schemas (dbo,master) (optional)</Label>
 					<TextBox Text="{Binding IncludeSchemas}" />
 				</StackPanel>
 
-				<StackPanel Grid.Row="4" Margin="0,0,0,0">
+				<StackPanel Grid.Row="4" Margin="0,0,0,0" Grid.ColumnSpan="3" >
 					<Label Padding="0,0,0,3">Exclude Schemas (dbo,master) (optional)</Label>
 					<TextBox Text="{Binding ExcludeSchemas}" />
 				</StackPanel>
 			</Grid>
 		</GroupBox>
 
-		<Grid Grid.Row="1" >
+		<Grid Grid.Row="2" Visibility="{Binding DynamicVisibility}" >
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition/>
 				<ColumnDefinition/>
@@ -93,7 +145,7 @@
 			</GroupBox>
 		</Grid>
 
-		<GroupBox Grid.Row="2" Header="Connection Options">
+		<GroupBox Grid.Row="3" Header="Connection Options">
 			<StackPanel Margin="5">
 				<Label Padding="0,0,0,3">Friendly Name (optional)</Label>
 				<TextBox Text="{Binding Name}" />
@@ -102,7 +154,7 @@
 						<ColumnDefinition />
 						<ColumnDefinition />
 					</Grid.ColumnDefinitions>
-					
+
 					<StackPanel Grid.Column="0">
 						<CheckBox Content="Remember this connection" FontSize="12" IsChecked="{Binding Persist}" Margin="0,0,0,5" />
 						<CheckBox Content="Contains production data" FontSize="12" IsChecked="{Binding IsProduction}" />
@@ -111,7 +163,7 @@
 			</StackPanel>
 		</GroupBox>
 
-		<Grid Grid.Row="3" Margin="0,10,0,5">
+		<Grid Grid.Row="4" Margin="0,10,0,5">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition/>
 				<ColumnDefinition Width="70" />

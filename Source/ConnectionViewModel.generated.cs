@@ -7,6 +7,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows;
 
 namespace LinqToDB.LINQPad
 {
@@ -524,6 +525,237 @@ namespace LinqToDB.LINQPad
 		private void OnExcludeSchemasChanged()
 		{
 			OnPropertyChanged(_excludeSchemasChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
+		#region CustomAssemblyPath : string
+
+		private string _customAssemblyPath;
+		public  string  CustomAssemblyPath
+		{
+			get { return _customAssemblyPath; }
+			set
+			{
+				if (_customAssemblyPath != value)
+				{
+					BeforeCustomAssemblyPathChanged(value);
+					_customAssemblyPath = value;
+					AfterCustomAssemblyPathChanged();
+
+					OnCustomAssemblyPathChanged();
+				}
+			}
+		}
+
+		#region INotifyPropertyChanged support
+
+		partial void BeforeCustomAssemblyPathChanged(string newValue);
+		partial void AfterCustomAssemblyPathChanged ();
+
+		public const string NameOfCustomAssemblyPath = "CustomAssemblyPath";
+
+		private static readonly PropertyChangedEventArgs _customAssemblyPathChangedEventArgs = new PropertyChangedEventArgs(NameOfCustomAssemblyPath);
+
+		private void OnCustomAssemblyPathChanged()
+		{
+			OnPropertyChanged(_customAssemblyPathChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
+		#region CustomTypeName : string
+
+		private string _customTypeName;
+		public  string  CustomTypeName
+		{
+			get { return _customTypeName; }
+			set
+			{
+				if (_customTypeName != value)
+				{
+					BeforeCustomTypeNameChanged(value);
+					_customTypeName = value;
+					AfterCustomTypeNameChanged();
+
+					OnCustomTypeNameChanged();
+				}
+			}
+		}
+
+		#region INotifyPropertyChanged support
+
+		partial void BeforeCustomTypeNameChanged(string newValue);
+		partial void AfterCustomTypeNameChanged ();
+
+		public const string NameOfCustomTypeName = "CustomTypeName";
+
+		private static readonly PropertyChangedEventArgs _customTypeNameChangedEventArgs = new PropertyChangedEventArgs(NameOfCustomTypeName);
+
+		private void OnCustomTypeNameChanged()
+		{
+			OnPropertyChanged(_customTypeNameChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
+		#region AppConfigPath : string
+
+		private string _appConfigPath;
+		public  string  AppConfigPath
+		{
+			get { return _appConfigPath; }
+			set
+			{
+				if (_appConfigPath != value)
+				{
+					BeforeAppConfigPathChanged(value);
+					_appConfigPath = value;
+					AfterAppConfigPathChanged();
+
+					OnAppConfigPathChanged();
+				}
+			}
+		}
+
+		#region INotifyPropertyChanged support
+
+		partial void BeforeAppConfigPathChanged(string newValue);
+		partial void AfterAppConfigPathChanged ();
+
+		public const string NameOfAppConfigPath = "AppConfigPath";
+
+		private static readonly PropertyChangedEventArgs _appConfigPathChangedEventArgs = new PropertyChangedEventArgs(NameOfAppConfigPath);
+
+		private void OnAppConfigPathChanged()
+		{
+			OnPropertyChanged(_appConfigPathChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
+		#region CustomConfiguration : string
+
+		private string _customConfiguration;
+		public  string  CustomConfiguration
+		{
+			get { return _customConfiguration; }
+			set
+			{
+				if (_customConfiguration != value)
+				{
+					BeforeCustomConfigurationChanged(value);
+					_customConfiguration = value;
+					AfterCustomConfigurationChanged();
+
+					OnCustomConfigurationChanged();
+				}
+			}
+		}
+
+		#region INotifyPropertyChanged support
+
+		partial void BeforeCustomConfigurationChanged(string newValue);
+		partial void AfterCustomConfigurationChanged ();
+
+		public const string NameOfCustomConfiguration = "CustomConfiguration";
+
+		private static readonly PropertyChangedEventArgs _customConfigurationChangedEventArgs = new PropertyChangedEventArgs(NameOfCustomConfiguration);
+
+		private void OnCustomConfigurationChanged()
+		{
+			OnPropertyChanged(_customConfigurationChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
+		#region IsDynamic : bool
+
+		private bool _isDynamic;
+		public  bool  IsDynamic
+		{
+			get { return _isDynamic; }
+			set
+			{
+				if (_isDynamic != value)
+				{
+					BeforeIsDynamicChanged(value);
+					_isDynamic = value;
+					AfterIsDynamicChanged();
+
+					OnIsDynamicChanged();
+					OnDynamicVisibilityChanged();
+					OnStaticVisibilityChanged();
+				}
+			}
+		}
+
+		#region INotifyPropertyChanged support
+
+		partial void BeforeIsDynamicChanged(bool newValue);
+		partial void AfterIsDynamicChanged ();
+
+		public const string NameOfIsDynamic = "IsDynamic";
+
+		private static readonly PropertyChangedEventArgs _isDynamicChangedEventArgs = new PropertyChangedEventArgs(NameOfIsDynamic);
+
+		private void OnIsDynamicChanged()
+		{
+			OnPropertyChanged(_isDynamicChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
+		#region DynamicVisibility : Visibility
+
+		public Visibility DynamicVisibility
+		{
+			get { return IsDynamic ? Visibility.Visible : Visibility.Collapsed; }
+		}
+
+		#region INotifyPropertyChanged support
+
+		public const string NameOfDynamicVisibility = "DynamicVisibility";
+
+		private static readonly PropertyChangedEventArgs _dynamicVisibilityChangedEventArgs = new PropertyChangedEventArgs(NameOfDynamicVisibility);
+
+		private void OnDynamicVisibilityChanged()
+		{
+			OnPropertyChanged(_dynamicVisibilityChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
+		#region StaticVisibility : Visibility
+
+		public Visibility StaticVisibility
+		{
+			get { return !IsDynamic ? Visibility.Visible : Visibility.Collapsed; }
+		}
+
+		#region INotifyPropertyChanged support
+
+		public const string NameOfStaticVisibility = "StaticVisibility";
+
+		private static readonly PropertyChangedEventArgs _staticVisibilityChangedEventArgs = new PropertyChangedEventArgs(NameOfStaticVisibility);
+
+		private void OnStaticVisibilityChanged()
+		{
+			OnPropertyChanged(_staticVisibilityChangedEventArgs);
 		}
 
 		#endregion
