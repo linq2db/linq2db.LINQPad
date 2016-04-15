@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Linq;
+using System.Text;
 
 using CodeJam;
 using CodeJam.Xml;
 
+using LinqToDB.Common;
 using LinqToDB.Data;
 
 using LINQPad.Extensibility.DataContext;
@@ -188,5 +191,44 @@ namespace LinqToDB.LINQPad
 		}
 
 		#endregion
+
+		public static Action<TraceInfo> GetOnTraceConnection(QueryExecutionManager executionManager)
+		{
+			return info =>
+			{
+				if (info.BeforeExecute)
+				{
+					executionManager.SqlTranslationWriter.WriteLine(info.SqlText);
+				}
+				else if (info.TraceLevel == TraceLevel.Error)
+				{
+					var sb = new StringBuilder();
+
+					for (var ex = info.Exception; ex != null; ex = ex.InnerException)
+					{
+						sb
+							.AppendLine()
+							.AppendLine("/*")
+							.AppendFormat("Exception: {0}", ex.GetType())
+							.AppendLine()
+							.AppendFormat("Message  : {0}", ex.Message)
+							.AppendLine()
+							.AppendLine(ex.StackTrace)
+							.AppendLine("*/")
+							;
+					}
+
+					executionManager.SqlTranslationWriter.WriteLine(sb.ToString());
+				}
+				else if (info.RecordsAffected != null)
+				{
+					executionManager.SqlTranslationWriter.WriteLine("-- Execution time: {0}. Records affected: {1}.\r\n".Args(info.ExecutionTime, info.RecordsAffected));
+				}
+				else
+				{
+					executionManager.SqlTranslationWriter.WriteLine("-- Execution time: {0}\r\n".Args(info.ExecutionTime));
+				}
+			};
+		}
 	}
 }

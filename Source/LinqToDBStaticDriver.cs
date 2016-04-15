@@ -5,6 +5,8 @@ using System.Linq;
 
 using JetBrains.Annotations;
 
+using LinqToDB.Data;
+
 using LINQPad.Extensibility.DataContext;
 
 namespace LinqToDB.LINQPad
@@ -61,6 +63,24 @@ namespace LinqToDB.LINQPad
 				if (connection != null)
 					SqlConnection.ClearPool(connection);
 			}
+		}
+
+		public override void InitializeContext(IConnectionInfo cxInfo, object context, QueryExecutionManager executionManager)
+		{
+			dynamic ctx = context;
+
+			if (Extensions.HasProperty(ctx, nameof(DataConnection.OnTraceConnection)))
+			{
+				ctx.OnTraceConnection = DriverHelper.GetOnTraceConnection(executionManager);
+				DataConnection.TurnTraceSwitchOn();
+			}
+		}
+
+		public override void TearDownContext(IConnectionInfo cxInfo, object context, QueryExecutionManager executionManager,
+			object[] constructorArguments)
+		{
+			dynamic ctx = context;
+			ctx.Dispose();
 		}
 
 //		public override void PreprocessObjectToWrite(ref object objectToWrite, ObjectGraphInfo info)

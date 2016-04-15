@@ -171,6 +171,7 @@
       <DependentUpon>ConnectionViewModel.tt</DependentUpon>
     </Compile>
     <Compile Include="DriverHelper.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="LINQPadDataConnection.cs" />
     <Compile Include="LinqToDBDriver.cs" />
     <Compile Include="LinqToDBStaticDriver.cs" />

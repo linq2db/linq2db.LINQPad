@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Windows;
 
 using JetBrains.Annotations;
 
-using LinqToDB.Common;
 using LinqToDB.Data;
 using LinqToDB.DataProvider;
 using LinqToDB.Mapping;
@@ -199,41 +196,7 @@ namespace LinqToDB.LINQPad
 			_mappingSchema      = conn.MappingSchema;
 			_useCustomFormatter = cxInfo.DriverData.Element("useCustomFormatter")?.Value.ToLower() == "true";
 
-			conn.OnTraceConnection = info =>
-			{
-				if (info.BeforeExecute)
-				{
-					executionManager.SqlTranslationWriter.WriteLine(info.SqlText);
-				}
-				else if (info.TraceLevel == TraceLevel.Error)
-				{
-					var sb = new StringBuilder();
-
-					for (var ex = info.Exception; ex != null; ex = ex.InnerException)
-					{
-						sb
-							.AppendLine()
-							.AppendLine("/*")
-							.AppendFormat("Exception: {0}", ex.GetType())
-							.AppendLine()
-							.AppendFormat("Message  : {0}", ex.Message)
-							.AppendLine()
-							.AppendLine(ex.StackTrace)
-							.AppendLine("*/")
-							;
-					}
-
-					executionManager.SqlTranslationWriter.WriteLine(sb.ToString());
-				}
-				else if (info.RecordsAffected != null)
-				{
-					executionManager.SqlTranslationWriter.WriteLine("-- Execution time: {0}. Records affected: {1}.\r\n".Args(info.ExecutionTime, info.RecordsAffected));
-				}
-				else
-				{
-					executionManager.SqlTranslationWriter.WriteLine("-- Execution time: {0}\r\n".Args(info.ExecutionTime));
-				}
-			};
+			conn.OnTraceConnection = DriverHelper.GetOnTraceConnection(executionManager);
 		}
 
 		public override void TearDownContext(IConnectionInfo cxInfo, object context, QueryExecutionManager executionManager, object[] constructorArguments)
