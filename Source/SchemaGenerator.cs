@@ -19,7 +19,6 @@ namespace LinqToDB.LINQPad
 			_customType = customType;
 		}
 
-		// ReSharper disable once NotAccessedField.Local
 		readonly IConnectionInfo _cxInfo;
 		readonly Type            _customType;
 
@@ -62,10 +61,8 @@ namespace LinqToDB.LINQPad
 
 			var items = new List<ExplorerItem>();
 
-			if (tables.Any(t => !t.IsView))
-				items.Add(GetTables("Tables", ExplorerIcon.Table, tables.Where(t => !t.IsView)));
-			if (tables.Any(t => t.IsView))
-				items.Add(GetTables("Views", ExplorerIcon.View, tables.Where(t => t.IsView)));
+			if (tables.Any(t => !t.IsView)) items.Add(GetTables("Tables", ExplorerIcon.Table, tables.Where(t => !t.IsView)));
+			if (tables.Any(t => t.IsView))  items.Add(GetTables("Views",  ExplorerIcon.View,  tables.Where(t =>  t.IsView)));
 
 			return items;
 		}
@@ -73,17 +70,17 @@ namespace LinqToDB.LINQPad
 		ExplorerItem GetTables(string header, ExplorerIcon icon, IEnumerable<TableInfo> tableSource)
 		{
 			var tables = tableSource.ToList();
-			var dic    = tables.ToDictionary(t => t, t => GetTable(icon, t));
+			var dic    = tables.ToDictionary(t => t.Type, t => new { table = t, item = GetTable(icon, t) });
 
 			var items = new ExplorerItem(header, ExplorerItemKind.Category, icon)
 			{
-				Children = dic.Values.OrderBy(t => t.Text).ToList()
+				Children = dic.Values.OrderBy(t => t.table.Name).Select(t => t.item).ToList()
 			};
 
-			foreach (var table in dic)
+			foreach (var table in dic.Values)
 			{
-				var entry        = table.Value;
-				var typeAccessor = table.Key.TypeAccessor;
+				var entry        = table.item;
+				var typeAccessor = table.table.TypeAccessor;
 
 				foreach (var ma in typeAccessor.Members)
 				{
@@ -91,29 +88,31 @@ namespace LinqToDB.LINQPad
 
 					if (aa != null)
 					{
+						var relationship = Extensions.HasProperty(aa, "Relationship") ? aa.Relationship : Relationship.OneToOne;
+						var otherType    = relationship == Relationship.OneToMany ? ma.Type.GetItemType() : ma.Type;
+						var otherTable   = dic.ContainsKey(otherType) ? dic[otherType] : null;
+						var typeName     = relationship == Relationship.OneToMany ? $"List<{otherType.Name}>" : otherType.Name;
+
 						entry.Children.Add(
 							new ExplorerItem(
 								ma.Name,
-//								key.AssociationType == AssociationType.OneToMany
-//									? ExplorerItemKind.CollectionLink
-//									: ExplorerItemKind.ReferenceLink,
-								ExplorerItemKind.ReferenceLink,
-//								key.AssociationType == AssociationType.OneToMany
-//									? ExplorerIcon.OneToMany
-//									: key.AssociationType == AssociationType.ManyToOne
-//										? ExplorerIcon.ManyToOne
-//										: ExplorerIcon.OneToOne)
-								ExplorerIcon.OneToOne)
+								relationship == Relationship.OneToMany
+									? ExplorerItemKind.CollectionLink
+									: ExplorerItemKind.ReferenceLink,
+								relationship == Relationship.OneToMany
+									? ExplorerIcon.OneToMany
+									: relationship == Relationship.ManyToOne
+										? ExplorerIcon.ManyToOne
+										: ExplorerIcon.OneToOne)
 							{
 								DragText        = ma.Name,
-//								ToolTipText     = typeName + (key.BackReference == null ? " // Back Reference" : ""),
-//								SqlName         = key.KeyName,
+								ToolTipText     = typeName + (aa.IsBackReference == true ? " // Back Reference" : ""),
+								SqlName         = aa.KeyName,
 								IsEnumerable    = ma.Type.MaybeChildOf(typeof(IEnumerable<>)) && !ma.Type.MaybeEqualTo(typeof(string)),
-//								HyperlinkTarget = dic.ContainsKey(key.OtherTable) ? dic[key.OtherTable] : null,
+								HyperlinkTarget = otherTable?.item,
 							});
 					}
 				}
-
 			}
 
 			return items;
@@ -139,7 +138,7 @@ namespace LinqToDB.LINQPad
 					ExplorerItemKind.Property,
 					pk != null || ca?.IsPrimaryKey ? ExplorerIcon.Key : ExplorerIcon.Column)
 				{
-					Text = $"{ma.Name} : {ma.Type}",
+					Text = $"{ma.Name} : {GetTypeName(ma.Type)}",
 //					ToolTipText        = $"{sqlName} {column.ColumnType} {(column.IsNullable ? "NULL" : "NOT NULL")}{(column.IsIdentity ? " IDENTITY" : "")}",
 					DragText = ma.Name,
 //					SqlName            = sqlName,
@@ -156,6 +155,34 @@ namespace LinqToDB.LINQPad
 			};
 
 			return ret;
+		}
+
+		string GetTypeName(Type type)
+		{
+			switch (type.FullName)
+			{
+				case "System.Boolean" : return "bool";
+				case "System.Byte"    : return "byte";
+				case "System.SByte"   : return "sbyte";
+				case "System.Byte[]"  : return "byte[]";
+				case "System.Int16"   : return "short";
+				case "System.Int32"   : return "int";
+				case "System.Int64"   : return "long";
+				case "System.UInt16"  : return "ushort";
+				case "System.UInt32"  : return "uint";
+				case "System.UInt64"  : return "ulong";
+				case "System.Decimal" : return "decimal";
+				case "System.Single"  : return "float";
+				case "System.Double"  : return "double";
+				case "System.String"  : return "string";
+				case "System.Char"    : return "char";
+				case "System.Object"  : return "object";
+			}
+
+			if (type.IsNullable())
+				return GetTypeName(type.ToNullableUnderlying()) + '?';
+
+			return type.Name;
 		}
 
 		/*public IEnumerable<ExplorerItem> GetItemsAndCode(string nameSpace, string typeName)
