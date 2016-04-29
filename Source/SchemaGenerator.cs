@@ -129,7 +129,7 @@ namespace LinqToDB.LINQPad
 				let id = ma.MemberInfo.GetCustomAttributeLike<IdentityAttribute>()
 				let pk = ma.MemberInfo.GetCustomAttributeLike<PrimaryKeyAttribute>()
 				where
-					ca?.IsColumn ||
+					ca != null && ca.IsColumn ||
 					pk != null ||
 					id != null ||
 					ca == null && !table.IsColumnAttributeRequired && MappingSchema.Default.IsScalarType(ma.Type)
