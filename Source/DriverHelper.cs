@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-using CodeJam;
+using CodeJam.Strings;
 using CodeJam.Xml;
 
 using LinqToDB.Common;
@@ -23,7 +23,6 @@ using MySqlType         = MySql.Data.MySqlClient.MySqlConnection;
 using SqlCeType         = System.Data.SqlServerCe.SqlCeConnection;
 using SQLiteType        = System.Data.SQLite.SQLiteConnection;
 using SqlServerType     = System.Data.SqlClient.SqlConnection;
-using SqlTypesType      = Microsoft.SqlServer.Types.SqlHierarchyId;
 using SybaseType        = Sybase.Data.AseClient.AseConnection;
 using SapHanaType       = Sap.Data.Hana.HanaConnection;
 
@@ -60,7 +59,7 @@ namespace LinqToDB.LINQPad
 			model.ExcludeSchemas           = cxInfo.DriverData.Element("excludeSchemas")          ?.Value;
 			model.UseProviderSpecificTypes = cxInfo.DriverData.Element("useProviderSpecificTypes")?.Value.ToLower() == "true";
 			model.UseCustomFormatter       = cxInfo.DriverData.Element("useCustomFormatter")      ?.Value.ToLower() == "true";
-			model.CommandTimeout           = cxInfo.DriverData.OptionalElementValue("commandTimeout", str => str.ToInt() ?? 0, 0);
+			model.CommandTimeout           = cxInfo.DriverData.ElementValueOrDefault("commandTimeout", str => str.ToInt() ?? 0, 0);
 
 			if (ConnectionDialog.Show(model, isDynamic ? (Func<ConnectionViewModel,Exception>)TestConnection : null))
 			{

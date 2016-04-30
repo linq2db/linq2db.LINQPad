@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Windows;
 
 using JetBrains.Annotations;
 
@@ -32,7 +33,15 @@ namespace LinqToDB.LINQPad
 
 		public override List<ExplorerItem> GetSchema(IConnectionInfo cxInfo, Type customType)
 		{
-			return new SchemaGenerator(cxInfo, customType).GetSchema().ToList();
+			try
+			{
+				return new SchemaGenerator(cxInfo, customType).GetSchema().ToList();
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show($"{ex}\n{ex.StackTrace}", "Schema Build Error", MessageBoxButton.OK, MessageBoxImage.Error);
+				throw;
+			}
 		}
 
 		public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo cxInfo)

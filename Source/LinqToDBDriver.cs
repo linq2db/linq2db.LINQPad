@@ -110,7 +110,7 @@ namespace LinqToDB.LINQPad
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show($"{ex}\n{ex.StackTrace}");
+				MessageBox.Show($"{ex}\n{ex.StackTrace}", "Schema Build Error", MessageBoxButton.OK, MessageBoxImage.Error);
 				throw;
 			}
 		}

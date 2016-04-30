@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-using CodeJam;
+using CodeJam.Strings;
 using CodeJam.Xml;
 
 using LinqToDB.Data;
@@ -25,7 +25,7 @@ namespace LinqToDB.LINQPad
 			UseProviderSpecificTypes = ((string)_cxInfo.DriverData.Element("useProviderSpecificTypes"))?.ToLower() == "true";
 			ProviderName             =  (string)_cxInfo.DriverData.Element("providerName");
 			ProviderVersion          =  (string)_cxInfo.DriverData.Element("providerVersion");
-			CommandTimeout           = _cxInfo.DriverData.OptionalElementValue("commandTimeout", str => str.ToInt() ?? 0, 0);
+			CommandTimeout           = _cxInfo.DriverData.ElementValueOrDefault("commandTimeout", str => str.ToInt() ?? 0, 0);
 		}
 
 		public readonly int          CommandTimeout;

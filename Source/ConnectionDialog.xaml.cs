@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
-using CodeJam;
+using CodeJam.Strings;
 
 using JetBrains.Annotations;
 
@@ -106,7 +106,7 @@ namespace LinqToDB.LINQPad
 					_model.CustomAssemblyPath = _model.CustomAssemblyPath.Trim();
 
 					var assembly    = DataContextDriver.LoadAssemblySafely(_model.CustomAssemblyPath);
-					var customTypes = assembly.GetExportedTypes().Where(IsDataConnection).Select(t => t.FullName).ToArray();
+					var customTypes = assembly.GetExportedTypes().Where(IsDataConnection).Select(t => t.FullName).Cast<object>().ToArray();
 
 					Cursor = oldCursor;
 

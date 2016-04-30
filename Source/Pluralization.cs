@@ -4,7 +4,7 @@ using System.Data.Entity.Design.PluralizationServices;
 using System.Globalization;
 using System.Linq;
 
-using CodeJam;
+using CodeJam.Strings;
 
 namespace LinqToDB.LINQPad
 {
