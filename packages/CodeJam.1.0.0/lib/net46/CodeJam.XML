@@ -1691,127 +1691,73 @@
             </summary>
             <typeparam name="T">The type of the operands.</typeparam>
         </member>
-        <member name="F:CodeJam.Arithmetic.Operators`1._unaryMinus">
-            <summary>UnaryMinus operator factory.</summary>
-        </member>
         <member name="P:CodeJam.Arithmetic.Operators`1.UnaryMinus">
             <summary>UnaryMinus operator.</summary>
             <value>The UnaryMinus operator.</value>
-        </member>
-        <member name="F:CodeJam.Arithmetic.Operators`1._onesComplement">
-            <summary>OnesComplement operator factory.</summary>
         </member>
         <member name="P:CodeJam.Arithmetic.Operators`1.OnesComplement">
             <summary>OnesComplement operator.</summary>
             <value>The OnesComplement operator.</value>
         </member>
-        <member name="F:CodeJam.Arithmetic.Operators`1._areEqual">
-            <summary>AreEqual operator factory.</summary>
-        </member>
         <member name="P:CodeJam.Arithmetic.Operators`1.AreEqual">
             <summary>AreEqual operator.</summary>
             <value>The AreEqual operator.</value>
-        </member>
-        <member name="F:CodeJam.Arithmetic.Operators`1._areNotEqual">
-            <summary>AreNotEqual operator factory.</summary>
         </member>
         <member name="P:CodeJam.Arithmetic.Operators`1.AreNotEqual">
             <summary>AreNotEqual operator.</summary>
             <value>The AreNotEqual operator.</value>
         </member>
-        <member name="F:CodeJam.Arithmetic.Operators`1._greaterThan">
-            <summary>GreaterThan operator factory.</summary>
-        </member>
         <member name="P:CodeJam.Arithmetic.Operators`1.GreaterThan">
             <summary>GreaterThan operator.</summary>
             <value>The GreaterThan operator.</value>
-        </member>
-        <member name="F:CodeJam.Arithmetic.Operators`1._greaterThanOrEqual">
-            <summary>GreaterThanOrEqual operator factory.</summary>
         </member>
         <member name="P:CodeJam.Arithmetic.Operators`1.GreaterThanOrEqual">
             <summary>GreaterThanOrEqual operator.</summary>
             <value>The GreaterThanOrEqual operator.</value>
         </member>
-        <member name="F:CodeJam.Arithmetic.Operators`1._lessThan">
-            <summary>LessThan operator factory.</summary>
-        </member>
         <member name="P:CodeJam.Arithmetic.Operators`1.LessThan">
             <summary>LessThan operator.</summary>
             <value>The LessThan operator.</value>
-        </member>
-        <member name="F:CodeJam.Arithmetic.Operators`1._lessThanOrEqual">
-            <summary>LessThanOrEqual operator factory.</summary>
         </member>
         <member name="P:CodeJam.Arithmetic.Operators`1.LessThanOrEqual">
             <summary>LessThanOrEqual operator.</summary>
             <value>The LessThanOrEqual operator.</value>
         </member>
-        <member name="F:CodeJam.Arithmetic.Operators`1._plus">
-            <summary>Plus operator factory.</summary>
-        </member>
         <member name="P:CodeJam.Arithmetic.Operators`1.Plus">
             <summary>Plus operator.</summary>
             <value>The Plus operator.</value>
-        </member>
-        <member name="F:CodeJam.Arithmetic.Operators`1._minus">
-            <summary>Minus operator factory.</summary>
         </member>
         <member name="P:CodeJam.Arithmetic.Operators`1.Minus">
             <summary>Minus operator.</summary>
             <value>The Minus operator.</value>
         </member>
-        <member name="F:CodeJam.Arithmetic.Operators`1._mul">
-            <summary>Mul operator factory.</summary>
-        </member>
         <member name="P:CodeJam.Arithmetic.Operators`1.Mul">
             <summary>Mul operator.</summary>
             <value>The Mul operator.</value>
-        </member>
-        <member name="F:CodeJam.Arithmetic.Operators`1._div">
-            <summary>Div operator factory.</summary>
         </member>
         <member name="P:CodeJam.Arithmetic.Operators`1.Div">
             <summary>Div operator.</summary>
             <value>The Div operator.</value>
         </member>
-        <member name="F:CodeJam.Arithmetic.Operators`1._modulo">
-            <summary>Modulo operator factory.</summary>
-        </member>
         <member name="P:CodeJam.Arithmetic.Operators`1.Modulo">
             <summary>Modulo operator.</summary>
             <value>The Modulo operator.</value>
-        </member>
-        <member name="F:CodeJam.Arithmetic.Operators`1._xor">
-            <summary>Xor operator factory.</summary>
         </member>
         <member name="P:CodeJam.Arithmetic.Operators`1.Xor">
             <summary>Xor operator.</summary>
             <value>The Xor operator.</value>
         </member>
-        <member name="F:CodeJam.Arithmetic.Operators`1._bitwiseAnd">
-            <summary>BitwiseAnd operator factory.</summary>
-        </member>
         <member name="P:CodeJam.Arithmetic.Operators`1.BitwiseAnd">
             <summary>BitwiseAnd operator.</summary>
             <value>The BitwiseAnd operator.</value>
-        </member>
-        <member name="F:CodeJam.Arithmetic.Operators`1._bitwiseOr">
-            <summary>BitwiseOr operator factory.</summary>
         </member>
         <member name="P:CodeJam.Arithmetic.Operators`1.BitwiseOr">
             <summary>BitwiseOr operator.</summary>
             <value>The BitwiseOr operator.</value>
         </member>
-        <member name="F:CodeJam.Arithmetic.Operators`1._leftShift">
-            <summary>LeftShift operator factory.</summary>
-        </member>
         <member name="P:CodeJam.Arithmetic.Operators`1.LeftShift">
             <summary>LeftShift operator.</summary>
             <value>The LeftShift operator.</value>
-        </member>
-        <member name="F:CodeJam.Arithmetic.Operators`1._rightShift">
-            <summary>RightShift operator factory.</summary>
         </member>
         <member name="P:CodeJam.Arithmetic.Operators`1.RightShift">
             <summary>RightShift operator.</summary>
@@ -1832,7 +1778,7 @@
             <returns>Callback for the operator</returns>
         </member>
         <member name="M:CodeJam.Arithmetic.OperatorsFactory.BinaryOperator``1(System.Linq.Expressions.ExpressionType)">
-            <summary>Binary operator factory method.</summary>
+            <summary>Binary operator factory method..</summary>
             <typeparam name="T">The type of the operands</typeparam>
             <param name="operatorType">Type of the operator.</param>
             <returns>Callback for the operator</returns>
@@ -1848,26 +1794,6 @@
             <typeparam name="T">The type of the operands</typeparam>
             <param name="comparisonType">Type of the comparison operator.</param>
             <returns>Callback for the compare operator</returns>
-        </member>
-        <member name="M:CodeJam.Arithmetic.OperatorsFactory.IsFlagSetOperator``1">
-            <summary>Emits code for (value &amp; flag) == flag check.</summary>
-            <typeparam name="T">The type of the operands</typeparam>
-            <returns>Callback for (value &amp; flag) == flag check</returns>
-        </member>
-        <member name="M:CodeJam.Arithmetic.OperatorsFactory.IsFlagMatchOperator``1">
-            <summary>Emits code for (flag == 0) || ((value &amp; flag) != 0) check.</summary>
-            <typeparam name="T">The type of the operands</typeparam>
-            <returns>Callback for (flag == 0) || ((value &amp; flag) != 0) check</returns>
-        </member>
-        <member name="M:CodeJam.Arithmetic.OperatorsFactory.SetFlagOperator``1">
-            <summary>Emits code for (value | flag) operator.</summary>
-            <typeparam name="T">The type of the operands</typeparam>
-            <returns>Callback for (value | flag) operator.</returns>
-        </member>
-        <member name="M:CodeJam.Arithmetic.OperatorsFactory.ClearFlagOperator``1">
-            <summary>Emits code for (value &amp; ~flag) operator.</summary>
-            <typeparam name="T">The type of the operands</typeparam>
-            <returns>Callback for (value &amp; ~flag) operator.</returns>
         </member>
         <member name="T:CodeJam.Code">
             <summary>Assertions class.</summary>
@@ -1919,24 +1845,24 @@
             <param name="args">The arguments.</param>
         </member>
         <member name="M:CodeJam.Code.NotNull``1(``0,System.String)">
-            <summary>Ensures that <paramref name="arg"/> != <c>null</c></summary>
+            <summary>Ensures that <paramref name="arg" /> != <c>null</c></summary>
             <typeparam name="T">Type of the value. Auto-inferred in most cases</typeparam>
             <param name="arg">The argument.</param>
             <param name="argName">Name of the argument.</param>
         </member>
         <member name="M:CodeJam.Code.NotNull``1(System.Nullable{``0},System.String)">
-            <summary>Ensures that <paramref name="arg"/> != <c>null</c></summary>
+            <summary>Ensures that <paramref name="arg" /> != <c>null</c></summary>
             <typeparam name="T">Type of the value. Auto-inferred in most cases</typeparam>
             <param name="arg">The argument.</param>
             <param name="argName">Name of the argument.</param>
         </member>
         <member name="M:CodeJam.Code.NotNullNorEmpty(System.String,System.String)">
-            <summary>Ensures that <paramref name="arg"/> is not null nor empty</summary>
+            <summary>Ensures that <paramref name="arg" /> is not null nor empty</summary>
             <param name="arg">The argument.</param>
             <param name="argName">Name of the argument.</param>
         </member>
         <member name="M:CodeJam.Code.NotNullNorWhiteSpace(System.String,System.String)">
-            <summary>Ensures that <paramref name="arg"/> is not null nor white space</summary>
+            <summary>Ensures that <paramref name="arg" /> is not null nor white space</summary>
             <param name="arg">The argument.</param>
             <param name="argName">Name of the argument.</param>
         </member>
@@ -2021,7 +1947,7 @@
         </member>
         <member name="M:CodeJam.CodeExceptions.FormatMessage(System.String,System.Object[])">
             <summary>
-            Formats message or returns <paramref name="messageFormat"/> as it is if <paramref name="args"/> are null or empty
+            Formats message or returns <paramref name="messageFormat" /> as it is if <paramref name="args" /> are null or empty
             </summary>
             <param name="messageFormat">The message format.</param>
             <param name="args">The arguments.</param>
@@ -2033,17 +1959,17 @@
             <returns>Initialized instance of <seealso cref="T:System.ArgumentNullException"/></returns>
         </member>
         <member name="M:CodeJam.CodeExceptions.ArgumentNullOrEmpty(System.String)">
-            <summary>Creates <seealso cref="T:System.ArgumentException"/> for empty string</summary>
+            <summary>Creates <seealso cref="T:System.ArgumentException" /> for empty string</summary>
             <param name="argumentName">Name of the argument.</param>
             <returns>Initialized instance of <seealso cref="T:System.ArgumentException"/></returns>
         </member>
         <member name="M:CodeJam.CodeExceptions.ArgumentNullOrWhiteSpace(System.String)">
-            <summary>Creates <seealso cref="T:System.ArgumentException"/> for empty (or whitespace) string</summary>
+            <summary>Creates <seealso cref="T:System.ArgumentException" /> for empty (or whitespace) string</summary>
             <param name="argumentName">Name of the argument.</param>
             <returns>Initialized instance of <seealso cref="T:System.ArgumentException"/></returns>
         </member>
         <member name="M:CodeJam.CodeExceptions.ArgumentOutOfRange(System.String,System.Int32,System.Int32,System.Int32)">
-            <summary>Creates <seealso cref="T:System.ArgumentOutOfRangeException"/></summary>
+            <summary>Creates <seealso cref="T:System.ArgumentOutOfRangeException" /></summary>
             <param name="argumentName">Name of the argument.</param>
             <param name="value">The value.</param>
             <param name="fromValue">From value.</param>
@@ -2051,7 +1977,7 @@
             <returns>Initialized instance of <seealso cref="T:System.ArgumentOutOfRangeException"/></returns>
         </member>
         <member name="M:CodeJam.CodeExceptions.ArgumentOutOfRange``1(System.String,``0,``0,``0)">
-            <summary>Creates <seealso cref="T:System.ArgumentOutOfRangeException"/></summary>
+            <summary>Creates <seealso cref="T:System.ArgumentOutOfRangeException" /></summary>
             <typeparam name="T"></typeparam>
             <param name="argumentName">Name of the argument.</param>
             <param name="value">The value.</param>
@@ -2060,7 +1986,7 @@
             <returns>Initialized instance of <seealso cref="T:System.ArgumentOutOfRangeException"/></returns>
         </member>
         <member name="M:CodeJam.CodeExceptions.IndexOutOfRange(System.String,System.Int32,System.Int32,System.Int32)">
-            <summary>Creates <seealso cref="T:System.IndexOutOfRangeException"/></summary>
+            <summary>Creates <seealso cref="T:System.IndexOutOfRangeException" /></summary>
             <param name="argumentName">Name of the argument.</param>
             <param name="value">The value.</param>
             <param name="startIndex">The start index.</param>
@@ -2068,21 +1994,21 @@
             <returns>Initialized instance of <seealso cref="T:System.IndexOutOfRangeException"/></returns>
         </member>
         <member name="M:CodeJam.CodeExceptions.Argument(System.String,System.String,System.Object[])">
-            <summary>Creates <seealso cref="T:System.ArgumentException"/></summary>
+            <summary>Creates <seealso cref="T:System.ArgumentException" /></summary>
             <param name="argumentName">Name of the argument.</param>
             <param name="messageFormat">The message format.</param>
             <param name="args">The arguments.</param>
             <returns>Initialized instance of <seealso cref="T:System.ArgumentException"/></returns>
         </member>
         <member name="M:CodeJam.CodeExceptions.InvalidOperation(System.String,System.Object[])">
-            <summary>Creates <seealso cref="T:System.InvalidOperationException"/></summary>
+            <summary>Creates <seealso cref="T:System.InvalidOperationException" /></summary>
             <param name="messageFormat">The message format.</param>
             <param name="args">The arguments.</param>
             <returns>Initialized instance of <seealso cref="T:System.InvalidOperationException"/></returns>
         </member>
         <member name="M:CodeJam.CodeExceptions.UnexpectedArgumentValue``1(System.String,``0)">
             <summary>
-            Creates <seealso cref="T:System.ArgumentOutOfRangeException"/>.
+            Creates <seealso cref="T:System.ArgumentOutOfRangeException" />.
             Used to be thrown from the default: switch clause
             </summary>
             <typeparam name="T">The type of the value. Auto-inferred.</typeparam>
@@ -2092,7 +2018,7 @@
         </member>
         <member name="M:CodeJam.CodeExceptions.UnexpectedArgumentValue``1(System.String,``0,System.String,System.Object[])">
             <summary>
-            Creates <seealso cref="T:System.ArgumentOutOfRangeException"/>.
+            Creates <seealso cref="T:System.ArgumentOutOfRangeException" />.
             Used to be thrown from default: switch clause
             </summary>
             <typeparam name="T">The type of the value. Auto-inferred.</typeparam>
@@ -2104,7 +2030,7 @@
         </member>
         <member name="M:CodeJam.CodeExceptions.UnexpectedValue``1(``0)">
             <summary>
-            Creates <seealso cref="T:System.InvalidOperationException"/>.
+            Creates <seealso cref="T:System.InvalidOperationException" />.
             Used to be thrown from the default: switch clause
             </summary>
             <typeparam name="T">The type of the value. Auto-inferred.</typeparam>
@@ -2113,7 +2039,7 @@
         </member>
         <member name="M:CodeJam.CodeExceptions.UnexpectedValue(System.String,System.Object[])">
             <summary>
-            Creates <seealso cref="T:System.InvalidOperationException"/>.
+            Creates <seealso cref="T:System.InvalidOperationException" />.
             Used to be thrown from default: switch clause
             </summary>
             <param name="messageFormat">The message format.</param>
@@ -2146,24 +2072,24 @@
             <summary>Conditional symbol for debug builds.</summary>
         </member>
         <member name="M:CodeJam.DebugCode.NotNull``1(``0,System.String)">
-            <summary>Ensures that <paramref name="arg"/> != <c>null</c></summary>
+            <summary>Ensures that <paramref name="arg" /> != <c>null</c></summary>
             <typeparam name="T">Type of the value. Auto-inferred in most cases</typeparam>
             <param name="arg">The argument.</param>
             <param name="argName">Name of the argument.</param>
         </member>
         <member name="M:CodeJam.DebugCode.NotNull``1(System.Nullable{``0},System.String)">
-            <summary>Ensures that <paramref name="arg"/> != <c>null</c></summary>
+            <summary>Ensures that <paramref name="arg" /> != <c>null</c></summary>
             <typeparam name="T">Type of the value. Auto-inferred in most cases</typeparam>
             <param name="arg">The argument.</param>
             <param name="argName">Name of the argument.</param>
         </member>
         <member name="M:CodeJam.DebugCode.NotNullNorEmpty(System.String,System.String)">
-            <summary>Ensures that <paramref name="arg"/> is not null nor empty</summary>
+            <summary>Ensures that <paramref name="arg" /> is not null nor empty</summary>
             <param name="arg">The argument.</param>
             <param name="argName">Name of the argument.</param>
         </member>
         <member name="M:CodeJam.DebugCode.NotNullNorWhiteSpace(System.String,System.String)">
-            <summary>Ensures that <paramref name="arg"/> is not null nor white space</summary>
+            <summary>Ensures that <paramref name="arg" /> is not null nor white space</summary>
             <param name="arg">The argument.</param>
             <param name="argName">Name of the argument.</param>
         </member>
@@ -2232,6 +2158,456 @@
             <param name="condition">The condition to check</param>
             <param name="messageFormat">The message format.</param>
             <param name="args">The arguments.</param>
+        </member>
+        <member name="T:CodeJam.Collections.DictionaryExtensions">
+            <summary>
+            Extensions for <see cref="T:System.Collections.Generic.IDictionary`2"/>
+            </summary>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IDictionary{``0,``1},``0)">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or default(TValue) if key does not exists in
+            <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or default value if <paramref name="key"/> does not exists
+            in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1)">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or <paramref name="defaultValue"/> if key does not exists
+            in <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <param name="defaultValue">Default value.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or <paramref name="defaultValue"/> if <paramref name="key"/>
+            does not exists in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``0,``1,``2})">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or default value if key does not exists
+            in <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <typeparam name="TResult">Result type.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <param name="resultSelector">Function to select result.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or default value if <paramref name="key"/>
+            does not exists in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``0,``1,``2},``2)">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or <paramref name="defaultValue"/> if key does not exists
+            in <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <typeparam name="TResult">Result type.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <param name="resultSelector">Function to select result.</param>
+            <param name="defaultValue">Default value.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or <paramref name="defaultValue"/> if <paramref name="key"/>
+            does not exists in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``0,``1})">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
+            if key does not exists in <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <param name="defaultValueFactory">Function to return default value.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
+            if <paramref name="key"/> does not exists in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``0,``1,``2},System.Func{``0,``2})">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
+            if key does not exists in <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <typeparam name="TResult">Result type.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <param name="defaultValueFactory">Function to return default value.</param>
+            <param name="resultSelector">Function to select result.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
+            if <paramref name="key"/> does not exists in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IReadOnlyDictionary{``0,``1},``0)">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or default(TValue) if key does not exists in
+            <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or default value if <paramref name="key"/> does not exists
+            in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IReadOnlyDictionary{``0,``1},``0,``1)">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or <paramref name="defaultValue"/> if key does not exists
+            in <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <param name="defaultValue">Default value.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or <paramref name="defaultValue"/> if <paramref name="key"/>
+            does not exists in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Generic.IReadOnlyDictionary{``0,``1},``0,System.Func{``0,``1,``2})">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or default value if key does not exists
+            in <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <typeparam name="TResult">Result type.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <param name="resultSelector">Function to select result.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or default value if <paramref name="key"/>
+            does not exists in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Generic.IReadOnlyDictionary{``0,``1},``0,System.Func{``0,``1,``2},``2)">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or <paramref name="defaultValue"/> if key does not exists
+            in <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <typeparam name="TResult">Result type.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <param name="resultSelector">Function to select result.</param>
+            <param name="defaultValue">Default value.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or <paramref name="defaultValue"/> if <paramref name="key"/>
+            does not exists in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IReadOnlyDictionary{``0,``1},``0,System.Func{``0,``1})">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
+            if key does not exists in <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <param name="defaultValueFactory">Function to return default value.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
+            if <paramref name="key"/> does not exists in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Generic.IReadOnlyDictionary{``0,``1},``0,System.Func{``0,``1,``2},System.Func{``0,``2})">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
+            if key does not exists in <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <typeparam name="TResult">Result type.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <param name="defaultValueFactory">Function to return default value.</param>
+            <param name="resultSelector">Function to select result.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
+            if <paramref name="key"/> does not exists in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.Dictionary{``0,``1},``0)">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or default(TValue) if key does not exists in
+            <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or default value if <paramref name="key"/> does not exists
+            in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.Dictionary{``0,``1},``0,``1)">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or <paramref name="defaultValue"/> if key does not exists
+            in <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <param name="defaultValue">Default value.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or <paramref name="defaultValue"/> if <paramref name="key"/>
+            does not exists in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Generic.Dictionary{``0,``1},``0,System.Func{``0,``1,``2})">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or default value if key does not exists
+            in <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <typeparam name="TResult">Result type.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <param name="resultSelector">Function to select result.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or default value if <paramref name="key"/>
+            does not exists in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Generic.Dictionary{``0,``1},``0,System.Func{``0,``1,``2},``2)">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or <paramref name="defaultValue"/> if key does not exists
+            in <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <typeparam name="TResult">Result type.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <param name="resultSelector">Function to select result.</param>
+            <param name="defaultValue">Default value.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or <paramref name="defaultValue"/> if <paramref name="key"/>
+            does not exists in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.Dictionary{``0,``1},``0,System.Func{``0,``1})">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
+            if key does not exists in <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <param name="defaultValueFactory">Function to return default value.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
+            if <paramref name="key"/> does not exists in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Generic.Dictionary{``0,``1},``0,System.Func{``0,``1,``2},System.Func{``0,``2})">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
+            if key does not exists in <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <typeparam name="TResult">Result type.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <param name="defaultValueFactory">Function to return default value.</param>
+            <param name="resultSelector">Function to select result.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
+            if <paramref name="key"/> does not exists in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Concurrent.ConcurrentDictionary{``0,``1},``0)">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or default(TValue) if key does not exists in
+            <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or default value if <paramref name="key"/> does not exists
+            in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Concurrent.ConcurrentDictionary{``0,``1},``0,``1)">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or <paramref name="defaultValue"/> if key does not exists
+            in <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <param name="defaultValue">Default value.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or <paramref name="defaultValue"/> if <paramref name="key"/>
+            does not exists in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Concurrent.ConcurrentDictionary{``0,``1},``0,System.Func{``0,``1,``2})">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or default value if key does not exists
+            in <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <typeparam name="TResult">Result type.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <param name="resultSelector">Function to select result.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or default value if <paramref name="key"/>
+            does not exists in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Concurrent.ConcurrentDictionary{``0,``1},``0,System.Func{``0,``1,``2},``2)">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or <paramref name="defaultValue"/> if key does not exists
+            in <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <typeparam name="TResult">Result type.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <param name="resultSelector">Function to select result.</param>
+            <param name="defaultValue">Default value.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or <paramref name="defaultValue"/> if <paramref name="key"/>
+            does not exists in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Concurrent.ConcurrentDictionary{``0,``1},``0,System.Func{``0,``1})">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
+            if key does not exists in <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <param name="defaultValueFactory">Function to return default value.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
+            if <paramref name="key"/> does not exists in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Concurrent.ConcurrentDictionary{``0,``1},``0,System.Func{``0,``1,``2},System.Func{``0,``2})">
+            <summary>
+            Returns value associated with <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
+            if key does not exists in <paramref name="dictionary"/>
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <typeparam name="TResult">Result type.</typeparam>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key.</param>
+            <param name="defaultValueFactory">Function to return default value.</param>
+            <param name="resultSelector">Function to select result.</param>
+            <returns>
+            Value, associated with the <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
+            if <paramref name="key"/> does not exists in <paramref name="dictionary"/>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetOrAdd``2(System.Collections.Generic.IDictionary{``0,``1},``0)">
+            <summary>
+              Adds a key/value pair to the <see cref="T:System.Collections.Generic.IDictionary`2"/> if the key does not already exist.
+            </summary>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key of the element to add.</param>
+            <returns>
+              The value for the key. This will be either the existing value for the key if the key is already in the
+              dictionary, or the new value if the key was not in the dictionary.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetOrAdd``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1)">
+            <summary>
+              Adds a key/value pair to the <see cref="T:System.Collections.Generic.IDictionary`2"/> if the key does not already exist.
+            </summary>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key of the element to add.</param>
+            <param name="value">the value to be added, if the key does not already exist</param>
+            <returns>
+              The value for the key. This will be either the existing value for the key if the key is already in the
+              dictionary, or the new value if the key was not in the dictionary.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.GetOrAdd``2(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``0,``1})">
+            <summary>
+              Adds a key/value pair to the <see cref="T:System.Collections.Generic.IDictionary`2"/> if the key does not already exist.
+            </summary>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key of the element to add.</param>
+            <param name="valueFactory">The function used to generate a value for the key</param>
+            <returns>
+              The value for the key. This will be either the existing value for the key if the key is already in the
+              dictionary, or the new value if the key was not in the dictionary.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.AddOrUpdate``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1,System.Func{``0,``1,``1})">
+            <summary>
+              Adds a key/value pair to the <see cref="T:System.Collections.Generic.IDictionary`2"/> if the key does not already exist,
+              or updates a key/value pair <see cref="T:System.Collections.Generic.IDictionary`2"/> by using the specified function
+              if the key already exists.
+            </summary>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key to be added or whose value should be updated</param>
+            <param name="addValue">The value to be added for an absent key</param>
+            <param name="updateValueFactory">
+            The function used to generate a new value for an existing key based on the key's existing value
+            </param>
+            <returns>
+              The new value for the key. This will be either be addValue (if the key was absent) or the result of
+              updateValueFactory (if the key was present).
+            </returns>
+        </member>
+        <member name="M:CodeJam.Collections.DictionaryExtensions.AddOrUpdate``2(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``0,``1},System.Func{``0,``1,``1})">
+            <summary>
+              Adds a key/value pair to the <see cref="T:System.Collections.Generic.IDictionary`2"/> if the key does not already exist,
+              or updates a key/value pair <see cref="T:System.Collections.Generic.IDictionary`2"/> by using the specified function
+              if the key already exists.
+            </summary>
+            <param name="dictionary">The dictionary.</param>
+            <param name="key">The key to be added or whose value should be updated</param>
+            <param name="addValueFactory">The function used to generate a value for an absent key</param>
+            <param name="updateValueFactory">
+            The function used to generate a new value for an existing key based on the key's existing value
+            </param>
+            <returns>
+              The new value for the key. This will be either be addValue (if the key was absent) or the result of
+              updateValueFactory (if the key was present).
+            </returns>
         </member>
         <member name="T:CodeJam.Collections.EnumerableExtensions">
             <summary>
@@ -4896,571 +5272,6 @@
             <param name="source">The collection to add the elements to.</param>
             <param name="items">The items to add to the collection.</param>
         </member>
-        <member name="T:CodeJam.Collections.DictionaryExtensions">
-            <summary>
-            Extensions for <see cref="T:System.Collections.Generic.IDictionary`2"/>
-            </summary>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IDictionary{``0,``1},``0)">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or default(TValue) if key does not exists in
-            <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or default value if <paramref name="key"/> does not exists
-            in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1)">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or <paramref name="defaultValue"/> if key does not exists
-            in <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <param name="defaultValue">Default value.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or <paramref name="defaultValue"/> if <paramref name="key"/>
-            does not exists in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``0,``1,``2})">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or default value if key does not exists
-            in <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <typeparam name="TResult">Result type.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <param name="resultSelector">Function to select result.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or default value if <paramref name="key"/>
-            does not exists in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``0,``1,``2},``2)">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or <paramref name="defaultValue"/> if key does not exists
-            in <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <typeparam name="TResult">Result type.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <param name="resultSelector">Function to select result.</param>
-            <param name="defaultValue">Default value.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or <paramref name="defaultValue"/> if <paramref name="key"/>
-            does not exists in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``0,``1})">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
-            if key does not exists in <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <param name="defaultValueFactory">Function to return default value.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
-            if <paramref name="key"/> does not exists in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``0,``1,``2},System.Func{``0,``2})">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
-            if key does not exists in <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <typeparam name="TResult">Result type.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <param name="defaultValueFactory">Function to return default value.</param>
-            <param name="resultSelector">Function to select result.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
-            if <paramref name="key"/> does not exists in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IReadOnlyDictionary{``0,``1},``0)">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or default(TValue) if key does not exists in
-            <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or default value if <paramref name="key"/> does not exists
-            in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IReadOnlyDictionary{``0,``1},``0,``1)">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or <paramref name="defaultValue"/> if key does not exists
-            in <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <param name="defaultValue">Default value.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or <paramref name="defaultValue"/> if <paramref name="key"/>
-            does not exists in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Generic.IReadOnlyDictionary{``0,``1},``0,System.Func{``0,``1,``2})">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or default value if key does not exists
-            in <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <typeparam name="TResult">Result type.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <param name="resultSelector">Function to select result.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or default value if <paramref name="key"/>
-            does not exists in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Generic.IReadOnlyDictionary{``0,``1},``0,System.Func{``0,``1,``2},``2)">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or <paramref name="defaultValue"/> if key does not exists
-            in <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <typeparam name="TResult">Result type.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <param name="resultSelector">Function to select result.</param>
-            <param name="defaultValue">Default value.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or <paramref name="defaultValue"/> if <paramref name="key"/>
-            does not exists in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IReadOnlyDictionary{``0,``1},``0,System.Func{``0,``1})">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
-            if key does not exists in <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <param name="defaultValueFactory">Function to return default value.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
-            if <paramref name="key"/> does not exists in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Generic.IReadOnlyDictionary{``0,``1},``0,System.Func{``0,``1,``2},System.Func{``0,``2})">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
-            if key does not exists in <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <typeparam name="TResult">Result type.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <param name="defaultValueFactory">Function to return default value.</param>
-            <param name="resultSelector">Function to select result.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
-            if <paramref name="key"/> does not exists in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.Dictionary{``0,``1},``0)">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or default(TValue) if key does not exists in
-            <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or default value if <paramref name="key"/> does not exists
-            in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.Dictionary{``0,``1},``0,``1)">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or <paramref name="defaultValue"/> if key does not exists
-            in <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <param name="defaultValue">Default value.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or <paramref name="defaultValue"/> if <paramref name="key"/>
-            does not exists in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Generic.Dictionary{``0,``1},``0,System.Func{``0,``1,``2})">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or default value if key does not exists
-            in <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <typeparam name="TResult">Result type.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <param name="resultSelector">Function to select result.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or default value if <paramref name="key"/>
-            does not exists in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Generic.Dictionary{``0,``1},``0,System.Func{``0,``1,``2},``2)">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or <paramref name="defaultValue"/> if key does not exists
-            in <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <typeparam name="TResult">Result type.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <param name="resultSelector">Function to select result.</param>
-            <param name="defaultValue">Default value.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or <paramref name="defaultValue"/> if <paramref name="key"/>
-            does not exists in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.Dictionary{``0,``1},``0,System.Func{``0,``1})">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
-            if key does not exists in <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <param name="defaultValueFactory">Function to return default value.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
-            if <paramref name="key"/> does not exists in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Generic.Dictionary{``0,``1},``0,System.Func{``0,``1,``2},System.Func{``0,``2})">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
-            if key does not exists in <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <typeparam name="TResult">Result type.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <param name="defaultValueFactory">Function to return default value.</param>
-            <param name="resultSelector">Function to select result.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
-            if <paramref name="key"/> does not exists in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Concurrent.ConcurrentDictionary{``0,``1},``0)">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or default(TValue) if key does not exists in
-            <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or default value if <paramref name="key"/> does not exists
-            in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Concurrent.ConcurrentDictionary{``0,``1},``0,``1)">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or <paramref name="defaultValue"/> if key does not exists
-            in <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <param name="defaultValue">Default value.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or <paramref name="defaultValue"/> if <paramref name="key"/>
-            does not exists in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Concurrent.ConcurrentDictionary{``0,``1},``0,System.Func{``0,``1,``2})">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or default value if key does not exists
-            in <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <typeparam name="TResult">Result type.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <param name="resultSelector">Function to select result.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or default value if <paramref name="key"/>
-            does not exists in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Concurrent.ConcurrentDictionary{``0,``1},``0,System.Func{``0,``1,``2},``2)">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or <paramref name="defaultValue"/> if key does not exists
-            in <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <typeparam name="TResult">Result type.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <param name="resultSelector">Function to select result.</param>
-            <param name="defaultValue">Default value.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or <paramref name="defaultValue"/> if <paramref name="key"/>
-            does not exists in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Concurrent.ConcurrentDictionary{``0,``1},``0,System.Func{``0,``1})">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
-            if key does not exists in <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <param name="defaultValueFactory">Function to return default value.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
-            if <paramref name="key"/> does not exists in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetValueOrDefault``3(System.Collections.Concurrent.ConcurrentDictionary{``0,``1},``0,System.Func{``0,``1,``2},System.Func{``0,``2})">
-            <summary>
-            Returns value associated with <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
-            if key does not exists in <paramref name="dictionary"/>
-            </summary>
-            <typeparam name="TKey">The type of the key.</typeparam>
-            <typeparam name="TValue">The type of the value.</typeparam>
-            <typeparam name="TResult">Result type.</typeparam>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key.</param>
-            <param name="defaultValueFactory">Function to return default value.</param>
-            <param name="resultSelector">Function to select result.</param>
-            <returns>
-            Value, associated with the <paramref name="key"/>, or value returned by <paramref name="defaultValueFactory"/>
-            if <paramref name="key"/> does not exists in <paramref name="dictionary"/>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetOrAdd``2(System.Collections.Generic.IDictionary{``0,``1},``0)">
-            <summary>
-              Adds a key/value pair to the <see cref="T:System.Collections.Generic.IDictionary`2"/> if the key does not already exist.
-            </summary>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key of the element to add.</param>
-            <returns>
-              The value for the key. This will be either the existing value for the key if the key is already in the
-              dictionary, or the new value if the key was not in the dictionary.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetOrAdd``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1)">
-            <summary>
-              Adds a key/value pair to the <see cref="T:System.Collections.Generic.IDictionary`2"/> if the key does not already exist.
-            </summary>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key of the element to add.</param>
-            <param name="value">the value to be added, if the key does not already exist</param>
-            <returns>
-              The value for the key. This will be either the existing value for the key if the key is already in the
-              dictionary, or the new value if the key was not in the dictionary.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.GetOrAdd``2(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``0,``1})">
-            <summary>
-              Adds a key/value pair to the <see cref="T:System.Collections.Generic.IDictionary`2"/> if the key does not already exist.
-            </summary>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key of the element to add.</param>
-            <param name="valueFactory">The function used to generate a value for the key</param>
-            <returns>
-              The value for the key. This will be either the existing value for the key if the key is already in the
-              dictionary, or the new value if the key was not in the dictionary.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.AddOrUpdate``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1,System.Func{``0,``1,``1})">
-            <summary>
-              Adds a key/value pair to the <see cref="T:System.Collections.Generic.IDictionary`2"/> if the key does not already exist,
-              or updates a key/value pair <see cref="T:System.Collections.Generic.IDictionary`2"/> by using the specified function
-              if the key already exists.
-            </summary>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key to be added or whose value should be updated</param>
-            <param name="addValue">The value to be added for an absent key</param>
-            <param name="updateValueFactory">
-            The function used to generate a new value for an existing key based on the key's existing value
-            </param>
-            <returns>
-              The new value for the key. This will be either be addValue (if the key was absent) or the result of
-              updateValueFactory (if the key was present).
-            </returns>
-        </member>
-        <member name="M:CodeJam.Collections.DictionaryExtensions.AddOrUpdate``2(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``0,``1},System.Func{``0,``1,``1})">
-            <summary>
-              Adds a key/value pair to the <see cref="T:System.Collections.Generic.IDictionary`2"/> if the key does not already exist,
-              or updates a key/value pair <see cref="T:System.Collections.Generic.IDictionary`2"/> by using the specified function
-              if the key already exists.
-            </summary>
-            <param name="dictionary">The dictionary.</param>
-            <param name="key">The key to be added or whose value should be updated</param>
-            <param name="addValueFactory">The function used to generate a value for an absent key</param>
-            <param name="updateValueFactory">
-            The function used to generate a new value for an existing key based on the key's existing value
-            </param>
-            <returns>
-              The new value for the key. This will be either be addValue (if the key was absent) or the result of
-              updateValueFactory (if the key was present).
-            </returns>
-        </member>
-        <member name="T:CodeJam.EnumHelper">
-            <summary>
-            Extension methods for Enum types
-            </summary>
-        </member>
-        <member name="M:CodeJam.EnumHelper.IsDefined``1(``0)">
-            <summary>Determines whether the specified value is defined</summary>
-            <typeparam name="TEnum">The type of the enum.</typeparam>
-            <param name="value">The value to check.</param>
-            <returns>True, if enum defines the value.</returns>
-        </member>
-        <member name="M:CodeJam.EnumHelper.AreFlagsDefined``1(``0)">
-            <summary>Determines whether all bits of the flags combination are defined</summary>
-            <typeparam name="TEnum">The type of the enum.</typeparam>
-            <param name="flags">The flags to check.</param>
-            <returns>True, if enum defines all bits of the flags combination.</returns>
-        </member>
-        <member name="M:CodeJam.EnumHelper.TryParse``1(System.String,``0@)">
-            <summary>Try to parse the enum value.</summary>
-            <typeparam name="TEnum">The type of the enum.</typeparam>
-            <param name="name">The name.</param>
-            <param name="result">The parsed value.</param>
-            <returns><c>true</c>, if parsing was successful; <c>false</c> otherwise.</returns>
-        </member>
-        <member name="M:CodeJam.EnumHelper.TryParse``1(System.String,System.Boolean,``0@)">
-            <summary>Try to parse the enum value.</summary>
-            <typeparam name="TEnum">The type of the enum.</typeparam>
-            <param name="name">The name.</param>
-            <param name="ignoreCase">If set to <c>true</c> the case of the name will be ignored.</param>
-            <param name="result">The parsed value.</param>
-            <returns><c>true</c>, if parsing was successful; <c>false</c> otherwise.</returns>
-        </member>
-        <member name="M:CodeJam.EnumHelper.TryParse``1(System.String,System.Boolean)">
-            <summary>Try to parse the enum value.</summary>
-            <typeparam name="TEnum">The type of the enum.</typeparam>
-            <param name="name">The name.</param>
-            <param name="ignoreCase">If set to <c>true</c> the case of the name will be ignored.</param>
-            <returns>Parsed value, if parsing was successful; <c>null</c> otherwise.</returns>
-        </member>
-        <member name="M:CodeJam.EnumHelper.Parse``1(System.String,System.Boolean)">
-            <summary>Parse the enum value.</summary>
-            <typeparam name="TEnum">The type of the enum.</typeparam>
-            <param name="name">The name.</param>
-            <param name="ignoreCase">If set to <c>true</c> the case of the name will be ignored.</param>
-            <returns>Parsed value.</returns>
-        </member>
-        <member name="M:CodeJam.EnumHelper.GetNameValues``1(System.Boolean)">
-            <summary>Returns a dictionary containing the enum names and their values.</summary>
-            <typeparam name="TEnum">The type of the enum.</typeparam>
-            <param name="ignoreCase">If set to <c>true</c> the case of the name will be ignored.</param>
-            <returns>Returns a dictionary containing the enum names and their values.</returns>
-        </member>
-        <member name="M:CodeJam.EnumHelper.GetNames``1(System.Boolean)">
-            <summary>
-            Retrieves an array of the names of the constants in a specified enumeration.
-            </summary>
-            <typeparam name="TEnum">The type of the enum.</typeparam>
-            <param name="ignoreCase">If set to <c>true</c> the case of the name will be ignored.</param>
-            <returns>A string array of the names of the constants in enumType.</returns>
-        </member>
-        <member name="M:CodeJam.EnumHelper.GetValues``1">
-            <summary>
-            Retrieves an array of the values of the constants in a specified enumeration.
-            </summary>
-            <typeparam name="TEnum">The type of the enum.</typeparam>
-            <returns>An array that contains the values of the constants in enumType.</returns>
-        </member>
-        <member name="M:CodeJam.EnumHelper.GetName``1(``0)">
-            <summary>Returns the name of the enum value.</summary>
-            <typeparam name="TEnum">The type of the enum.</typeparam>
-            <param name="value">The enum value.</param>
-            <returns>The name of the enum value, or <c>null</c> if there is no value defined.</returns>
-        </member>
-        <member name="M:CodeJam.EnumHelper.IsFlagSet``1(``0,``0)">
-            <summary>Determines whether the specified flag is set.</summary>
-            <typeparam name="TEnum">The type of the enum.</typeparam>
-            <param name="value">The value.</param>
-            <param name="flag">The flag.</param>
-            <returns><c>true</c> if the value includes all bits of the flag or the flag is zero.</returns>
-        </member>
-        <member name="M:CodeJam.EnumHelper.IsFlagMatch``1(``0,``0)">
-            <summary>Determines whether any bit from specified flag is set.</summary>
-            <typeparam name="TEnum">The type of the enum.</typeparam>
-            <param name="value">The value.</param>
-            <param name="flags">The bitwise combinations of the flags.</param>
-            <returns><c>true</c> if the value includes any bit of the flags or the flag is zero.</returns>
-        </member>
-        <member name="M:CodeJam.EnumHelper.IsFlagNotSet``1(``0,``0)">
-            <summary>Determines whether the specified flag is not set.</summary>
-            <typeparam name="TEnum">The type of the enum.</typeparam>
-            <param name="value">The value.</param>
-            <param name="flag">The flag.</param>
-            <returns><c>true</c> if the value does not include all bits of the flag.</returns>
-        </member>
-        <member name="M:CodeJam.EnumHelper.IsFlagNotMatch``1(``0,``0)">
-            <summary>Determines whether any bit from specified flag is not set.</summary>
-            <typeparam name="TEnum">The type of the enum.</typeparam>
-            <param name="value">The value.</param>
-            <param name="flags">The bitwise combinations of the flags.</param>
-            <returns><c>true</c> if the value does not include any bit of the flags.</returns>
-        </member>
-        <member name="M:CodeJam.EnumHelper.SetFlag``1(``0,``0)">
-            <summary>Sets the flag.</summary>
-            <typeparam name="TEnum">The type of the enum.</typeparam>
-            <param name="value">The value.</param>
-            <param name="flag">The flag.</param>
-            <returns>Bitwise combination of the flag and the value</returns>
-        </member>
-        <member name="M:CodeJam.EnumHelper.ClearFlag``1(``0,``0)">
-            <summary>Clears the flag.</summary>
-            <typeparam name="TEnum">The type of the enum.</typeparam>
-            <param name="value">The value.</param>
-            <param name="flag">The flag.</param>
-            <returns>The bits of the value excluding the ones from the flag.</returns>
-        </member>
         <member name="T:CodeJam.Expressions.ExpressionExtensions">
             <summary>
             <see cref="T:System.Linq.Expressions.Expression"/> Extensions.
@@ -5598,68 +5409,57 @@
             A name of the method.
             </returns>
         </member>
-        <member name="T:CodeJam.Reflection.Expr">
+        <member name="T:CodeJam.Expressions.Expr">
             <summary>
-            Provides a helper class to get the property, field, ctor or method from an expression.
+            Provides helper methods for Action and Func delegates.
             </summary>
         </member>
-        <member name="M:CodeJam.Reflection.Expr.Action(System.Linq.Expressions.Expression{System.Action})">
+        <member name="M:CodeJam.Expressions.Expr.Action(System.Linq.Expressions.Expression{System.Action})">
             <summary>Helper for type inference from the lambda expression.</summary>
             <param name="actionExpression">The lambda expression.</param>
             <returns>The lambda expression passed.</returns>
         </member>
-        <member name="M:CodeJam.Reflection.Expr.Action``1(System.Linq.Expressions.Expression{System.Action{``0}})">
-            <summary>Helper for type inference from the lambda expression.</summary>
-            <typeparam name="T1">The type of argument #1.</typeparam>
-            <param name="actionExpression">The lambda expression.</param>
-            <returns>The lambda expression passed.</returns>
-        </member>
-        <member name="M:CodeJam.Reflection.Expr.Action``2(System.Linq.Expressions.Expression{System.Action{``0,``1}})">
+        <member name="M:CodeJam.Expressions.Expr.Action``1(System.Linq.Expressions.Expression{System.Action{``0}})">
             <summary>Helper for type inference from the lambda expression.</summary>
             <typeparam name="T1">The type of argument #1.</typeparam>
-            <typeparam name="T2">The type of argument #2.</typeparam>
             <param name="actionExpression">The lambda expression.</param>
             <returns>The lambda expression passed.</returns>
         </member>
-        <member name="M:CodeJam.Reflection.Expr.Action``3(System.Linq.Expressions.Expression{System.Action{``0,``1,``2}})">
+        <member name="M:CodeJam.Expressions.Expr.Action``2(System.Linq.Expressions.Expression{System.Action{``0,``1}})">
             <summary>Helper for type inference from the lambda expression.</summary>
             <typeparam name="T1">The type of argument #1.</typeparam>
             <typeparam name="T2">The type of argument #2.</typeparam>
-            <typeparam name="T3">The type of argument #3.</typeparam>
             <param name="actionExpression">The lambda expression.</param>
             <returns>The lambda expression passed.</returns>
         </member>
-        <member name="M:CodeJam.Reflection.Expr.Action``4(System.Linq.Expressions.Expression{System.Action{``0,``1,``2,``3}})">
+        <member name="M:CodeJam.Expressions.Expr.Action``3(System.Linq.Expressions.Expression{System.Action{``0,``1,``2}})">
             <summary>Helper for type inference from the lambda expression.</summary>
             <typeparam name="T1">The type of argument #1.</typeparam>
             <typeparam name="T2">The type of argument #2.</typeparam>
             <typeparam name="T3">The type of argument #3.</typeparam>
-            <typeparam name="T4">The type of argument #4.</typeparam>
             <param name="actionExpression">The lambda expression.</param>
             <returns>The lambda expression passed.</returns>
         </member>
-        <member name="M:CodeJam.Reflection.Expr.Action``5(System.Linq.Expressions.Expression{System.Action{``0,``1,``2,``3,``4}})">
+        <member name="M:CodeJam.Expressions.Expr.Action``4(System.Linq.Expressions.Expression{System.Action{``0,``1,``2,``3}})">
             <summary>Helper for type inference from the lambda expression.</summary>
             <typeparam name="T1">The type of argument #1.</typeparam>
             <typeparam name="T2">The type of argument #2.</typeparam>
             <typeparam name="T3">The type of argument #3.</typeparam>
             <typeparam name="T4">The type of argument #4.</typeparam>
-            <typeparam name="T5">The type of argument #5.</typeparam>
             <param name="actionExpression">The lambda expression.</param>
             <returns>The lambda expression passed.</returns>
         </member>
-        <member name="M:CodeJam.Reflection.Expr.Action``6(System.Linq.Expressions.Expression{System.Action{``0,``1,``2,``3,``4,``5}})">
+        <member name="M:CodeJam.Expressions.Expr.Action``5(System.Linq.Expressions.Expression{System.Action{``0,``1,``2,``3,``4}})">
             <summary>Helper for type inference from the lambda expression.</summary>
             <typeparam name="T1">The type of argument #1.</typeparam>
             <typeparam name="T2">The type of argument #2.</typeparam>
             <typeparam name="T3">The type of argument #3.</typeparam>
             <typeparam name="T4">The type of argument #4.</typeparam>
             <typeparam name="T5">The type of argument #5.</typeparam>
-            <typeparam name="T6">The type of argument #6.</typeparam>
             <param name="actionExpression">The lambda expression.</param>
             <returns>The lambda expression passed.</returns>
         </member>
-        <member name="M:CodeJam.Reflection.Expr.Action``7(System.Linq.Expressions.Expression{System.Action{``0,``1,``2,``3,``4,``5,``6}})">
+        <member name="M:CodeJam.Expressions.Expr.Action``6(System.Linq.Expressions.Expression{System.Action{``0,``1,``2,``3,``4,``5}})">
             <summary>Helper for type inference from the lambda expression.</summary>
             <typeparam name="T1">The type of argument #1.</typeparam>
             <typeparam name="T2">The type of argument #2.</typeparam>
@@ -5667,74 +5467,10 @@
             <typeparam name="T4">The type of argument #4.</typeparam>
             <typeparam name="T5">The type of argument #5.</typeparam>
             <typeparam name="T6">The type of argument #6.</typeparam>
-            <typeparam name="T7">The type of argument #7.</typeparam>
             <param name="actionExpression">The lambda expression.</param>
             <returns>The lambda expression passed.</returns>
         </member>
-        <member name="M:CodeJam.Reflection.Expr.Func``1(System.Linq.Expressions.Expression{System.Func{``0}})">
-            <summary>Helper for type inference from the lambda expression.</summary>
-            <typeparam name="TResult">The result type.</typeparam>
-            <param name="funcExpression">The lambda expression.</param>
-            <returns>The lambda expression passed.</returns>
-        </member>
-        <member name="M:CodeJam.Reflection.Expr.Func``2(System.Linq.Expressions.Expression{System.Func{``0,``1}})">
-            <summary>Helper for type inference from the lambda expression.</summary>
-            <typeparam name="T1">The type of argument #1.</typeparam>
-            <typeparam name="TResult">The result type.</typeparam>
-            <param name="funcExpression">The lambda expression.</param>
-            <returns>The lambda expression passed.</returns>
-        </member>
-        <member name="M:CodeJam.Reflection.Expr.Func``3(System.Linq.Expressions.Expression{System.Func{``0,``1,``2}})">
-            <summary>Helper for type inference from the lambda expression.</summary>
-            <typeparam name="T1">The type of argument #1.</typeparam>
-            <typeparam name="T2">The type of argument #2.</typeparam>
-            <typeparam name="TResult">The result type.</typeparam>
-            <param name="funcExpression">The lambda expression.</param>
-            <returns>The lambda expression passed.</returns>
-        </member>
-        <member name="M:CodeJam.Reflection.Expr.Func``4(System.Linq.Expressions.Expression{System.Func{``0,``1,``2,``3}})">
-            <summary>Helper for type inference from the lambda expression.</summary>
-            <typeparam name="T1">The type of argument #1.</typeparam>
-            <typeparam name="T2">The type of argument #2.</typeparam>
-            <typeparam name="T3">The type of argument #3.</typeparam>
-            <typeparam name="TResult">The result type.</typeparam>
-            <param name="funcExpression">The lambda expression.</param>
-            <returns>The lambda expression passed.</returns>
-        </member>
-        <member name="M:CodeJam.Reflection.Expr.Func``5(System.Linq.Expressions.Expression{System.Func{``0,``1,``2,``3,``4}})">
-            <summary>Helper for type inference from the lambda expression.</summary>
-            <typeparam name="T1">The type of argument #1.</typeparam>
-            <typeparam name="T2">The type of argument #2.</typeparam>
-            <typeparam name="T3">The type of argument #3.</typeparam>
-            <typeparam name="T4">The type of argument #4.</typeparam>
-            <typeparam name="TResult">The result type.</typeparam>
-            <param name="funcExpression">The lambda expression.</param>
-            <returns>The lambda expression passed.</returns>
-        </member>
-        <member name="M:CodeJam.Reflection.Expr.Func``6(System.Linq.Expressions.Expression{System.Func{``0,``1,``2,``3,``4,``5}})">
-            <summary>Helper for type inference from the lambda expression.</summary>
-            <typeparam name="T1">The type of argument #1.</typeparam>
-            <typeparam name="T2">The type of argument #2.</typeparam>
-            <typeparam name="T3">The type of argument #3.</typeparam>
-            <typeparam name="T4">The type of argument #4.</typeparam>
-            <typeparam name="T5">The type of argument #5.</typeparam>
-            <typeparam name="TResult">The result type.</typeparam>
-            <param name="funcExpression">The lambda expression.</param>
-            <returns>The lambda expression passed.</returns>
-        </member>
-        <member name="M:CodeJam.Reflection.Expr.Func``7(System.Linq.Expressions.Expression{System.Func{``0,``1,``2,``3,``4,``5,``6}})">
-            <summary>Helper for type inference from the lambda expression.</summary>
-            <typeparam name="T1">The type of argument #1.</typeparam>
-            <typeparam name="T2">The type of argument #2.</typeparam>
-            <typeparam name="T3">The type of argument #3.</typeparam>
-            <typeparam name="T4">The type of argument #4.</typeparam>
-            <typeparam name="T5">The type of argument #5.</typeparam>
-            <typeparam name="T6">The type of argument #6.</typeparam>
-            <typeparam name="TResult">The result type.</typeparam>
-            <param name="funcExpression">The lambda expression.</param>
-            <returns>The lambda expression passed.</returns>
-        </member>
-        <member name="M:CodeJam.Reflection.Expr.Func``8(System.Linq.Expressions.Expression{System.Func{``0,``1,``2,``3,``4,``5,``6,``7}})">
+        <member name="M:CodeJam.Expressions.Expr.Action``7(System.Linq.Expressions.Expression{System.Action{``0,``1,``2,``3,``4,``5,``6}})">
             <summary>Helper for type inference from the lambda expression.</summary>
             <typeparam name="T1">The type of argument #1.</typeparam>
             <typeparam name="T2">The type of argument #2.</typeparam>
@@ -5743,425 +5479,84 @@
             <typeparam name="T5">The type of argument #5.</typeparam>
             <typeparam name="T6">The type of argument #6.</typeparam>
             <typeparam name="T7">The type of argument #7.</typeparam>
+            <param name="actionExpression">The lambda expression.</param>
+            <returns>The lambda expression passed.</returns>
+        </member>
+        <member name="M:CodeJam.Expressions.Expr.Func``1(System.Linq.Expressions.Expression{System.Func{``0}})">
+            <summary>Helper for type inference from the lambda expression.</summary>
             <typeparam name="TResult">The result type.</typeparam>
             <param name="funcExpression">The lambda expression.</param>
             <returns>The lambda expression passed.</returns>
         </member>
-        <member name="T:CodeJam.Reflection.InfoOf`1">
-            <summary>
-            Provides a helper class to get the property, field, ctor or method from an expression.
-            </summary>
+        <member name="M:CodeJam.Expressions.Expr.Func``2(System.Linq.Expressions.Expression{System.Func{``0,``1}})">
+            <summary>Helper for type inference from the lambda expression.</summary>
+            <typeparam name="T1">The type of argument #1.</typeparam>
+            <typeparam name="TResult">The result type.</typeparam>
+            <param name="funcExpression">The lambda expression.</param>
+            <returns>The lambda expression passed.</returns>
         </member>
-        <member name="M:CodeJam.Reflection.InfoOf`1.Member``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
-            <summary>
-            Returns the property or field.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.MemberInfo"/> instance.
-            </returns>
+        <member name="M:CodeJam.Expressions.Expr.Func``3(System.Linq.Expressions.Expression{System.Func{``0,``1,``2}})">
+            <summary>Helper for type inference from the lambda expression.</summary>
+            <typeparam name="T1">The type of argument #1.</typeparam>
+            <typeparam name="T2">The type of argument #2.</typeparam>
+            <typeparam name="TResult">The result type.</typeparam>
+            <param name="funcExpression">The lambda expression.</param>
+            <returns>The lambda expression passed.</returns>
         </member>
-        <member name="M:CodeJam.Reflection.InfoOf`1.Property``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
-            <summary>
-            Returns the property.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.PropertyInfo"/> instance.
-            </returns>
+        <member name="M:CodeJam.Expressions.Expr.Func``4(System.Linq.Expressions.Expression{System.Func{``0,``1,``2,``3}})">
+            <summary>Helper for type inference from the lambda expression.</summary>
+            <typeparam name="T1">The type of argument #1.</typeparam>
+            <typeparam name="T2">The type of argument #2.</typeparam>
+            <typeparam name="T3">The type of argument #3.</typeparam>
+            <typeparam name="TResult">The result type.</typeparam>
+            <param name="funcExpression">The lambda expression.</param>
+            <returns>The lambda expression passed.</returns>
         </member>
-        <member name="M:CodeJam.Reflection.InfoOf`1.Field``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
-            <summary>
-            Returns the field.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.FieldInfo"/> instance.
-            </returns>
+        <member name="M:CodeJam.Expressions.Expr.Func``5(System.Linq.Expressions.Expression{System.Func{``0,``1,``2,``3,``4}})">
+            <summary>Helper for type inference from the lambda expression.</summary>
+            <typeparam name="T1">The type of argument #1.</typeparam>
+            <typeparam name="T2">The type of argument #2.</typeparam>
+            <typeparam name="T3">The type of argument #3.</typeparam>
+            <typeparam name="T4">The type of argument #4.</typeparam>
+            <typeparam name="TResult">The result type.</typeparam>
+            <param name="funcExpression">The lambda expression.</param>
+            <returns>The lambda expression passed.</returns>
         </member>
-        <member name="M:CodeJam.Reflection.InfoOf`1.Constructor(System.Linq.Expressions.Expression{System.Func{`0}})">
-            <summary>
-            Returns the constructor.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.ConstructorInfo"/> instance.
-            </returns>
+        <member name="M:CodeJam.Expressions.Expr.Func``6(System.Linq.Expressions.Expression{System.Func{``0,``1,``2,``3,``4,``5}})">
+            <summary>Helper for type inference from the lambda expression.</summary>
+            <typeparam name="T1">The type of argument #1.</typeparam>
+            <typeparam name="T2">The type of argument #2.</typeparam>
+            <typeparam name="T3">The type of argument #3.</typeparam>
+            <typeparam name="T4">The type of argument #4.</typeparam>
+            <typeparam name="T5">The type of argument #5.</typeparam>
+            <typeparam name="TResult">The result type.</typeparam>
+            <param name="funcExpression">The lambda expression.</param>
+            <returns>The lambda expression passed.</returns>
         </member>
-        <member name="M:CodeJam.Reflection.InfoOf`1.Method``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
-            <summary>
-            Returns the method.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.MethodInfo"/> instance.
-            </returns>
+        <member name="M:CodeJam.Expressions.Expr.Func``7(System.Linq.Expressions.Expression{System.Func{``0,``1,``2,``3,``4,``5,``6}})">
+            <summary>Helper for type inference from the lambda expression.</summary>
+            <typeparam name="T1">The type of argument #1.</typeparam>
+            <typeparam name="T2">The type of argument #2.</typeparam>
+            <typeparam name="T3">The type of argument #3.</typeparam>
+            <typeparam name="T4">The type of argument #4.</typeparam>
+            <typeparam name="T5">The type of argument #5.</typeparam>
+            <typeparam name="T6">The type of argument #6.</typeparam>
+            <typeparam name="TResult">The result type.</typeparam>
+            <param name="funcExpression">The lambda expression.</param>
+            <returns>The lambda expression passed.</returns>
         </member>
-        <member name="M:CodeJam.Reflection.InfoOf`1.Method(System.Linq.Expressions.Expression{System.Action{`0}})">
-            <summary>
-            Returns the method.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.MethodInfo"/> instance.
-            </returns>
-        </member>
-        <member name="T:CodeJam.Reflection.ParamInfo">
-            <summary>
-            Parameter data for CreateInstance method.
-            </summary>
-        </member>
-        <member name="M:CodeJam.Reflection.ParamInfo.#ctor(System.String,System.Object,System.Boolean)">
-            <summary>Initializes a new instance of the <see cref="T:CodeJam.Reflection.ParamInfo"/> class.</summary>
-            <param name="name">Name of the parameter.</param>
-            <param name="value">Value of the parameter.</param>
-            <param name="required"><c>True</c> if parameter required.</param>
-        </member>
-        <member name="M:CodeJam.Reflection.ParamInfo.Param(System.String,System.Object,System.Boolean)">
-            <summary>Initializes a new instance of the <see cref="T:CodeJam.Reflection.ParamInfo"/> class.</summary>
-            <param name="name">Name of the parameter.</param>
-            <param name="value">Value of the parameter.</param>
-            <param name="required"><c>True</c> if parameter required.</param>
-            <returns>Instance of <see cref="T:CodeJam.Reflection.ParamInfo"/>.</returns>
-        </member>
-        <member name="P:CodeJam.Reflection.ParamInfo.Name">
-            <summary>
-            Parameter name.
-            </summary>
-        </member>
-        <member name="P:CodeJam.Reflection.ParamInfo.Value">
-            <summary>
-            Parameter value.
-            </summary>
-        </member>
-        <member name="P:CodeJam.Reflection.ParamInfo.Required">
-            <summary>
-            True, if parameter required.
-            </summary>
-        </member>
-        <member name="T:CodeJam.Reflection.AssemblyExtensions">
-            <summary>
-            The <see cref="T:System.Reflection.Assembly"/> extensions.
-            </summary>
-        </member>
-        <member name="M:CodeJam.Reflection.AssemblyExtensions.GetRequiredResourceStream(System.Reflection.Assembly,System.String)">
-            <summary>
-            Loads the specified manifest resource from this assembly, and checks if it exists.
-            </summary>
-            <param name="assembly">Resource assembly.</param>
-            <param name="name">The case-sensitive name of the manifest resource being requested.</param>
-            <returns>The manifest resource.</returns>
-            <exception cref="T:System.ArgumentNullException">The name parameter is null.</exception>
-            <exception cref="T:System.ArgumentException">Resource with specified name not found</exception>
-        </member>
-        <member name="M:CodeJam.Reflection.AssemblyExtensions.GetAssemblyPath(System.Reflection.Assembly)">
-            <summary>
-            Returns path to assembly <paramref name="assembly"/> file.
-            </summary>
-            <param name="assembly">Assembly.</param>
-            <returns>Path to <paramref name="assembly"/>.</returns>
-        </member>
-        <member name="M:CodeJam.Reflection.AssemblyExtensions.GetAssemblyDirectory(System.Reflection.Assembly)">
-            <summary>
-            Returns directory part of path to assembly <paramref name="assembly"/> file.
-            </summary>
-            <param name="assembly">Assembly.</param>
-            <returns>Folder part of path to <paramref name="assembly"/>.</returns>
-        </member>
-        <member name="T:CodeJam.Reflection.ReflectionEnumHelper">
-            <summary>
-            Reflection helper methods for enumeration.
-            </summary>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionEnumHelper.GetField``1(``0)">
-            <summary>
-            Searches for the public field with the specified enumeration value.
-            </summary>
-            <typeparam name="T">An enumeration type.</typeparam>
-            <param name="value">An enumeration value.</param>
-            <returns>
-            An object representing the public field with the specified enumeration value, if found;
-            otherwise, null.
-            </returns>
-        </member>
-        <member name="T:CodeJam.Reflection.InfoOf">
-            <summary>
-                Provides a helper class to get the property, field, ctor or method from an expression.
-            </summary>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf.Member``1(System.Linq.Expressions.Expression{System.Func{``0}})">
-            <summary>
-            Returns the <see cref="T:System.Reflection.MemberInfo"/>.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.MemberInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf.Member``1(System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
-            <summary>
-            Returns the <see cref="T:System.Reflection.MemberInfo"/>.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.MemberInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf.Member``2(System.Linq.Expressions.Expression{System.Func{``0,``1}})">
-            <summary>
-            Returns the <see cref="T:System.Reflection.MemberInfo"/>.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.MemberInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf.Property``1(System.Linq.Expressions.Expression{System.Func{``0}})">
-            <summary>
-            Returns the property.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.PropertyInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf.Property``1(System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
-            <summary>
-            Returns the property.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.PropertyInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf.Property``2(System.Linq.Expressions.Expression{System.Func{``0,``1}})">
-            <summary>
-            Returns the property.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.PropertyInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf.Field``1(System.Linq.Expressions.Expression{System.Func{``0}})">
-            <summary>
-            Returns the field.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.FieldInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf.Field``1(System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
-            <summary>
-            Returns the field.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.FieldInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf.Field``2(System.Linq.Expressions.Expression{System.Func{``0,``1}})">
-            <summary>
-            Returns the field.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.FieldInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf.Constructor``1(System.Linq.Expressions.Expression{System.Func{``0}})">
-            <summary>
-            Returns the constructor.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.ConstructorInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf.Method``1(System.Linq.Expressions.Expression{System.Func{``0}})">
-            <summary>
-            Returns the method.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.MethodInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf.Method``1(System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
-            <summary>
-            Returns the method.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.MethodInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf.Method``2(System.Linq.Expressions.Expression{System.Func{``0,``1}})">
-            <summary>
-            Returns the method.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.MethodInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf.Method(System.Linq.Expressions.Expression{System.Action})">
-            <summary>
-            Returns the method.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.MethodInfo"/> instance.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.InfoOf.Method``1(System.Linq.Expressions.Expression{System.Action{``0}})">
-            <summary>
-            Returns the method.
-            </summary>
-            <param name="expression">The expression to analyze.</param>
-            <returns>
-            The <see cref="T:System.Reflection.MethodInfo"/> instance.
-            </returns>
-        </member>
-        <member name="T:CodeJam.Reflection.ReflectionExtensions">
-            <summary>
-            Reflection extension methods.
-            </summary>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsInstantiable(System.Type)">
-            <summary>
-            Gets a value indicating whether the <paramref name="type"/> can be instantiated.
-            </summary>
-            <param name="type">The <see cref="T:System.Type"/> to test.</param>
-            <returns>
-            A value indicating whether the <paramref name="type"/> can be instantiated.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsStatic(System.Type)">
-            <summary>
-            Gets a value indicating whether the <paramref name="type"/> is declared static.
-            </summary>
-            <param name="type">The <see cref="T:System.Type"/> to test.</param>
-            <returns>
-            A value indicating whether the <paramref name="type"/> is declared static.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsNullable(System.Type)">
-            <summary>
-            Gets a value indicating whether the <paramref name="type"/> is Nullable&#60;&#62; type.
-            </summary>
-            <param name="type">The <see cref="T:System.Type"/> to test.</param>
-            <returns>
-            A value indicating whether the <paramref name="type"/> is Nullable&#60;&#62;.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsNumeric(System.Type)">
-            <summary>
-            Checks if <paramref name="type"/> is numeric type.
-            </summary>
-            <param name="type">Type to check.</param>
-            <returns>True, if <paramref name="type"/> is numeric.</returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsInteger(System.Type)">
-            <summary>
-            Checks if <paramref name="type"/> is integer type.
-            </summary>
-            <param name="type">Type to check.</param>
-            <returns>True, if <paramref name="type"/> is integer type.</returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsNullableNumeric(System.Type)">
-            <summary>
-            Checks if <paramref name="type" /> is nullable numeric type.
-            </summary>
-            <param name="type">Type to check.</param>
-            <returns>True, if <paramref name="type" /> is nullable numeric.</returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsNullableInteger(System.Type)">
-            <summary>
-            Checks if <paramref name="type"/> is nullable integer type.
-            </summary>
-            <param name="type">Type to check.</param>
-            <returns>True, if <paramref name="type"/> is nullable integer type.</returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsNullableEnum(System.Type)">
-            <summary>
-            Checks if <paramref name="type"/> is nullable enum type.
-            </summary>
-            <param name="type">Type to check.</param>
-            <returns>True, if <paramref name="type"/> is nullable enum type.</returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsSubClass(System.Type,System.Type)">
-            <summary>
-            Determines whether the <paramref name="type"/> derives from the specified <paramref name="check"/>.
-            </summary>
-            <remarks>
-            This method also returns false if <paramref name="type"/> and the <paramref name="check"/> are equal.
-            </remarks>
-            <param name="type">The type to test.</param>
-            <param name="check">The type to compare with. </param>
-            <returns>
-            true if the <paramref name="type"/> derives from <paramref name="check"/>; otherwise, false.
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.GetDelegateParams(System.Type)">
-            <summary>
-            Returns delegate parameter infos.
-            </summary>
-            <param name="delegateType">Type of delegate</param>
-            <returns>Array of <see cref="T:System.Reflection.ParameterInfo"/>.</returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.ToUnderlying(System.Type)">
-            <summary>
-            Returns the underlying type argument of the specified type.
-            </summary>
-            <param name="type">A <see cref="T:System.Type"/> instance. </param>
-            <returns><list>
-            <item>The type argument of the type parameter,
-            if the type parameter is a closed generic nullable type.</item>
-            <item>The underlying Type if the type parameter is an enum type.</item>
-            <item>Otherwise, the type itself.</item>
-            </list>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.GetMemberType(System.Reflection.MemberInfo)">
-            <summary>
-            Gets the type of this member.
-            </summary>
-            <param name="memberInfo">A <see cref="T:System.Reflection.MemberInfo"/> instance. </param>
-            <returns>
-            <list>
-            <item>If the member is a property, returns <see cref="P:System.Reflection.PropertyInfo.PropertyType"/>.</item>
-            <item>If the member is a field, returns <see cref="P:System.Reflection.FieldInfo.FieldType"/>.</item>
-            <item>If the member is a method, returns <see cref="P:System.Reflection.MethodInfo.ReturnType"/>.</item>
-            <item>If the member is a constructor, returns <see cref="P:System.Reflection.MemberInfo.DeclaringType"/>.</item>
-            <item>If the member is an event, returns <see cref="P:System.Reflection.EventInfo.EventHandlerType"/>.</item>
-            </list>
-            </returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsAnonymous(System.Type)">
-            <summary>
-            Checks if <paramref name="type"/> is an anonymous type.
-            </summary>
-            <param name="type">Type to check.</param>
-            <returns>True, if <paramref name="type"/> is an anonymous type.</returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.GetDefaultConstructor(System.Type)">
-            <summary>
-            Returns default constructor.
-            </summary>
-            <param name="type">A <see cref="T:System.Type"/> instance. </param>
-            <returns></returns>
-        </member>
-        <member name="M:CodeJam.Reflection.ReflectionExtensions.CreateInstance(System.Type,CodeJam.Reflection.ParamInfo[])">
-            <summary>
-            Creates instance of <paramref name="type"/> with specified <paramref name="parameters"/>.
-            </summary>
-            <param name="type">Type to create instance.</param>
-            <param name="parameters">Constructor parameters</param>
-            <returns>Instance of type</returns>
-            <exception cref="T:System.ArgumentNullException"><paramref name="type"/> is null</exception>
-            <exception cref="T:System.ArgumentException">No suitable constructors found</exception>
+        <member name="M:CodeJam.Expressions.Expr.Func``8(System.Linq.Expressions.Expression{System.Func{``0,``1,``2,``3,``4,``5,``6,``7}})">
+            <summary>Helper for type inference from the lambda expression.</summary>
+            <typeparam name="T1">The type of argument #1.</typeparam>
+            <typeparam name="T2">The type of argument #2.</typeparam>
+            <typeparam name="T3">The type of argument #3.</typeparam>
+            <typeparam name="T4">The type of argument #4.</typeparam>
+            <typeparam name="T5">The type of argument #5.</typeparam>
+            <typeparam name="T6">The type of argument #6.</typeparam>
+            <typeparam name="T7">The type of argument #7.</typeparam>
+            <typeparam name="TResult">The result type.</typeparam>
+            <param name="funcExpression">The lambda expression.</param>
+            <returns>The lambda expression passed.</returns>
         </member>
         <member name="T:CodeJam.Strings.CharExtensions">
             <summary>
@@ -7163,6 +6558,454 @@
             Converted by <paramref name="selectFunc"/> value, or option with no value, if <paramref name="option"/>
             has no value.
             </returns>
+        </member>
+        <member name="T:CodeJam.Reflection.InfoOf`1">
+            <summary>
+            Provides a helper class to get the property, field, ctor or method from an expression.
+            </summary>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf`1.Member``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Returns the property or field.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.MemberInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf`1.Property``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Returns the property.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.PropertyInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf`1.Field``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Returns the field.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.FieldInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf`1.Constructor(System.Linq.Expressions.Expression{System.Func{`0}})">
+            <summary>
+            Returns the constructor.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.ConstructorInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf`1.Method``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Returns the method.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.MethodInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf`1.Method(System.Linq.Expressions.Expression{System.Action{`0}})">
+            <summary>
+            Returns the method.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.MethodInfo"/> instance.
+            </returns>
+        </member>
+        <member name="T:CodeJam.Reflection.ParamInfo">
+            <summary>
+            Parameter data for CreateInstance method.
+            </summary>
+        </member>
+        <member name="M:CodeJam.Reflection.ParamInfo.#ctor(System.String,System.Object,System.Boolean)">
+            <summary>Initializes a new instance of the <see cref="T:CodeJam.Reflection.ParamInfo"/> class.</summary>
+            <param name="name">Name of the parameter.</param>
+            <param name="value">Value of the parameter.</param>
+            <param name="required"><c>True</c> if parameter required.</param>
+        </member>
+        <member name="M:CodeJam.Reflection.ParamInfo.Param(System.String,System.Object,System.Boolean)">
+            <summary>Initializes a new instance of the <see cref="T:CodeJam.Reflection.ParamInfo"/> class.</summary>
+            <param name="name">Name of the parameter.</param>
+            <param name="value">Value of the parameter.</param>
+            <param name="required"><c>True</c> if parameter required.</param>
+            <returns>Instance of <see cref="T:CodeJam.Reflection.ParamInfo"/>.</returns>
+        </member>
+        <member name="P:CodeJam.Reflection.ParamInfo.Name">
+            <summary>
+            Parameter name.
+            </summary>
+        </member>
+        <member name="P:CodeJam.Reflection.ParamInfo.Value">
+            <summary>
+            Parameter value.
+            </summary>
+        </member>
+        <member name="P:CodeJam.Reflection.ParamInfo.Required">
+            <summary>
+            True, if parameter required.
+            </summary>
+        </member>
+        <member name="T:CodeJam.Reflection.AssemblyExtensions">
+            <summary>
+            The <see cref="T:System.Reflection.Assembly"/> extensions.
+            </summary>
+        </member>
+        <member name="M:CodeJam.Reflection.AssemblyExtensions.GetRequiredResourceStream(System.Reflection.Assembly,System.String)">
+            <summary>
+            Loads the specified manifest resource from this assembly, and checks if it exists.
+            </summary>
+            <param name="assembly">Resource assembly.</param>
+            <param name="name">The case-sensitive name of the manifest resource being requested.</param>
+            <returns>The manifest resource.</returns>
+            <exception cref="T:System.ArgumentNullException">The name parameter is null.</exception>
+            <exception cref="T:System.ArgumentException">Resource with specified name not found</exception>
+        </member>
+        <member name="M:CodeJam.Reflection.AssemblyExtensions.GetAssemblyPath(System.Reflection.Assembly)">
+            <summary>
+            Returns path to assembly <paramref name="assembly"/> file.
+            </summary>
+            <param name="assembly">Assembly.</param>
+            <returns>Path to <paramref name="assembly"/>.</returns>
+        </member>
+        <member name="M:CodeJam.Reflection.AssemblyExtensions.GetAssemblyDirectory(System.Reflection.Assembly)">
+            <summary>
+            Returns directory part of path to assembly <paramref name="assembly"/> file.
+            </summary>
+            <param name="assembly">Assembly.</param>
+            <returns>Folder part of path to <paramref name="assembly"/>.</returns>
+        </member>
+        <member name="T:CodeJam.Reflection.EnumHelper">
+            <summary>
+            Helper methods for enumeration.
+            </summary>
+        </member>
+        <member name="M:CodeJam.Reflection.EnumHelper.GetNames``1">
+            <summary>
+            Retrieves an array of the names of the constants in a specified enumeration.
+            </summary>
+            <typeparam name="T">An enumeration type.</typeparam>
+            <returns>A string array of the names of the constants in enumType.</returns>
+        </member>
+        <member name="M:CodeJam.Reflection.EnumHelper.GetName``1(``0)">
+            <summary>
+            Retrieves the name of the constant in the specified enumeration that has the specified value.
+            </summary>
+            <param name="value">The value of a particular enumerated constant in terms of its underlying type.</param>
+            <typeparam name="T">An enumeration type.</typeparam>
+            <returns>
+            A string containing the name of the enumerated constant in enumType whose value is value;
+            or null if no such constant is found.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.EnumHelper.GetValues``1">
+            <summary>
+            Retrieves an array of the values of the constants in a specified enumeration.
+            </summary>
+            <typeparam name="T">An enumeration type.</typeparam>
+            <returns>An array that contains the values of the constants in enumType.</returns>
+        </member>
+        <member name="M:CodeJam.Reflection.EnumHelper.IsDefined``1(``0)">
+            <summary>
+            Returns an indication whether a constant with a specified value exists in a specified enumeration.
+            </summary>
+            <param name="value">The value or name of a constant in <typeparamref name="T"/>.</param>
+            <typeparam name="T">An enumeration type.</typeparam>
+            <returns>true if a constant in enumType has a value equal to value; otherwise, false.</returns>
+        </member>
+        <member name="M:CodeJam.Reflection.EnumHelper.Parse``1(System.String,System.Boolean)">
+            <summary>
+            Converts the string representation of the name or numeric <paramref name="value"/> of one or more
+            enumerated constants to an equivalent enumerated object. A parameter <paramref name="ignoreCase"/> specifies
+            whether the operation is case-insensitive.
+            </summary>
+            <param name="value">A string containing the name or value to convert.</param>
+            <param name="ignoreCase">true to ignore case; false to regard case.</param>
+            <typeparam name="T">An enumeration type.</typeparam>
+            <returns>An object of type enumType whose value is represented by value.</returns>
+        </member>
+        <member name="M:CodeJam.Reflection.EnumHelper.GetPairs``1">
+            <summary>
+            Retrieves an array of name/value pairs in a specified enumeration.
+            </summary>
+            <typeparam name="T">An enumeration type.</typeparam>
+            <returns>
+            An array of the names of the constants in a specified enumeration.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.EnumHelper.GetField``1(``0)">
+            <summary>
+            Searches for the public field with the specified enumeration value.
+            </summary>
+            <typeparam name="T">An enumeration type.</typeparam>
+            <param name="value">An enumeration value.</param>
+            <returns>
+            An object representing the public field with the specified enumeration value, if found;
+            otherwise, null.
+            </returns>
+        </member>
+        <member name="T:CodeJam.Reflection.InfoOf">
+            <summary>
+                Provides a helper class to get the property, field, ctor or method from an expression.
+            </summary>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf.Member``1(System.Linq.Expressions.Expression{System.Func{``0}})">
+            <summary>
+            Returns the <see cref="T:System.Reflection.MemberInfo"/>.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.MemberInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf.Member``1(System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
+            <summary>
+            Returns the <see cref="T:System.Reflection.MemberInfo"/>.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.MemberInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf.Member``2(System.Linq.Expressions.Expression{System.Func{``0,``1}})">
+            <summary>
+            Returns the <see cref="T:System.Reflection.MemberInfo"/>.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.MemberInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf.Property``1(System.Linq.Expressions.Expression{System.Func{``0}})">
+            <summary>
+            Returns the property.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.PropertyInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf.Property``1(System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
+            <summary>
+            Returns the property.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.PropertyInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf.Property``2(System.Linq.Expressions.Expression{System.Func{``0,``1}})">
+            <summary>
+            Returns the property.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.PropertyInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf.Field``1(System.Linq.Expressions.Expression{System.Func{``0}})">
+            <summary>
+            Returns the field.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.FieldInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf.Field``1(System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
+            <summary>
+            Returns the field.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.FieldInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf.Field``2(System.Linq.Expressions.Expression{System.Func{``0,``1}})">
+            <summary>
+            Returns the field.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.FieldInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf.Constructor``1(System.Linq.Expressions.Expression{System.Func{``0}})">
+            <summary>
+            Returns the constructor.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.ConstructorInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf.Method``1(System.Linq.Expressions.Expression{System.Func{``0}})">
+            <summary>
+            Returns the method.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.MethodInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf.Method``1(System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
+            <summary>
+            Returns the method.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.MethodInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf.Method``2(System.Linq.Expressions.Expression{System.Func{``0,``1}})">
+            <summary>
+            Returns the method.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.MethodInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf.Method(System.Linq.Expressions.Expression{System.Action})">
+            <summary>
+            Returns the method.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.MethodInfo"/> instance.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.InfoOf.Method``1(System.Linq.Expressions.Expression{System.Action{``0}})">
+            <summary>
+            Returns the method.
+            </summary>
+            <param name="expression">The expression to analyze.</param>
+            <returns>
+            The <see cref="T:System.Reflection.MethodInfo"/> instance.
+            </returns>
+        </member>
+        <member name="T:CodeJam.Reflection.ReflectionExtensions">
+            <summary>
+            Reflection extension methods.
+            </summary>
+        </member>
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsInstantiable(System.Type)">
+            <summary>
+            Gets a value indicating whether the <paramref name="type"/> can be instantiated.
+            </summary>
+            <param name="type">The <see cref="T:System.Type"/> to test.</param>
+            <returns>
+            A value indicating whether the <paramref name="type"/> can be instantiated.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsStatic(System.Type)">
+            <summary>
+            Gets a value indicating whether the <paramref name="type"/> is declared static.
+            </summary>
+            <param name="type">The <see cref="T:System.Type"/> to test.</param>
+            <returns>
+            A value indicating whether the <paramref name="type"/> is declared static.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsNullable(System.Type)">
+            <summary>
+            Gets a value indicating whether the <paramref name="type"/> is Nullable&#60;&#62; type.
+            </summary>
+            <param name="type">The <see cref="T:System.Type"/> to test.</param>
+            <returns>
+            A value indicating whether the <paramref name="type"/> is Nullable&#60;&#62;.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsNumeric(System.Type)">
+            <summary>
+            Checks if <paramref name="type"/> is numeric type.
+            </summary>
+            <param name="type">Type to check.</param>
+            <returns>True, if <paramref name="type"/> is numeric.</returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsInteger(System.Type)">
+            <summary>
+            Checks if <paramref name="type"/> is integer type.
+            </summary>
+            <param name="type">Type to check.</param>
+            <returns>True, if <paramref name="type"/> is integer type.</returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsSubClass(System.Type,System.Type)">
+            <summary>
+            Determines whether the <paramref name="type"/> derives from the specified <paramref name="check"/>.
+            </summary>
+            <remarks>
+            This method also returns false if <paramref name="type"/> and the <paramref name="check"/> are equal.
+            </remarks>
+            <param name="type">The type to test.</param>
+            <param name="check">The type to compare with. </param>
+            <returns>
+            true if the <paramref name="type"/> derives from <paramref name="check"/>; otherwise, false.
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.GetDelegateParams(System.Type)">
+            <summary>
+            Returns delegate parameter infos.
+            </summary>
+            <param name="delegateType">Type of delegate</param>
+            <returns>Array of <see cref="T:System.Reflection.ParameterInfo"/>.</returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.ToUnderlying(System.Type)">
+            <summary>
+            Returns the underlying type argument of the specified type.
+            </summary>
+            <param name="type">A <see cref="T:System.Type"/> instance. </param>
+            <returns><list>
+            <item>The type argument of the type parameter,
+            if the type parameter is a closed generic nullable type.</item>
+            <item>The underlying Type if the type parameter is an enum type.</item>
+            <item>Otherwise, the type itself.</item>
+            </list>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.GetMemberType(System.Reflection.MemberInfo)">
+            <summary>
+            Gets the type of this member.
+            </summary>
+            <param name="memberInfo">A <see cref="T:System.Reflection.MemberInfo"/> instance. </param>
+            <returns>
+            <list>
+            <item>If the member is a property, returns <see cref="P:System.Reflection.PropertyInfo.PropertyType"/>.</item>
+            <item>If the member is a field, returns <see cref="P:System.Reflection.FieldInfo.FieldType"/>.</item>
+            <item>If the member is a method, returns <see cref="P:System.Reflection.MethodInfo.ReturnType"/>.</item>
+            <item>If the member is a constructor, returns <see cref="P:System.Reflection.MemberInfo.DeclaringType"/>.</item>
+            <item>If the member is an event, returns <see cref="P:System.Reflection.EventInfo.EventHandlerType"/>.</item>
+            </list>
+            </returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.IsAnonymous(System.Type)">
+            <summary>
+            Checks if <paramref name="type"/> is an anonymous type.
+            </summary>
+            <param name="type">Type to check.</param>
+            <returns>True, if <paramref name="type"/> is an anonymous type.</returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.GetDefaultConstructor(System.Type)">
+            <summary>
+            Returns default constructor.
+            </summary>
+            <param name="type">A <see cref="T:System.Type"/> instance. </param>
+            <returns></returns>
+        </member>
+        <member name="M:CodeJam.Reflection.ReflectionExtensions.CreateInstance(System.Type,CodeJam.Reflection.ParamInfo[])">
+            <summary>
+            Creates instance of <paramref name="type"/> with specified <paramref name="parameters"/>.
+            </summary>
+            <param name="type">Type to create instance.</param>
+            <param name="parameters">Constructor parameters</param>
+            <returns>Instance of type</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="type"/> is null</exception>
+            <exception cref="T:System.ArgumentException">No suitable constructors found</exception>
         </member>
         <member name="T:CodeJam.Services.IServicePublisher">
             <summary>
