@@ -12,17 +12,17 @@ Action AfterGenerateLinqToDBModel  = () => {};
 
 Func<Table,MemberBase> GenerateProviderSpecificTable = t => null;
 
-bool  GenerateObsoleteAttributeForAliases = false;
-bool  GenerateFindExtensions    = true;
-bool  IsCompactColumns          = true;
-bool  IsCompactColumnAliases    = true;
-bool  GenerateDataTypes         = false;
-bool? GenerateLengthProperty    = null;
-bool? GeneratePrecisionProperty = null;
-bool? GenerateScaleProperty     = null;
-bool  GenerateDbTypes           = false;
-bool  GenerateSchemaAsType      = false;
-
+bool   GenerateObsoleteAttributeForAliases = false;
+bool   GenerateFindExtensions    = true;
+bool   IsCompactColumns          = true;
+bool   IsCompactColumnAliases    = true;
+bool   GenerateDataTypes         = false;
+bool?  GenerateLengthProperty    = null;
+bool?  GeneratePrecisionProperty = null;
+bool?  GenerateScaleProperty     = null;
+bool   GenerateDbTypes           = false;
+bool   GenerateSchemaAsType      = false;
+bool   GenerateViews             = true;
 string SchemaNameSuffix          = "Schema";
 string SchemaDataContextTypeName = "DataContext";
 
@@ -125,6 +125,10 @@ void GenerateTypesFromMetadata()
 		var aliases           = defAliases;
 		var tableExtensions   = defTableExtensions;
 
+		if (t.IsView && !GenerateViews){
+			continue;
+		}
+
 		var schema = t.Schema != null && schemas.ContainsKey(t.Schema) ? schemas[t.Schema] : null;
 
 		if (schema != null)
@@ -174,10 +178,10 @@ void GenerateTypesFromMetadata()
 
 		tableAttrs.Add((tableAttrs.Count == 0 ? "" : "Name=") + '"' + t.TableName + '"');
 
-		t.Attributes.Add(new Attribute("Table", tableAttrs.ToArray()) { IsSeparated = true } );
-
 		if (t.IsView)
-			t.Comment.Add(" View");
+			tableAttrs.Add("IsView=true");
+
+		t.Attributes.Add(new Attribute("Table", tableAttrs.ToArray()) { IsSeparated = true } );
 
 		var comments = new List<string>();
 
@@ -202,9 +206,9 @@ void GenerateTypesFromMetadata()
 		var columnAliases  = new MemberGroup { IsCompact = IsCompactColumnAliases, Region = "Alias members" };
 		var nPKs           = t.Columns.Values.Count(c => c.IsPrimaryKey);
 		var allNullable    = t.Columns.Values.All  (c => c.IsNullable || c.IsIdentity);
-		var nameMaxLen     = t.Columns.Values.Max  (c => c.MemberName == c.ColumnName ? 0 : c.ColumnName.Length);
-		var dbTypeMaxLen   = t.Columns.Values.Max  (c => c.ColumnType.Length);
-		var dataTypeMaxLen = t.Columns.Values.Max  (c => c.DataType.Length);
+		var nameMaxLen     = t.Columns.Values.Max  (c => (int?)(c.MemberName == c.ColumnName ? 0 : c.ColumnName.Length)) ?? 0;
+		var dbTypeMaxLen   = t.Columns.Values.Max  (c => (int?)(c.ColumnType.Length)) ?? 0;
+		var dataTypeMaxLen = t.Columns.Values.Where(c => c.DataType != null).Max  (c => (int?)(c.DataType.Length)) ?? 0;
 		var dataTypePrefix = t.Columns.Values.Any  (c => c.MemberName == "DataType") ? "LinqToDB." : "";
 
 		foreach (var c in t.Columns.Values)
@@ -394,11 +398,18 @@ void GenerateTypesFromMetadata()
 					aa.Parameters.Add("OtherKey=\""  + string.Join(", ", (from c in key.OtherColumns select c.MemberName).ToArray()) + "\"");
 					aa.Parameters.Add("CanBeNull=" + (key.CanBeNull ? "true" : "false"));
 
+					switch (key.AssociationType)
+					{
+						case AssociationType.OneToOne  : aa.Parameters.Add("Relationship=Relationship.OneToOne");  break;
+						case AssociationType.OneToMany : aa.Parameters.Add("Relationship=Relationship.OneToMany"); break;
+						case AssociationType.ManyToOne : aa.Parameters.Add("Relationship=Relationship.ManyToOne"); break;
+					}
+
 					if (key.BackReference != null)
 					{
 						if (!string.IsNullOrEmpty(key.KeyName))
 							aa.Parameters.Add("KeyName=\"" + key.KeyName + "\"");
-						if (GenerateBackReferences && !string.IsNullOrEmpty(key.BackReference.KeyName))
+						if (GenerateBackReferences && !string.IsNullOrEmpty(key.BackReference.MemberName))
 							aa.Parameters.Add("BackReferenceName=\"" + key.BackReference.MemberName + "\"");
 					}
 					else
@@ -431,8 +442,32 @@ void GenerateTypesFromMetadata()
 					new[] { (string.Format("this ITable<{0}> table", t.TypeName)) }
 						.Union(PKs.Select(c => c.Type + " " + c.MemberName)),
 					new[] { "return table.FirstOrDefault(t =>" }
-						.Union(PKs.Select((c,i) => string.Format("\tt.{0}{1} == {0}{3}{2}",
-							c.MemberName, LenDiff(maxNameLen1, c.MemberName), i == nPKs - 1 ? ");" : " &&", i == nPKs - 1 ? "" : LenDiff(maxNameLen2, c.MemberName)))))
+						.Union(PKs.SelectMany((c,i) =>
+						{
+							var ss = new List<string>();
+
+							if (c.Conditional != null)
+								ss.Add("#if " + c.Conditional);
+
+							ss.Add(string.Format("\tt.{0}{1} == {0}{3}{2}",
+								c.MemberName, LenDiff(maxNameLen1, c.MemberName), i == nPKs - 1 ? ");" : " &&", i == nPKs - 1 ? "" : LenDiff(maxNameLen2, c.MemberName)));
+
+							if (c.Conditional != null)
+							{
+								if (ss[1].EndsWith(");"))
+								{
+									ss[1] = ss[1].Substring(0, ss[1].Length - 2);
+									ss.Add("#endif");
+									ss.Add("\t\t);");
+								}
+								else
+								{
+									ss.Add("#endif");
+								}
+							}
+
+							return ss;
+						})))
 				{
 					IsStatic = true
 				});

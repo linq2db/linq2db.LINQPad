@@ -40,8 +40,8 @@
     <AssemblyOriginatorKeyFile>linq2db.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CodeJam, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7662d8fd5b220919, processorArchitecture=MSIL">
-      <HintPath>..\packages\CodeJam.1.0.0\lib\net45\CodeJam.dll</HintPath>
+    <Reference Include="CodeJam, Version=1.1.0.0, Culture=neutral, PublicKeyToken=7662d8fd5b220919, processorArchitecture=MSIL">
+      <HintPath>..\packages\CodeJam.1.2.0\lib\net45\CodeJam.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="FirebirdSql.Data.FirebirdClient, Version=4.10.0.0, Culture=neutral, PublicKeyToken=3750abcc3150b00c, processorArchitecture=MSIL">
@@ -56,12 +56,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Redist\IBM\IBM.Data.Informix.dll</HintPath>
     </Reference>
-    <Reference Include="JetBrains.Annotations, Version=10.1.4.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Annotations.10.1.4\lib\net20\JetBrains.Annotations.dll</HintPath>
+    <Reference Include="JetBrains.Annotations, Version=10.2.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.10.2.1\lib\net\JetBrains.Annotations.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="linq2db, Version=1.0.7.4, Culture=neutral, PublicKeyToken=f19f8aed7feff67e, processorArchitecture=MSIL">
-      <HintPath>..\packages\linq2db.1.0.7.4\lib\net45\linq2db.dll</HintPath>
+    <Reference Include="linq2db, Version=1.0.7.6, Culture=neutral, PublicKeyToken=f19f8aed7feff67e, processorArchitecture=MSIL">
+      <HintPath>..\packages\linq2db.1.7.6\lib\net45\linq2db.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="LINQPad, Version=1.0.0.0, Culture=neutral, PublicKeyToken=21353812cd2a2db5, processorArchitecture=x86">
@@ -125,6 +125,10 @@
     </Reference>
     <Reference Include="System.Reflection.Metadata, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Reflection.Metadata.1.1.0\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xaml" />
@@ -203,6 +207,7 @@
     <None Include="LinqToDB.Templates\LinqToDB.Tools.ttinclude" />
     <None Include="LinqToDB.Templates\LinqToDB.ttinclude" />
     <None Include="LinqToDB.Templates\NotifyPropertyChanged.ttinclude" />
+    <None Include="LinqToDB.Templates\ObsoleteAttributes.ttinclude" />
     <None Include="LinqToDB.Templates\PluralizationService.ttinclude" />
     <None Include="LinqToDB.Templates\ReadMe.LinqToDB.md" />
     <None Include="LinqToDB.Templates\T4Model.ttinclude" />
