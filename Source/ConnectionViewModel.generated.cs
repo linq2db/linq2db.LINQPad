@@ -457,6 +457,80 @@ namespace LinqToDB.LINQPad
 
 		#endregion
 
+		#region AllowMultipleQuery : bool
+
+		private bool _allowMultipleQuery;
+		public  bool  AllowMultipleQuery
+		{
+			get { return _allowMultipleQuery; }
+			set
+			{
+				if (_allowMultipleQuery != value)
+				{
+					BeforeAllowMultipleQueryChanged(value);
+					_allowMultipleQuery = value;
+					AfterAllowMultipleQueryChanged();
+
+					OnAllowMultipleQueryChanged();
+				}
+			}
+		}
+
+		#region INotifyPropertyChanged support
+
+		partial void BeforeAllowMultipleQueryChanged(bool newValue);
+		partial void AfterAllowMultipleQueryChanged ();
+
+		public const string NameOfAllowMultipleQuery = "AllowMultipleQuery";
+
+		private static readonly PropertyChangedEventArgs _allowMultipleQueryChangedEventArgs = new PropertyChangedEventArgs(NameOfAllowMultipleQuery);
+
+		private void OnAllowMultipleQueryChanged()
+		{
+			OnPropertyChanged(_allowMultipleQueryChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
+		#region OptimizeJoins : bool
+
+		private bool _optimizeJoins;
+		public  bool  OptimizeJoins
+		{
+			get { return _optimizeJoins; }
+			set
+			{
+				if (_optimizeJoins != value)
+				{
+					BeforeOptimizeJoinsChanged(value);
+					_optimizeJoins = value;
+					AfterOptimizeJoinsChanged();
+
+					OnOptimizeJoinsChanged();
+				}
+			}
+		}
+
+		#region INotifyPropertyChanged support
+
+		partial void BeforeOptimizeJoinsChanged(bool newValue);
+		partial void AfterOptimizeJoinsChanged ();
+
+		public const string NameOfOptimizeJoins = "OptimizeJoins";
+
+		private static readonly PropertyChangedEventArgs _optimizeJoinsChangedEventArgs = new PropertyChangedEventArgs(NameOfOptimizeJoins);
+
+		private void OnOptimizeJoinsChanged()
+		{
+			OnPropertyChanged(_optimizeJoinsChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
 		#region IncludeSchemas : string
 
 		private string _includeSchemas;
@@ -525,6 +599,80 @@ namespace LinqToDB.LINQPad
 		private void OnExcludeSchemasChanged()
 		{
 			OnPropertyChanged(_excludeSchemasChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
+		#region IncludeCatalogs : string
+
+		private string _includeCatalogs;
+		public  string  IncludeCatalogs
+		{
+			get { return _includeCatalogs; }
+			set
+			{
+				if (_includeCatalogs != value)
+				{
+					BeforeIncludeCatalogsChanged(value);
+					_includeCatalogs = value;
+					AfterIncludeCatalogsChanged();
+
+					OnIncludeCatalogsChanged();
+				}
+			}
+		}
+
+		#region INotifyPropertyChanged support
+
+		partial void BeforeIncludeCatalogsChanged(string newValue);
+		partial void AfterIncludeCatalogsChanged ();
+
+		public const string NameOfIncludeCatalogs = "IncludeCatalogs";
+
+		private static readonly PropertyChangedEventArgs _includeCatalogsChangedEventArgs = new PropertyChangedEventArgs(NameOfIncludeCatalogs);
+
+		private void OnIncludeCatalogsChanged()
+		{
+			OnPropertyChanged(_includeCatalogsChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
+		#region ExcludeCatalogs : string
+
+		private string _excludeCatalogs;
+		public  string  ExcludeCatalogs
+		{
+			get { return _excludeCatalogs; }
+			set
+			{
+				if (_excludeCatalogs != value)
+				{
+					BeforeExcludeCatalogsChanged(value);
+					_excludeCatalogs = value;
+					AfterExcludeCatalogsChanged();
+
+					OnExcludeCatalogsChanged();
+				}
+			}
+		}
+
+		#region INotifyPropertyChanged support
+
+		partial void BeforeExcludeCatalogsChanged(string newValue);
+		partial void AfterExcludeCatalogsChanged ();
+
+		public const string NameOfExcludeCatalogs = "ExcludeCatalogs";
+
+		private static readonly PropertyChangedEventArgs _excludeCatalogsChangedEventArgs = new PropertyChangedEventArgs(NameOfExcludeCatalogs);
+
+		private void OnExcludeCatalogsChanged()
+		{
+			OnPropertyChanged(_excludeCatalogsChangedEventArgs);
 		}
 
 		#endregion

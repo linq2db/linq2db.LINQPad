@@ -85,6 +85,8 @@
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 
 				<StackPanel Grid.Row="0" Margin="0,0,0,5" Grid.ColumnSpan="3">
@@ -120,6 +122,17 @@
 					<Label Padding="0,0,0,3">Exclude Schemas (dbo,master) (optional)</Label>
 					<TextBox Text="{Binding ExcludeSchemas}" />
 				</StackPanel>
+
+				<StackPanel Grid.Row="5" Margin="0,5,0,5" Grid.ColumnSpan="3" >
+					<Label Padding="0,0,0,3">Include Catalogs (optional)</Label>
+					<TextBox Text="{Binding IncludeCatalogs}" />
+				</StackPanel>
+
+				<StackPanel Grid.Row="6" Margin="0,0,0,0" Grid.ColumnSpan="3" >
+					<Label Padding="0,0,0,3">Exclude Catalogs (optional)</Label>
+					<TextBox Text="{Binding ExcludeCatalogs}" />
+				</StackPanel>
+
 			</Grid>
 		</GroupBox>
 
@@ -158,6 +171,11 @@
 					<StackPanel Grid.Column="0">
 						<CheckBox Content="Remember this connection" FontSize="12" IsChecked="{Binding Persist}" Margin="0,0,0,5" />
 						<CheckBox Content="Contains production data" FontSize="12" IsChecked="{Binding IsProduction}" />
+					</StackPanel>
+					
+					<StackPanel Grid.Column="1">
+						<CheckBox Content="Allow multiple queries" FontSize="12" IsChecked="{Binding AllowMultipleQuery}" Margin="0,5,0,0" />
+						<CheckBox Content="Optimize joins"         FontSize="12" IsChecked="{Binding OptimizeJoins}"      Margin="0,5,0,0" />
 					</StackPanel>
 				</Grid>
 			</StackPanel>

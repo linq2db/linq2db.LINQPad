@@ -23,6 +23,8 @@ namespace LinqToDB.LINQPad
 			_cxInfo = cxInfo;
 
 			UseProviderSpecificTypes = ((string)_cxInfo.DriverData.Element("useProviderSpecificTypes"))?.ToLower() == "true";
+			NormalizeJoins           = ((string)_cxInfo.DriverData.Element("normalizeNames"))          ?.ToLower() == "true";
+			AllowMultipleQuery       = ((string)_cxInfo.DriverData.Element("allowMultipleQuery"))      ?.ToLower() == "true";
 			ProviderName             =  (string)_cxInfo.DriverData.Element("providerName");
 			ProviderVersion          =  (string)_cxInfo.DriverData.Element("providerVersion");
 			CommandTimeout           = _cxInfo.DriverData.ElementValueOrDefault("commandTimeout", str => str.ToInt() ?? 0, 0);
@@ -32,6 +34,8 @@ namespace LinqToDB.LINQPad
 		public readonly bool         UseProviderSpecificTypes;
 		public readonly string       ProviderName;
 		public readonly string       ProviderVersion;
+		public readonly bool         NormalizeJoins;
+		public readonly bool         AllowMultipleQuery;
 		public readonly List<string> References = new List<string>();
 
 		readonly IConnectionInfo _cxInfo;
@@ -61,6 +65,12 @@ namespace LinqToDB.LINQPad
 
 				var excludeSchemas = (string)_cxInfo.DriverData.Element("excludeSchemas");
 				if (excludeSchemas != null) options.ExcludedSchemas = excludeSchemas.Split(',', ';');
+
+				var includeCatalogs = (string)_cxInfo.DriverData.Element("includeCatalogs");
+				if (includeCatalogs != null) options.IncludedCatalogs = includeCatalogs.Split(',', ';');
+
+				var excludeCatalogs = (string)_cxInfo.DriverData.Element("excludeCatalogs");
+				if (excludeCatalogs != null) options.ExcludedCatalogs = excludeCatalogs.Split(',', ';');
 
 				_schema = _dataProvider.GetSchemaProvider().GetSchema(db, options);
 

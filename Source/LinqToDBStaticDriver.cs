@@ -76,6 +76,12 @@ namespace LinqToDB.LINQPad
 
 		public override void InitializeContext(IConnectionInfo cxInfo, object context, QueryExecutionManager executionManager)
 		{
+			var allowMultipleQuery = cxInfo.DriverData.Element("allowMultipleQuery") == null || cxInfo.DriverData.Element("allowMultipleQuery")?.Value.ToLower() == "true";
+			var optimizeJoins      = cxInfo.DriverData.Element("optimizeJoins")      == null || cxInfo.DriverData.Element("optimizeJoins")     ?.Value.ToLower() == "true";
+
+			LinqToDB.Common.Configuration.Linq.OptimizeJoins      = optimizeJoins;
+			LinqToDB.Common.Configuration.Linq.AllowMultipleQuery = allowMultipleQuery;
+
 			dynamic ctx = context;
 
 			if (Extensions.HasProperty(ctx, nameof(DataConnection.OnTraceConnection)))

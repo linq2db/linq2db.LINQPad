@@ -15,3 +15,13 @@ build:
 artifacts:
 - path: Source\bin\Release\linq2db.LINQPad.lpx
   name: linq2db.LINQPad Driver
+
+deploy:
+  provider: FTP
+  protocol: ftp
+  host: tkachev.com
+  username: linq2db
+  password:
+    secure: rnYQ08pwgvUSkuRhHDndvw==
+  artifact: /.*\.lpx/
+ 

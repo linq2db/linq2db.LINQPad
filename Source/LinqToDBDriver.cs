@@ -187,6 +187,8 @@ namespace LinqToDB.LINQPad
 		IDataProvider _dataProvider;
 		MappingSchema _mappingSchema;
 		bool          _useCustomFormatter;
+		bool          _optimizeJoins;
+		bool          _allowMultipleQuery;
 
 		public override void InitializeContext(IConnectionInfo cxInfo, object context, QueryExecutionManager executionManager)
 		{
@@ -195,6 +197,12 @@ namespace LinqToDB.LINQPad
 			_dataProvider       = conn.DataProvider;
 			_mappingSchema      = conn.MappingSchema;
 			_useCustomFormatter = cxInfo.DriverData.Element("useCustomFormatter")?.Value.ToLower() == "true";
+
+			_allowMultipleQuery = cxInfo.DriverData.Element("allowMultipleQuery") == null || cxInfo.DriverData.Element("allowMultipleQuery")?.Value.ToLower() == "true";
+			_optimizeJoins      = cxInfo.DriverData.Element("optimizeJoins")      == null || cxInfo.DriverData.Element("optimizeJoins")     ?.Value.ToLower() == "true";
+
+			LinqToDB.Common.Configuration.Linq.OptimizeJoins      = _optimizeJoins;
+			LinqToDB.Common.Configuration.Linq.AllowMultipleQuery = _allowMultipleQuery;
 
 			conn.OnTraceConnection = DriverHelper.GetOnTraceConnection(executionManager);
 		}

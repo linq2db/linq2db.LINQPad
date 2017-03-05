@@ -7,3 +7,9 @@ xcopy /i/y/s %1*.dll "%programdata%\LINQPad\Drivers\DataContext\4.0\linq2db.LINQ
 xcopy /i/y/s %1*.pdb "%programdata%\LINQPad\Drivers\DataContext\4.0\linq2db.LINQPad (f19f8aed7feff67e)\*.*"
 xcopy /i/y/s %1*.xml "%programdata%\LINQPad\Drivers\DataContext\4.0\linq2db.LINQPad (f19f8aed7feff67e)\*.*"
 xcopy /i/y/s %1*.png "%programdata%\LINQPad\Drivers\DataContext\4.0\linq2db.LINQPad (f19f8aed7feff67e)\*.*"
+
+
+xcopy /i/y/s %1*.dll "%programdata%\LINQPad\Drivers\DataContext\5.0\linq2db.LINQPad (f19f8aed7feff67e)\*.*"
+xcopy /i/y/s %1*.pdb "%programdata%\LINQPad\Drivers\DataContext\5.0\linq2db.LINQPad (f19f8aed7feff67e)\*.*"
+xcopy /i/y/s %1*.xml "%programdata%\LINQPad\Drivers\DataContext\5.0\linq2db.LINQPad (f19f8aed7feff67e)\*.*"
+xcopy /i/y/s %1*.png "%programdata%\LINQPad\Drivers\DataContext\5.0\linq2db.LINQPad (f19f8aed7feff67e)\*.*"
