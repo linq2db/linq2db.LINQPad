@@ -21,7 +21,7 @@ deploy:
   protocol: ftp
   host: tkachev.com
   username: linq2db
+  folder: /
   password:
     secure: rnYQ08pwgvUSkuRhHDndvw==
-  artifact: /.*\.lpx/
  
