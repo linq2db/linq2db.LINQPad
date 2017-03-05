@@ -12,8 +12,11 @@ before_build:
 build:
   project: linq2db.LINQPad.sln
   verbosity: minimal
+after_build:
+- cmd: xcopy Source\bin\Release\linq2db.LINQPad.lpx .\ /y
+
 artifacts:
-- path: Source\bin\Release\linq2db.LINQPad.lpx
+- path: linq2db.LINQPad.lpx
   name: linq2db.LINQPad Driver
 
 deploy:
