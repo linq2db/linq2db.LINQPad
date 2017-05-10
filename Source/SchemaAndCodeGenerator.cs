@@ -120,6 +120,8 @@ namespace LinqToDB.LINQPad
 					break;
 
 				case LinqToDB.ProviderName.PostgreSQL :
+                case LinqToDB.ProviderName.PostgreSQL92 :
+                case LinqToDB.ProviderName.PostgreSQL93 :
 					References.Add(typeof(Npgsql.NpgsqlConnection).Assembly.Location);
 					break;
 
