@@ -119,9 +119,9 @@ namespace LinqToDB.LINQPad
 					References.Add(typeof(Oracle.ManagedDataAccess.Client.OracleConnection).Assembly.Location);
 					break;
 
-				case LinqToDB.ProviderName.PostgreSQL :
-                case LinqToDB.ProviderName.PostgreSQL92 :
-                case LinqToDB.ProviderName.PostgreSQL93 :
+				case LinqToDB.ProviderName.PostgreSQL   :
+				case LinqToDB.ProviderName.PostgreSQL92 :
+				case LinqToDB.ProviderName.PostgreSQL93 :
 					References.Add(typeof(Npgsql.NpgsqlConnection).Assembly.Location);
 					break;
 
