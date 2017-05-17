@@ -22,7 +22,7 @@ namespace LinqToDB.LINQPad
 				new ProviderInfo { Name = ProviderName.MySql,         Description = "MySql", },
 				//new ProviderInfo { Name = ProviderName.OracleNative,  Description = "Oracle ODP.NET", },
 				new ProviderInfo { Name = ProviderName.OracleManaged, Description = "Oracle Managed Driver", },
-				new ProviderInfo { Name = ProviderName.PostgreSQL,    Description = "PostgreSQL", },
+				new ProviderInfo { Name = ProviderName.PostgreSQL92,  Description = "PostgreSQL", },
 				new ProviderInfo { Name = ProviderName.SqlCe,         Description = "Microsoft SQL Server Compact", },
 				new ProviderInfo { Name = ProviderName.SQLite,        Description = "SQLite", },
 				new ProviderInfo { Name = ProviderName.Sybase,        Description = "SAP Sybase ASE", },
