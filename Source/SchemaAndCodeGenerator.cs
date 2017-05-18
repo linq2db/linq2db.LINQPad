@@ -27,7 +27,7 @@ namespace LinqToDB.LINQPad
 			AllowMultipleQuery       = ((string)_cxInfo.DriverData.Element("allowMultipleQuery"))      ?.ToLower() == "true";
 			ProviderName             =  (string)_cxInfo.DriverData.Element("providerName");
 			ProviderVersion          =  (string)_cxInfo.DriverData.Element("providerVersion");
-			CommandTimeout           = _cxInfo.DriverData.ElementValueOrDefault("commandTimeout", str => str.ToInt() ?? 0, 0);
+			CommandTimeout           = _cxInfo.DriverData.ElementValueOrDefault("commandTimeout", str => str.ToInt32() ?? 0, 0);
 		}
 
 		public readonly int          CommandTimeout;

@@ -70,7 +70,7 @@ namespace LinqToDB.LINQPad
 						{
 							MemberType = itemType,
 							MemberName = "",
-							GetValue = (Func<object,object>)(v => v),
+							GetValue = (Func<MappingSchema,object,object>)((ms, v) => v),
 							Total    = new Total(),
 						}
 					}
@@ -80,7 +80,7 @@ namespace LinqToDB.LINQPad
 						{
 							c.MemberType,
 							c.MemberName,
-							GetValue = (Func<object,object>)c.GetValue,
+							GetValue = (Func<MappingSchema,object,object>)c.GetValue,
 							Total    = new Total(),
 						})
 						.ToArray();
@@ -119,7 +119,7 @@ namespace LinqToDB.LINQPad
 											$"{c.MemberName}")))
 							}
 							.Union(items
-								.Select(i => new XElement("tr", columns.Select(c => FormatValue(c.Total, c.GetValue(i)))))
+								.Select(i => new XElement("tr", columns.Select(c => FormatValue(c.Total, c.GetValue(mappingSchema, i)))))
 								.ToList())
 							.Union(
 								new object[]
