@@ -119,8 +119,8 @@ namespace LinqToDB.LINQPad
 		{
 			return new[]
 			{
-				new ParameterDescriptor("provider",         typeof(string).FullName), 
-				new ParameterDescriptor("connectionString", typeof(string).FullName), 
+				new ParameterDescriptor("provider",         typeof(string).FullName),
+				new ParameterDescriptor("connectionString", typeof(string).FullName),
 			};
 		}
 
@@ -177,11 +177,8 @@ namespace LinqToDB.LINQPad
 		public override void ClearConnectionPools(IConnectionInfo cxInfo)
 		{
 			using (var db = new LINQPadDataConnection(cxInfo))
-			{
-				var connection = db.Connection as SqlConnection;
-				if (connection != null)
+				if (db.Connection is SqlConnection connection)
 					SqlConnection.ClearPool(connection);
-			}
 		}
 
 		IDataProvider _dataProvider;
@@ -201,8 +198,8 @@ namespace LinqToDB.LINQPad
 			_allowMultipleQuery = cxInfo.DriverData.Element("allowMultipleQuery") == null || cxInfo.DriverData.Element("allowMultipleQuery")?.Value.ToLower() == "true";
 			_optimizeJoins      = cxInfo.DriverData.Element("optimizeJoins")      == null || cxInfo.DriverData.Element("optimizeJoins")     ?.Value.ToLower() == "true";
 
-			LinqToDB.Common.Configuration.Linq.OptimizeJoins      = _optimizeJoins;
-			LinqToDB.Common.Configuration.Linq.AllowMultipleQuery = _allowMultipleQuery;
+			Common.Configuration.Linq.OptimizeJoins      = _optimizeJoins;
+			Common.Configuration.Linq.AllowMultipleQuery = _allowMultipleQuery;
 
 			conn.OnTraceConnection = DriverHelper.GetOnTraceConnection(executionManager);
 		}

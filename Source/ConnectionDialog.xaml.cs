@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
 using System.Windows;
@@ -10,6 +11,8 @@ using CodeJam.Strings;
 using JetBrains.Annotations;
 
 using LinqToDB.Data;
+
+using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 using LINQPad.Extensibility.DataContext;
 using LINQPad.Extensibility.DataContext.UI;
@@ -30,6 +33,16 @@ namespace LinqToDB.LINQPad
 			: this()
 		{
 			DataContext = _model = model;
+
+			((INotifyPropertyChanged)model).PropertyChanged += (sender, args) =>
+			{
+				if (args.PropertyName == nameof(ConnectionViewModel.IncludeRoutines) && model.IncludeRoutines)
+				{
+					MessageBox.Show(this,
+						"Including Stored Procedures may be dangerous in production if the selected database driver does not support CommandBehavior.SchemaOnly option.",
+						"Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+				}
+			};
 		}
 
 		Func<ConnectionViewModel,Exception> _connectionTester;
@@ -47,11 +60,11 @@ namespace LinqToDB.LINQPad
 
 				if (ex == null)
 				{
-					MessageBox.Show("Successful!", "Connection Test", MessageBoxButton.OK, MessageBoxImage.Information);
+					MessageBox.Show(this, "Successful!", "Connection Test", MessageBoxButton.OK, MessageBoxImage.Information);
 				}
 				else
 				{
-					MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+					MessageBox.Show(this, ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 				}
 			}
 		}
@@ -67,7 +80,8 @@ namespace LinqToDB.LINQPad
 			else
 			{
 				if (MessageBox.Show(
-					ex.Message + "\r\n\r\nDo you want to continue?",
+					this,
+					$"{ex.Message}\r\n\r\nDo you want to continue?",
 					"Error",
 					MessageBoxButton.YesNo,
 					MessageBoxImage.Stop) == MessageBoxResult.Yes)
@@ -117,7 +131,7 @@ namespace LinqToDB.LINQPad
 				}
 				catch (Exception ex)
 				{
-					MessageBox.Show(ex.Message, "Assembly load error", MessageBoxButton.OK, MessageBoxImage.Error);
+					MessageBox.Show(this, ex.Message, "Assembly load error", MessageBoxButton.OK, MessageBoxImage.Error);
 				}
 				finally
 				{
@@ -184,7 +198,7 @@ namespace LinqToDB.LINQPad
 				}
 				catch (Exception ex)
 				{
-					MessageBox.Show(ex.Message, "Config file open error", MessageBoxButton.OK, MessageBoxImage.Error);
+					MessageBox.Show(this, ex.Message, "Config file open error", MessageBoxButton.OK, MessageBoxImage.Error);
 				}
 				finally
 				{

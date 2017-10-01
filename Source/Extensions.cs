@@ -30,7 +30,7 @@ namespace LinqToDB.LINQPad
 						return true;
 
 				type = type.BaseType;
-				
+
 			} while(type != null);
 
 			return false;

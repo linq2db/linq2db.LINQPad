@@ -5,7 +5,6 @@
 	xmlns:mc   = "http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:vm   = "clr-namespace:LinqToDB.LINQPad"
 	xmlns:xctk = "http://schemas.xceed.com/wpf/xaml/toolkit"
-	xmlns:system="clr-namespace:System;assembly=mscorlib"
 
 	Title                 = "LINQ to DB Connection"
 	mc:Ignorable          = "d"
@@ -94,12 +93,12 @@
 					<ComboBox ItemsSource="{Binding Providers}" SelectedValue="{Binding SelectedProvider}" DisplayMemberPath="Description" />
 				</StackPanel>
 
-				<StackPanel Grid.Row="1" Margin="0,0,0,5" Grid.ColumnSpan="3">
+				<StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,5" Grid.ColumnSpan="3" >
 					<Label Padding="0,0,0,3">Connection String</Label>
 					<TextBox Text="{Binding ConnectionString}" TextWrapping="Wrap" Height="60" VerticalScrollBarVisibility="Auto" />
 				</StackPanel>
 
-				<Grid Grid.Row="2" Grid.ColumnSpan="3">
+				<Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition/>
 						<ColumnDefinition/>
@@ -113,7 +112,7 @@
 					</StackPanel>
 				</Grid>
 
-				<StackPanel Grid.Row="3" Margin="0,5,0,5" Grid.ColumnSpan="3" >
+				<StackPanel Grid.Row="3" Grid.ColumnSpan="3" Margin="0,5,0,5">
 					<Label Padding="0,0,0,3">Include Schemas (dbo,master) (optional)</Label>
 					<TextBox Text="{Binding IncludeSchemas}" />
 				</StackPanel>
@@ -172,7 +171,7 @@
 						<CheckBox Content="Remember this connection" FontSize="12" IsChecked="{Binding Persist}" Margin="0,0,0,5" />
 						<CheckBox Content="Contains production data" FontSize="12" IsChecked="{Binding IsProduction}" />
 					</StackPanel>
-					
+
 					<StackPanel Grid.Column="1">
 						<CheckBox Content="Allow multiple queries" FontSize="12" IsChecked="{Binding AllowMultipleQuery}" Margin="0,5,0,0" />
 						<CheckBox Content="Optimize joins"         FontSize="12" IsChecked="{Binding OptimizeJoins}"      Margin="0,5,0,0" />

@@ -24,7 +24,7 @@
 			new NotifyingProperty("bool",         "UseProviderSpecificTypes"),
 			new NotifyingProperty("bool",         "AllowMultipleQuery"),
 			new NotifyingProperty("bool",         "OptimizeJoins"),
-			//new NotifyingProperty("bool",         "NormalizeNames"),
+			//new NotifyingProperty("bool",       "NormalizeNames"),
 			new NotifyingProperty("string",       "IncludeSchemas"),
 			new NotifyingProperty("string",       "ExcludeSchemas"),
 			new NotifyingProperty("string",       "IncludeCatalogs"),

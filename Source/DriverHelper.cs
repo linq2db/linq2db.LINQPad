@@ -53,7 +53,7 @@ namespace LinqToDB.LINQPad
 			model.EncryptConnectionString  = cxInfo.DatabaseInfo.EncryptCustomCxString;
 			model.Pluralize                = !cxInfo.DynamicSchemaOptions.NoPluralization;
 			model.Capitalize               = !cxInfo.DynamicSchemaOptions.NoCapitalization;
-			model.IncludeRoutines          = !cxInfo.DynamicSchemaOptions.ExcludeRoutines;
+			model.IncludeRoutines          = !isNewConnection && !cxInfo.DynamicSchemaOptions.ExcludeRoutines;
 			model.ConnectionString         = cxInfo.DatabaseInfo.CustomCxString.IsNullOrWhiteSpace() ? (string)cxInfo.DriverData.Element("connectionString") : cxInfo.DatabaseInfo.CustomCxString;
 			model.IncludeSchemas           = cxInfo.DriverData.Element("includeSchemas")          ?.Value;
 			model.ExcludeSchemas           = cxInfo.DriverData.Element("excludeSchemas")          ?.Value;
@@ -118,9 +118,7 @@ namespace LinqToDB.LINQPad
 
 						if (providerName == ProviderName.SqlServer)
 						{
-							int version;
-
-							if (int.TryParse(cxInfo.DatabaseInfo.DbVersion?.Split('.')[0], out version))
+							if (int.TryParse(cxInfo.DatabaseInfo.DbVersion?.Split('.')[0], out var version))
 							{
 								switch (version)
 								{
@@ -176,7 +174,7 @@ namespace LinqToDB.LINQPad
 //					_cxInfo.DatabaseInfo.Provider = SQLiteTools.AssemblyName;
 //
 //					base.GetProviderFactory(_cxInfo);
-//					
+//
 //					break;
 //			}
 
@@ -206,7 +204,7 @@ namespace LinqToDB.LINQPad
 		{
 			return info =>
 			{
-				if (info.BeforeExecute)
+				if (info.TraceInfoStep == TraceInfoStep.BeforeExecute)
 				{
 					executionManager.SqlTranslationWriter.WriteLine(info.SqlText);
 				}
@@ -219,10 +217,8 @@ namespace LinqToDB.LINQPad
 						sb
 							.AppendLine()
 							.AppendLine("/*")
-							.AppendFormat("Exception: {0}", ex.GetType())
-							.AppendLine()
-							.AppendFormat("Message  : {0}", ex.Message)
-							.AppendLine()
+							.AppendLine($"Exception: {ex.GetType()}")
+							.AppendLine($"Message  : {ex.Message}")
 							.AppendLine(ex.StackTrace)
 							.AppendLine("*/")
 							;
@@ -232,11 +228,11 @@ namespace LinqToDB.LINQPad
 				}
 				else if (info.RecordsAffected != null)
 				{
-					executionManager.SqlTranslationWriter.WriteLine("-- Execution time: {0}. Records affected: {1}.\r\n".Args(info.ExecutionTime, info.RecordsAffected));
+					executionManager.SqlTranslationWriter.WriteLine($"-- Execution time: {info.ExecutionTime}. Records affected: {info.RecordsAffected}.\r\n");
 				}
 				else
 				{
-					executionManager.SqlTranslationWriter.WriteLine("-- Execution time: {0}\r\n".Args(info.ExecutionTime));
+					executionManager.SqlTranslationWriter.WriteLine($"-- Execution time: {info.ExecutionTime}\r\n");
 				}
 			};
 		}

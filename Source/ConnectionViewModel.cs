@@ -31,13 +31,13 @@ namespace LinqToDB.LINQPad
 
 			if (IntPtr.Size == 4)
 			{
-				_providers.Add(new ProviderInfo { Name = ProviderName.DB2LUW, Description = "DB2 for Linux, UNIX and Windows", });
-				_providers.Add(new ProviderInfo { Name = ProviderName.DB2zOS, Description = "DB2 for z/OS", });
+				_providers.Add(new ProviderInfo { Name = ProviderName.DB2LUW,   Description = "DB2 for Linux, UNIX and Windows", });
+				_providers.Add(new ProviderInfo { Name = ProviderName.DB2zOS,   Description = "DB2 for z/OS", });
 				_providers.Add(new ProviderInfo { Name = ProviderName.Informix, Description = "IBM Informix", });
 			}
 
 			_allowMultipleQuery = true;
-			_optimizeJoins      = true; 
+			_optimizeJoins      = true;
 		}
 	}
 }

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml.Linq;
-
+using IBM.Data.DB2Types;
 using LinqToDB.Extensions;
 using LinqToDB.Mapping;
 
@@ -49,18 +50,17 @@ namespace LinqToDB.LINQPad
 			if (IsNull(objectToWrite))
 				return null;
 
-			if (objectToWrite is System.Data.SqlTypes.SqlDecimal)
+			if (objectToWrite is SqlDecimal value)
 			{
-				var value = (System.Data.SqlTypes.SqlDecimal)objectToWrite;
 				return Util.RawHtml($"<div class=\"n\">{value}</div>");
 			}
 
 			var type = objectToWrite.GetType();
 
-			if (objectToWrite is IEnumerable)
+			if (objectToWrite is IEnumerable enumerable)
 			{
 				var itemType = type.GetItemType();
-				var items    = ((IEnumerable)objectToWrite).Cast<object>().ToList();
+				var items    = enumerable.Cast<object>().ToList();
 				var tableID  = ++_id;
 
 				var columns = mappingSchema.IsScalarType(itemType) ?
@@ -204,17 +204,13 @@ namespace LinqToDB.LINQPad
 				if (IsNull(value))
 					return new XElement("td", new XAttribute("style", "text-align:center;"), new XElement("i", "null"));
 
-				NumberFormatter nf;
-
-				if (_numberFormatters.TryGetValue(value.GetType(), out nf))
+				if (_numberFormatters.TryGetValue(value.GetType(), out var nf))
 				{
 					nf.AddTotal(total, value);
 					return new XElement("td", new XAttribute("class", "n"), value);
 				}
 
-				ValueFormatter vf;
-
-				if (_valueFormatters.TryGetValue(value.GetType(), out vf))
+				if (_valueFormatters.TryGetValue(value.GetType(), out var vf))
 				{
 					var list = new List<object>();
 
@@ -227,7 +223,7 @@ namespace LinqToDB.LINQPad
 					if (vf.Size != null) style += $"font-size:{vf.Size};";
 
 					if (style.Length > 0)
-						list.Add(new XAttribute("style",  style));
+						list.Add(new XAttribute("style", style));
 
 					list.Add(vf.FormatValue(value));
 
@@ -249,24 +245,20 @@ namespace LinqToDB.LINQPad
 			if (IsNull(value))
 				return Util.RawHtml(new XElement("span", new XAttribute("style", "text-align:center;"), new XElement("i", "null")));
 
-			if (value is IBM.Data.DB2Types.DB2Xml)
+			if (value is DB2Xml xml)
 			{
-				var doc = XDocument.Parse(((IBM.Data.DB2Types.DB2Xml)value).GetString());
+				var doc = XDocument.Parse(xml.GetString());
 				return doc;
 			}
 
-			NumberFormatter nf;
-
-			if (_numberFormatters.TryGetValue(value.GetType(), out nf))
+			if (_numberFormatters.TryGetValue(value.GetType(), out var nf))
 				return Util.RawHtml(nf.GetElement(value));
 
-			ValueFormatter vf;
-
-			if (_valueFormatters.TryGetValue(value.GetType(), out vf))
+			if (_valueFormatters.TryGetValue(value.GetType(), out var vf))
 			{
 				var style = "";
 
-				if (vf.NoWrap)       style += "white-space:nowrap;";
+				if (vf.NoWrap) style += "white-space:nowrap;";
 				if (vf.Font != null) style += $"font-family:{vf.Font};";
 				if (vf.Size != null) style += $"font-size:{vf.Size};";
 

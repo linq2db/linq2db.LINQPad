@@ -67,11 +67,8 @@ namespace LinqToDB.LINQPad
 		public override void ClearConnectionPools(IConnectionInfo cxInfo)
 		{
 			using (var db = new LINQPadDataConnection(cxInfo))
-			{
-				var connection = db.Connection as SqlConnection;
-				if (connection != null)
+				if (db.Connection is SqlConnection connection)
 					SqlConnection.ClearPool(connection);
-			}
 		}
 
 		public override void InitializeContext(IConnectionInfo cxInfo, object context, QueryExecutionManager executionManager)
@@ -79,8 +76,8 @@ namespace LinqToDB.LINQPad
 			var allowMultipleQuery = cxInfo.DriverData.Element("allowMultipleQuery") == null || cxInfo.DriverData.Element("allowMultipleQuery")?.Value.ToLower() == "true";
 			var optimizeJoins      = cxInfo.DriverData.Element("optimizeJoins")      == null || cxInfo.DriverData.Element("optimizeJoins")     ?.Value.ToLower() == "true";
 
-			LinqToDB.Common.Configuration.Linq.OptimizeJoins      = optimizeJoins;
-			LinqToDB.Common.Configuration.Linq.AllowMultipleQuery = allowMultipleQuery;
+			Common.Configuration.Linq.OptimizeJoins      = optimizeJoins;
+			Common.Configuration.Linq.AllowMultipleQuery = allowMultipleQuery;
 
 			dynamic ctx = context;
 

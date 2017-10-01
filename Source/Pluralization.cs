@@ -72,10 +72,8 @@ namespace LinqToDB.LINQPad
 		public static string ToPlural(string str)
 		{
 			var word = GetLastWord(str);
-	 
-			string newWord;
-	 
-			if (!_dictionary.TryGetValue(word.ToLower(), out newWord))
+
+			if (!_dictionary.TryGetValue(word.ToLower(), out var newWord))
 				newWord = _service.IsPlural(word) ? word : _service.Pluralize(word);
 
 			if (string.Compare(word, newWord, StringComparison.OrdinalIgnoreCase) != 0)
