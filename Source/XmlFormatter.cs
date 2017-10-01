@@ -162,7 +162,7 @@ namespace LinqToDB.LINQPad
 
 			if (IsAnonymousType(type))
 				return "new";
-			
+
 			return type.Name;
 		}
 
