@@ -638,7 +638,12 @@ namespace LinqToDB.LINQPad
 
 		static string GetName(HashSet<string> names, string proposedName)
 		{
-			return GetUniqueName(names, ConvertToCompilable(proposedName));
+			return GetName(names, proposedName, false);
+		}
+
+		static string GetName(HashSet<string> names, string proposedName, bool capitalize)
+		{
+			return GetUniqueName(names, ConvertToCompilable(proposedName, capitalize));
 		}
 
 		readonly Dictionary<TableSchema,string> _contextMembers = new Dictionary<TableSchema,string>();
@@ -667,7 +672,7 @@ namespace LinqToDB.LINQPad
 				{
 					//Debug.WriteLine($"{table.TypeName}.{column.MemberName}");
 
-					column.MemberName = GetName(classMemberNames, column.MemberName);
+					column.MemberName = GetName(classMemberNames, column.MemberName, !_cxInfo.DynamicSchemaOptions.NoCapitalization);
 				}
 
 				foreach (var key in table.ForeignKeys)
@@ -705,21 +710,40 @@ namespace LinqToDB.LINQPad
 			return "\"" + text.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
 		}
 
-		static string ConvertToCompilable(string name)
+		static string ConvertToCompilable(string name, bool capitalize)
 		{
 			var query =
 				from c in name.TrimStart('@')
 				select c.IsLetterOrDigit() ? c : '_';
 
-			var arr = query.ToArray();
+			var sb = new StringBuilder();
+			sb.Append(query.ToArray());
 
-			if (arr.Length == 0)
-				arr = new[] { '_' };
+			if (sb.Length == 0)
+			{
+				sb.Append('_');
+			}
+			else
+			{
+				if (sb[0].IsDigit())
+				{
+					sb.Insert(0, "_");
+				}
 
-			if (arr[0].IsDigit())
-				return '_' + new string(arr);
+				if (capitalize)
+				{
+					for (int i = 0; i < sb.Length; i++)
+					{
+						if (Char.IsLetter(sb[i]))
+						{
+							sb[i] = Char.ToUpper(sb[i]);
+							break;
+						}
+					}
+				}
+			}
 
-			return new string(arr);
+			return sb.ToString();
 		}
 	}
 }
