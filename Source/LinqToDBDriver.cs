@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -17,21 +18,6 @@ using LINQPad.Extensibility.DataContext;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-
-using AccessType        = System.Data.OleDb.OleDbConnection;
-using DB2Type           = IBM.Data.DB2.DB2Connection;
-using InformixType      = IBM.Data.Informix.IfxConnection;
-using FirebirdType      = FirebirdSql.Data.FirebirdClient.FbConnection;
-using PostgreSQLType    = Npgsql.NpgsqlConnection;
-using OracleNativeType  = Oracle.DataAccess.Client.OracleConnection;
-using OracleManagedType = Oracle.ManagedDataAccess.Client.OracleConnection;
-using MySqlType         = MySql.Data.MySqlClient.MySqlConnection;
-using SqlCeType         = System.Data.SqlServerCe.SqlCeConnection;
-using SQLiteType        = System.Data.SQLite.SQLiteConnection;
-using SqlServerType     = System.Data.SqlClient.SqlConnection;
-using SqlTypesType      = Microsoft.SqlServer.Types.SqlHierarchyId;
-using SybaseType        = Sybase.Data.AseClient.AseConnection;
-using SapHanaType       = Sap.Data.Hana.HanaConnection;
 
 namespace LinqToDB.LINQPad
 {
@@ -111,6 +97,7 @@ namespace LinqToDB.LINQPad
 			catch (Exception ex)
 			{
 				MessageBox.Show($"{ex}\n{ex.StackTrace}", "Schema Build Error", MessageBoxButton.OK, MessageBoxImage.Error);
+				Debug.WriteLine($"{ex}\n{ex.StackTrace}");
 				throw;
 			}
 		}
@@ -140,27 +127,11 @@ namespace LinqToDB.LINQPad
 			yield return typeof(LINQPadDataConnection).Assembly.Location;
 
 			var providerName = (string)cxInfo.DriverData.Element("providerName");
+			var providerInfo = ProviderHelper.GetProvider(providerName);
 
-			switch (providerName)
+			foreach (var location in providerInfo.GetAssemblyLocation(cxInfo.DatabaseInfo.CustomCxString))
 			{
-				case ProviderName.Access       : yield return typeof(AccessType).       Assembly.Location; break;
-				case ProviderName.DB2          :
-				case ProviderName.DB2LUW       :
-				case ProviderName.DB2zOS       : yield return typeof(DB2Type).          Assembly.Location; break;
-				case ProviderName.Informix     : yield return typeof(InformixType).     Assembly.Location; break;
-				case ProviderName.Firebird     : yield return typeof(FirebirdType).     Assembly.Location; break;
-				case ProviderName.PostgreSQL   : yield return typeof(PostgreSQLType).   Assembly.Location; break;
-				case ProviderName.OracleNative : yield return typeof(OracleNativeType). Assembly.Location; break;
-				case ProviderName.OracleManaged: yield return typeof(OracleManagedType).Assembly.Location; break;
-				case ProviderName.MySql        : yield return typeof(MySqlType).        Assembly.Location; break;
-				case ProviderName.SqlCe        : yield return typeof(SqlCeType).        Assembly.Location; break;
-				case ProviderName.SQLite       : yield return typeof(SQLiteType).       Assembly.Location; break;
-				case ProviderName.Sybase       : yield return typeof(SybaseType).       Assembly.Location; break;
-				case ProviderName.SapHana      : yield return typeof(SapHanaType).      Assembly.Location; break;
-				case ProviderName.SqlServer    :
-					yield return typeof(SqlServerType).Assembly.Location;
-					yield return typeof(SqlTypesType). Assembly.Location;
-					break;
+				yield return location;
 			}
 		}
 
@@ -212,7 +183,9 @@ namespace LinqToDB.LINQPad
 		public override IDbConnection GetIDbConnection(IConnectionInfo cxInfo)
 		{
 			using (var conn = new LINQPadDataConnection(cxInfo))
+			{
 				return conn.DataProvider.CreateConnection(conn.ConnectionString);
+			}
 		}
 
 		public override void ExecuteESqlQuery(IConnectionInfo cxInfo, string query)

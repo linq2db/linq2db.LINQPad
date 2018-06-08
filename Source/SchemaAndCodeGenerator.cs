@@ -51,7 +51,9 @@ namespace LinqToDB.LINQPad
 		{
 			var connectionString = _cxInfo.DatabaseInfo.CustomCxString;
 
-			using (var db = new DataConnection(ProviderName, connectionString))
+			var provider = ProviderHelper.GetDataProvider(ProviderName, connectionString);
+
+			using (var db = new DataConnection(provider, connectionString))
 			{
 				db.CommandTimeout = CommandTimeout;
 
@@ -92,60 +94,13 @@ namespace LinqToDB.LINQPad
 			if (_schema.ProviderSpecificTypeNamespace.NotNullNorWhiteSpace())
 				Code.AppendLine($"using {_schema.ProviderSpecificTypeNamespace};");
 
-			switch (ProviderName)
-			{
-				case LinqToDB.ProviderName.DB2LUW :
-				case LinqToDB.ProviderName.DB2zOS :
-					References.Add(typeof(IBM.Data.DB2.DB2Connection).Assembly.Location);
-					break;
-
-				case LinqToDB.ProviderName.Informix :
-					References.Add(typeof(IBM.Data.Informix.IfxConnection).Assembly.Location);
-					break;
-
-				case LinqToDB.ProviderName.Firebird :
-					References.Add(typeof(FirebirdSql.Data.FirebirdClient.FbConnection).Assembly.Location);
-					break;
-
-				case LinqToDB.ProviderName.MySql :
-					References.Add(typeof(MySql.Data.MySqlClient.MySqlConnection).Assembly.Location);
-					break;
-
-				case LinqToDB.ProviderName.OracleNative :
-					References.Add(typeof(Oracle.DataAccess.Client.OracleConnection).Assembly.Location);
-					break;
-
-				case LinqToDB.ProviderName.OracleManaged :
-					References.Add(typeof(Oracle.ManagedDataAccess.Client.OracleConnection).Assembly.Location);
-					break;
-
-				case LinqToDB.ProviderName.PostgreSQL   :
-				case LinqToDB.ProviderName.PostgreSQL92 :
-				case LinqToDB.ProviderName.PostgreSQL93 :
-					References.Add(typeof(Npgsql.NpgsqlConnection).Assembly.Location);
-					break;
-
-				case LinqToDB.ProviderName.SqlCe :
-					References.Add(typeof(System.Data.SqlServerCe.SqlCeConnection).Assembly.Location);
-					break;
-
-				case LinqToDB.ProviderName.SQLite :
-					References.Add(typeof(System.Data.SQLite.SQLiteConnection).Assembly.Location);
-					break;
-
-				case LinqToDB.ProviderName.SqlServer :
-					Code.AppendLine("using Microsoft.SqlServer.Types;");
-					References.Add(typeof(Microsoft.SqlServer.Types.SqlHierarchyId).Assembly.Location);
-					break;
-
-				case LinqToDB.ProviderName.Sybase :
-					References.Add(typeof(Sybase.Data.AseClient.AseConnection).Assembly.Location);
-					break;
-
-				case LinqToDB.ProviderName.SapHana :
-					References.Add(typeof(Sap.Data.Hana.HanaConnection).Assembly.Location);
-					break;
-			}
+			var providerInfo = ProviderHelper.GetProvider(ProviderName);
+			References.AddRange(providerInfo.GetAssemblyLocation(connectionString));
+			if (providerInfo.Provider.AdditionalNamespaces != null)
+				foreach (var ns in providerInfo.Provider.AdditionalNamespaces)
+				{
+					Code.AppendLine($"using {ns};");
+				}
 
 			Code
 				.AppendLine($"namespace {nameSpace}")
