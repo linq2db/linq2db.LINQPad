@@ -14,8 +14,8 @@ namespace LinqToDB.LINQPad
 		{
 			AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
 			{
-				Console.WriteLine(args.Name);
-				Debug.WriteLine(args.Name);
+//				Console.WriteLine(args.Name);
+//				Debug.WriteLine(args.Name);
 				return null;
 			};
 		}
@@ -26,17 +26,16 @@ namespace LinqToDB.LINQPad
 		}
 
 		public LINQPadDataConnection(string providerName, string connectionString)
-			: base(providerName, connectionString)
+			: base(ProviderHelper.GetDataProvider(providerName, connectionString), connectionString)
 		{
 			Init();
 		}
 
 		public LINQPadDataConnection(IConnectionInfo cxInfo)
-			: base(
+			: this(
 				(string)(cxInfo.DriverData.Element("providerVersion") ?? cxInfo.DriverData.Element("providerName")),
 				cxInfo.DatabaseInfo.CustomCxString)
 		{
-			Init();
 		}
 
 		static void Init()

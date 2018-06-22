@@ -7,24 +7,9 @@ using System.Text;
 using CodeJam.Strings;
 using CodeJam.Xml;
 
-using LinqToDB.Common;
 using LinqToDB.Data;
 
 using LINQPad.Extensibility.DataContext;
-
-using AccessType        = System.Data.OleDb.OleDbConnection;
-using DB2Type           = IBM.Data.DB2.DB2Connection;
-using InformixType      = IBM.Data.Informix.IfxConnection;
-using FirebirdType      = FirebirdSql.Data.FirebirdClient.FbConnection;
-using PostgreSQLType    = Npgsql.NpgsqlConnection;
-using OracleNativeType  = Oracle.DataAccess.Client.OracleConnection;
-using OracleManagedType = Oracle.ManagedDataAccess.Client.OracleConnection;
-using MySqlType         = MySql.Data.MySqlClient.MySqlConnection;
-using SqlCeType         = System.Data.SqlServerCe.SqlCeConnection;
-using SQLiteType        = System.Data.SQLite.SQLiteConnection;
-using SqlServerType     = System.Data.SqlClient.SqlConnection;
-using SybaseType        = Sybase.Data.AseClient.AseConnection;
-using SapHanaType       = Sap.Data.Hana.HanaConnection;
 
 namespace LinqToDB.LINQPad
 {
@@ -84,30 +69,16 @@ namespace LinqToDB.LINQPad
 				cxInfo.DriverData.SetElementValue("useCustomFormatter",       model.UseCustomFormatter       ? "true" : null);
 				cxInfo.DriverData.SetElementValue("commandTimeout",           model.CommandTimeout.ToString());
 
-				switch (providerName)
-				{
-					case ProviderName.Access       : cxInfo.DatabaseInfo.Provider = typeof(AccessType).       Namespace; break;
-					case ProviderName.DB2          :
-					case ProviderName.DB2LUW       :
-					case ProviderName.DB2zOS       : cxInfo.DatabaseInfo.Provider = typeof(DB2Type).          Namespace; break;
-					case ProviderName.Informix     : cxInfo.DatabaseInfo.Provider = typeof(InformixType).     Namespace; break;
-					case ProviderName.Firebird     : cxInfo.DatabaseInfo.Provider = typeof(FirebirdType).     Namespace; break;
-					case ProviderName.PostgreSQL   : cxInfo.DatabaseInfo.Provider = typeof(PostgreSQLType).   Namespace; break;
-					case ProviderName.OracleNative : cxInfo.DatabaseInfo.Provider = typeof(OracleNativeType). Namespace; break;
-					case ProviderName.OracleManaged: cxInfo.DatabaseInfo.Provider = typeof(OracleManagedType).Namespace; break;
-					case ProviderName.MySql        : cxInfo.DatabaseInfo.Provider = typeof(MySqlType).        Namespace; break;
-					case ProviderName.SqlCe        : cxInfo.DatabaseInfo.Provider = typeof(SqlCeType).        Namespace; break;
-					case ProviderName.SQLite       : cxInfo.DatabaseInfo.Provider = typeof(SQLiteType).       Namespace; break;
-					case ProviderName.SqlServer    : cxInfo.DatabaseInfo.Provider = typeof(SqlServerType).    Namespace; break;
-					case ProviderName.Sybase       : cxInfo.DatabaseInfo.Provider = typeof(SybaseType).       Namespace; break;
-					case ProviderName.SapHana      : cxInfo.DatabaseInfo.Provider = typeof(SapHanaType).      Namespace; break;
-				}
+				var providerInfo = ProviderHelper.GetProvider(providerName);
+				cxInfo.DatabaseInfo.Provider = providerInfo.GetConnectionNamespace();
 
 				string providerVersion = null;
 
 				try
 				{
-					using (var db = new LINQPadDataConnection(providerName, model.ConnectionString))
+					var provider = ProviderHelper.GetDataProvider(model.SelectedProvider.Name, model.ConnectionString);
+
+					using (var db = new DataConnection(provider, model.ConnectionString))
 					{
 						db.CommandTimeout = model.CommandTimeout;
 
@@ -166,26 +137,14 @@ namespace LinqToDB.LINQPad
 			if (model == null)
 				return null;
 
-//			var providerName = model.Providers[model.SelectedProvider];
-//
-//			switch (providerName)
-//			{
-//				case ProviderName.SQLite:
-//					_cxInfo.DatabaseInfo.Provider = SQLiteTools.AssemblyName;
-//
-//					base.GetProviderFactory(_cxInfo);
-//
-//					break;
-//			}
-
 			try
 			{
 				if (model.SelectedProvider != null)
 				{
-					using (var db = new DataConnection(model.SelectedProvider?.Name, model.ConnectionString))
+					var provider = ProviderHelper.GetDataProvider(model.SelectedProvider.Name, model.ConnectionString);
+
+					using (provider.CreateConnection(model.ConnectionString))
 					{
-						// ReSharper disable once UnusedVariable
-						var conn = db.Connection;
 						return null;
 					}
 				}
