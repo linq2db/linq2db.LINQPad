@@ -136,14 +136,14 @@ namespace LinqToDB.LINQPad
 
 				try
 				{
-					Cursor = Cursors.Wait;
+					Mouse.OverrideCursor = Cursors.Wait;
 
 					_model.CustomAssemblyPath = _model.CustomAssemblyPath.Trim();
 
 					var assembly    = DataContextDriver.LoadAssemblySafely(_model.CustomAssemblyPath);
 					var customTypes = assembly.GetExportedTypes().Where(IsDataConnection).Select(t => t.FullName).Cast<object>().ToArray();
 
-					Cursor = oldCursor;
+					Mouse.OverrideCursor = oldCursor;
 
 					var result = (string)Dialogs.PickFromList("Choose Custom Type", customTypes);
 
@@ -156,7 +156,7 @@ namespace LinqToDB.LINQPad
 				}
 				finally
 				{
-					Cursor = oldCursor;
+					Mouse.OverrideCursor = oldCursor;
 				}
 			}
 		}
@@ -199,7 +199,7 @@ namespace LinqToDB.LINQPad
 
 				try
 				{
-					Cursor = Cursors.Wait;
+					Mouse.OverrideCursor = Cursors.Wait;
 
 					var config = ConfigurationManager.OpenExeConfiguration(_model.CustomAssemblyPath);
 
@@ -210,7 +210,7 @@ namespace LinqToDB.LINQPad
 						configurations.Add(config.ConnectionStrings.ConnectionStrings[i].Name);
 					}
 
-					Cursor = oldCursor;
+					Mouse.OverrideCursor = oldCursor;
 
 					var result = (string)Dialogs.PickFromList("Choose Custom Type", configurations.ToArray());
 
@@ -223,7 +223,7 @@ namespace LinqToDB.LINQPad
 				}
 				finally
 				{
-					Cursor = oldCursor;
+					Mouse.OverrideCursor = oldCursor;
 				}
 			}
 		}
