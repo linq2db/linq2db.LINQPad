@@ -143,8 +143,9 @@ namespace LinqToDB.LINQPad
 				{
 					var provider = ProviderHelper.GetDataProvider(model.SelectedProvider.Name, model.ConnectionString);
 
-					using (provider.CreateConnection(model.ConnectionString))
+					using (var  con = provider.CreateConnection(model.ConnectionString))
 					{
+						con.Open();
 						return null;
 					}
 				}

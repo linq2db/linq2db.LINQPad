@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 
 using LinqToDB.Data;
 using LinqToDB.DataProvider.Firebird;

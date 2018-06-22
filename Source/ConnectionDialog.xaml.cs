@@ -56,7 +56,18 @@ namespace LinqToDB.LINQPad
 		{
 			if (_connectionTester != null)
 			{
-				var ex = _connectionTester(DataContext as ConnectionViewModel);
+				Exception ex;
+
+				try
+				{
+					Mouse.OverrideCursor = Cursors.Wait;
+					ex = _connectionTester(DataContext as ConnectionViewModel);
+				}
+				finally
+				{
+					Mouse.OverrideCursor = null;
+				}
+
 
 				if (ex == null)
 				{
@@ -71,7 +82,17 @@ namespace LinqToDB.LINQPad
 
 		void OKClick(object sender, RoutedEventArgs e)
 		{
-			var ex = _connectionTester?.Invoke(DataContext as ConnectionViewModel);
+			Exception ex;
+
+			try
+			{
+				Mouse.OverrideCursor = Cursors.Wait;
+				ex = _connectionTester?.Invoke(DataContext as ConnectionViewModel);
+			}
+			finally
+			{
+				Mouse.OverrideCursor = null;
+			}
 
 			if (ex == null)
 			{
