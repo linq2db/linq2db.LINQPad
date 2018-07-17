@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using LinqToDB.Common;
 using LinqToDB.Configuration;
@@ -31,6 +32,11 @@ namespace LinqToDB.LINQPad
 			InitializeDataProviders();
 		}
 
+		public static class DB2iSeriesProviderName
+		{
+			public const string DB2         = "DB2.iSeries";
+		}
+
 		static void InitializeDataProviders()
 		{
 			AddDataProvider(new DynamicProviderRecord(ProviderName.Access,        "Microsoft Access",                "System.Data.OleDb.OleDbConnection"));
@@ -46,7 +52,6 @@ namespace LinqToDB.LINQPad
 			AddDataProvider(new DynamicProviderRecord(ProviderName.Sybase,        "SAP Sybase ASE",                  "IBM.Data.Informix.IfxConnection"));
 			AddDataProvider(new DynamicProviderRecord(ProviderName.SapHana,       "SAP HANA",                        "Sap.Data.Hana.HanaConnection"));
 
-
 			AddDataProvider(new DynamicProviderRecord(ProviderName.PostgreSQL,    "PostgreSQL", "Npgsql.NpgsqlConnection"));
 
 			AddDataProvider(
@@ -58,6 +63,12 @@ namespace LinqToDB.LINQPad
 					AdditionalNamespaces = new[] { "Microsoft.SqlServer.Types" },
 					ProviderLibraries = "Microsoft.SqlServer.Types.dll"
 				});
+
+			AddDataProvider(new DynamicProviderRecord(DB2iSeriesProviderName.DB2, "DB2 iSeries", "IBM.Data.DB2.iSeries.iDB2Connection")
+			{
+				InitalizationClassName = "LinqToDB.DataProvider.DB2iSeries.DB2iSeriesTools, LinqToDB.DataProvider.DB2iSeries",
+				ProviderLibraries = "LinqToDB.DataProvider.DB2iSeries.dll;IBM.Data.DB2.iSeries.dll"
+			});
 		}
 
 		public class ProviderRecord
@@ -85,7 +96,7 @@ namespace LinqToDB.LINQPad
 		{
 			public string ProviderName     { get; set; }
 			public string Description      { get; set; }
-			public string ProviderFactoryName { get; set; }
+			public string InitalizationClassName { get; set; }
 
 			public NamedValue[] ProviderNamedValues { get; set; }
 			public string ProviderLibraries  { get; set; }
@@ -148,7 +159,14 @@ namespace LinqToDB.LINQPad
 						.ToArray();
 
 
-					var provider = GetDataProvider(Provider.ProviderName, connectionString);
+					var typeName = Provider.InitalizationClassName;
+					if (!string.IsNullOrEmpty(typeName))
+					{
+						var initType = Type.GetType(typeName, true);
+						RuntimeHelpers.RunClassConstructor(initType.TypeHandle);
+					}
+
+					var provider = ProviderHelper.GetDataProvider(Provider.ProviderName, connectionString);
 
 					var connectionAssemblies = new List<Assembly>();
 					connectionAssemblies.Add(provider.GetType().Assembly);
@@ -203,7 +221,12 @@ namespace LinqToDB.LINQPad
 				}
 
 				return null;
+			}
 
+			public IDataProvider GetDataProvider(string connectionString)
+			{
+				Load(connectionString);
+				return ProviderHelper.GetDataProvider(Provider.ProviderName, connectionString);
 			}
 
 		}
@@ -222,7 +245,7 @@ namespace LinqToDB.LINQPad
 			return info;
 		}
 
-		public static IDataProvider GetDataProvider(string providerName, string connectionString)
+		static IDataProvider GetDataProvider(string providerName, string connectionString)
 		{
 			var provider = DataConnection.GetDataProvider(providerName, connectionString);
 			if (provider == null)

@@ -115,7 +115,7 @@ namespace LinqToDB.LINQPad
 		{
 			return new object[]
 			{
-				(string)(cxInfo.DriverData.Element("providerVersion") ?? cxInfo.DriverData.Element("providerName")),
+				cxInfo.DriverData.Element("providerName"),
 				cxInfo.DatabaseInfo.CustomCxString,
 			};
 		}

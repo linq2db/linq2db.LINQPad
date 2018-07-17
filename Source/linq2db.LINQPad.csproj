@@ -255,7 +255,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(ProjectDir)DevDeploy.bat" "$(TargetDir)"
+    <PostBuildEvent>
     if not exist "$(TargetDir)x86" md "$(TargetDir)x86"
     xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(TargetDir)x86"
     if not exist "$(TargetDir)amd64" md "$(TargetDir)amd64"
@@ -264,8 +264,8 @@
     xcopy /s /y "$(SolutionDir)Redist\IBM\*.dll" "$(TargetDir)"
     xcopy /s /y "$(SolutionDir)Redist\SAPHana\*.dll" "$(TargetDir)"
     xcopy /s /y "$(SolutionDir)Redist\Sybase\*.dll" "$(TargetDir)"
-    
-$(ProjectDir)DevDeploy.bat $(TargetDir)</PostBuildEvent>
+    $(ProjectDir)DevDeploy.bat $(TargetDir)
+    </PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">

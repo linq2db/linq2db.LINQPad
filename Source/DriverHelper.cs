@@ -72,11 +72,9 @@ namespace LinqToDB.LINQPad
 				var providerInfo = ProviderHelper.GetProvider(providerName);
 				cxInfo.DatabaseInfo.Provider = providerInfo.GetConnectionNamespace();
 
-				string providerVersion = null;
-
 				try
 				{
-					var provider = ProviderHelper.GetDataProvider(model.SelectedProvider.Name, model.ConnectionString);
+					var provider = ProviderHelper.GetProvider(model.SelectedProvider.Name).GetDataProvider(model.ConnectionString);
 
 					using (var db = new DataConnection(provider, model.ConnectionString))
 					{
@@ -86,32 +84,12 @@ namespace LinqToDB.LINQPad
 						cxInfo.DatabaseInfo.Server    = ((DbConnection)db.Connection).DataSource;
 						cxInfo.DatabaseInfo.Database  = db.Connection.Database;
 						cxInfo.DatabaseInfo.DbVersion = ((DbConnection)db.Connection).ServerVersion;
-
-						if (providerName == ProviderName.SqlServer)
-						{
-							if (int.TryParse(cxInfo.DatabaseInfo.DbVersion?.Split('.')[0], out var version))
-							{
-								switch (version)
-								{
-									case  8 : providerVersion = ProviderName.SqlServer2000; break;
-									case  9 : providerVersion = ProviderName.SqlServer2005; break;
-									case 10 : providerVersion = ProviderName.SqlServer2008; break;
-									case 11 : providerVersion = ProviderName.SqlServer2012; break;
-									case 12 : providerVersion = ProviderName.SqlServer2014; break;
-									default :
-										if (version > 12)
-											providerVersion = ProviderName.SqlServer2014;
-										break;
-								}
-							}
-						}
 					}
 				}
 				catch
 				{
 				}
 
-				cxInfo.DriverData.SetElementValue("providerVersion",     providerVersion);
 				cxInfo.DriverData.SetElementValue("customConfiguration", model.CustomConfiguration.IsNullOrWhiteSpace() ? null : model.CustomConfiguration);
 
 				cxInfo.CustomTypeInfo.CustomAssemblyPath     =  model.CustomAssemblyPath;
@@ -141,7 +119,7 @@ namespace LinqToDB.LINQPad
 			{
 				if (model.SelectedProvider != null)
 				{
-					var provider = ProviderHelper.GetDataProvider(model.SelectedProvider.Name, model.ConnectionString);
+					var provider = ProviderHelper.GetProvider(model.SelectedProvider.Name).GetDataProvider(model.ConnectionString);
 
 					using (var  con = provider.CreateConnection(model.ConnectionString))
 					{
