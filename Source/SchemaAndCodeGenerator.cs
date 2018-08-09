@@ -381,7 +381,7 @@ namespace LinqToDB.LINQPad
 						var sprocSqlName = _sqlBuilder.BuildTableName(
 							new StringBuilder(),
 							null,
-							p.SchemaName == null ? null : (string)_sqlBuilder.Convert(p.SchemaName, ConvertType.NameToOwner),
+							p.SchemaName == null ? null : (string)_sqlBuilder.Convert(p.SchemaName, ConvertType.NameToSchema),
 							(string)_sqlBuilder.Convert(p.ProcedureName,  ConvertType.NameToQueryTable)).ToString();
 
 						var memberName = p.MemberName;
@@ -520,7 +520,7 @@ namespace LinqToDB.LINQPad
 						var tableSqlName = _sqlBuilder.BuildTableName(
 							new StringBuilder(),
 							null,
-							t.SchemaName == null ? null : (string)_sqlBuilder.Convert(t.SchemaName, ConvertType.NameToOwner),
+							t.SchemaName == null ? null : (string)_sqlBuilder.Convert(t.SchemaName, ConvertType.NameToSchema),
 							(string)_sqlBuilder.Convert(t.TableName,  ConvertType.NameToQueryTable)).ToString();
 
 						//Debug.WriteLine($"Table: [{t.SchemaName}].[{t.TableName}] - ${tableSqlName}");

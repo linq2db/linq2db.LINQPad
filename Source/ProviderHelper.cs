@@ -168,8 +168,7 @@ namespace LinqToDB.LINQPad
 
 					var provider = ProviderHelper.GetDataProvider(Provider.ProviderName, connectionString);
 
-					var connectionAssemblies = new List<Assembly>();
-					connectionAssemblies.Add(provider.GetType().Assembly);
+					var connectionAssemblies = new List<Assembly> { provider.GetType().Assembly };
 					try
 					{
 						using (var connection = provider.CreateConnection(connectionString))
