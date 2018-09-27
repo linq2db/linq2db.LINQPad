@@ -26,14 +26,12 @@ namespace LinqToDB.LINQPad
 			NormalizeJoins           = ((string)_cxInfo.DriverData.Element("normalizeNames"))          ?.ToLower() == "true";
 			AllowMultipleQuery       = ((string)_cxInfo.DriverData.Element("allowMultipleQuery"))      ?.ToLower() == "true";
 			ProviderName             =  (string)_cxInfo.DriverData.Element("providerName");
-			ProviderVersion          =  (string)_cxInfo.DriverData.Element("providerVersion");
 			CommandTimeout           = _cxInfo.DriverData.ElementValueOrDefault("commandTimeout", str => str.ToInt32() ?? 0, 0);
 		}
 
 		public readonly int          CommandTimeout;
 		public readonly bool         UseProviderSpecificTypes;
 		public readonly string       ProviderName;
-		public readonly string       ProviderVersion;
 		public readonly bool         NormalizeJoins;
 		public readonly bool         AllowMultipleQuery;
 		public readonly List<string> References = new List<string>();
@@ -51,7 +49,7 @@ namespace LinqToDB.LINQPad
 		{
 			var connectionString = _cxInfo.DatabaseInfo.CustomCxString;
 
-			var provider = ProviderHelper.GetDataProvider(ProviderName, connectionString);
+			var provider = ProviderHelper.GetProvider(ProviderName).GetDataProvider(connectionString);
 
 			using (var db = new DataConnection(provider, connectionString))
 			{
@@ -113,7 +111,7 @@ namespace LinqToDB.LINQPad
 				.AppendLine($"      CommandTimeout = {CommandTimeout};")
 				.AppendLine( "    }")
 				.AppendLine($"    public @{typeName}()")
-				.AppendLine($"      : base({ToCodeString(ProviderVersion ?? ProviderName)}, {ToCodeString(connectionString)})")
+				.AppendLine($"      : base({ToCodeString(ProviderName)}, {ToCodeString(connectionString)})")
 				.AppendLine( "    {")
 				.AppendLine($"      CommandTimeout = {CommandTimeout};")
 				.AppendLine( "    }")
@@ -383,7 +381,7 @@ namespace LinqToDB.LINQPad
 						var sprocSqlName = _sqlBuilder.BuildTableName(
 							new StringBuilder(),
 							null,
-							p.SchemaName == null ? null : (string)_sqlBuilder.Convert(p.SchemaName, ConvertType.NameToOwner),
+							p.SchemaName == null ? null : (string)_sqlBuilder.Convert(p.SchemaName, ConvertType.NameToSchema),
 							(string)_sqlBuilder.Convert(p.ProcedureName,  ConvertType.NameToQueryTable)).ToString();
 
 						var memberName = p.MemberName;
@@ -522,7 +520,7 @@ namespace LinqToDB.LINQPad
 						var tableSqlName = _sqlBuilder.BuildTableName(
 							new StringBuilder(),
 							null,
-							t.SchemaName == null ? null : (string)_sqlBuilder.Convert(t.SchemaName, ConvertType.NameToOwner),
+							t.SchemaName == null ? null : (string)_sqlBuilder.Convert(t.SchemaName, ConvertType.NameToSchema),
 							(string)_sqlBuilder.Convert(t.TableName,  ConvertType.NameToQueryTable)).ToString();
 
 						//Debug.WriteLine($"Table: [{t.SchemaName}].[{t.TableName}] - ${tableSqlName}");

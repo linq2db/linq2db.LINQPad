@@ -25,14 +25,14 @@ namespace LinqToDB.LINQPad
 		}
 
 		public LINQPadDataConnection(string providerName, string connectionString)
-			: base(ProviderHelper.GetDataProvider(providerName, connectionString), connectionString)
+			: base(ProviderHelper.GetProvider(providerName).GetDataProvider(connectionString), connectionString)
 		{
 			Init();
 		}
 
 		public LINQPadDataConnection(IConnectionInfo cxInfo)
 			: this(
-				(string)(cxInfo.DriverData.Element("providerVersion") ?? cxInfo.DriverData.Element("providerName")),
+				(string)cxInfo.DriverData.Element("providerName"),
 				cxInfo.DatabaseInfo.CustomCxString)
 		{
 		}
