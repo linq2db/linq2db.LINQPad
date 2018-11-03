@@ -22,18 +22,24 @@ namespace LinqToDB.LINQPad
 		public LINQPadDataConnection()
 		{
 			Init();
+			InitMappingSchema();
 		}
 
 		public LINQPadDataConnection(string providerName, string connectionString)
 			: base(ProviderHelper.GetProvider(providerName).GetDataProvider(connectionString), connectionString)
 		{
 			Init();
+			InitMappingSchema();
 		}
 
 		public LINQPadDataConnection(IConnectionInfo cxInfo)
 			: this(
 				(string)cxInfo.DriverData.Element("providerName"),
 				cxInfo.DatabaseInfo.CustomCxString)
+		{
+		}
+
+		protected virtual void InitMappingSchema()
 		{
 		}
 

@@ -188,6 +188,7 @@
     <Compile Include="Pluralization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProviderHelper.cs" />
+    <Compile Include="SchemaAndCodeGenerator.PostgreSQL.cs" />
     <Compile Include="SchemaGenerator.cs" />
     <Compile Include="SchemaAndCodeGenerator.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />

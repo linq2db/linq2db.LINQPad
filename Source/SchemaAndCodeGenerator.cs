@@ -16,7 +16,7 @@ using LINQPad.Extensibility.DataContext;
 
 namespace LinqToDB.LINQPad
 {
-	class SchemaAndCodeGenerator
+	partial class SchemaAndCodeGenerator
 	{
 		public SchemaAndCodeGenerator(IConnectionInfo cxInfo)
 		{
@@ -89,6 +89,11 @@ namespace LinqToDB.LINQPad
 				.AppendLine("using LinqToDB.Mapping;")
 				;
 
+			if (_schema.Procedures.Any(_ => _.IsAggregateFunction))
+				Code
+					.AppendLine("using System.Linq.Expressions;")
+					;
+
 			if (_schema.ProviderSpecificTypeNamespace.NotNullNorWhiteSpace())
 				Code.AppendLine($"using {_schema.ProviderSpecificTypeNamespace};");
 
@@ -116,6 +121,11 @@ namespace LinqToDB.LINQPad
 				.AppendLine($"      CommandTimeout = {CommandTimeout};")
 				.AppendLine( "    }")
 				;
+
+			if (ProviderName == LinqToDB.ProviderName.PostgreSQL)
+			{
+				PreprocessPostgreSQLSchema();
+			}
 
 			var schemas =
 			(
@@ -200,9 +210,11 @@ namespace LinqToDB.LINQPad
 		{
 			code.AppendLine();
 
+			var spName = $"\"{sprocSqlName.Replace("\"", "\\\"")}\"";
+
 			if (p.IsTableFunction)
 			{
-				code.Append($"    [Sql.TableFunction(Name=\"{p.ProcedureName}\"");
+				code.Append($"    [Sql.TableFunction(Name=\"{p.ProcedureName.Replace("\"", "\\\"")}\"");
 
 				if (p.SchemaName != null)
 					code.Append($", Schema=\"{p.SchemaName}\")");
@@ -212,10 +224,43 @@ namespace LinqToDB.LINQPad
 					.Append($"    public ITable<{p.ResultTable?.TypeName}>")
 					;
 			}
+			else if (p.IsAggregateFunction)
+			{
+				var inputs = p.Parameters.Where(pr => !pr.IsResult).ToArray();
+				p.Parameters.RemoveAll(parameter => !parameter.IsResult);
+
+				if (p.IsDefaultSchema)
+					p.Parameters.Add(new ParameterSchema()
+					{
+						ParameterType = "this IEnumerable<TSource>",
+						ParameterName = "src"
+					});
+				else
+					p.Parameters.Add(new ParameterSchema()
+					{
+						ParameterType = "IEnumerable<TSource>",
+						ParameterName = "src"
+					});
+
+				foreach (var input in inputs.Where(pr => !pr.IsResult))
+					p.Parameters.Add(new ParameterSchema()
+					{
+						ParameterType = $"Expression<Func<TSource, {input.ParameterType}>>",
+						ParameterName = input.ParameterName
+					});
+
+				p.ProcedureName += "<TSource>";
+
+				code
+					.Append($"    [Sql.Function(Name={spName}, ServerSideOnly=true, IsAggregate = true")
+					.Append(inputs.Length > 0 ? $", ArgIndices = new[] {{ {string.Join(", ", Enumerable.Range(0, inputs.Length))} }}" : string.Empty)
+					.AppendLine(")]")
+					.Append($"    public static {p.Parameters.Single(pr => pr.IsResult).ParameterType}");
+			}
 			else if (p.IsFunction)
 			{
 				code
-					.AppendLine($"    [Sql.Function(Name=\"{sprocSqlName}\", ServerSideOnly=true)]")
+					.AppendLine($"    [Sql.Function(Name={spName}, ServerSideOnly=true)]")
 					.Append    ($"    public static {p.Parameters.Single(pr => pr.IsResult).ParameterType}");
 			}
 			else
@@ -251,8 +296,6 @@ namespace LinqToDB.LINQPad
 			}
 			else
 			{
-				var spName = $"\"{sprocSqlName.Replace("\"", "\\\"")}\"";
-
 				var inputParameters  = p.Parameters.Where(pp => pp.IsIn). ToList();
 				var outputParameters = p.Parameters.Where(pp => pp.IsOut).ToList();
 
