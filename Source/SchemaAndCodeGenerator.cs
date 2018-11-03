@@ -246,10 +246,10 @@ namespace LinqToDB.LINQPad
 					p.Parameters.Add(new ParameterSchema()
 					{
 						ParameterType = $"Expression<Func<TSource, {input.ParameterType}>>",
-						ParameterName = input.ParameterName
+						ParameterName = $"{input.ParameterName}"
 					});
 
-				p.ProcedureName += "<TSource>";
+				p.MemberName += "<TSource>";
 
 				code
 					.Append($"    [Sql.Function(Name={spName}, ServerSideOnly=true, IsAggregate = true")
@@ -697,6 +697,11 @@ namespace LinqToDB.LINQPad
 						var memberName = column.MemberName.IsNullOrWhiteSpace() ? "Column" : column.MemberName;
 						column.MemberName = GetName(classMemberNames, memberName);
 					}
+				}
+
+				foreach (var parameter in procedure.Parameters)
+				{
+					parameter.ParameterName = ConvertToCompilable("@" + parameter.ParameterName, false);
 				}
 			}
 		}
