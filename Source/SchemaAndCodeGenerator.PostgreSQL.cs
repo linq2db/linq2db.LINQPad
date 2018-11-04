@@ -27,10 +27,12 @@ namespace LinqToDB.LINQPad
 					{
 						TypeName          = SchemaProviderBase.ToValidName(proc.ProcedureName + "Result"),
 						Columns           = new List<ColumnSchema>(),
-						IsProcedureResult = true
+						IsProcedureResult = true,
+						ForeignKeys       = new List<ForeignKeySchema>()
 					};
 
 					_schema.Tables.Add(result);
+					proc.ResultTable = result;
 
 					proc.Parameters.Add(new ParameterSchema()
 					{
@@ -47,7 +49,7 @@ namespace LinqToDB.LINQPad
 						result.Columns.Add(new ColumnSchema()
 						{
 							MemberType = outParam.ParameterType,
-							MemberName = outParam.ParameterName,
+							MemberName = outParam.ParameterName
 						});
 
 						resultMappings.Add($"{outParam.ParameterName} = ({outParam.ParameterType})tuple[{resultMappings.Count}]");

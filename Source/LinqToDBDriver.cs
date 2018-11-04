@@ -18,6 +18,7 @@ using LINQPad.Extensibility.DataContext;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using System.Net.NetworkInformation;
 
 namespace LinqToDB.LINQPad
 {
@@ -68,6 +69,7 @@ namespace LinqToDB.LINQPad
 					MetadataReference.CreateFromFile(typeof(IDbConnection).        Assembly.Location),
 					MetadataReference.CreateFromFile(typeof(DataConnection).       Assembly.Location),
 					MetadataReference.CreateFromFile(typeof(LINQPadDataConnection).Assembly.Location),
+					MetadataReference.CreateFromFile(typeof(PhysicalAddress)      .Assembly.Location),
 				};
 
 				references.AddRange(gen.References.Select(r => MetadataReference.CreateFromFile(r)));

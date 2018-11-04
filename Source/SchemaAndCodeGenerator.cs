@@ -45,6 +45,21 @@ namespace LinqToDB.LINQPad
 
 		public readonly StringBuilder Code = new StringBuilder();
 
+		private HashSet<string> _existingMemberNames = new HashSet<string>(StringComparer.InvariantCulture);
+
+		private static HashSet<string> _keyWords = new HashSet<string>
+		{
+			"abstract", "as",       "base",     "bool",    "break",     "byte",     "case",       "catch",     "char",    "checked",
+			"class",    "const",    "continue", "decimal", "default",   "delegate", "do",         "double",    "else",    "enum",
+			"event",    "explicit", "extern",   "false",   "finally",   "fixed",    "float",      "for",       "foreach", "goto",
+			"if",       "implicit", "in",       "int",     "interface", "internal", "is",         "lock",      "long",    "new",
+			"null",     "object",   "operator", "out",     "override",  "params",   "private",    "protected", "public",  "readonly",
+			"ref",      "return",   "sbyte",    "sealed",  "short",     "sizeof",   "stackalloc", "static",    "struct",  "switch",
+			"this",     "throw",    "true",     "try",     "typeof",    "uint",     "ulong",      "unchecked", "unsafe",  "ushort",
+			"using",    "virtual",  "volatile", "void",    "while",     "namespace", "string"
+		};
+
+
 		public IEnumerable<ExplorerItem> GetItemsAndCode(string nameSpace, string typeName)
 		{
 			var connectionString = _cxInfo.DatabaseInfo.CustomCxString;
@@ -87,6 +102,7 @@ namespace LinqToDB.LINQPad
 				.AppendLine("using LinqToDB.Common;")
 				.AppendLine("using LinqToDB.Data;")
 				.AppendLine("using LinqToDB.Mapping;")
+				.AppendLine("using System.Net.NetworkInformation;")
 				;
 
 			if (_schema.Procedures.Any(_ => _.IsAggregateFunction))
@@ -229,18 +245,11 @@ namespace LinqToDB.LINQPad
 				var inputs = p.Parameters.Where(pr => !pr.IsResult).ToArray();
 				p.Parameters.RemoveAll(parameter => !parameter.IsResult);
 
-				if (p.IsDefaultSchema)
-					p.Parameters.Add(new ParameterSchema()
-					{
-						ParameterType = "this IEnumerable<TSource>",
-						ParameterName = "src"
-					});
-				else
-					p.Parameters.Add(new ParameterSchema()
-					{
-						ParameterType = "IEnumerable<TSource>",
-						ParameterName = "src"
-					});
+				p.Parameters.Add(new ParameterSchema()
+				{
+					ParameterType = "IEnumerable<TSource>",
+					ParameterName = "src"
+				});
 
 				foreach (var input in inputs.Where(pr => !pr.IsResult))
 					p.Parameters.Add(new ParameterSchema()
@@ -480,6 +489,8 @@ namespace LinqToDB.LINQPad
 		{
 			classCode.AppendLine();
 
+			table.TypeName = GetName(_existingMemberNames, table.TypeName);
+
 			if (addTableAttribute)
 			{
 				classCode.Append($"  [Table(Name=\"{table.TableName}\"");
@@ -502,7 +513,7 @@ namespace LinqToDB.LINQPad
 					.Append(c.IsNullable ? "Nullable" : "NotNull");
 
 				if (c.IsPrimaryKey) classCode.Append($", PrimaryKey({c.PrimaryKeyOrder})");
-				if (c.IsIdentity)   classCode.Append(", Identity");
+				if (c.IsIdentity) classCode.Append(", Identity");
 
 				classCode.AppendLine("]");
 
@@ -701,7 +712,7 @@ namespace LinqToDB.LINQPad
 
 				foreach (var parameter in procedure.Parameters)
 				{
-					parameter.ParameterName = ConvertToCompilable("@" + parameter.ParameterName, false);
+					parameter.ParameterName = ConvertToCompilable(parameter.ParameterName, false);
 				}
 			}
 		}
@@ -744,7 +755,14 @@ namespace LinqToDB.LINQPad
 				}
 			}
 
-			return sb.ToString();
+			name = sb.ToString();
+
+			if (_keyWords.Contains(name) || name.StartsWith("__"))
+			{
+				name = '@' + name;
+			}
+
+			return name;
 		}
 	}
 }
