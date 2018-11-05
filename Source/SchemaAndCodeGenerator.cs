@@ -16,7 +16,7 @@ using LINQPad.Extensibility.DataContext;
 
 namespace LinqToDB.LINQPad
 {
-	class SchemaAndCodeGenerator
+	partial class SchemaAndCodeGenerator
 	{
 		public SchemaAndCodeGenerator(IConnectionInfo cxInfo)
 		{
@@ -45,6 +45,21 @@ namespace LinqToDB.LINQPad
 
 		public readonly StringBuilder Code = new StringBuilder();
 
+		private HashSet<string> _existingMemberNames = new HashSet<string>(StringComparer.InvariantCulture);
+
+		private static HashSet<string> _keyWords = new HashSet<string>
+		{
+			"abstract", "as",       "base",     "bool",    "break",     "byte",     "case",       "catch",     "char",    "checked",
+			"class",    "const",    "continue", "decimal", "default",   "delegate", "do",         "double",    "else",    "enum",
+			"event",    "explicit", "extern",   "false",   "finally",   "fixed",    "float",      "for",       "foreach", "goto",
+			"if",       "implicit", "in",       "int",     "interface", "internal", "is",         "lock",      "long",    "new",
+			"null",     "object",   "operator", "out",     "override",  "params",   "private",    "protected", "public",  "readonly",
+			"ref",      "return",   "sbyte",    "sealed",  "short",     "sizeof",   "stackalloc", "static",    "struct",  "switch",
+			"this",     "throw",    "true",     "try",     "typeof",    "uint",     "ulong",      "unchecked", "unsafe",  "ushort",
+			"using",    "virtual",  "volatile", "void",    "while",     "namespace", "string"
+		};
+
+
 		public IEnumerable<ExplorerItem> GetItemsAndCode(string nameSpace, string typeName)
 		{
 			var connectionString = _cxInfo.DatabaseInfo.CustomCxString;
@@ -72,6 +87,8 @@ namespace LinqToDB.LINQPad
 				var excludeCatalogs = (string)_cxInfo.DriverData.Element("excludeCatalogs");
 				if (excludeCatalogs != null) options.ExcludedCatalogs = excludeCatalogs.Split(',', ';');
 
+				options.GetProcedures = (string)_cxInfo.DriverData.Element("excludeRoutines") != "true";
+
 				_schema = _dataProvider.GetSchemaProvider().GetSchema(db, options);
 
 				ConvertSchema(typeName);
@@ -87,7 +104,13 @@ namespace LinqToDB.LINQPad
 				.AppendLine("using LinqToDB.Common;")
 				.AppendLine("using LinqToDB.Data;")
 				.AppendLine("using LinqToDB.Mapping;")
+				.AppendLine("using System.Net.NetworkInformation;")
 				;
+
+			if (_schema.Procedures.Any(_ => _.IsAggregateFunction))
+				Code
+					.AppendLine("using System.Linq.Expressions;")
+					;
 
 			if (_schema.ProviderSpecificTypeNamespace.NotNullNorWhiteSpace())
 				Code.AppendLine($"using {_schema.ProviderSpecificTypeNamespace};");
@@ -116,6 +139,11 @@ namespace LinqToDB.LINQPad
 				.AppendLine($"      CommandTimeout = {CommandTimeout};")
 				.AppendLine( "    }")
 				;
+
+			if (ProviderName == LinqToDB.ProviderName.PostgreSQL)
+			{
+				PreprocessPostgreSQLSchema();
+			}
 
 			var schemas =
 			(
@@ -200,9 +228,11 @@ namespace LinqToDB.LINQPad
 		{
 			code.AppendLine();
 
+			var spName = $"\"{sprocSqlName.Replace("\"", "\\\"")}\"";
+
 			if (p.IsTableFunction)
 			{
-				code.Append($"    [Sql.TableFunction(Name=\"{p.ProcedureName}\"");
+				code.Append($"    [Sql.TableFunction(Name=\"{p.ProcedureName.Replace("\"", "\\\"")}\"");
 
 				if (p.SchemaName != null)
 					code.Append($", Schema=\"{p.SchemaName}\")");
@@ -212,10 +242,36 @@ namespace LinqToDB.LINQPad
 					.Append($"    public ITable<{p.ResultTable?.TypeName}>")
 					;
 			}
+			else if (p.IsAggregateFunction)
+			{
+				var inputs = p.Parameters.Where(pr => !pr.IsResult).ToArray();
+				p.Parameters.RemoveAll(parameter => !parameter.IsResult);
+
+				p.Parameters.Add(new ParameterSchema()
+				{
+					ParameterType = "IEnumerable<TSource>",
+					ParameterName = "src"
+				});
+
+				foreach (var input in inputs.Where(pr => !pr.IsResult))
+					p.Parameters.Add(new ParameterSchema()
+					{
+						ParameterType = $"Expression<Func<TSource, {input.ParameterType}>>",
+						ParameterName = $"{input.ParameterName}"
+					});
+
+				p.MemberName += "<TSource>";
+
+				code
+					.Append($"    [Sql.Function(Name={spName}, ServerSideOnly=true, IsAggregate = true")
+					.Append(inputs.Length > 0 ? $", ArgIndices = new[] {{ {string.Join(", ", Enumerable.Range(0, inputs.Length))} }}" : string.Empty)
+					.AppendLine(")]")
+					.Append($"    public static {p.Parameters.Single(pr => pr.IsResult).ParameterType}");
+			}
 			else if (p.IsFunction)
 			{
 				code
-					.AppendLine($"    [Sql.Function(Name=\"{sprocSqlName}\", ServerSideOnly=true)]")
+					.AppendLine($"    [Sql.Function(Name={spName}, ServerSideOnly=true)]")
 					.Append    ($"    public static {p.Parameters.Single(pr => pr.IsResult).ParameterType}");
 			}
 			else
@@ -251,8 +307,6 @@ namespace LinqToDB.LINQPad
 			}
 			else
 			{
-				var spName = $"\"{sprocSqlName.Replace("\"", "\\\"")}\"";
-
 				var inputParameters  = p.Parameters.Where(pp => pp.IsIn). ToList();
 				var outputParameters = p.Parameters.Where(pp => pp.IsOut).ToList();
 
@@ -437,6 +491,8 @@ namespace LinqToDB.LINQPad
 		{
 			classCode.AppendLine();
 
+			table.TypeName = GetName(_existingMemberNames, table.TypeName);
+
 			if (addTableAttribute)
 			{
 				classCode.Append($"  [Table(Name=\"{table.TableName}\"");
@@ -459,7 +515,7 @@ namespace LinqToDB.LINQPad
 					.Append(c.IsNullable ? "Nullable" : "NotNull");
 
 				if (c.IsPrimaryKey) classCode.Append($", PrimaryKey({c.PrimaryKeyOrder})");
-				if (c.IsIdentity)   classCode.Append(", Identity");
+				if (c.IsIdentity) classCode.Append(", Identity");
 
 				classCode.AppendLine("]");
 
@@ -655,6 +711,11 @@ namespace LinqToDB.LINQPad
 						column.MemberName = GetName(classMemberNames, memberName);
 					}
 				}
+
+				foreach (var parameter in procedure.Parameters)
+				{
+					parameter.ParameterName = ConvertToCompilable(parameter.ParameterName, false);
+				}
 			}
 		}
 
@@ -696,7 +757,14 @@ namespace LinqToDB.LINQPad
 				}
 			}
 
-			return sb.ToString();
+			name = sb.ToString();
+
+			if (_keyWords.Contains(name) || name.StartsWith("__"))
+			{
+				name = '@' + name;
+			}
+
+			return name;
 		}
 	}
 }
