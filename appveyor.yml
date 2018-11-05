@@ -1,4 +1,4 @@
-version: 1.0.{build}
+version: 2.5.0
 os: Visual Studio 2017
 configuration: Release
 assembly_info:
@@ -27,4 +27,3 @@ deploy:
   folder: /
   password:
     secure: rnYQ08pwgvUSkuRhHDndvw==
- 

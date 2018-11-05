@@ -10,6 +10,7 @@ using CodeJam.Xml;
 using LinqToDB.Data;
 
 using LINQPad.Extensibility.DataContext;
+using System.Reflection;
 
 namespace LinqToDB.LINQPad
 {
@@ -174,6 +175,18 @@ namespace LinqToDB.LINQPad
 				{
 					executionManager.SqlTranslationWriter.WriteLine($"-- Execution time: {info.ExecutionTime}\r\n");
 				}
+			};
+		}
+
+		public static void ConfigureRedirects()
+		{
+			AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
+			{
+				var requestedAssembly = new AssemblyName(args.Name);
+				if (requestedAssembly.Name != "linq2db")
+					return null;
+
+				return typeof(DataContext).Assembly;
 			};
 		}
 	}

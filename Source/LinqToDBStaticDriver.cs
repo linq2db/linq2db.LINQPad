@@ -18,6 +18,11 @@ namespace LinqToDB.LINQPad
 		public override string Name   => "LINQ to DB (DataConnection)";
 		public override string Author => "Igor Tkachev";
 
+		static LinqToDBStaticDriver()
+		{
+			DriverHelper.ConfigureRedirects();
+		}
+
 		public override string GetConnectionDescription(IConnectionInfo cxInfo)
 		{
 			var providerName = (string)cxInfo.DriverData.Element("providerName");
