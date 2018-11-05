@@ -54,8 +54,8 @@
     <Reference Include="JetBrains.Annotations, Version=2018.2.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Annotations.2018.2.1\lib\net20\JetBrains.Annotations.dll</HintPath>
     </Reference>
-    <Reference Include="linq2db, Version=2.5.0.0, Culture=neutral, PublicKeyToken=e41013125f9e410a, processorArchitecture=MSIL">
-      <HintPath>..\packages\linq2db.2.5.0\lib\net45\linq2db.dll</HintPath>
+    <Reference Include="linq2db, Version=2.5.1.0, Culture=neutral, PublicKeyToken=e41013125f9e410a, processorArchitecture=MSIL">
+      <HintPath>..\packages\linq2db.2.5.1\lib\net45\linq2db.dll</HintPath>
     </Reference>
     <Reference Include="LINQPad, Version=1.0.0.0, Culture=neutral, PublicKeyToken=21353812cd2a2db5, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
