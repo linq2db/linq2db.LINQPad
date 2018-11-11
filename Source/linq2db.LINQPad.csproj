@@ -185,6 +185,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ConnectionViewModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="CSharpTools.cs" />
     <Compile Include="DriverHelper.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="LINQPadDataConnection.cs" />

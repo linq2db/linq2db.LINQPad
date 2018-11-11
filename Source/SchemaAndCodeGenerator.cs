@@ -100,6 +100,7 @@ namespace LinqToDB.LINQPad
 				.AppendLine("using System.Collections.Generic;")
 				.AppendLine("using System.Data;")
 				.AppendLine("using System.Reflection;")
+				.AppendLine("using System.Linq;")
 				.AppendLine("using LinqToDB;")
 				.AppendLine("using LinqToDB.Common;")
 				.AppendLine("using LinqToDB.Data;")
@@ -307,10 +308,11 @@ namespace LinqToDB.LINQPad
 			}
 			else
 			{
-				var inputParameters  = p.Parameters.Where(pp => pp.IsIn). ToList();
-				var outputParameters = p.Parameters.Where(pp => pp.IsOut).ToList();
+				var inputParameters      = p.Parameters.Where(pp => pp.IsIn)            .ToList();
+				var outputParameters     = p.Parameters.Where(pp => pp.IsOut)           .ToList();
+				var inOrOutputParameters = p.Parameters.Where(pp => pp.IsIn || pp.IsOut).ToList();
 
-				spName += inputParameters.Count == 0 ? ");" : ",";
+				spName += inOrOutputParameters.Count == 0 ? ");" : ",";
 
 				var retName = "__ret__";
 				var retNo   = 0;
@@ -364,11 +366,17 @@ namespace LinqToDB.LINQPad
 					}
 				}
 
-				for (var i = 0; i < inputParameters.Count; i++)
+				for (var i = 0; i < inOrOutputParameters.Count; i++)
 				{
-					var pr = inputParameters[i];
+					var pr = inOrOutputParameters[i];
 
-					var str = $"        new DataParameter(\"{pr.SchemaName}\", {pr.ParameterName}, DataType.{pr.DataType})";
+					var str = string.Format(
+						!pr.IsIn && pr.IsOut
+							? "        new DataParameter({0}, null, DataType.{2})"
+							: "        new DataParameter({0}, {1}, DataType.{2})",
+						CSharpTools.ToStringLiteral(pr.SchemaName),
+						pr.ParameterName,
+						pr.DataType);
 
 					if (pr.IsOut)
 					{
@@ -380,7 +388,9 @@ namespace LinqToDB.LINQPad
 						str += " }";
 					}
 
-					str += i + 1 == inputParameters.Count ? ");" : ",";
+					// we need to call ToList(), because otherwise output parameters will not be updated
+					// with values. See https://msdn.microsoft.com/en-us/library/ms971497#gazoutas_topic6
+					str += i + 1 == inOrOutputParameters.Count ? (outputParameters.Count > 0 && p.ResultTable != null ? ").ToList();" : ");") : ",";
 
 					code.AppendLine(str);
 				}
