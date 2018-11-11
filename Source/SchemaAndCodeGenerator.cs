@@ -47,21 +47,10 @@ namespace LinqToDB.LINQPad
 
 		private HashSet<string> _existingMemberNames = new HashSet<string>(StringComparer.InvariantCulture);
 
-		private static HashSet<string> _keyWords = new HashSet<string>
-		{
-			"abstract", "as",       "base",     "bool",    "break",     "byte",     "case",       "catch",     "char",    "checked",
-			"class",    "const",    "continue", "decimal", "default",   "delegate", "do",         "double",    "else",    "enum",
-			"event",    "explicit", "extern",   "false",   "finally",   "fixed",    "float",      "for",       "foreach", "goto",
-			"if",       "implicit", "in",       "int",     "interface", "internal", "is",         "lock",      "long",    "new",
-			"null",     "object",   "operator", "out",     "override",  "params",   "private",    "protected", "public",  "readonly",
-			"ref",      "return",   "sbyte",    "sealed",  "short",     "sizeof",   "stackalloc", "static",    "struct",  "switch",
-			"this",     "throw",    "true",     "try",     "typeof",    "uint",     "ulong",      "unchecked", "unsafe",  "ushort",
-			"using",    "virtual",  "volatile", "void",    "while",     "namespace", "string"
-		};
-
-
 		public IEnumerable<ExplorerItem> GetItemsAndCode(string nameSpace, string typeName)
 		{
+			typeName = ConvertToCompilable(typeName, false);
+
 			var connectionString = _cxInfo.DatabaseInfo.CustomCxString;
 
 			var provider = ProviderHelper.GetProvider(ProviderName).GetDataProvider(connectionString);
@@ -127,15 +116,15 @@ namespace LinqToDB.LINQPad
 			Code
 				.AppendLine($"namespace {nameSpace}")
 				.AppendLine( "{")
-				.AppendLine($"  public class @{typeName} : LinqToDB.LINQPad.LINQPadDataConnection")
+				.AppendLine($"  public class {typeName} : LinqToDB.LINQPad.LINQPadDataConnection")
 				.AppendLine( "  {")
-				.AppendLine($"    public @{typeName}(string provider, string connectionString)")
+				.AppendLine($"    public {typeName}(string provider, string connectionString)")
 				.AppendLine( "      : base(provider, connectionString)")
 				.AppendLine( "    {")
 				.AppendLine($"      CommandTimeout = {CommandTimeout};")
 				.AppendLine( "    }")
-				.AppendLine($"    public @{typeName}()")
-				.AppendLine($"      : base({ToCodeString(ProviderName)}, {ToCodeString(connectionString)})")
+				.AppendLine($"    public {typeName}()")
+				.AppendLine($"      : base({CSharpTools.ToStringLiteral(ProviderName)}, {CSharpTools.ToStringLiteral(connectionString)})")
 				.AppendLine( "    {")
 				.AppendLine($"      CommandTimeout = {CommandTimeout};")
 				.AppendLine( "    }")
@@ -229,14 +218,14 @@ namespace LinqToDB.LINQPad
 		{
 			code.AppendLine();
 
-			var spName = $"\"{sprocSqlName.Replace("\"", "\\\"")}\"";
+			var spName = CSharpTools.ToStringLiteral(sprocSqlName);
 
 			if (p.IsTableFunction)
 			{
-				code.Append($"    [Sql.TableFunction(Name=\"{p.ProcedureName.Replace("\"", "\\\"")}\"");
+				code.Append($"    [Sql.TableFunction(Name={CSharpTools.ToStringLiteral(p.ProcedureName)}");
 
 				if (p.SchemaName != null)
-					code.Append($", Schema=\"{p.SchemaName}\")");
+					code.Append($", Schema={CSharpTools.ToStringLiteral(p.SchemaName)})");
 
 				code
 					.AppendLine("]")
@@ -505,23 +494,23 @@ namespace LinqToDB.LINQPad
 
 			if (addTableAttribute)
 			{
-				classCode.Append($"  [Table(Name=\"{table.TableName}\"");
+				classCode.Append($"  [Table(Name={CSharpTools.ToStringLiteral(table.TableName)}");
 
 				if (table.SchemaName.NotNullNorEmpty())
-					classCode.Append($", Schema=\"{table.SchemaName}\"");
+					classCode.Append($", Schema={CSharpTools.ToStringLiteral(table.SchemaName)}");
 
 				classCode.AppendLine(")]");
 			}
 
 			classCode
-				.AppendLine($"  public class @{table.TypeName}")
+				.AppendLine($"  public class {table.TypeName}")
 				.AppendLine( "  {")
 				;
 
 			foreach (var c in table.Columns)
 			{
 				classCode
-					.Append($"    [Column(\"{c.ColumnName}\"), ")
+					.Append($"    [Column({CSharpTools.ToStringLiteral(c.ColumnName)}), ")
 					.Append(c.IsNullable ? "Nullable" : "NotNull");
 
 				if (c.IsPrimaryKey) classCode.Append($", PrimaryKey({c.PrimaryKeyOrder})");
@@ -531,24 +520,24 @@ namespace LinqToDB.LINQPad
 
 				var memberType = UseProviderSpecificTypes ? (c.ProviderSpecificType ?? c.MemberType) : c.MemberType;
 
-				classCode.AppendLine($"    public {memberType} @{c.MemberName} {{ get; set; }}");
+				classCode.AppendLine($"    public {memberType} {c.MemberName} {{ get; set; }}");
 			}
 
 			foreach (var key in table.ForeignKeys)
 			{
 				classCode
 					.Append( "    [Association(")
-					.Append($"ThisKey=\"{(key.ThisColumns.Select(c => c.MemberName)).Join(", ")}\"")
-					.Append($", OtherKey=\"{(key.OtherColumns.Select(c => c.MemberName)).Join(", ")}\"")
+					.Append($"ThisKey={CSharpTools.ToStringLiteral((key.ThisColumns.Select(c => c.MemberName)).Join(", "))}")
+					.Append($", OtherKey={CSharpTools.ToStringLiteral((key.OtherColumns.Select(c => c.MemberName)).Join(", "))}")
 					.Append($", CanBeNull={(key.CanBeNull ? "true" : "false")}")
 					;
 
 				if (key.BackReference != null)
 				{
 					if (key.KeyName.NotNullNorEmpty())
-						classCode.Append($", KeyName=\"{key.KeyName}\"");
+						classCode.Append($", KeyName={CSharpTools.ToStringLiteral(key.KeyName)}");
 					if (key.BackReference.KeyName.NotNullNorEmpty())
-						classCode.Append($", BackReferenceName=\"{key.BackReference.MemberName}\"");
+						classCode.Append($", BackReferenceName={CSharpTools.ToStringLiteral(key.BackReference.MemberName)}");
 				}
 				else
 				{
@@ -561,7 +550,7 @@ namespace LinqToDB.LINQPad
 					? $"List<{key.OtherTable.TypeName}>"
 					: key.OtherTable.TypeName;
 
-				classCode.AppendLine($"    public {typeName} @{key.MemberName} {{ get; set; }}");
+				classCode.AppendLine($"    public {typeName} {key.MemberName} {{ get; set; }}");
 			}
 
 			classCode.AppendLine("  }");
@@ -579,7 +568,7 @@ namespace LinqToDB.LINQPad
 					{
 						var memberName = _contextMembers[t];
 
-						Code.AppendLine($"    public ITable<@{t.TypeName}> @{memberName} {{ get {{ return this.GetTable<@{t.TypeName}>(); }} }}");
+						Code.AppendLine($"    public ITable<{t.TypeName}> {memberName} {{ get {{ return this.GetTable<{t.TypeName}>(); }} }}");
 
 						CodeTable(_classCode, t, true);
 
@@ -729,52 +718,24 @@ namespace LinqToDB.LINQPad
 			}
 		}
 
-		static string ToCodeString(string text)
-		{
-			return "\"" + text.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
-		}
-
 		static string ConvertToCompilable(string name, bool capitalize)
 		{
-			var query =
-				from c in name.TrimStart('@')
-				select c.IsLetterOrDigit() ? c : '_';
-
-			var sb = new StringBuilder();
-			sb.Append(query.ToArray());
-
-			if (sb.Length == 0)
+			if (capitalize)
 			{
-				sb.Append('_');
-			}
-			else
-			{
-				if (sb[0].IsDigit())
+				var sb = new StringBuilder(name);
+				for (int i = 0; i < sb.Length; i++)
 				{
-					sb.Insert(0, "_");
-				}
-
-				if (capitalize)
-				{
-					for (int i = 0; i < sb.Length; i++)
+					if (char.IsLetter(sb[i]))
 					{
-						if (Char.IsLetter(sb[i]))
-						{
-							sb[i] = Char.ToUpper(sb[i]);
-							break;
-						}
+						sb[i] = sb[i].ToUpper();
+						break;
 					}
 				}
+
+				name = sb.ToString();
 			}
 
-			name = sb.ToString();
-
-			if (_keyWords.Contains(name) || name.StartsWith("__"))
-			{
-				name = '@' + name;
-			}
-
-			return name;
+			return CSharpTools.ToValidIdentifier(name);
 		}
 	}
 }
