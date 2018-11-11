@@ -64,7 +64,7 @@ namespace LinqToDB.LINQPad
 					ProviderLibraries = "Microsoft.SqlServer.Types.dll"
 				});
 
-			AddDataProvider(new DynamicProviderRecord(DB2iSeriesProviderName.DB2, "DB2 iSeries", "IBM.Data.DB2.iSeries.iDB2Connection")
+			AddDataProvider(new DynamicProviderRecord(DB2iSeriesProviderName.DB2, "DB2 iSeries (Requires iAccess 7.1 .NET Provider)", "IBM.Data.DB2.iSeries.iDB2Connection")
 			{
 				InitalizationClassName = "LinqToDB.DataProvider.DB2iSeries.DB2iSeriesTools, LinqToDB.DataProvider.DB2iSeries",
 				ProviderLibraries = "LinqToDB.DataProvider.DB2iSeries.dll;IBM.Data.DB2.iSeries.dll"
