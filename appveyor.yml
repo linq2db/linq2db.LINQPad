@@ -27,3 +27,5 @@ deploy:
   folder: /
   password:
     secure: rnYQ08pwgvUSkuRhHDndvw==
+  on:
+    branch: release
