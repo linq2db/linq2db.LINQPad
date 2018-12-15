@@ -3,7 +3,7 @@
 linq2db.LINQPad is a driver for [LINQPad](http://www.linqpad.net) that supports the following databases:
 
 - **DB2** (LUW, z/OS) *(client software must be installed)*
-- **DB2 iSeries** (using [3rd party provider](https://github.com/LinqToDB4iSeries/Linq2DB4iSeries)) *(iAccess 7.1+ software must be installed)*
+- **DB2 iSeries** (using [3rd-party provider](https://github.com/LinqToDB4iSeries/Linq2DB4iSeries)) *(iAccess 7.1+ software must be installed)*
 - **Firebird**
 - **Informix** *(client software must be installed)*
 - **Microsoft Access**
