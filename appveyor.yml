@@ -13,7 +13,7 @@ build:
   project: linq2db.LINQPad.sln
   verbosity: minimal
 after_build:
-- cmd: xcopy Source\bin\Release\linq2db.LINQPad.lpx .\ /y
+- cmd: xcopy Source\bin\Release\net452\linq2db.LINQPad.lpx .\ /y
 
 artifacts:
 - path: linq2db.LINQPad.lpx
