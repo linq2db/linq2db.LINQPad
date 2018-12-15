@@ -622,8 +622,11 @@ namespace LinqToDB.LINQPad
 		{
 			public abstract Type   Type { get; }
 
+// Warning CS0649  Field 'XmlFormatter.ValueFormatter.Font' is never assigned to, and will always have its default value null
+#pragma warning disable 649
 			public string Font;
 			public string Size;
+#pragma warning restore 649
 			public bool   NoWrap;
 
 			public abstract string FormatValue(object value);
