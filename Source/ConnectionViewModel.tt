@@ -1,7 +1,7 @@
-﻿<#@ template debug="false" hostspecific="false" language="C#"                      #>
+﻿	<#@ template debug="false" hostspecific="false" language="C#"                      #>
 <#@ output extension=".generated.cs"                                               #>
-<#@ include file="$(ProjectDir)LinqToDB.Templates\T4Model.ttinclude"               #>
-<#@ include file="$(ProjectDir)LinqToDB.Templates\NotifyPropertyChanged.ttinclude" #>
+<#@ include file="$(ProjectDir)..\LinqToDB.Templates\T4Model.ttinclude"               #>
+<#@ include file="$(ProjectDir)..\LinqToDB.Templates\NotifyPropertyChanged.ttinclude" #>
 <#
 	Model.Usings.Add("System.Collections.ObjectModel");
 	Model.Usings.Add("System.Windows");
@@ -34,8 +34,8 @@
 			new NotifyingProperty("string",       "AppConfigPath"),
 			new NotifyingProperty("string",       "CustomConfiguration"),
 			new NotifyingProperty("bool",         "IsDynamic", "IsDynamic", "DynamicVisibility", "StaticVisibility"),
-			new NotifyingProperty("Visibility",   "DynamicVisibility").InitGetter("IsDynamic ? Visibility.Visible : Visibility.Collapsed"),
-			new NotifyingProperty("Visibility",   "StaticVisibility").InitGetter("!IsDynamic ? Visibility.Visible : Visibility.Collapsed"),
+			new NotifyingProperty("Visibility",   "DynamicVisibility").InitGetter(() => new [] { "IsDynamic ? Visibility.Visible : Visibility.Collapsed" }),
+			new NotifyingProperty("Visibility",   "StaticVisibility").InitGetter(() => new [] { "!IsDynamic ? Visibility.Visible : Visibility.Collapsed" }),
 			new NotifyingProperty("ObservableCollection<ProviderInfo>", "Providers"))
 	);
 
