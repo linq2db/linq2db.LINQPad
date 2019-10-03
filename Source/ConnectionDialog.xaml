@@ -146,6 +146,7 @@
 					<CheckBox Content="Pluralize Table properties"              FontSize="12" IsChecked="{Binding Pluralize}" />
 					<CheckBox Content="Capitalize property names"               FontSize="12" IsChecked="{Binding Capitalize}" Margin="0,5" />
 					<CheckBox Content="Include Stored Procedures and Functions" FontSize="12" IsChecked="{Binding IncludeRoutines}" />
+					<CheckBox Content="Include Foreign Keys"                    FontSize="12" IsChecked="{Binding IncludeFKs}" Margin="0,5" />
 				</StackPanel>
 			</GroupBox>
 

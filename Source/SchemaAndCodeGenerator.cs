@@ -60,7 +60,7 @@ namespace LinqToDB.LINQPad
 				db.CommandTimeout = CommandTimeout;
 
 				_dataProvider = db.DataProvider;
-				_sqlBuilder   = _dataProvider.CreateSqlBuilder();
+				_sqlBuilder   = _dataProvider.CreateSqlBuilder(_dataProvider.MappingSchema);
 
 				var options = new GetSchemaOptions();
 
@@ -76,7 +76,8 @@ namespace LinqToDB.LINQPad
 				var excludeCatalogs = (string)_cxInfo.DriverData.Element("excludeCatalogs");
 				if (excludeCatalogs != null) options.ExcludedCatalogs = excludeCatalogs.Split(',', ';');
 
-				options.GetProcedures = (string)_cxInfo.DriverData.Element("excludeRoutines") != "true";
+				options.GetProcedures  = (string)_cxInfo.DriverData.Element("excludeRoutines") != "true";
+				options.GetForeignKeys = (string)_cxInfo.DriverData.Element("excludeFKs")      != "true";
 
 				_schema = _dataProvider.GetSchemaProvider().GetSchema(db, options);
 
