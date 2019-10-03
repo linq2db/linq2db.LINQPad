@@ -275,8 +275,8 @@ namespace LinqToDB.LINQPad
 			code
 				.Append($" {p.MemberName}(")
 				.Append(p.Parameters
-					.Where (pr => !pr.IsResult)
-					.Select(pr => $"{(pr.IsOut ? pr.IsIn ? "ref " : "out " : "")}{pr.ParameterType} {pr.ParameterName}")
+					.Where (pr => !pr.IsResult || !p.IsFunction)
+					.Select(pr => $"{(pr.IsOut || pr.IsResult ? pr.IsIn ? "ref " : "out " : "")}{pr.ParameterType} {pr.ParameterName}")
 					.Join(", "))
 				.AppendLine(")")
 				.AppendLine("    {")
@@ -294,13 +294,14 @@ namespace LinqToDB.LINQPad
 			}
 			else if (p.IsFunction)
 			{
+				// aggregate and scalar functions branch
 				code.AppendLine("      throw new InvalidOperationException();");
 			}
 			else
 			{
-				var inputParameters      = p.Parameters.Where(pp => pp.IsIn)            .ToList();
-				var outputParameters     = p.Parameters.Where(pp => pp.IsOut)           .ToList();
-				var inOrOutputParameters = p.Parameters.Where(pp => pp.IsIn || pp.IsOut).ToList();
+				var inputParameters      = p.Parameters.Where(pp => pp.IsIn)                            .ToList();
+				var outputParameters     = p.Parameters.Where(pp => pp.IsOut || pp.IsResult)            .ToList();
+				var inOrOutputParameters = p.Parameters.Where(pp => pp.IsIn  || pp.IsOut || pp.IsResult).ToList();
 
 				spName += inOrOutputParameters.Count == 0 ? ");" : ",";
 
@@ -310,7 +311,7 @@ namespace LinqToDB.LINQPad
 				while (p.Parameters.Any(pp => pp.ParameterName == retName))
 					retName = "__ret__" + ++retNo;
 
-				var hasOut = outputParameters.Any(pr => pr.IsOut);
+				var hasOut = outputParameters.Any(pr => pr.IsOut || pr.IsResult);
 				var prefix = hasOut ? $"var {retName} =" : "return";
 
 				if (p.ResultTable == null)
@@ -361,16 +362,16 @@ namespace LinqToDB.LINQPad
 					var pr = inOrOutputParameters[i];
 
 					var str = string.Format(
-						!pr.IsIn && pr.IsOut
+						!pr.IsIn && (pr.IsOut || pr.IsResult)
 							? "        new DataParameter({0}, null, DataType.{2})"
 							: "        new DataParameter({0}, {1}, DataType.{2})",
 						CSharpTools.ToStringLiteral(pr.SchemaName),
 						pr.ParameterName,
 						pr.DataType);
 
-					if (pr.IsOut)
+					if (pr.IsOut || pr.IsResult)
 					{
-						str += " { Direction = " + (pr.IsIn ? "ParameterDirection.InputOutput" : "ParameterDirection.Output");
+						str += " { Direction = " + (pr.IsIn ? "ParameterDirection.InputOutput" : (pr.IsResult ? "ParameterDirection.ReturnValue" : "ParameterDirection.Output"));
 
 						if (pr.Size != null && pr.Size.Value != 0)
 							str += ", Size = " + pr.Size.Value;
@@ -389,7 +390,7 @@ namespace LinqToDB.LINQPad
 				{
 					code.AppendLine();
 
-					foreach (var pr in p.Parameters.Where(_ => _.IsOut))
+					foreach (var pr in p.Parameters.Where(_ => _.IsOut || _.IsResult))
 					{
 						var str = $"      {pr.ParameterName} = Converter.ChangeTypeTo<{pr.ParameterType}>(((IDbDataParameter)this.Command.Parameters[\"{pr.SchemaName}\"]).Value);";
 						code.AppendLine(str);
@@ -452,14 +453,14 @@ namespace LinqToDB.LINQPad
 						{
 							DragText     = $"{p.MemberName}(" +
 								p.Parameters
-									.Where (pr => !pr.IsResult)
-									.Select(pr => $"{(pr.IsOut ? pr.IsIn ? "ref " : "out " : "")}{pr.ParameterName}")
+									.Where (pr => !pr.IsResult || !p.IsFunction)
+									.Select(pr => $"{(pr.IsOut || pr.IsResult ? (pr.IsIn ? "ref " : "out ") : "")}{pr.ParameterName}")
 									.Join(", ") +
 								")",
 							SqlName      = sprocSqlName,
 							IsEnumerable = p.ResultTable != null,
 							Children     = p.Parameters
-								.Where (pr => !pr.IsResult)
+								.Where (pr => !pr.IsResult || !p.IsFunction)
 								.Select(pr =>
 									new ExplorerItem(
 										$"{pr.ParameterName} ({pr.ParameterType})",
@@ -697,6 +698,28 @@ namespace LinqToDB.LINQPad
 
 			foreach (var procedure in _schema.Procedures)
 			{
+				// migrate https://github.com/linq2db/linq2db/pull/1905
+				if (!procedure.IsFunction && ProviderName == LinqToDB.ProviderName.SqlServer)
+				{
+					// sql server procedures always have integer return parameter
+					var name = "@returnValue";
+					var cnt  = 0;
+					while (procedure.Parameters.Any(_ => _.ParameterName == name))
+						name = $"@returnValue{cnt++}";
+
+					procedure.Parameters.Add(new ParameterSchema()
+					{
+						SchemaName           = name,
+						ParameterName        = name,
+						IsResult             = true,
+						DataType             = DataType.Int32,
+						SystemType           = typeof(int),
+						SchemaType           = "int",
+						ParameterType        = "int",
+						ProviderSpecificType = "int"
+					});
+				}
+
 				procedure.MemberName = GetName(typeNames, procedure.MemberName);
 
 				if (procedure.ResultTable != null && !_contextMembers.ContainsKey(procedure.ResultTable))
