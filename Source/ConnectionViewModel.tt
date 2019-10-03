@@ -19,6 +19,7 @@
 			new NotifyingProperty("bool",         "Pluralize"),
 			new NotifyingProperty("bool",         "Capitalize"),
 			new NotifyingProperty("bool",         "IncludeRoutines"),
+			new NotifyingProperty("bool",         "IncludeFKs"),
 			new NotifyingProperty("bool",         "EncryptConnectionString"),
 			new NotifyingProperty("bool",         "UseCustomFormatter"),
 			new NotifyingProperty("bool",         "UseProviderSpecificTypes"),

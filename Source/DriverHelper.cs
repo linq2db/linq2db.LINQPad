@@ -39,8 +39,8 @@ namespace LinqToDB.LINQPad
 			model.EncryptConnectionString  = cxInfo.DatabaseInfo.EncryptCustomCxString;
 			model.Pluralize                = !cxInfo.DynamicSchemaOptions.NoPluralization;
 			model.Capitalize               = !cxInfo.DynamicSchemaOptions.NoCapitalization;
-			//model.IncludeRoutines          = !isNewConnection && !cxInfo.DynamicSchemaOptions.ExcludeRoutines;
 			model.IncludeRoutines          = cxInfo.DriverData.Element("excludeRoutines")?.Value.ToLower() != "true";
+			model.IncludeFKs               = cxInfo.DriverData.Element("excludeFKs")?.Value.ToLower()      != "true";
 			model.ConnectionString         = cxInfo.DatabaseInfo.CustomCxString.IsNullOrWhiteSpace() ? (string)cxInfo.DriverData.Element("connectionString") : cxInfo.DatabaseInfo.CustomCxString;
 			model.IncludeSchemas           = cxInfo.DriverData.Element("includeSchemas")          ?.Value;
 			model.ExcludeSchemas           = cxInfo.DriverData.Element("excludeSchemas")          ?.Value;
@@ -61,6 +61,7 @@ namespace LinqToDB.LINQPad
 				cxInfo.DriverData.SetElementValue("providerName",             providerName);
 				cxInfo.DriverData.SetElementValue("connectionString",         null);
 				cxInfo.DriverData.SetElementValue("excludeRoutines",          !model.IncludeRoutines ? "true" : "false");
+				cxInfo.DriverData.SetElementValue("excludeFKs",               !model.IncludeFKs      ? "true" : "false");
 				cxInfo.DriverData.SetElementValue("includeSchemas",           model.IncludeSchemas. IsNullOrWhiteSpace() ? null : model.IncludeSchemas);
 				cxInfo.DriverData.SetElementValue("excludeSchemas",           model.ExcludeSchemas. IsNullOrWhiteSpace() ? null : model.ExcludeSchemas);
 				cxInfo.DriverData.SetElementValue("includeCatalogs",          model.IncludeCatalogs.IsNullOrWhiteSpace() ? null : model.IncludeSchemas);

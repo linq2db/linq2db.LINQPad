@@ -346,6 +346,43 @@ namespace LinqToDB.LINQPad
 
 		#endregion
 
+		#region IncludeFKs : bool
+
+		private bool _includeFKs;
+		public  bool  IncludeFKs
+		{
+			get { return _includeFKs; }
+			set
+			{
+				if (_includeFKs != value)
+				{
+					BeforeIncludeFKsChanged(value);
+					_includeFKs = value;
+					AfterIncludeFKsChanged();
+
+					OnIncludeFKsChanged();
+				}
+			}
+		}
+
+		#region INotifyPropertyChanged support
+
+		partial void BeforeIncludeFKsChanged(bool newValue);
+		partial void AfterIncludeFKsChanged ();
+
+		public const string NameOfIncludeFKs = "IncludeFKs";
+
+		private static readonly PropertyChangedEventArgs _includeFKsChangedEventArgs = new PropertyChangedEventArgs(NameOfIncludeFKs);
+
+		private void OnIncludeFKsChanged()
+		{
+			OnPropertyChanged(_includeFKsChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
 		#region EncryptConnectionString : bool
 
 		private bool _encryptConnectionString;
