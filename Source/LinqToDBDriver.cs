@@ -31,6 +31,7 @@ namespace LinqToDB.LINQPad
 		static LinqToDBDriver()
 		{
 			DriverHelper.ConfigureRedirects();
+			DriverHelper.SapHanaSPS04Fixes();
 		}
 
 		public override string GetConnectionDescription(IConnectionInfo cxInfo)
