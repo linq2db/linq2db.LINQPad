@@ -6,13 +6,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
-using CodeJam.Strings;
-
 using JetBrains.Annotations;
 
 using LinqToDB.Data;
-
-using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 using LINQPad.Extensibility.DataContext;
 using LINQPad.Extensibility.DataContext.UI;
@@ -193,7 +189,7 @@ namespace LinqToDB.LINQPad
 
 		void ChooseConfiguration(object sender, RoutedEventArgs e)
 		{
-			if (_model != null && _model.AppConfigPath.NotNullNorWhiteSpace())
+			if (_model != null && !string.IsNullOrWhiteSpace(_model.AppConfigPath))
 			{
 				var oldCursor = Cursor;
 

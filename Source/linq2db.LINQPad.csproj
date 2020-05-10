@@ -1,57 +1,53 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
 	<PropertyGroup>
-		<TargetFramework>net452</TargetFramework>
+		<TargetFrameworks>net46;netcoreapp3.0</TargetFrameworks>
 		<RootNamespace>LinqToDB.LINQPad</RootNamespace>
 		<Company>linq2db</Company>
 		<Product>linq2db.LINQPad</Product>
 		<AssemblyTitle>$(Product)</AssemblyTitle>
-		<Version>2.9.3</Version>
+		<Version>2.9.8</Version>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
 		<Copyright>Copyright © 2018 Igor Tkachev, Ilya Chudin, Svyatoslav Danyliv, Dmitry Lukashenko</Copyright>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>linq2db.snk</AssemblyOriginatorKeyFile>
 		<DelaySign>false</DelaySign>
+		<UseWPF>true</UseWPF>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+		<DefineConstants>NETCORE</DefineConstants>
+	</PropertyGroup>
+	
 	<ItemGroup>
 	  <PackageReference Include="CodeJam" Version="2.2.1" />
-	  <PackageReference Include="Extended.Wpf.Toolkit" Version="3.6.0" />
 	  <PackageReference Include="FirebirdSql.Data.FirebirdClient" Version="7.1.1" />
 	  <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" />
-	  <PackageReference Include="linq2db" Version="2.9.3" />
-	  <PackageReference Include="linq2db4iSeries" Version="2.9.0" />
+	  <PackageReference Include="linq2db" Version="2.9.8" />
 	  <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="1.3.2" />
-	  <PackageReference Include="Microsoft.SqlServer.Types" Version="14.0.1016.290" />
 	  <PackageReference Include="MySql.Data" Version="8.0.18" />
 	  <PackageReference Include="Npgsql" Version="4.0.10" />
-	  <PackageReference Include="Oracle.ManagedDataAccess" Version="19.5.0" />
 	  <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" />
+		<PackageReference Include="LINQPad.Reference" Version="1.*" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Reference Include="LINQPad">
-			<HintPath>..\Redist\LINQPad.exe</HintPath>
-		</Reference>
-		<Reference Include="Microsoft.CSharp" />
-		<Reference Include="PresentationCore" />
-		<Reference Include="PresentationFramework" />
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net46'">
+		<PackageReference Include="linq2db4iSeries" Version="2.9.0" />
+		<PackageReference Include="Microsoft.SqlServer.Types" Version="14.0.1016.290" />
+		<PackageReference Include="Oracle.ManagedDataAccess" Version="19.5.0" />
 		<Reference Include="System.Configuration" />
 		<Reference Include="System.Data.Entity.Design" />
-		<Reference Include="System.Xaml" />
-		<Reference Include="WindowsBase" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.0' ">
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<None Update="Connection.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Update="ConnectionDialog.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</None>
-		<None Update="_ConnectionDialog.xaml">
-		  <Generator>MSBuild:Compile</Generator>
 		</None>
 		<None Update="ConnectionViewModel.tt">
 			<Generator>TextTemplatingFileGenerator</Generator>
@@ -66,44 +62,22 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<Compile Update="ConnectionViewModel.generated.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
 			<DependentUpon>ConnectionViewModel.tt</DependentUpon>
 		</Compile>
-		<Compile Update="UserControl1.xaml.cs">
-		  <SubType>Code</SubType>
-		</Compile>
 	</ItemGroup>
 
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent" DependsOnTargets="CopySQLiteInteropFiles">
-		<Exec Command="xcopy /s /y &quot;$(SolutionDir)Redist\IBM\*.dll&quot; &quot;$(TargetDir)&quot;" />
-		<Exec Command="$(ProjectDir)Pack.bat $(TargetDir)" />
+	<Target Name="PostBuild1" AfterTargets="PostBuildEvent" Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+		<Exec Command="$(ProjectDir)Pack.bat $(TargetDir) lpx6" />
+		<Exec Command="xcopy /i/y/s &quot;$(TargetDir)*.*&quot; &quot;%25LocalAppData%25\LINQPad\Drivers\DataContext\NetCore\$(TargetName)&quot;" />
 	</Target>
 
-	<!-- https://github.com/dotnet/sdk/issues/810 - WPF suport for SDK projects -->
-	<PropertyGroup>
-		<LanguageTargets>$(MSBuildToolsPath)\Microsoft.CSharp.targets</LanguageTargets>
-		<LangVersion>latest</LangVersion>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-	  <WarningsAsErrors />
-	  <PlatformTarget>AnyCPU</PlatformTarget>
-	</PropertyGroup>
-	<ItemGroup>
-		<Page Include="**\*.xaml" Exclude="@(ApplicationDefinition)" SubType="Designer" Generator="MSBuild:Compile" />
-		<Compile Update="**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
-		<UpToDateCheckInput Include="**\*.xaml" />
-	</ItemGroup>
-	<Target Name="WorkaroundForXAMLIntellisenseBuildIssue" AfterTargets="_CheckCompileDesignTimePrerequisite">
-		<PropertyGroup>
-			<BuildingProject>false</BuildingProject>
-		</PropertyGroup>
+	<Target Name="PostBuild2" AfterTargets="PostBuildEvent" Condition="'$(TargetFramework)' == 'net46'">
+		<Exec Command="xcopy /s /y &quot;$(SolutionDir)Redist\IBM\*.dll&quot; &quot;$(TargetDir)&quot;" />
+		<Exec Command="$(ProjectDir)Pack.bat $(TargetDir) lpx" />
+		<Exec Command="xcopy /i/y/s &quot;$(TargetDir)*.*&quot; &quot;%25LocalAppData%25\LINQPad\Drivers\DataContext\4.6\$(TargetName) (no-strong-name)&quot;" />
 	</Target>
 
 </Project>

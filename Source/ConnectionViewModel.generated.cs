@@ -4,6 +4,9 @@
 //    Changes to this file may cause incorrect behavior and will be lost if the code is regenerated.
 // </auto-generated>
 //---------------------------------------------------------------------------------------------------
+
+#pragma warning disable 1591
+
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -997,20 +1000,7 @@ namespace LinqToDB.LINQPad
 
 			if (propertyChanged != null)
 			{
-#if SILVERLIGHT
-				if (System.Windows.Deployment.Current.Dispatcher.CheckAccess())
-					propertyChanged(this, new PropertyChangedEventArgs(propertyName));
-				else
-					System.Windows.Deployment.Current.Dispatcher.BeginInvoke(
-						() =>
-						{
-							var pc = PropertyChanged;
-							if (pc != null)
-								pc(this, new PropertyChangedEventArgs(propertyName));
-						});
-#else
 				propertyChanged(this, new PropertyChangedEventArgs(propertyName));
-#endif
 			}
 		}
 
@@ -1020,23 +1010,12 @@ namespace LinqToDB.LINQPad
 
 			if (propertyChanged != null)
 			{
-#if SILVERLIGHT
-				if (System.Windows.Deployment.Current.Dispatcher.CheckAccess())
-					propertyChanged(this, arg);
-				else
-					System.Windows.Deployment.Current.Dispatcher.BeginInvoke(
-						() =>
-						{
-							var pc = PropertyChanged;
-							if (pc != null)
-								pc(this, arg);
-						});
-#else
 				propertyChanged(this, arg);
-#endif
 			}
 		}
 
 		#endregion
 	}
 }
+
+#pragma warning restore 1591

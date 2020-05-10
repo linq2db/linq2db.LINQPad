@@ -192,6 +192,7 @@ namespace LinqToDB.LINQPad
 			};
 		}
 
+#if !NETCORE
 		public static void SapHanaSPS04Fixes()
 		{
 			// recent SAP HANA provider (SPS04) uses Assembly.GetEntryAssembly() calls during native dlls discovery, which
@@ -212,5 +213,6 @@ namespace LinqToDB.LINQPad
 			}
 			catch { /* ne shmagla */ }
 		}
+#endif
 	}
 }

@@ -485,8 +485,10 @@ namespace LinqToDB.LINQPad
 					vf.FormatValue(value)));
 			}
 
+#if !NETCORE
 			if (value is Microsoft.SqlServer.Types.SqlHierarchyId)
 				return value.ToString();
+#endif
 
 			//Debug.WriteLine($"{value.GetType()}: {value} {IsValue(value)}");
 

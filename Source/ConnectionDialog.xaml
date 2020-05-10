@@ -4,7 +4,6 @@
 	xmlns:d    = "http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc   = "http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:vm   = "clr-namespace:LinqToDB.LINQPad"
-	xmlns:xctk = "http://schemas.xceed.com/wpf/xaml/toolkit"
 
 	Title                 = "LINQ to DB Connection"
 	mc:Ignorable          = "d"
@@ -107,7 +106,10 @@
 					<CheckBox Grid.Column="0" Content="Encrypt Connection String" FontSize="12" IsChecked="{Binding EncryptConnectionString}" Margin="0,5,0,0" />
 
 					<StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-						<xctk:IntegerUpDown Value="{Binding CommandTimeout}" Increment="1" Minimum="0" Width="50" Height="20" FontSize="12" />
+						<StackPanel.Resources>
+							<vm:StringToIntegerConverter x:Key="StringToIntegerConverter" />
+						</StackPanel.Resources>
+						<TextBox Text="{Binding CommandTimeout, Converter={StaticResource StringToIntegerConverter}}" Width="50" Height="20" FontSize="12" />
 						<Label FontSize="12" Height="20" Padding="5,2" Content="Command Timeout (in seconds)"/>
 					</StackPanel>
 				</Grid>

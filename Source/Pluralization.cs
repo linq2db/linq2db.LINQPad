@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+#if !NETCORE
 using System.Data.Entity.Design.PluralizationServices;
 using System.Globalization;
+#endif
 using System.Linq;
 
 using CodeJam.Strings;
@@ -10,7 +12,9 @@ namespace LinqToDB.LINQPad
 {
 	static class Pluralization
 	{
+#if !NETCORE
 		static readonly PluralizationService _service = PluralizationService.CreateService(CultureInfo.GetCultureInfo("en"));
+#endif
 
 		static readonly Dictionary<string,string> _dictionary = new Dictionary<string,string>
 		{
@@ -74,7 +78,11 @@ namespace LinqToDB.LINQPad
 			var word = GetLastWord(str);
 
 			if (!_dictionary.TryGetValue(word.ToLower(), out var newWord))
+#if !NETCORE
 				newWord = _service.IsPlural(word) ? word : _service.Pluralize(word);
+#else
+				newWord = word;
+#endif
 
 			if (string.Compare(word, newWord, StringComparison.OrdinalIgnoreCase) != 0)
 			{
@@ -93,11 +101,15 @@ namespace LinqToDB.LINQPad
 
 			var newWord =
 				_dictionary
-					.Where (dic => string.Compare(dic.Value, word, StringComparison.OrdinalIgnoreCase) == 0)
+					.Where(dic => string.Compare(dic.Value, word, StringComparison.OrdinalIgnoreCase) == 0)
 					.Select(dic => dic.Key)
 					.FirstOrDefault()
 				??
+#if !NETCORE
 				(_service.IsSingular(word) ? word : _service.Singularize(word));
+#else
+				word;
+#endif
 
 			if (string.Compare(word, newWord, StringComparison.OrdinalIgnoreCase) != 0)
 			{
