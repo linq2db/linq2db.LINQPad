@@ -47,6 +47,7 @@ namespace LinqToDB.LINQPad
 		{
 			TurnTraceSwitchOn();
 			FirebirdSqlBuilder.IdentifierQuoteMode = FirebirdIdentifierQuoteMode.Auto;
+			//FirebirdConfiguration.IdentifierQuoteMode = FirebirdIdentifierQuoteMode.Auto;
 		}
 	}
 }

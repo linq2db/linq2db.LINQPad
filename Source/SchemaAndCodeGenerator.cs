@@ -53,7 +53,8 @@ namespace LinqToDB.LINQPad
 
 			var connectionString = _cxInfo.DatabaseInfo.CustomCxString;
 
-			var provider = ProviderHelper.GetProvider(ProviderName).GetDataProvider(connectionString);
+			var pii = ProviderHelper.GetProvider(ProviderName);
+				var provider = pii.GetDataProvider(connectionString);
 
 			using (var db = new DataConnection(provider, connectionString))
 			{
@@ -436,6 +437,7 @@ namespace LinqToDB.LINQPad
 						var sprocSqlName = _sqlBuilder.BuildTableName(
 							new StringBuilder(),
 							null,
+							null,
 							p.SchemaName == null ? null : (string)_sqlBuilder.Convert(p.SchemaName, ConvertType.NameToSchema),
 							(string)_sqlBuilder.Convert(p.ProcedureName,  ConvertType.NameToQueryTable)).ToString();
 
@@ -576,6 +578,7 @@ namespace LinqToDB.LINQPad
 
 						var tableSqlName = _sqlBuilder.BuildTableName(
 							new StringBuilder(),
+							null,
 							null,
 							t.SchemaName == null ? null : (string)_sqlBuilder.Convert(t.SchemaName, ConvertType.NameToSchema),
 							(string)_sqlBuilder.Convert(t.TableName,  ConvertType.NameToQueryTable)).ToString();
