@@ -29,3 +29,4 @@ packages/*/
 Packages/*/
 .vs/**
 *.lpx
+*.lpx6

@@ -410,7 +410,7 @@ namespace LinqToDB.LINQPad
 		ExplorerItem GetColumnItem(ColumnSchema column)
 		{
 			var memberType = UseProviderSpecificTypes ? (column.ProviderSpecificType ?? column.MemberType) : column.MemberType;
-			var sqlName    = (string)_sqlBuilder.Convert(column.ColumnName, ConvertType.NameToQueryField);
+			var sqlName    = (string)_sqlBuilder.Convert(new StringBuilder(), column.ColumnName, ConvertType.NameToQueryField).ToString();
 
 			return new ExplorerItem(
 				column.MemberName,
@@ -438,8 +438,8 @@ namespace LinqToDB.LINQPad
 							new StringBuilder(),
 							null,
 							null,
-							p.SchemaName == null ? null : (string)_sqlBuilder.Convert(p.SchemaName, ConvertType.NameToSchema),
-							(string)_sqlBuilder.Convert(p.ProcedureName,  ConvertType.NameToQueryTable)).ToString();
+							p.SchemaName == null ? null : _sqlBuilder.Convert(new StringBuilder(), p.SchemaName, ConvertType.NameToSchema).ToString(),
+							_sqlBuilder.Convert(new StringBuilder(), p.ProcedureName,  ConvertType.NameToQueryTable).ToString()).ToString();
 
 						var memberName = p.MemberName;
 
@@ -580,8 +580,8 @@ namespace LinqToDB.LINQPad
 							new StringBuilder(),
 							null,
 							null,
-							t.SchemaName == null ? null : (string)_sqlBuilder.Convert(t.SchemaName, ConvertType.NameToSchema),
-							(string)_sqlBuilder.Convert(t.TableName,  ConvertType.NameToQueryTable)).ToString();
+							t.SchemaName == null ? null : _sqlBuilder.Convert(new StringBuilder(), t.SchemaName, ConvertType.NameToSchema).ToString(),
+							_sqlBuilder.Convert(new StringBuilder(), t.TableName,  ConvertType.NameToQueryTable).ToString()).ToString();
 
 						//Debug.WriteLine($"Table: [{t.SchemaName}].[{t.TableName}] - ${tableSqlName}");
 

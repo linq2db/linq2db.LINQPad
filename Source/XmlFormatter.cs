@@ -82,7 +82,7 @@ namespace LinqToDB.LINQPad
 						{
 							c.MemberType,
 							c.MemberName,
-							GetValue = (Func<MappingSchema,object,object>)c.GetValue,
+							GetValue = (Func<MappingSchema,object,object>)((ms, v) => c.GetValue(v)),
 							Total    = new Total(),
 						})
 						.ToArray();
