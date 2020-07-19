@@ -177,8 +177,6 @@ namespace LinqToDB.LINQPad
 		static bool DynamicCheckForNull(Type type, object value, ref bool isNull)
 		{
 			return 
-				DynamicCheckForNull("Oracle.DataAccess.Types.INullable",        type, value, ref isNull) ||
-				DynamicCheckForNull("Oracle.ManagedDataAccess.Types.INullable", type, value, ref isNull) ||
 				DynamicCheckForNull("IBM.Data.DB2Types.INullable",              type, value, ref isNull);
 		}
 
@@ -212,8 +210,6 @@ namespace LinqToDB.LINQPad
 			var type = value.GetType();
 			return
 				value is INullable ||
-				IsType("Oracle.DataAccess.Types.INullable", type) ||
-				IsType("Oracle.ManagedDataAccess.Types.INullable", type) ||
 				IsType("IBM.Data.DB2Types.INullable", type);
 		}
 
@@ -275,8 +271,6 @@ namespace LinqToDB.LINQPad
 			{
 				switch (type.FullName)
 				{
-					case "Oracle.DataAccess.Types.OracleDate":
-					case "Oracle.ManagedDataAccess.Types.OracleDate":
 					case "IBM.Data.DB2Types.DB2DateTime":
 					case "IBM.Data.DB2Types.DB2Date":
 					case "IBM.Data.DB2Types.DB2Blob":
@@ -287,9 +281,6 @@ namespace LinqToDB.LINQPad
 			});
 
 			return vf;
-//
-			//VF       <Oracle.DataAccess.Types.OracleDate>    (dt => Format(dt.Value)),
-			//VF<Oracle.ManagedDataAccess.Types.OracleDate>    (dt => Format(dt.Value)),
 			//VF                <IBM.Data.DB2Types.DB2DateTime>(dt => Format(dt.Value)),
 			//VF                <IBM.Data.DB2Types.DB2Date>    (dt => Format(dt.Value)),
 
@@ -305,10 +296,6 @@ namespace LinqToDB.LINQPad
 				{
 					switch (type.FullName)
 					{
-						case "Oracle.DataAccess.Types.OracleDecimal":
-						case "Oracle.ManagedDataAccess.Types.OracleDecimal":
-							return GenerateNumberFormatter(type, type, true);
-
 						case "IBM.Data.DB2Types.DB2Int16":
 						case "IBM.Data.DB2Types.DB2Int32":
 						case "IBM.Data.DB2Types.DB2Int64":
@@ -335,9 +322,6 @@ namespace LinqToDB.LINQPad
 			});
 
 			return nf;
-
-			//NF<Oracle.DataAccess.       Types.OracleDecimal>(value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
-			//NF<Oracle.ManagedDataAccess.Types.OracleDecimal>(value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
 
 			//NF<IBM.Data.DB2Types.DB2Int16,       Int64>     (value => v => v + value.Value,            v => n => v / n),
 			//NF<IBM.Data.DB2Types.DB2Int32,       Int64>     (value => v => v + value.Value,            v => n => v / n),

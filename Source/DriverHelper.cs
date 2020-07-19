@@ -20,14 +20,6 @@ namespace LinqToDB.LINQPad
 
 		public static void Init()
 		{
-			//#if NETCORE
-			//			System.Runtime.Loader.AssemblyLoadContext.Default.Resolving += (context, name) =>
-			//			{
-			//				Debugger.Launch();
-			//				return AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName == name.FullName).FirstOrDefault();
-			//			};
-			//#endif
-
 #if !NETCORE
 			ConfigureRedirects();
 			SapHanaSPS04Fixes();
