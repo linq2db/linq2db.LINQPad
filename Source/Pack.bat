@@ -21,7 +21,6 @@ IF %2 EQU lpx (
 	rd /S /Q %1\tr
 	rd /S /Q %1\zh-Hans
 	rd /S /Q %1\zh-Hant
-	del /Q %1\deps.json
 	del /Q %1\*.pdb
 	"C:\Program Files\7-Zip\7z.exe" -r a linq2db.LINQPad.%2.zip %1\*.*
 )

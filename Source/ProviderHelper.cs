@@ -56,7 +56,8 @@ namespace LinqToDB.LINQPad
 			AddDataProvider(new DynamicProviderRecord(ProviderName.OracleNative,  "Oracle (Native)",                  "Oracle.DataAccess.Client.OracleConnection"));
 #endif
 
-
+			// we use System.Data.SqlClient to be able to use Microsoft.SqlServer.Types
+			AddDataProvider(new DynamicProviderRecord(ProviderName.SqlServer, "Microsoft SQL Server", "System.Data.SqlClient.SqlConnection"));
 
 			//AddDataProvider(
 			//	new DynamicProviderRecord(

@@ -97,6 +97,7 @@ namespace LinqToDB.LINQPad
 				.AppendLine("using LinqToDB.Mapping;")
 				.AppendLine("using System.Net;")
 				.AppendLine("using System.Net.NetworkInformation;")
+				.AppendLine("using Microsoft.SqlServer.Types;")
 				;
 
 			if (_schema.Procedures.Any(_ => _.IsAggregateFunction))

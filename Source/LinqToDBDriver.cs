@@ -13,6 +13,7 @@ using LinqToDB.Data;
 using LinqToDB.Mapping;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.SqlServer.Types;
 
 namespace LinqToDB.LINQPad
 {
@@ -52,9 +53,13 @@ namespace LinqToDB.LINQPad
 				var references = new List<MetadataReference>
 				{
 #if NETCORE
-// .net core returns reference to System.Private.Corelib, which is not what we need for object and List<T>
+					// .net core returns reference to System.Private.Corelib for some type, which is not what we need
+					// object
 					MetadataReference.CreateFromFile(Path.Combine(Path.GetDirectoryName(typeof(object).Assembly.Location)!, "System.Runtime.dll")),
+					// List<>
 					MetadataReference.CreateFromFile(Path.Combine(Path.GetDirectoryName(typeof(object).Assembly.Location)!, "System.Collections.dll")),
+					// ValueType
+					MetadataReference.CreateFromFile(Path.Combine(Path.GetDirectoryName(typeof(object).Assembly.Location)!, "netstandard.dll")),
 
 					MetadataReference.CreateFromFile(typeof(IPAddress).            Assembly.Location),
 					MetadataReference.CreateFromFile(typeof(System.Linq.Expressions.Expression).Assembly.Location),
@@ -65,6 +70,7 @@ namespace LinqToDB.LINQPad
 					MetadataReference.CreateFromFile(typeof(DataConnection).       Assembly.Location),
 					MetadataReference.CreateFromFile(typeof(LINQPadDataConnection).Assembly.Location),
 					MetadataReference.CreateFromFile(typeof(PhysicalAddress)      .Assembly.Location),
+					MetadataReference.CreateFromFile(typeof(SqlHierarchyId)       .Assembly.Location),
 				};
 
 				references.AddRange(gen.References.Select(r => MetadataReference.CreateFromFile(r)));
