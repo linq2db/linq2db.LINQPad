@@ -43,6 +43,7 @@ namespace LinqToDB.LINQPad
 			AddDataProvider(new DynamicProviderRecord(ProviderName.MySqlConnector, "MySql",                           "MySql.Data.MySqlClient.MySqlConnection"));
 			AddDataProvider(new DynamicProviderRecord(ProviderName.PostgreSQL,     "PostgreSQL", "Npgsql.NpgsqlConnection"));
 			AddDataProvider(new DynamicProviderRecord(ProviderName.SybaseManaged,  "SAP/Sybase ASE", "AdoNetCore.AseClient.AseConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.SQLiteClassic,  "SQLite",                          "System.Data.SQLite.SQLiteConnection"));
 			AddDataProvider(new DynamicProviderRecord(ProviderName.SqlCe, "Microsoft SQL Server Compact", "System.Data.SqlServerCe.SqlCeConnection"));
 			AddDataProvider(new DynamicProviderRecord(ProviderName.DB2LUW, "DB2 for Linux, UNIX and Windows", "IBM.Data.DB2.DB2Connection"));
 			AddDataProvider(new DynamicProviderRecord(ProviderName.DB2zOS, "DB2 for z/OS", "IBM.Data.DB2.DB2Connection"));
@@ -55,7 +56,6 @@ namespace LinqToDB.LINQPad
 			AddDataProvider(new DynamicProviderRecord(ProviderName.OracleNative,  "Oracle (Native)",                  "Oracle.DataAccess.Client.OracleConnection"));
 #endif
 
-			//AddDataProvider(new DynamicProviderRecord(ProviderName.SQLite,        "SQLite",                          "System.Data.SQLite.SQLiteConnection"));
 
 
 			//AddDataProvider(

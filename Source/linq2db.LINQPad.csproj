@@ -36,8 +36,7 @@
 		<PackageReference Include="MySqlConnector" Version="0.69.7" />
 		<PackageReference Include="AdoNetCore.AseClient" Version="0.18.0" />
 		<PackageReference Include="IBM.Data.DB.Provider" Version="11.1.4040.4" GeneratePathProperty="true" />
-		
-	  <!--<PackageReference Include="System.Data.SQLite.Core" Version="1.0.112.2" />-->
+	  <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.1" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net46'">
@@ -98,11 +97,11 @@
 	  <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
 
-	<Target Name="PostBuild1" AfterTargets="PostBuildEvent" Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+	<Target Name="PostBuild1" AfterTargets="CopySQLiteInteropFiles" Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
 		<Exec Command="$(ProjectDir)Pack.bat $(TargetDir) lpx6" />
 	</Target>
 
-	<Target Name="PostBuild2" AfterTargets="PostBuildEvent" Condition="'$(TargetFramework)' == 'net46'">
+	<Target Name="PostBuild2" AfterTargets="CopySQLiteInteropFiles" Condition="'$(TargetFramework)' == 'net46'">
 		<Exec Command="$(ProjectDir)Pack.bat $(TargetDir) lpx" />
 	</Target>
 
