@@ -140,12 +140,12 @@ namespace LinqToDB.LINQPad
 				from t in
 					(
 						from t in _schema.Tables
-						select new { t.IsDefaultSchema, t.SchemaName, Table = t, Procedure = (ProcedureSchema?)null }
+						select new { t.IsDefaultSchema, SchemaName = t.SchemaName.IsNullOrEmpty() ? null : t.SchemaName, Table = t, Procedure = (ProcedureSchema?)null }
 					)
 					.Union
 					(
 						from p in _schema.Procedures
-						select new { p.IsDefaultSchema, p.SchemaName, Table = (TableSchema?)null, Procedure = p }
+						select new { p.IsDefaultSchema, SchemaName = p.SchemaName.IsNullOrEmpty() ? null : p.SchemaName, Table = (TableSchema?)null, Procedure = p }
 					)
 				group t by new { t.IsDefaultSchema, t.SchemaName } into gr
 				orderby !gr.Key.IsDefaultSchema, gr.Key.SchemaName
@@ -157,6 +157,28 @@ namespace LinqToDB.LINQPad
 				}
 			)
 			.ToList();
+
+			var nonDefaultSchemas = new Dictionary<string, ExplorerItem>();
+
+			var     hasDefaultSchema  = false;
+			string? defaultSchemaName = null;
+
+			foreach (var s in schemas)
+			{
+				if (s.Key.IsDefaultSchema)
+				{
+					hasDefaultSchema  = true;
+					defaultSchemaName = defaultSchemaName ?? s.Key.SchemaName;
+				}
+				else
+				{
+					var name = s.Key.SchemaName.IsNullOrEmpty() ? "empty" : s.Key.SchemaName;
+					nonDefaultSchemas.Add(name, new ExplorerItem(name, ExplorerItemKind.Schema, ExplorerIcon.Schema));
+				}
+			}
+
+			var useSchemaNode = nonDefaultSchemas.Count > 1 || nonDefaultSchemas.Count == 1 && hasDefaultSchema;
+			var defaultSchema = useSchemaNode ? new ExplorerItem(defaultSchemaName ?? "(default)", ExplorerItemKind.Schema, ExplorerIcon.Schema) : null;
 
 			foreach (var s in schemas)
 			{
@@ -186,22 +208,25 @@ namespace LinqToDB.LINQPad
 						ExplorerIcon.ScalarFunction,
 						s.Procedures.Where(p => p.IsFunction && !p.IsTableFunction).ToList()));
 
-				if (schemas.Count == 1)
+				if (!useSchemaNode)
 				{
 					foreach (var item in items)
 						yield return item;
 				}
 				else
 				{
-					yield return new ExplorerItem(
-						s.Key.SchemaName.IsNullOrEmpty() ? s.Key.IsDefaultSchema ? "(default)" : "empty" : s.Key.SchemaName,
-						ExplorerItemKind.Schema,
-						ExplorerIcon.Schema)
-					{
-						Children = items
-					};
+					if (s.Key.IsDefaultSchema)
+						defaultSchema!.Children.AddRange(items);
+					else
+						nonDefaultSchemas[s.Key.SchemaName ?? "empty"].Children.AddRange(items);
 				}
 			}
+
+			if (defaultSchema != null)
+				yield return defaultSchema;
+
+			foreach (var schemaNode in nonDefaultSchemas.Values)
+				yield return schemaNode;
 
 			Code
 				.AppendLine("  }")

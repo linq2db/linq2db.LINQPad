@@ -37,15 +37,15 @@ namespace LinqToDB.LINQPad
 
 		static void InitializeDataProviders()
 		{
-			AddDataProvider(new DynamicProviderRecord(ProviderName.Access,        "Microsoft Access (OleDb)",                "System.Data.OleDb.OleDbConnection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.AccessOdbc,    "Microsoft Access (ODBC)",                 "System.Data.Odbc.OdbcConnection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.Firebird,      "Firebird",                        "FirebirdSql.Data.FirebirdClient.FbConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.Access,         "Microsoft Access (OleDb)",                "System.Data.OleDb.OleDbConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.AccessOdbc,     "Microsoft Access (ODBC)",                 "System.Data.Odbc.OdbcConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.Firebird,       "Firebird",                        "FirebirdSql.Data.FirebirdClient.FbConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.MySqlConnector, "MySql",                           "MySql.Data.MySqlClient.MySqlConnection"));
 
 			//AddDataProvider(new DynamicProviderRecord(ProviderName.DB2LUW,        "DB2 for Linux, UNIX and Windows", "IBM.Data.DB2.DB2Connection"));
 			//AddDataProvider(new DynamicProviderRecord(ProviderName.DB2zOS,        "DB2 for z/OS",                    "IBM.Data.DB2.DB2Connection, IBM.Data.DB2"));
 			//AddDataProvider(new DynamicProviderRecord(ProviderName.OracleNative,  "Oracle ODP.NET",                  "Oracle.DataAccess.Client.OracleConnection"));
 			//AddDataProvider(new DynamicProviderRecord(ProviderName.OracleManaged, "Oracle Managed Driver",           "Oracle.ManagedDataAccess.Client.OracleConnection"));
-			//AddDataProvider(new DynamicProviderRecord(ProviderName.MySql,         "MySql",                           "MySql.Data.MySqlClient.MySqlConnection"));
 			//AddDataProvider(new DynamicProviderRecord(ProviderName.SqlCe,         "Microsoft SQL Server Compact",    "System.Data.SqlServerCe.SqlCeConnection"));
 			//AddDataProvider(new DynamicProviderRecord(ProviderName.SQLite,        "SQLite",                          "System.Data.SQLite.SQLiteConnection"));
 			//AddDataProvider(new DynamicProviderRecord(ProviderName.Informix,      "Informix",                        "IBM.Data.Informix.IfxConnection"));

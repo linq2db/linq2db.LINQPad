@@ -3,7 +3,9 @@ using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using CodeJam.Strings;
 using CodeJam.Xml;
 using LINQPad.Extensibility.DataContext;
@@ -211,19 +213,25 @@ namespace LinqToDB.LINQPad
 			};
 		}
 
+#if !NETCORE
 		static void ConfigureRedirects()
 		{
 			AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
 			{
 				var requestedAssembly = new AssemblyName(args.Name!);
-				if (requestedAssembly.Name != "linq2db")
-					return null;
+				if (requestedAssembly.Name == "linq2db")
+					return typeof(DataContext).Assembly;
 
-				return typeof(DataContext).Assembly;
+				// manage netstandard dll hell
+				if (requestedAssembly.Name == "System.Threading.Tasks.Extensions")
+					return typeof(ValueTask).Assembly;
+				if (requestedAssembly.Name == "System.Runtime.CompilerServices.Unsafe")
+					return typeof(Unsafe).Assembly;
+
+				return null;
 			};
 		}
 
-#if !NETCORE
 		static void SapHanaSPS04Fixes()
 		{
 			// recent SAP HANA provider (SPS04 040, fixed in 045) uses Assembly.GetEntryAssembly() calls during native dlls discovery, which

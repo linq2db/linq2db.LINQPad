@@ -159,14 +159,14 @@ namespace LinqToDB.LINQPad
 			return type.Name;
 		}
 
-		static bool DynamicCheckForNull(string baseType, Type type, object value, ref bool isNull)
+		static bool DynamicCheckForNull(string baseType, Type type, object value, ref bool isNull, string isNullProperty = "IsNull")
 		{
 			var baseTypeType = Type.GetType(baseType, false);
 
 			if (baseTypeType == null || !baseTypeType.IsSameOrParentOf(type))
 				return false;
 
-			var prop = baseTypeType.GetProperty("IsNull");
+			var prop = baseTypeType.GetProperty(isNullProperty);
 			if (prop == null)
 				return false;
 
@@ -201,9 +201,6 @@ namespace LinqToDB.LINQPad
 				DynamicCheckForNull("Oracle.ManagedDataAccess.Types.INullable", type, value, ref isNull) ||
 				DynamicCheckForNull("IBM.Data.DB2Types.INullable",              type, value, ref isNull) ||
 				DynamicCheckForNull("Sybase.Data.AseClient.AseDecimal",         type, value, ref isNull) ||
-				DynamicCheckForNull("MySql.Data.Types.MySqlDecimal",            type, value, ref isNull) ||
-				DynamicCheckForNull("MySql.Data.Types.MySqlDateTime",           type, value, ref isNull) ||
-				DynamicCheckForNull("MySql.Data.Types.MySqlGeometry",           type, value, ref isNull) ||
 				DynamicCheckNpgsqlDateTime(                                     type, value, ref isNull);
 		}
 
@@ -239,8 +236,7 @@ namespace LinqToDB.LINQPad
 				value is INullable ||
 				IsType("Oracle.DataAccess.Types.INullable", type) ||
 				IsType("Oracle.ManagedDataAccess.Types.INullable", type) ||
-				IsType("IBM.Data.DB2Types.INullable", type) ||
-				IsType("MySql.Data.Types.MySqlGeometry", type);
+				IsType("IBM.Data.DB2Types.INullable", type);
 		}
 
 		static NumberFormatter GenerateNumberFormatter(Type valueType, Type innerType, bool checkForNull = true, Func<ParameterExpression, Expression>? convertFunc = null)
@@ -303,7 +299,6 @@ namespace LinqToDB.LINQPad
 				{
 					case "Oracle.DataAccess.Types.OracleDate":
 					case "Oracle.ManagedDataAccess.Types.OracleDate":
-					case "MySql.Data.Types.MySqlDateTime":
 					case "IBM.Data.DB2Types.DB2DateTime":
 					case "IBM.Data.DB2Types.DB2Date":
 					case "IBM.Data.DB2Types.DB2Blob":
@@ -319,7 +314,6 @@ namespace LinqToDB.LINQPad
 //
 			//VF       <Oracle.DataAccess.Types.OracleDate>    (dt => Format(dt.Value)),
 			//VF<Oracle.ManagedDataAccess.Types.OracleDate>    (dt => Format(dt.Value)),
-			//VF               <MySql.Data.Types.MySqlDateTime>(dt => Format(dt.Value)),
 			//VF                   <NpgsqlTypes.NpgsqlDateTime>(dt => Format((DateTime)dt)),
 			//VF                <IBM.Data.DB2Types.DB2DateTime>(dt => Format(dt.Value)),
 			//VF                <IBM.Data.DB2Types.DB2Date>    (dt => Format(dt.Value)),
@@ -358,9 +352,6 @@ namespace LinqToDB.LINQPad
 
 						case "Sap.Data.Hana.HanaDecimal":
 							return GenerateNumberFormatter(type, typeof(decimal), true, p => Expression.Call(p, type.GetMethod("ToDecimal")));
-
-						case "MySql.Data.Types.MySqlDecimal":
-							return GenerateNumberFormatter(type, typeof(decimal), true, p => Expression.PropertyOrField(p, "Value"));
 					}
 				}
 				catch (Exception)
@@ -386,8 +377,6 @@ namespace LinqToDB.LINQPad
 
 			//NF<Sybase.Data.AseClient.AseDecimal, Double>    (value => v => v + value.ToDouble(),       v => n => v / n),
 			//NF<Sap.Data.Hana.HanaDecimal,        Decimal>   (value => v => v + value.ToDecimal(),      v => n => v / n),
-
-			//NF<MySql.Data.Types.MySqlDecimal,Decimal>       (value => v => v + value.Value,            v => n => v / n),
 		}
 
 		static XElement FormatValue(Total total, object? value)
