@@ -23,6 +23,8 @@ namespace LinqToDB.LINQPad
 #if !NETCORE
 			ConfigureRedirects();
 			SapHanaSPS04Fixes();
+#else
+			RegisterSqlCEFactory();
 #endif
 		}
 
@@ -248,6 +250,20 @@ namespace LinqToDB.LINQPad
 				domainManagerField.SetValue(domain, manager);
 			}
 			catch { /* ne shmagla */ }
+		}
+#else
+		static void RegisterSqlCEFactory()
+		{
+			try
+			{
+				// default install pathes. Hardcoded for now as hardly anyone will need other location in near future
+				var pathx64 = @"c:\Program Files\Microsoft SQL Server Compact Edition\v4.0\Private\System.Data.SqlServerCe.dll";
+				var pathx86 = @"c:\Program Files (x86)\Microsoft SQL Server Compact Edition\v4.0\Private\System.Data.SqlServerCe.dll";
+				var path = IntPtr.Size == 4 ? pathx86 : pathx64;
+				var assembly = Assembly.LoadFrom(path);
+				DbProviderFactories.RegisterFactory("System.Data.SqlServerCe.4.0", assembly.GetType("System.Data.SqlServerCe.SqlCeProviderFactory"));
+			}
+			catch { }
 		}
 #endif
 	}
