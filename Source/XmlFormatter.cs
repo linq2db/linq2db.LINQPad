@@ -179,8 +179,7 @@ namespace LinqToDB.LINQPad
 			return 
 				DynamicCheckForNull("Oracle.DataAccess.Types.INullable",        type, value, ref isNull) ||
 				DynamicCheckForNull("Oracle.ManagedDataAccess.Types.INullable", type, value, ref isNull) ||
-				DynamicCheckForNull("IBM.Data.DB2Types.INullable",              type, value, ref isNull) ||
-				DynamicCheckForNull("Sybase.Data.AseClient.AseDecimal",         type, value, ref isNull);
+				DynamicCheckForNull("IBM.Data.DB2Types.INullable",              type, value, ref isNull);
 		}
 
 		static bool IsNull([NotNullWhen(false)] object? value)
@@ -323,9 +322,6 @@ namespace LinqToDB.LINQPad
 						case "IBM.Data.DB2Types.DB2Real":
 							return GenerateNumberFormatter(type, typeof(double), true, p => Expression.PropertyOrField(p, "Value"));
 
-						case "Sybase.Data.AseClient.AseDecimal":
-							return GenerateNumberFormatter(type, typeof(double), true, p => Expression.Call(p, type.GetMethod("ToDouble")));
-
 						case "Sap.Data.Hana.HanaDecimal":
 							return GenerateNumberFormatter(type, typeof(decimal), true, p => Expression.Call(p, type.GetMethod("ToDecimal")));
 					}
@@ -351,7 +347,6 @@ namespace LinqToDB.LINQPad
 			//NF<IBM.Data.DB2Types.DB2Double,      Double>    (value => v => v + value.Value,            v => n => v / n),
 			//NF<IBM.Data.DB2Types.DB2Real,        Double>    (value => v => v + value.Value,            v => n => v / n),
 
-			//NF<Sybase.Data.AseClient.AseDecimal, Double>    (value => v => v + value.ToDouble(),       v => n => v / n),
 			//NF<Sap.Data.Hana.HanaDecimal,        Decimal>   (value => v => v + value.ToDecimal(),      v => n => v / n),
 		}
 

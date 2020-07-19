@@ -34,6 +34,7 @@
 
 		<PackageReference Include="FirebirdSql.Data.FirebirdClient" Version="7.5.0" />
 		<PackageReference Include="MySqlConnector" Version="0.69.7" />
+		<PackageReference Include="AdoNetCore.AseClient" Version="0.18.0" />
 
 	  <!--<PackageReference Include="System.Data.SQLite.Core" Version="1.0.112.2" />-->
 	</ItemGroup>
