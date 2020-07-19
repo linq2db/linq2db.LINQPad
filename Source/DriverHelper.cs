@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Buffers;
 using System.Data.Common;
 using System.Diagnostics;
@@ -25,6 +26,7 @@ namespace LinqToDB.LINQPad
 			SapHanaSPS04Fixes();
 #else
 			RegisterSqlCEFactory();
+			RegisterSapHanaFactory();
 #endif
 		}
 
@@ -262,6 +264,25 @@ namespace LinqToDB.LINQPad
 				var path = IntPtr.Size == 4 ? pathx86 : pathx64;
 				var assembly = Assembly.LoadFrom(path);
 				DbProviderFactories.RegisterFactory("System.Data.SqlServerCe.4.0", assembly.GetType("System.Data.SqlServerCe.SqlCeProviderFactory"));
+			}
+			catch { }
+		}
+		
+		static void RegisterSapHanaFactory()
+		{
+			try
+			{
+				// woo-hoo, hardcoded pathes! default install location on x64 system
+				var srcPath = @"c:\Program Files (x86)\sap\hdbclient\dotnetcore\v2.1\Sap.Data.Hana.Core.v2.1.dll";
+				var targetPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory!, Path.GetFileName(srcPath));
+				if (File.Exists(srcPath))
+				{
+					// original path contains spaces which breaks broken native dlls discovery logic in SAP provider
+					// if you run tests from path with spaces - it will not help you
+					File.Copy(srcPath, targetPath, true);
+					var sapHanaAssembly = Assembly.LoadFrom(targetPath);
+					DbProviderFactories.RegisterFactory("Sap.Data.Hana", sapHanaAssembly.GetType("Sap.Data.Hana.HanaFactory"));
+				}
 			}
 			catch { }
 		}
