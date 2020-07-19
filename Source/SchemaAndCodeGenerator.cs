@@ -95,6 +95,7 @@ namespace LinqToDB.LINQPad
 				.AppendLine("using LinqToDB.Common;")
 				.AppendLine("using LinqToDB.Data;")
 				.AppendLine("using LinqToDB.Mapping;")
+				.AppendLine("using System.Net;")
 				.AppendLine("using System.Net.NetworkInformation;")
 				;
 
@@ -131,15 +132,13 @@ namespace LinqToDB.LINQPad
 				;
 
 			if (ProviderName == LinqToDB.ProviderName.PostgreSQL)
-			{
 				PreprocessPostgreSQLSchema();
-			}
 
 			var schemas =
 			(
 				from t in
 					(
-						from t in _schema.Tables
+						from t in _schema.Tables.Where(t => !t.IsProcedureResult)
 						select new { t.IsDefaultSchema, SchemaName = t.SchemaName.IsNullOrEmpty() ? null : t.SchemaName, Table = t, Procedure = (ProcedureSchema?)null }
 					)
 					.Union
@@ -167,25 +166,25 @@ namespace LinqToDB.LINQPad
 			{
 				if (s.Key.IsDefaultSchema)
 				{
-					hasDefaultSchema  = true;
-					defaultSchemaName = defaultSchemaName ?? s.Key.SchemaName;
+					hasDefaultSchema    = true;
+					defaultSchemaName ??= s.Key.SchemaName;
 				}
 				else
 				{
 					var name = s.Key.SchemaName.IsNullOrEmpty() ? "empty" : s.Key.SchemaName;
-					nonDefaultSchemas.Add(name, new ExplorerItem(name, ExplorerItemKind.Schema, ExplorerIcon.Schema));
+					nonDefaultSchemas.Add(name, new ExplorerItem(name, ExplorerItemKind.Schema, ExplorerIcon.Schema) { Children = new List<ExplorerItem>() });
 				}
 			}
 
 			var useSchemaNode = nonDefaultSchemas.Count > 1 || nonDefaultSchemas.Count == 1 && hasDefaultSchema;
-			var defaultSchema = useSchemaNode ? new ExplorerItem(defaultSchemaName ?? "(default)", ExplorerItemKind.Schema, ExplorerIcon.Schema) : null;
+			var defaultSchema = useSchemaNode ? new ExplorerItem(defaultSchemaName ?? "(default)", ExplorerItemKind.Schema, ExplorerIcon.Schema) { Children = new List<ExplorerItem>() } : null;
 
 			foreach (var s in schemas)
 			{
 				var items = new List<ExplorerItem>();
 
-				if (s.Tables.Any(t => !t.IsView && !t.IsProcedureResult))
-					items.Add(GetTables("Tables", ExplorerIcon.Table, s.Tables.Where(t => !t.IsView && !t.IsProcedureResult)));
+				if (s.Tables.Any(t => !t.IsView))
+					items.Add(GetTables("Tables", ExplorerIcon.Table, s.Tables.Where(t => !t.IsView)));
 
 				if (s.Tables.Any(t => t.IsView))
 					items.Add(GetTables("Views", ExplorerIcon.View, s.Tables.Where(t => t.IsView)));
@@ -433,7 +432,7 @@ namespace LinqToDB.LINQPad
 		ExplorerItem GetColumnItem(ColumnSchema column)
 		{
 			var memberType = UseProviderSpecificTypes ? (column.ProviderSpecificType ?? column.MemberType) : column.MemberType;
-			var sqlName    = (string)_sqlBuilder!.ConvertInline(column.ColumnName, ConvertType.NameToQueryField);
+			var sqlName    = _sqlBuilder!.ConvertInline(column.ColumnName ?? "unspecified", ConvertType.NameToQueryField);
 
 			return new ExplorerItem(
 				column.MemberName,

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
@@ -227,6 +228,10 @@ namespace LinqToDB.LINQPad
 					return typeof(ValueTask).Assembly;
 				if (requestedAssembly.Name == "System.Runtime.CompilerServices.Unsafe")
 					return typeof(Unsafe).Assembly;
+				if (requestedAssembly.Name == "System.Memory")
+					return typeof(Span<>).Assembly;
+				if (requestedAssembly.Name == "System.Buffers")
+					return typeof(ArrayPool<>).Assembly;
 
 				return null;
 			};

@@ -174,34 +174,13 @@ namespace LinqToDB.LINQPad
 			return true;
 		}
 
-		static bool DynamicCheckForNull(string baseType, Type type, object value, ref bool isNull, Func<Type, object, bool> checker)
-		{
-			var baseTypeType = Type.GetType(baseType, false);
-
-			if (baseTypeType == null || !baseTypeType.IsSameOrParentOf(type))
-				return false;
-
-			isNull = checker(baseTypeType, value);
-			return true;
-		}
-
-
-		static bool DynamicCheckNpgsqlDateTime(Type type, object value, ref bool isNull)
-		{
-			//value is NpgsqlTypes.NpgsqlDateTime       && ((NpgsqlTypes.NpgsqlDateTime)value).Kind == DateTimeKind.Unspecified ||
-
-			return DynamicCheckForNull("NpgsqlTypes.NpgsqlDateTime", type, value, ref isNull,
-				(bt, o) => (DateTimeKind) bt.GetProperty("Kind")!.GetValue(value)! == DateTimeKind.Unspecified);
-		}
-
 		static bool DynamicCheckForNull(Type type, object value, ref bool isNull)
 		{
 			return 
 				DynamicCheckForNull("Oracle.DataAccess.Types.INullable",        type, value, ref isNull) ||
 				DynamicCheckForNull("Oracle.ManagedDataAccess.Types.INullable", type, value, ref isNull) ||
 				DynamicCheckForNull("IBM.Data.DB2Types.INullable",              type, value, ref isNull) ||
-				DynamicCheckForNull("Sybase.Data.AseClient.AseDecimal",         type, value, ref isNull) ||
-				DynamicCheckNpgsqlDateTime(                                     type, value, ref isNull);
+				DynamicCheckForNull("Sybase.Data.AseClient.AseDecimal",         type, value, ref isNull);
 		}
 
 		static bool IsNull([NotNullWhen(false)] object? value)
@@ -303,8 +282,6 @@ namespace LinqToDB.LINQPad
 					case "IBM.Data.DB2Types.DB2Date":
 					case "IBM.Data.DB2Types.DB2Blob":
 						return GenerateValueFormatter(type, dt => Expression.PropertyOrField(dt, "Value"));
-					case "NpgsqlTypes.NpgsqlDateTime":
-						return GenerateValueFormatter(type, dt => Expression.Convert(dt, typeof(DateTime)));
 				}
 
 				return null;
@@ -314,7 +291,6 @@ namespace LinqToDB.LINQPad
 //
 			//VF       <Oracle.DataAccess.Types.OracleDate>    (dt => Format(dt.Value)),
 			//VF<Oracle.ManagedDataAccess.Types.OracleDate>    (dt => Format(dt.Value)),
-			//VF                   <NpgsqlTypes.NpgsqlDateTime>(dt => Format((DateTime)dt)),
 			//VF                <IBM.Data.DB2Types.DB2DateTime>(dt => Format(dt.Value)),
 			//VF                <IBM.Data.DB2Types.DB2Date>    (dt => Format(dt.Value)),
 

@@ -4,6 +4,7 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Windows;
@@ -51,8 +52,12 @@ namespace LinqToDB.LINQPad
 				var references = new List<MetadataReference>
 				{
 #if NETCORE
-// .net core returns reference to System.Private.Corelib, which is not what we need
+// .net core returns reference to System.Private.Corelib, which is not what we need for object and List<T>
 					MetadataReference.CreateFromFile(Path.Combine(Path.GetDirectoryName(typeof(object).Assembly.Location)!, "System.Runtime.dll")),
+					MetadataReference.CreateFromFile(Path.Combine(Path.GetDirectoryName(typeof(object).Assembly.Location)!, "System.Collections.dll")),
+
+					MetadataReference.CreateFromFile(typeof(IPAddress).            Assembly.Location),
+					MetadataReference.CreateFromFile(typeof(System.Linq.Expressions.Expression).Assembly.Location),
 #endif
 					MetadataReference.CreateFromFile(typeof(object).               Assembly.Location),
 					MetadataReference.CreateFromFile(typeof(Enumerable).           Assembly.Location),
@@ -114,7 +119,6 @@ namespace LinqToDB.LINQPad
 
 		public override IEnumerable<string> GetAssembliesToAdd(IConnectionInfo cxInfo)
 		{
-			yield return typeof(IDbConnection).        Assembly.Location;
 			yield return typeof(DataConnection).       Assembly.Location;
 			yield return typeof(LINQPadDataConnection).Assembly.Location;
 
@@ -132,7 +136,7 @@ namespace LinqToDB.LINQPad
 			{
 				"LinqToDB",
 				"LinqToDB.Data",
-				"LinqToDB.Mapping",
+				"LinqToDB.Mapping"
 			};
 		}
 

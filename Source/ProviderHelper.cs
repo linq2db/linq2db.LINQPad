@@ -41,6 +41,7 @@ namespace LinqToDB.LINQPad
 			AddDataProvider(new DynamicProviderRecord(ProviderName.AccessOdbc,     "Microsoft Access (ODBC)",                 "System.Data.Odbc.OdbcConnection"));
 			AddDataProvider(new DynamicProviderRecord(ProviderName.Firebird,       "Firebird",                        "FirebirdSql.Data.FirebirdClient.FbConnection"));
 			AddDataProvider(new DynamicProviderRecord(ProviderName.MySqlConnector, "MySql",                           "MySql.Data.MySqlClient.MySqlConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.PostgreSQL,    "PostgreSQL", "Npgsql.NpgsqlConnection"));
 
 			//AddDataProvider(new DynamicProviderRecord(ProviderName.DB2LUW,        "DB2 for Linux, UNIX and Windows", "IBM.Data.DB2.DB2Connection"));
 			//AddDataProvider(new DynamicProviderRecord(ProviderName.DB2zOS,        "DB2 for z/OS",                    "IBM.Data.DB2.DB2Connection, IBM.Data.DB2"));
@@ -52,7 +53,6 @@ namespace LinqToDB.LINQPad
 			//AddDataProvider(new DynamicProviderRecord(ProviderName.Sybase,        "SAP Sybase ASE",                  "IBM.Data.Informix.IfxConnection"));
 			//AddDataProvider(new DynamicProviderRecord(ProviderName.SapHana,       "SAP HANA",                        "Sap.Data.Hana.HanaConnection"));
 
-			//AddDataProvider(new DynamicProviderRecord(ProviderName.PostgreSQL,    "PostgreSQL", "Npgsql.NpgsqlConnection"));
 
 			//AddDataProvider(
 			//	new DynamicProviderRecord(
