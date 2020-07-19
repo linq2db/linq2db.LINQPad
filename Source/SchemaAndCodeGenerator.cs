@@ -139,7 +139,7 @@ namespace LinqToDB.LINQPad
 			(
 				from t in
 					(
-						from t in _schema.Tables.Where(t => !t.IsProcedureResult)
+						from t in _schema.Tables.Where(t => !t.IsProcedureResult && t.Columns.Count > 0)
 						select new { t.IsDefaultSchema, SchemaName = t.SchemaName.IsNullOrEmpty() ? null : t.SchemaName, Table = t, Procedure = (ProcedureSchema?)null }
 					)
 					.Union
@@ -326,6 +326,14 @@ namespace LinqToDB.LINQPad
 				var inputParameters      = p.Parameters.Where(pp => pp.IsIn)                            .ToList();
 				var outputParameters     = p.Parameters.Where(pp => pp.IsOut || pp.IsResult)            .ToList();
 				var inOrOutputParameters = p.Parameters.Where(pp => pp.IsIn  || pp.IsOut || pp.IsResult).ToList();
+
+				if (ProviderName == LinqToDB.ProviderName.AccessOdbc)
+				{
+					// Access ODBC has special CALL syntax
+					// also name shouldn't be escaped with []
+					var paramTokens = string.Join(", ", Enumerable.Range(0, inputParameters.Count).Select(_ => "?"));
+					spName          = CSharpTools.ToStringLiteral($"{{ CALL {p.ProcedureName}({paramTokens}) }}");
+				}
 
 				spName += inOrOutputParameters.Count == 0 ? ");" : ",";
 

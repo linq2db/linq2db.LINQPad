@@ -9,6 +9,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Xml;
 using System.Xml.Linq;
 using LINQPad;
 using LinqToDB.Extensions;
@@ -423,6 +424,25 @@ namespace LinqToDB.LINQPad
 				: dt.ToString("yyyy-MM-dd HH:mm:ss");
 		}
 
+		static string Format(char chr)
+		{
+			if (!XmlConvert.IsXmlChar(chr) && !char.IsHighSurrogate(chr) && !char.IsLowSurrogate(chr))
+				return $"\\u{((short)chr):X4}";
+			else
+				return chr.ToString();
+		}
+
+		static string Format(string str)
+		{
+			var sb = new StringBuilder();
+
+			// encode invalid characters as C# escape sequence
+			foreach (var chr in str)
+				sb.Append(Format(chr));
+
+			return sb.ToString();
+		}
+
 		static string Format(byte[] value)
 		{
 			var sb = new StringBuilder($" Len:{value.Length} ");
@@ -471,6 +491,8 @@ namespace LinqToDB.LINQPad
 
 		static readonly ConcurrentDictionary<Type,ValueFormatter?> _valueFormatters = new ConcurrentDictionary<Type, ValueFormatter?>(new[]
 		{
+			VF<char>       (      Format),
+			VF<string>     (      Format),
 			VF<DateTime>   (      Format),
 			VF<SqlDateTime>(dt => Format(dt.Value)),
 			VF<byte[]>     (Format),
