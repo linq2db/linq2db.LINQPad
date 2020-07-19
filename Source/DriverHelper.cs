@@ -2,29 +2,58 @@
 using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
-
 using CodeJam.Strings;
 using CodeJam.Xml;
-
-using LinqToDB.Data;
-
 using LINQPad.Extensibility.DataContext;
-using System.Reflection;
-using System.IO;
+using LinqToDB.Data;
 
 namespace LinqToDB.LINQPad
 {
 	static class DriverHelper
 	{
+		public const string Author = "Igor Tkachev";
+
+		public static void Init()
+		{
+#if NETCORE
+			System.Runtime.Loader.AssemblyLoadContext.Default.Resolving += (context, name) =>
+			{
+				Debugger.Launch();
+				return AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName == name.FullName).FirstOrDefault();
+			};
+#endif
+
+			ConfigureRedirects();
+#if !NETCORE
+			SapHanaSPS04Fixes();
+#endif
+		}
+
+		public static string GetConnectionDescription(IConnectionInfo cxInfo)
+		{
+			var providerName = (string?)cxInfo.DriverData.Element("providerName");
+			var dbInfo = cxInfo.DatabaseInfo;
+
+			return $"[{providerName}] {dbInfo.Server}\\{dbInfo.Database} (v.{dbInfo.DbVersion})";
+		}
+
+		public static void ClearConnectionPools(IConnectionInfo cxInfo)
+		{
+			//using (var db = new LINQPadDataConnection(cxInfo))
+			//	if (db.Connection is SqlConnection connection)
+			//		SqlConnection.ClearPool(connection);
+		}
+
 		#region ShowConnectionDialog
 
-		public static bool ShowConnectionDialog(DataContextDriver driver, IConnectionInfo cxInfo, bool isNewConnection, bool isDynamic)
+		public static bool ShowConnectionDialog(IConnectionInfo cxInfo, bool isNewConnection, bool isDynamic)
 		{
 			var model        = new ConnectionViewModel();
 			var providerName = isNewConnection
 				? ProviderName.SqlServer
-				: (string)cxInfo.DriverData.Element("providerName");
+				: (string?)cxInfo.DriverData.Element("providerName");
 
 			if (providerName != null)
 				model.SelectedProvider = model.Providers.FirstOrDefault(p => p.Name == providerName);
@@ -42,7 +71,7 @@ namespace LinqToDB.LINQPad
 			model.Capitalize               = !cxInfo.DynamicSchemaOptions.NoCapitalization;
 			model.IncludeRoutines          = cxInfo.DriverData.Element("excludeRoutines")?.Value.ToLower() != "true";
 			model.IncludeFKs               = cxInfo.DriverData.Element("excludeFKs")?.Value.ToLower()      != "true";
-			model.ConnectionString         = cxInfo.DatabaseInfo.CustomCxString.IsNullOrWhiteSpace() ? (string)cxInfo.DriverData.Element("connectionString") : cxInfo.DatabaseInfo.CustomCxString;
+			model.ConnectionString         = cxInfo.DatabaseInfo.CustomCxString.IsNullOrWhiteSpace() ? (string?)cxInfo.DriverData.Element("connectionString") : cxInfo.DatabaseInfo.CustomCxString;
 			model.IncludeSchemas           = cxInfo.DriverData.Element("includeSchemas")          ?.Value;
 			model.ExcludeSchemas           = cxInfo.DriverData.Element("excludeSchemas")          ?.Value;
 			model.IncludeCatalogs          = cxInfo.DriverData.Element("includeCatalogs")         ?.Value;
@@ -55,7 +84,7 @@ namespace LinqToDB.LINQPad
 
 			model.OptimizeJoins            = cxInfo.DriverData.Element("optimizeJoins") == null || cxInfo.DriverData.Element("optimizeJoins")?.Value.ToLower() == "true";
 
-			if (ConnectionDialog.Show(model, isDynamic ? (Func<ConnectionViewModel,Exception>)TestConnection : null))
+			if (ConnectionDialog.Show(model, isDynamic ? (Func<ConnectionViewModel?, Exception?>?)TestConnection : null))
 			{
 				providerName = model.SelectedProvider?.Name;
 
@@ -74,21 +103,23 @@ namespace LinqToDB.LINQPad
 				cxInfo.DriverData.SetElementValue("useCustomFormatter",       model.UseCustomFormatter       ? "true" : null);
 				cxInfo.DriverData.SetElementValue("commandTimeout",           model.CommandTimeout.ToString());
 
-				var providerInfo = ProviderHelper.GetProvider(providerName);
-				cxInfo.DatabaseInfo.Provider = providerInfo.GetConnectionNamespace();
-
 				try
 				{
-					var provider = ProviderHelper.GetProvider(model.SelectedProvider.Name).GetDataProvider(model.ConnectionString);
-
-					using (var db = new DataConnection(provider, model.ConnectionString))
+					if (model.ConnectionString != null)
 					{
-						db.CommandTimeout = model.CommandTimeout;
+						var providerInfo = ProviderHelper.GetProvider(providerName);
+						cxInfo.DatabaseInfo.Provider = providerInfo.GetConnectionNamespace();
+						var provider = providerInfo.GetDataProvider(model.ConnectionString);
 
-						cxInfo.DatabaseInfo.Provider  = db.Connection.GetType().Namespace;
-						cxInfo.DatabaseInfo.Server    = ((DbConnection)db.Connection).DataSource;
-						cxInfo.DatabaseInfo.Database  = db.Connection.Database;
-						cxInfo.DatabaseInfo.DbVersion = ((DbConnection)db.Connection).ServerVersion;
+						using (var db = new DataConnection(provider, model.ConnectionString))
+						{
+							db.CommandTimeout = model.CommandTimeout;
+
+							cxInfo.DatabaseInfo.Provider  = db.Connection.GetType().Namespace;
+							cxInfo.DatabaseInfo.Server    = ((DbConnection)db.Connection).DataSource;
+							cxInfo.DatabaseInfo.Database  = db.Connection.Database;
+							cxInfo.DatabaseInfo.DbVersion = ((DbConnection)db.Connection).ServerVersion;
+						}
 					}
 				}
 				catch
@@ -115,14 +146,14 @@ namespace LinqToDB.LINQPad
 			return false;
 		}
 
-		static Exception TestConnection(ConnectionViewModel model)
+		static Exception? TestConnection(ConnectionViewModel? model)
 		{
 			if (model == null)
 				return null;
 
 			try
 			{
-				if (model.SelectedProvider != null)
+				if (model.SelectedProvider != null && model.ConnectionString != null)
 				{
 					var provider = ProviderHelper.GetProvider(model.SelectedProvider.Name).GetDataProvider(model.ConnectionString);
 
@@ -180,22 +211,29 @@ namespace LinqToDB.LINQPad
 			};
 		}
 
-		public static void ConfigureRedirects()
+		static void ConfigureRedirects()
 		{
+#if NETCORE
+			//System.Runtime.Loader.AssemblyLoadContext.Default.Resolving += (context, name) =>
+			//{
+			//	return AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName == name.FullName).FirstOrDefault();
+			//};
+#else
 			AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
 			{
-				var requestedAssembly = new AssemblyName(args.Name);
+				var requestedAssembly = new AssemblyName(args.Name!);
 				if (requestedAssembly.Name != "linq2db")
 					return null;
 
 				return typeof(DataContext).Assembly;
 			};
+#endif
 		}
 
 #if !NETCORE
-		public static void SapHanaSPS04Fixes()
+		static void SapHanaSPS04Fixes()
 		{
-			// recent SAP HANA provider (SPS04) uses Assembly.GetEntryAssembly() calls during native dlls discovery, which
+			// recent SAP HANA provider (SPS04 040, fixed in 045) uses Assembly.GetEntryAssembly() calls during native dlls discovery, which
 			// leads to NRE as it returns null under NETFX, so we need to fake this method result to unblock HANA testing
 			// https://github.com/microsoft/vstest/issues/1834
 			// https://dejanstojanovic.net/aspnet/2015/january/set-entry-assembly-in-unit-testing-methods/

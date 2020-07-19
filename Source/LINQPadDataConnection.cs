@@ -11,12 +11,7 @@ namespace LinqToDB.LINQPad
 	{
 		static LINQPadDataConnection()
 		{
-			AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
-			{
-//				Console.WriteLine(args.Name);
-//				Debug.WriteLine(args.Name);
-				return null;
-			};
+			AppDomain.CurrentDomain.AssemblyResolve += (sender, args) => null;
 		}
 
 		public LINQPadDataConnection()
@@ -46,7 +41,6 @@ namespace LinqToDB.LINQPad
 		static void Init()
 		{
 			TurnTraceSwitchOn();
-			//FirebirdSqlBuilder.IdentifierQuoteMode = FirebirdIdentifierQuoteMode.Auto;
 			FirebirdConfiguration.IdentifierQuoteMode = FirebirdIdentifierQuoteMode.Auto;
 		}
 	}

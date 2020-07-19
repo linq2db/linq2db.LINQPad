@@ -1,15 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27428.2043
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30309.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{48EE7991-A24D-4512-BB48-E947A57E02EA}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
 		appveyor.yml = appveyor.yml
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "linq2db.LINQPad", "Source\linq2db.LINQPad.csproj", "{73352DC5-D33E-4BE6-A787-6F91107B3D7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "linq2db.LINQPad", "Source\linq2db.LINQPad.csproj", "{73352DC5-D33E-4BE6-A787-6F91107B3D7C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{BCE72B3A-E579-4C8E-9AF3-9479E3E1B088}"
+	ProjectSection(SolutionItems) = preProject
+		LinqToDB.Templates\NotifyPropertyChanged.ttinclude = LinqToDB.Templates\NotifyPropertyChanged.ttinclude
+		LinqToDB.Templates\T4Model.ttinclude = LinqToDB.Templates\T4Model.ttinclude
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +35,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{73352DC5-D33E-4BE6-A787-6F91107B3D7C} = {48EE7991-A24D-4512-BB48-E947A57E02EA}
+		{BCE72B3A-E579-4C8E-9AF3-9479E3E1B088} = {48EE7991-A24D-4512-BB48-E947A57E02EA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {17946F59-D105-4BD7-8C31-5B14CB8A4FE2}

@@ -22,16 +22,16 @@ namespace LinqToDB.LINQPad
 		{
 			_cxInfo = cxInfo;
 
-			UseProviderSpecificTypes = ((string)_cxInfo.DriverData.Element("useProviderSpecificTypes"))?.ToLower() == "true";
-			NormalizeJoins           = ((string)_cxInfo.DriverData.Element("normalizeNames"))          ?.ToLower() == "true";
-			AllowMultipleQuery       = ((string)_cxInfo.DriverData.Element("allowMultipleQuery"))      ?.ToLower() == "true";
-			ProviderName             =  (string)_cxInfo.DriverData.Element("providerName");
+			UseProviderSpecificTypes = ((string?)_cxInfo.DriverData.Element("useProviderSpecificTypes"))?.ToLower() == "true";
+			NormalizeJoins           = ((string?)_cxInfo.DriverData.Element("normalizeNames"))          ?.ToLower() == "true";
+			AllowMultipleQuery       = ((string?)_cxInfo.DriverData.Element("allowMultipleQuery"))      ?.ToLower() == "true";
+			ProviderName             =  (string?)_cxInfo.DriverData.Element("providerName");
 			CommandTimeout           = _cxInfo.DriverData.ElementValueOrDefault("commandTimeout", str => str.ToInt32() ?? 0, 0);
 		}
 
 		public readonly int          CommandTimeout;
 		public readonly bool         UseProviderSpecificTypes;
-		public readonly string       ProviderName;
+		public readonly string?      ProviderName;
 		public readonly bool         NormalizeJoins;
 		public readonly bool         AllowMultipleQuery;
 		public readonly List<string> References = new List<string>();
@@ -39,22 +39,21 @@ namespace LinqToDB.LINQPad
 		readonly IConnectionInfo _cxInfo;
 		readonly StringBuilder   _classCode = new StringBuilder();
 
-		DatabaseSchema _schema;
-		IDataProvider  _dataProvider;
-		ISqlBuilder    _sqlBuilder;
+		DatabaseSchema? _schema;
+		IDataProvider?  _dataProvider;
+		ISqlBuilder?    _sqlBuilder;
 
 		public readonly StringBuilder Code = new StringBuilder();
 
-		private HashSet<string> _existingMemberNames = new HashSet<string>(StringComparer.InvariantCulture);
+		private readonly HashSet<string> _existingMemberNames = new HashSet<string>(StringComparer.InvariantCulture);
 
 		public IEnumerable<ExplorerItem> GetItemsAndCode(string nameSpace, string typeName)
 		{
 			typeName = ConvertToCompilable(typeName, false);
 
 			var connectionString = _cxInfo.DatabaseInfo.CustomCxString;
-
-			var pii = ProviderHelper.GetProvider(ProviderName);
-				var provider = pii.GetDataProvider(connectionString);
+			var providerInfo     = ProviderHelper.GetProvider(ProviderName);
+			var provider         = providerInfo.GetDataProvider(connectionString);
 
 			using (var db = new DataConnection(provider, connectionString))
 			{
@@ -65,20 +64,20 @@ namespace LinqToDB.LINQPad
 
 				var options = new GetSchemaOptions();
 
-				var includeSchemas = (string)_cxInfo.DriverData.Element("includeSchemas");
+				var includeSchemas = (string?)_cxInfo.DriverData.Element("includeSchemas");
 				if (includeSchemas != null) options.IncludedSchemas = includeSchemas.Split(',', ';');
 
-				var excludeSchemas = (string)_cxInfo.DriverData.Element("excludeSchemas");
+				var excludeSchemas = (string?)_cxInfo.DriverData.Element("excludeSchemas");
 				if (excludeSchemas != null) options.ExcludedSchemas = excludeSchemas.Split(',', ';');
 
-				var includeCatalogs = (string)_cxInfo.DriverData.Element("includeCatalogs");
+				var includeCatalogs = (string?)_cxInfo.DriverData.Element("includeCatalogs");
 				if (includeCatalogs != null) options.IncludedCatalogs = includeCatalogs.Split(',', ';');
 
-				var excludeCatalogs = (string)_cxInfo.DriverData.Element("excludeCatalogs");
+				var excludeCatalogs = (string?)_cxInfo.DriverData.Element("excludeCatalogs");
 				if (excludeCatalogs != null) options.ExcludedCatalogs = excludeCatalogs.Split(',', ';');
 
-				options.GetProcedures  = (string)_cxInfo.DriverData.Element("excludeRoutines") != "true";
-				options.GetForeignKeys = (string)_cxInfo.DriverData.Element("excludeFKs")      != "true";
+				options.GetProcedures  = (string?)_cxInfo.DriverData.Element("excludeRoutines") != "true";
+				options.GetForeignKeys = (string?)_cxInfo.DriverData.Element("excludeFKs")      != "true";
 
 				_schema = _dataProvider.GetSchemaProvider().GetSchema(db, options);
 
@@ -107,7 +106,6 @@ namespace LinqToDB.LINQPad
 			if (_schema.ProviderSpecificTypeNamespace.NotNullNorWhiteSpace())
 				Code.AppendLine($"using {_schema.ProviderSpecificTypeNamespace};");
 
-			var providerInfo = ProviderHelper.GetProvider(ProviderName);
 			References.AddRange(providerInfo.GetAssemblyLocation(connectionString));
 			if (providerInfo.Provider.AdditionalNamespaces != null)
 				foreach (var ns in providerInfo.Provider.AdditionalNamespaces)
@@ -142,12 +140,12 @@ namespace LinqToDB.LINQPad
 				from t in
 					(
 						from t in _schema.Tables
-						select new { t.IsDefaultSchema, t.SchemaName, Table = t, Procedure = (ProcedureSchema)null }
+						select new { t.IsDefaultSchema, t.SchemaName, Table = t, Procedure = (ProcedureSchema?)null }
 					)
 					.Union
 					(
 						from p in _schema.Procedures
-						select new { p.IsDefaultSchema, p.SchemaName, Table = (TableSchema)null, Procedure = p }
+						select new { p.IsDefaultSchema, p.SchemaName, Table = (TableSchema?)null, Procedure = p }
 					)
 				group t by new { t.IsDefaultSchema, t.SchemaName } into gr
 				orderby !gr.Key.IsDefaultSchema, gr.Key.SchemaName
@@ -172,7 +170,7 @@ namespace LinqToDB.LINQPad
 
 				if (!_cxInfo.DynamicSchemaOptions.ExcludeRoutines && s.Procedures.Any(p => p.IsLoaded && !p.IsFunction))
 					items.Add(GetProcedures(
-						"Stored Procs",
+						"Stored Procedures",
 						ExplorerIcon.StoredProc,
 						s.Procedures.Where(p => p.IsLoaded && !p.IsFunction).ToList()));
 
@@ -410,7 +408,7 @@ namespace LinqToDB.LINQPad
 		ExplorerItem GetColumnItem(ColumnSchema column)
 		{
 			var memberType = UseProviderSpecificTypes ? (column.ProviderSpecificType ?? column.MemberType) : column.MemberType;
-			var sqlName    = (string)_sqlBuilder.Convert(new StringBuilder(), column.ColumnName, ConvertType.NameToQueryField).ToString();
+			var sqlName    = (string)_sqlBuilder!.ConvertInline(column.ColumnName, ConvertType.NameToQueryField);
 
 			return new ExplorerItem(
 				column.MemberName,
@@ -434,12 +432,12 @@ namespace LinqToDB.LINQPad
 				Children = procedures
 					.Select(p =>
 					{
-						var sprocSqlName = _sqlBuilder.BuildTableName(
+						var sprocSqlName = _sqlBuilder!.BuildTableName(
 							new StringBuilder(),
 							null,
 							null,
-							p.SchemaName == null ? null : _sqlBuilder.Convert(new StringBuilder(), p.SchemaName, ConvertType.NameToSchema).ToString(),
-							_sqlBuilder.Convert(new StringBuilder(), p.ProcedureName,  ConvertType.NameToQueryTable).ToString()).ToString();
+							p.SchemaName == null ? null : _sqlBuilder.ConvertInline(p.SchemaName, ConvertType.NameToSchema),
+							_sqlBuilder.ConvertInline(p.ProcedureName,  ConvertType.NameToQueryTable)).ToString();
 
 						var memberName = p.MemberName;
 
@@ -576,12 +574,12 @@ namespace LinqToDB.LINQPad
 
 						CodeTable(_classCode, t, true);
 
-						var tableSqlName = _sqlBuilder.BuildTableName(
+						var tableSqlName = _sqlBuilder!.BuildTableName(
 							new StringBuilder(),
 							null,
 							null,
-							t.SchemaName == null ? null : _sqlBuilder.Convert(new StringBuilder(), t.SchemaName, ConvertType.NameToSchema).ToString(),
-							_sqlBuilder.Convert(new StringBuilder(), t.TableName,  ConvertType.NameToQueryTable).ToString()).ToString();
+							t.SchemaName == null ? null : _sqlBuilder.ConvertInline(t.SchemaName, ConvertType.NameToSchema),
+							_sqlBuilder.ConvertInline(t.TableName!,  ConvertType.NameToQueryTable)).ToString();
 
 						//Debug.WriteLine($"Table: [{t.SchemaName}].[{t.TableName}] - ${tableSqlName}");
 
@@ -666,7 +664,7 @@ namespace LinqToDB.LINQPad
 			var typeNames          = new HashSet<string> { typeName };
 			var contextMemberNames = new HashSet<string> { typeName };
 
-			foreach (var table in _schema.Tables)
+			foreach (var table in _schema!.Tables)
 			{
 				table.TypeName = GetName(typeNames, table.TypeName);
 

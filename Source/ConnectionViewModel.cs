@@ -7,14 +7,19 @@ namespace LinqToDB.LINQPad
 	{
 		public class ProviderInfo
 		{
-			public string Name        { get; set; }
-			public string Description { get; set; }
+			public ProviderInfo(string name, string description)
+			{
+				Name        = name;
+				Description = description;
+			}
+			public string Name        { get; }
+			public string Description { get; }
 		}
 
 		public ConnectionViewModel()
 		{
 			_providers = new ObservableCollection<ProviderInfo>(
-				ProviderHelper.DynamicProviders.Select(p => new ProviderInfo { Name = p.ProviderName, Description = p.Description })
+				ProviderHelper.DynamicProviders.Select(p => new ProviderInfo(p.ProviderName, p.Description))
 					.OrderBy(s => s.Description.ToLower()));
 
 			_allowMultipleQuery = true;

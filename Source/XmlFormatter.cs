@@ -3,18 +3,17 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml.Linq;
+using LINQPad;
 using LinqToDB.Extensions;
 using LinqToDB.Linq;
 using LinqToDB.Mapping;
-using LinqToDB.SqlQuery;
-using LINQPad;
-using LINQPad.Extensibility.DataContext;
 
 namespace LinqToDB.LINQPad
 {
@@ -22,15 +21,15 @@ namespace LinqToDB.LINQPad
 	{
 		class Total
 		{
-			public object           Value;
-			public Func<int,object> GetAverage;
-			public bool             IsNumber;
+			public object?            Value;
+			public Func<int,object?>? GetAverage;
+			public bool               IsNumber;
 
-			public void Add<T>(Func<T,T> add, Func<T,Func<int,object>> avr)
+			public void Add<T>(Func<T,T> add, Func<T,Func<int,object?>> avr)
 			{
 				if (Value == null)
 				{
-					Value    = add(default(T));
+					Value    = add(default!);
 					IsNumber = true;
 				}
 				else
@@ -38,19 +37,19 @@ namespace LinqToDB.LINQPad
 					Value = add((T)Value);
 				}
 
-				GetAverage = avr((T)Value);
+				GetAverage = avr((T)Value!);
 			}
 		}
 
 		static int _id;
 
-		public static object Format(MappingSchema mappingSchema, object objectToWrite)
+		public static object? Format(MappingSchema mappingSchema, object? objectToWrite)
 		{
-			if (objectToWrite == null || objectToWrite is string || objectToWrite is XElement)
-				return objectToWrite;
-
 			if (IsNull(objectToWrite))
 				return null;
+
+			if (objectToWrite is string || objectToWrite is XElement)
+				return objectToWrite;
 
 			if (objectToWrite is SqlDecimal value)
 			{
@@ -72,7 +71,7 @@ namespace LinqToDB.LINQPad
 						{
 							MemberType = itemType,
 							MemberName = "",
-							GetValue = (Func<MappingSchema,object,object>)((ms, v) => v),
+							GetValue = (Func<MappingSchema,object,object?>)((ms, v) => v),
 							Total    = new Total(),
 						}
 					}
@@ -82,7 +81,7 @@ namespace LinqToDB.LINQPad
 						{
 							c.MemberType,
 							c.MemberName,
-							GetValue = (Func<MappingSchema,object,object>)((ms, v) => c.GetValue(v)),
+							GetValue = (Func<MappingSchema,object,object?>)((ms, v) => c.GetValue(v)),
 							Total    = new Total(),
 						})
 						.ToArray();
@@ -128,7 +127,7 @@ namespace LinqToDB.LINQPad
 								{
 									new XElement("tr", columns.Select(c =>
 										new XElement("td",
-											new XAttribute("title", c.Total.Value == null ? "Totals" : $"Total={c.Total.Value}\r\nAverage={c.Total.GetAverage(items.Count)}"),
+											new XAttribute("title", c.Total.Value == null ? "Totals" : $"Total={c.Total.Value}\r\nAverage={c.Total.GetAverage!(items.Count)}"),
 											new XAttribute("class", "columntotal"),
 											new XAttribute("style", "font-size:100%;"),
 											c.Total.Value))),
@@ -136,14 +135,6 @@ namespace LinqToDB.LINQPad
 								.Where(_ => columns.Any(c => c.Total.Value != null))
 								))));
 			}
-
-//			if (!_mappingSchema.IsScalarType(objectToWrite.GetType()))
-//			{
-//				objectToWrite = Util.RawHtml(new XElement("div", objectToWrite.GetType()));
-//				return;
-//			}
-
-			//MessageBox.Show($"{objectToWrite.GetType()}\r\n{objectToWrite}");
 
 			return objectToWrite;
 		}
@@ -168,18 +159,6 @@ namespace LinqToDB.LINQPad
 			return type.Name;
 		}
 
-		//value is Oracle.DataAccess.Types.       INullable && ((Oracle.DataAccess.Types.       INullable)value).IsNull ||
-		//value is Oracle.ManagedDataAccess.Types.INullable && ((Oracle.ManagedDataAccess.Types.INullable)value).IsNull ||
-		//value is IBM.Data.DB2Types.             INullable && ((IBM.Data.DB2Types.             INullable)value).IsNull ||
-
-		//value is NpgsqlTypes.NpgsqlDateTime       && ((NpgsqlTypes.NpgsqlDateTime)value).Kind == DateTimeKind.Unspecified ||
-
-		//value is Sybase.Data.AseClient.AseDecimal && ((Sybase.Data.AseClient.AseDecimal)value).IsNull ||
-
-		//value is MySql.Data.Types.MySqlDecimal    && ((MySql.Data.Types.MySqlDecimal) value).IsNull ||
-		//value is MySql.Data.Types.MySqlDateTime   && ((MySql.Data.Types.MySqlDateTime)value).IsNull ||
-		//value is MySql.Data.Types.MySqlGeometry   && ((MySql.Data.Types.MySqlGeometry)value).IsNull
-
 		static bool DynamicCheckForNull(string baseType, Type type, object value, ref bool isNull)
 		{
 			var baseTypeType = Type.GetType(baseType, false);
@@ -191,7 +170,7 @@ namespace LinqToDB.LINQPad
 			if (prop == null)
 				return false;
 
-			isNull = (bool) prop.GetValue(value);
+			isNull = (bool) prop.GetValue(value)!;
 			return true;
 		}
 
@@ -212,7 +191,7 @@ namespace LinqToDB.LINQPad
 			//value is NpgsqlTypes.NpgsqlDateTime       && ((NpgsqlTypes.NpgsqlDateTime)value).Kind == DateTimeKind.Unspecified ||
 
 			return DynamicCheckForNull("NpgsqlTypes.NpgsqlDateTime", type, value, ref isNull,
-				(bt, o) => (DateTimeKind) bt.GetProperty("Kind").GetValue(value) == DateTimeKind.Unspecified);
+				(bt, o) => (DateTimeKind) bt.GetProperty("Kind")!.GetValue(value)! == DateTimeKind.Unspecified);
 		}
 
 		static bool DynamicCheckForNull(Type type, object value, ref bool isNull)
@@ -228,12 +207,12 @@ namespace LinqToDB.LINQPad
 				DynamicCheckNpgsqlDateTime(                                     type, value, ref isNull);
 		}
 
-		static bool IsNull(object value)
+		static bool IsNull([NotNullWhen(false)] object? value)
 		{
 			if (value == null || value is DBNull)
 				return true;
 
-			if (value is System.Data.SqlTypes.INullable nullable)
+			if (value is INullable nullable)
 				return nullable.IsNull;
 
 			var isNull = false;
@@ -251,20 +230,20 @@ namespace LinqToDB.LINQPad
 			return true;
 		}
 
-		static bool IsValue(object value)
+		static bool IsValue(object? value)
 		{
 			if (value == null)
 				return false;
 			var type = value.GetType();
 			return
-				value is System.Data.SqlTypes.INullable ||
+				value is INullable ||
 				IsType("Oracle.DataAccess.Types.INullable", type) ||
 				IsType("Oracle.ManagedDataAccess.Types.INullable", type) ||
 				IsType("IBM.Data.DB2Types.INullable", type) ||
 				IsType("MySql.Data.Types.MySqlGeometry", type);
 		}
 
-		static NumberFormatter GenerateNumberFormatter(Type valueType, Type innerType, bool checkForNull = true, Func<ParameterExpression, Expression> convertFunc = null)
+		static NumberFormatter GenerateNumberFormatter(Type valueType, Type innerType, bool checkForNull = true, Func<ParameterExpression, Expression>? convertFunc = null)
 		{
 			//static NumberFormatter NF<T,TT>(Func<T,Func<TT,TT>> add, Func<TT,Func<int,object>> avr)
 
@@ -307,16 +286,16 @@ namespace LinqToDB.LINQPad
 			);
 
 			var formatterType = typeof(NumberFormatter<,>).MakeGenericType(valueType, innerType);
-			var formatter     = (NumberFormatter)Activator.CreateInstance(formatterType);
+			var formatter     = (NumberFormatter)Activator.CreateInstance(formatterType)!;
 
-			formatterType.GetProperty("Add")    .SetValue(formatter, addLamba.  Compile());
-			formatterType.GetProperty("Average").SetValue(formatter, avgLambda.   Compile());
-			formatterType.GetProperty("Format") .SetValue(formatter, formatExpr.Compile());
+			formatterType.GetProperty("Add")!    .SetValue(formatter, addLamba.  Compile());
+			formatterType.GetProperty("Average")!.SetValue(formatter, avgLambda.   Compile());
+			formatterType.GetProperty("Format")! .SetValue(formatter, formatExpr.Compile());
 
 			return formatter;
 		}
 
-		static ValueFormatter GetValueFormatter(Type type)
+		static ValueFormatter? GetValueFormatter(Type type)
 		{
 			var vf = _valueFormatters.GetOrAdd(type, t =>
 			{
@@ -348,7 +327,7 @@ namespace LinqToDB.LINQPad
 			//VF<IBM.Data.DB2Types.DB2Blob>(v => Format(v.Value)),
 		}
 
-		static NumberFormatter GetNumberFormatter(Type type)
+		static NumberFormatter? GetNumberFormatter(Type type)
 		{
 			var nf = _numberFormatters.GetOrAdd(type, t =>
 			{
@@ -364,24 +343,24 @@ namespace LinqToDB.LINQPad
 						case "IBM.Data.DB2Types.DB2Int16":
 						case "IBM.Data.DB2Types.DB2Int32":
 						case "IBM.Data.DB2Types.DB2Int64":
-							return GenerateNumberFormatter(type, typeof(Int64), true, p => Expression.PropertyOrField(p, "Value"));
+							return GenerateNumberFormatter(type, typeof(long), true, p => Expression.PropertyOrField(p, "Value"));
 
 						case "IBM.Data.DB2Types.DB2Decimal":
 						case "IBM.Data.DB2Types.DB2DecimalFloat":
-							return GenerateNumberFormatter(type, typeof(Decimal), true, p => Expression.PropertyOrField(p, "Value"));
+							return GenerateNumberFormatter(type, typeof(decimal), true, p => Expression.PropertyOrField(p, "Value"));
 
 						case "IBM.Data.DB2Types.DB2Double":
 						case "IBM.Data.DB2Types.DB2Real":
-							return GenerateNumberFormatter(type, typeof(Double), true, p => Expression.PropertyOrField(p, "Value"));
+							return GenerateNumberFormatter(type, typeof(double), true, p => Expression.PropertyOrField(p, "Value"));
 
 						case "Sybase.Data.AseClient.AseDecimal":
-							return GenerateNumberFormatter(type, typeof(Double), true, p => Expression.Call(p, type.GetMethod("ToDouble")));
+							return GenerateNumberFormatter(type, typeof(double), true, p => Expression.Call(p, type.GetMethod("ToDouble")));
 
 						case "Sap.Data.Hana.HanaDecimal":
-							return GenerateNumberFormatter(type, typeof(Decimal), true, p => Expression.Call(p, type.GetMethod("ToDecimal")));
+							return GenerateNumberFormatter(type, typeof(decimal), true, p => Expression.Call(p, type.GetMethod("ToDecimal")));
 
 						case "MySql.Data.Types.MySqlDecimal":
-							return GenerateNumberFormatter(type, typeof(Decimal), true, p => Expression.PropertyOrField(p, "Value"));
+							return GenerateNumberFormatter(type, typeof(decimal), true, p => Expression.PropertyOrField(p, "Value"));
 					}
 				}
 				catch (Exception)
@@ -411,7 +390,7 @@ namespace LinqToDB.LINQPad
 			//NF<MySql.Data.Types.MySqlDecimal,Decimal>       (value => v => v + value.Value,            v => n => v / n),
 		}
 
-		static XElement FormatValue(Total total, object value)
+		static XElement FormatValue(Total total, object? value)
 		{
 			try
 			{
@@ -457,7 +436,7 @@ namespace LinqToDB.LINQPad
 			}
 		}
 
-		public static object FormatValue(object value, ObjectGraphInfo info)
+		public static object FormatValue(object? value)
 		{
 			if (IsNull(value))
 				return Util.RawHtml(new XElement("span", new XAttribute("style", "text-align:center;"), new XElement("i", "null")));
@@ -469,10 +448,10 @@ namespace LinqToDB.LINQPad
 			//	return doc;
 			//}
 
-			if (_numberFormatters.TryGetValue(value.GetType(), out var nf))
+			if (_numberFormatters.TryGetValue(value.GetType(), out var nf) && nf != null)
 				return Util.RawHtml(nf.GetElement(value));
 
-			if (_valueFormatters.TryGetValue(value.GetType(), out var vf))
+			if (_valueFormatters.TryGetValue(value.GetType(), out var vf) && vf != null)
 			{
 				var style = "";
 
@@ -485,10 +464,8 @@ namespace LinqToDB.LINQPad
 					vf.FormatValue(value)));
 			}
 
-#if !NETCORE
-			if (value is Microsoft.SqlServer.Types.SqlHierarchyId)
-				return value.ToString();
-#endif
+			if (value.GetType().Name == "SqlHierarchyId")
+				return value.ToString()!;
 
 			//Debug.WriteLine($"{value.GetType()}: {value} {IsValue(value)}");
 
@@ -540,56 +517,54 @@ namespace LinqToDB.LINQPad
 				param);
 
 			var formatterType = typeof(ValueFormatter<>).MakeGenericType(type);
-			var formatter = (ValueFormatter)Activator.CreateInstance(formatterType);
+			var formatter = (ValueFormatter)Activator.CreateInstance(formatterType)!;
 
-			formatterType.GetProperty("Format").SetValue(formatter, expr.Compile());
-			formatterType.GetProperty("NoWrap").SetValue(formatter, nowrap);
+			formatterType.GetProperty("Format")!.SetValue(formatter, expr.Compile());
+			formatterType.GetProperty("NoWrap")!.SetValue(formatter, nowrap);
 
 			return formatter;
 		}
 
-		static readonly ConcurrentDictionary<Type,ValueFormatter> _valueFormatters = new ConcurrentDictionary<Type, ValueFormatter>(new[]
+		static readonly ConcurrentDictionary<Type,ValueFormatter?> _valueFormatters = new ConcurrentDictionary<Type, ValueFormatter?>(new[]
 		{
-			VF<DateTime>                        (      Format),
-			VF<System.Data.SqlTypes.SqlDateTime>(dt => Format(dt.Value)),
-			VF<byte[]>(Format),
-			VF<Guid>                            (v => v.      ToString("B").ToUpper(), font:"consolas", size:"110%"),
-			VF<System.Data.SqlTypes.SqlGuid>    (v => v.Value.ToString("B").ToUpper(), font:"consolas", size:"110%"),
+			VF<DateTime>   (      Format),
+			VF<SqlDateTime>(dt => Format(dt.Value)),
+			VF<byte[]>     (Format),
+			VF<Guid>       (v => v.      ToString("B").ToUpper(), font:"consolas", size:"110%"),
+			VF<SqlGuid>    (v => v.Value.ToString("B").ToUpper(), font:"consolas", size:"110%"),
 
 			// additional formatters are generated dynamically
 		}
-		.ToDictionary(f => f.Type));
+		.ToDictionary(f => f.Type, f => (ValueFormatter?)f));
 
-		static readonly ConcurrentDictionary<Type,NumberFormatter> _numberFormatters = new ConcurrentDictionary<Type, NumberFormatter>(new[]
+		static readonly ConcurrentDictionary<Type,NumberFormatter?> _numberFormatters = new ConcurrentDictionary<Type, NumberFormatter?>(new[]
 		{
-			NF<Int16,  Int64>                               (value => v => v + value,                  v => n => v /       n),
-			NF<Int32,  Int64>                               (value => v => v + value,                  v => n => v /       n),
-			NF<Int64,  Int64>                               (value => v => v + value,                  v => n => v /       n),
-			NF<UInt16, UInt64>                              (value => v => v + value,                  v => n => v / (uint)n),
-			NF<UInt32, UInt64>                              (value => v => v + value,                  v => n => v / (uint)n),
-			NF<UInt64, UInt64>                              (value => v => v + value,                  v => n => v / (uint)n),
-			NF<SByte,  Int32>                               (value => v => v + value,                  v => n => v /       n),
-			NF<Byte,   Int64>                               (value => v => v + value,                  v => n => v /       n),
-			NF<Decimal,Decimal>                             (value => v => v + value,                  v => n => v /       n),
-			NF<Double, Double>                              (value => v => v + value,                  v => n => v /       n),
-			NF<Single, Single>                              (value => v => v + value,                  v => n => v /       n),
+			NF<short  , long>   (value => v => v + value,                  v => n => v /       n),
+			NF<int    , long>   (value => v => v + value,                  v => n => v /       n),
+			NF<long   , long>   (value => v => v + value,                  v => n => v /       n),
+			NF<ushort , ulong>  (value => v => v + value,                  v => n => v / (uint)n),
+			NF<uint   , ulong>  (value => v => v + value,                  v => n => v / (uint)n),
+			NF<ulong  , ulong>  (value => v => v + value,                  v => n => v / (uint)n),
+			NF<sbyte  , int>    (value => v => v + value,                  v => n => v /       n),
+			NF<byte   , long>   (value => v => v + value,                  v => n => v /       n),
+			NF<decimal, decimal>(value => v => v + value,                  v => n => v /       n),
+			NF<double , double> (value => v => v + value,                  v => n => v /       n),
+			NF<float  , float>  (value => v => v + value,                  v => n => v /       n),
 
-			NF<System.Data.SqlTypes.SqlInt16,Int64>         (value => v => v + value.Value,            v => n => v / n),
-			NF<System.Data.SqlTypes.SqlInt32,Int64>         (value => v => v + value.Value,            v => n => v / n),
-			NF<System.Data.SqlTypes.SqlInt64,Int64>         (value => v => v + value.Value,            v => n => v / n),
-			NF<System.Data.SqlTypes.SqlByte, Int64>         (value => v => v + value.Value,            v => n => v / n),
-			NF<System.Data.SqlTypes.SqlDecimal>             (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
-			NF<System.Data.SqlTypes.SqlDouble>              (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
-			NF<System.Data.SqlTypes.SqlSingle>              (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
+			NF<SqlInt16,long>   (value => v => v + value.Value,            v => n => v / n),
+			NF<SqlInt32,long>   (value => v => v + value.Value,            v => n => v / n),
+			NF<SqlInt64,long>   (value => v => v + value.Value,            v => n => v / n),
+			NF<SqlByte, long>   (value => v => v + value.Value,            v => n => v / n),
+			NF<SqlDecimal>      (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
+			NF<SqlDouble>       (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
+			NF<SqlSingle>       (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
 
 			//Dynamic types will be genareted later
 
 		}
-		.ToDictionary(f => f.Type));
+		.ToDictionary(f => f.Type, f => (NumberFormatter?)f));
 
 		#region IsNullChecker
-
-		private static readonly ConcurrentDictionary<Type, IsNullChecker> _isNullCheckers = new ConcurrentDictionary<Type, IsNullChecker>();
 
 		abstract class IsNullChecker
 		{
@@ -615,21 +590,18 @@ namespace LinqToDB.LINQPad
 
 		#region ValueFormatter
 
-		static ValueFormatter VF<T>(Func<T,string> format, string font = null, string size = null, bool nowrap = true)
+		static ValueFormatter VF<T>(Func<T,string> format, string? font = null, string? size = null, bool nowrap = true)
 		{
-			return new ValueFormatter<T> { Format = format, NoWrap = nowrap };
+			return new ValueFormatter<T>(format) { NoWrap = nowrap, Font = font, Size = size };
 		}
 
 		abstract class ValueFormatter
 		{
 			public abstract Type   Type { get; }
 
-// Warning CS0649  Field 'XmlFormatter.ValueFormatter.Font' is never assigned to, and will always have its default value null
-#pragma warning disable 649
-			public string Font;
-			public string Size;
-#pragma warning restore 649
-			public bool   NoWrap;
+			public string? Font;
+			public string? Size;
+			public bool    NoWrap;
 
 			public abstract string FormatValue(object value);
 		}
@@ -648,15 +620,20 @@ namespace LinqToDB.LINQPad
 
 			public override string FormatValue(object value)
 			{
-				return (string) _formatFunc.DynamicInvoke(value);
+				return (string) _formatFunc.DynamicInvoke(value)!;
 			}
 		}
 
 		class ValueFormatter<T> : ValueFormatter
 		{
+			public ValueFormatter(Func<T, string> format)
+			{
+				Format = format;
+			}
+
 			public override Type Type => typeof(T);
 
-			public Func<T,string> Format;
+			public readonly Func<T,string> Format;
 
 			public override string FormatValue(object value)
 			{
@@ -670,12 +647,12 @@ namespace LinqToDB.LINQPad
 
 		static NumberFormatter NF<T>(Func<T,Func<T,T>> add, Func<T,Func<int,object>> avr)
 		{
-			return new NumberFormatter<T> { Add = add, Avarege = avr, Format = v => new XElement("span", v) };
+			return new NumberFormatter<T>(add, avr, v => new XElement("span", v));
 		}
 
 		static NumberFormatter NF<T,TT>(Func<T,Func<TT,TT>> add, Func<TT,Func<int,object>> avr)
 		{
-			return new NumberFormatter<T,TT> { Add = add, Avarege = avr, Format = v => new XElement("span", v) };
+			return new NumberFormatter<T,TT>(add, avr, v => new XElement("span", v));
 		}
 
 		abstract class NumberFormatter
@@ -688,17 +665,24 @@ namespace LinqToDB.LINQPad
 
 		class NumberFormatter<T> : NumberFormatter
 		{
+			public NumberFormatter(Func<T, Func<T, T>> add, Func<T, Func<int, object>> average, Func<T, XElement> format)
+			{
+				Add     = add;
+				Average = average;
+				Format  = format;
+			}
+
 			public override Type Type => typeof(T);
 
-			public Func<T,Func<T,T>>        Add;
-			public Func<T,Func<int,object>> Avarege;
+			public readonly Func<T,Func<T,T>>        Add;
+			public readonly Func<T,Func<int,object>> Average;
 
 			public override void AddTotal(Total total, object value)
 			{
-				total.Add(Add((T)value), Avarege);
+				total.Add(Add((T)value), Average);
 			}
 
-			public Func<T,XElement> Format;
+			public readonly Func<T,XElement> Format;
 
 			public override XElement GetElement(object value)
 			{
@@ -708,17 +692,24 @@ namespace LinqToDB.LINQPad
 
 		class NumberFormatter<T,TT> : NumberFormatter
 		{
+			public NumberFormatter(Func<T, Func<TT, TT>> add, Func<TT, Func<int, object>> average, Func<T, XElement> format)
+			{
+				Add     = add;
+				Average = average;
+				Format  = format;
+			}
+
 			public override Type Type => typeof(T);
 
-			public Func<T,Func<TT,TT>>       Add;
-			public Func<TT,Func<int,object>> Avarege;
+			public readonly Func<T,Func<TT,TT>>       Add;
+			public readonly Func<TT,Func<int,object>> Average;
 
 			public override void AddTotal(Total total, object value)
 			{
-				total.Add<TT>(Add((T)value), Avarege);
+				total.Add(Add((T)value), Average);
 			}
 
-			public Func<T,XElement> Format;
+			public readonly Func<T,XElement> Format;
 
 			public override XElement GetElement(object value)
 			{

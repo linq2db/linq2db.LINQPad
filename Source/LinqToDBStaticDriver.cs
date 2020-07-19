@@ -1,40 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Windows;
-
-using JetBrains.Annotations;
-
-using LinqToDB.Data;
-
 using LINQPad.Extensibility.DataContext;
+using LinqToDB.Data;
 
 namespace LinqToDB.LINQPad
 {
-	[UsedImplicitly]
 	public class LinqToDBStaticDriver : StaticDataContextDriver
 	{
 		public override string Name   => "LINQ to DB (DataConnection)";
-		public override string Author => "Igor Tkachev";
+		public override string Author => DriverHelper.Author;
 
 		static LinqToDBStaticDriver()
 		{
-			DriverHelper.ConfigureRedirects();
+			DriverHelper.Init();
 		}
 
-		public override string GetConnectionDescription(IConnectionInfo cxInfo)
-		{
-			var providerName = (string)cxInfo.DriverData.Element("providerName");
-			var dbInfo       = cxInfo.DatabaseInfo;
+		public override string GetConnectionDescription(IConnectionInfo cxInfo) => DriverHelper.GetConnectionDescription(cxInfo);
 
-			return $"[{providerName}] {dbInfo.Server}\\{dbInfo.Database} (v.{dbInfo.DbVersion})";
-		}
-
-		public override bool ShowConnectionDialog(IConnectionInfo cxInfo, bool isNewConnection)
-		{
-			return DriverHelper.ShowConnectionDialog(this, cxInfo, isNewConnection, false);
-		}
+		[Obsolete]
+		public override bool ShowConnectionDialog(IConnectionInfo cxInfo, bool isNewConnection) => DriverHelper.ShowConnectionDialog(cxInfo, isNewConnection, false);
 
 		public override List<ExplorerItem> GetSchema(IConnectionInfo cxInfo, Type customType)
 		{
@@ -69,12 +55,7 @@ namespace LinqToDB.LINQPad
 			return base.GetContextConstructorArguments(cxInfo);
 		}
 
-		public override void ClearConnectionPools(IConnectionInfo cxInfo)
-		{
-			using (var db = new LINQPadDataConnection(cxInfo))
-				if (db.Connection is SqlConnection connection)
-					SqlConnection.ClearPool(connection);
-		}
+		public override void ClearConnectionPools(IConnectionInfo cxInfo) => DriverHelper.ClearConnectionPools(cxInfo);
 
 		public override void InitializeContext(IConnectionInfo cxInfo, object context, QueryExecutionManager executionManager)
 		{

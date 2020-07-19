@@ -5,13 +5,9 @@ using System.Configuration;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-
-using JetBrains.Annotations;
-
-using LinqToDB.Data;
-
 using LINQPad.Extensibility.DataContext;
 using LINQPad.Extensibility.DataContext.UI;
+using LinqToDB.Data;
 
 namespace LinqToDB.LINQPad
 {
@@ -22,13 +18,12 @@ namespace LinqToDB.LINQPad
 			InitializeComponent();
 		}
 
-		[CanBeNull]
-		readonly ConnectionViewModel _model;
+		private ConnectionViewModel? Model => DataContext as ConnectionViewModel;
 
-		ConnectionDialog([NotNull] ConnectionViewModel model)
+		ConnectionDialog(ConnectionViewModel model)
 			: this()
 		{
-			DataContext = _model = model;
+			DataContext = model;
 
 			((INotifyPropertyChanged)model).PropertyChanged += (sender, args) =>
 			{
@@ -41,9 +36,9 @@ namespace LinqToDB.LINQPad
 			};
 		}
 
-		Func<ConnectionViewModel,Exception> _connectionTester;
+		Func<ConnectionViewModel?, Exception?>? _connectionTester;
 
-		public static bool Show(ConnectionViewModel model, Func<ConnectionViewModel,Exception> connectionTester)
+		public static bool Show(ConnectionViewModel model, Func<ConnectionViewModel?, Exception?>? connectionTester)
 		{
 			return new ConnectionDialog(model) { _connectionTester = connectionTester }.ShowDialog() == true;
 		}
@@ -52,12 +47,12 @@ namespace LinqToDB.LINQPad
 		{
 			if (_connectionTester != null)
 			{
-				Exception ex;
+				Exception? ex;
 
 				try
 				{
 					Mouse.OverrideCursor = Cursors.Wait;
-					ex = _connectionTester(DataContext as ConnectionViewModel);
+					ex = _connectionTester(Model);
 				}
 				finally
 				{
@@ -78,12 +73,12 @@ namespace LinqToDB.LINQPad
 
 		void OKClick(object sender, RoutedEventArgs e)
 		{
-			Exception ex;
+			Exception? ex;
 
 			try
 			{
 				Mouse.OverrideCursor = Cursors.Wait;
-				ex = _connectionTester?.Invoke(DataContext as ConnectionViewModel);
+				ex = _connectionTester?.Invoke(Model);
 			}
 			finally
 			{
@@ -110,23 +105,23 @@ namespace LinqToDB.LINQPad
 
 		void BrowseAssembly(object sender, RoutedEventArgs e)
 		{
-			if (_model == null)
+			if (Model == null)
 				return;
 
 			var dialog = new Microsoft.Win32.OpenFileDialog
 			{
 				Title      = "Choose custom assembly",
 				DefaultExt = ".dll",
-				FileName   = _model.CustomAssemblyPath,
+				FileName   = Model.CustomAssemblyPath,
 			};
 
 			if (dialog.ShowDialog() == true)
-				_model.CustomAssemblyPath = dialog.FileName;
+				Model.CustomAssemblyPath = dialog.FileName;
 		}
 
 		void ChooseType(object sender, RoutedEventArgs e)
 		{
-			if (_model != null)
+			if (Model != null)
 			{
 				var oldCursor = Cursor;
 
@@ -134,17 +129,17 @@ namespace LinqToDB.LINQPad
 				{
 					Mouse.OverrideCursor = Cursors.Wait;
 
-					_model.CustomAssemblyPath = _model.CustomAssemblyPath.Trim();
+					Model.CustomAssemblyPath = Model.CustomAssemblyPath!.Trim();
 
-					var assembly    = DataContextDriver.LoadAssemblySafely(_model.CustomAssemblyPath);
+					var assembly    = DataContextDriver.LoadAssemblySafely(Model.CustomAssemblyPath);
 					var customTypes = assembly.GetExportedTypes().Where(IsDataConnection).Select(t => t.FullName).Cast<object>().ToArray();
 
 					Mouse.OverrideCursor = oldCursor;
 
-					var result = (string)Dialogs.PickFromList("Choose Custom Type", customTypes);
+					var result = (string?)Dialogs.PickFromList("Choose Custom Type", customTypes);
 
 					if (result != null)
-						_model.CustomTypeName = result;
+						Model.CustomTypeName = result;
 				}
 				catch (Exception ex)
 				{
@@ -161,35 +156,36 @@ namespace LinqToDB.LINQPad
 		{
 			var dcType = typeof(DataConnection);
 
+			Type? currentType = type;
 			do
 			{
-				if (type.FullName == dcType.FullName)
+				if (currentType.FullName == dcType.FullName)
 					return true;
-				type = type.BaseType;
-			} while (type != null);
+				currentType = currentType.BaseType;
+			} while (currentType != null);
 
 			return false;
 		}
 
 		void BrowseAppConfig(object sender, RoutedEventArgs e)
 		{
-			if (_model != null)
+			if (Model != null)
 			{
 				var dialog = new Microsoft.Win32.OpenFileDialog
 				{
 					Title      = "Choose application config file",
 					DefaultExt = ".config",
-					FileName   = _model.AppConfigPath,
+					FileName   = Model.AppConfigPath,
 				};
 
 				if (dialog.ShowDialog() == true)
-					_model.AppConfigPath = dialog.FileName;
+					Model.AppConfigPath = dialog.FileName;
 			}
 		}
 
 		void ChooseConfiguration(object sender, RoutedEventArgs e)
 		{
-			if (_model != null && !string.IsNullOrWhiteSpace(_model.AppConfigPath))
+			if (Model != null && !string.IsNullOrWhiteSpace(Model.AppConfigPath))
 			{
 				var oldCursor = Cursor;
 
@@ -197,7 +193,7 @@ namespace LinqToDB.LINQPad
 				{
 					Mouse.OverrideCursor = Cursors.Wait;
 
-					var config = ConfigurationManager.OpenExeConfiguration(_model.CustomAssemblyPath);
+					var config = ConfigurationManager.OpenExeConfiguration(Model.CustomAssemblyPath);
 
 					var configurations = new List<object>();
 
@@ -208,10 +204,10 @@ namespace LinqToDB.LINQPad
 
 					Mouse.OverrideCursor = oldCursor;
 
-					var result = (string)Dialogs.PickFromList("Choose Custom Type", configurations.ToArray());
+					var result = (string?)Dialogs.PickFromList("Choose Custom Type", configurations.ToArray());
 
 					if (result != null)
-						_model.CustomConfiguration = result;
+						Model.CustomConfiguration = result;
 				}
 				catch (Exception ex)
 				{
