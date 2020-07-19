@@ -46,6 +46,7 @@ namespace LinqToDB.LINQPad
 			AddDataProvider(new DynamicProviderRecord(ProviderName.SqlCe, "Microsoft SQL Server Compact", "System.Data.SqlServerCe.SqlCeConnection"));
 			AddDataProvider(new DynamicProviderRecord(ProviderName.DB2LUW, "DB2 for Linux, UNIX and Windows", "IBM.Data.DB2.DB2Connection"));
 			AddDataProvider(new DynamicProviderRecord(ProviderName.DB2zOS, "DB2 for z/OS", "IBM.Data.DB2.DB2Connection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.InformixDB2,      "Informix (IDS)", "IBM.Data.DB2.DB2Connection"));
 			AddDataProvider(new DynamicProviderRecord(ProviderName.SapHanaNative,       "SAP HANA (Native)",                        "Sap.Data.Hana.HanaConnection"));
 			AddDataProvider(new DynamicProviderRecord(ProviderName.SapHanaOdbc,       "SAP HANA (ODBC)", "System.Data.Odbc.OdbcConnection"));
 
@@ -55,7 +56,6 @@ namespace LinqToDB.LINQPad
 #endif
 
 			//AddDataProvider(new DynamicProviderRecord(ProviderName.SQLite,        "SQLite",                          "System.Data.SQLite.SQLiteConnection"));
-			//AddDataProvider(new DynamicProviderRecord(ProviderName.Informix,      "Informix",                        "IBM.Data.Informix.IfxConnection"));
 
 
 			//AddDataProvider(
