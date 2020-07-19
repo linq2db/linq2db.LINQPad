@@ -17,16 +17,16 @@ namespace LinqToDB.LINQPad
 
 		public static void Init()
 		{
-#if NETCORE
-			System.Runtime.Loader.AssemblyLoadContext.Default.Resolving += (context, name) =>
-			{
-				Debugger.Launch();
-				return AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName == name.FullName).FirstOrDefault();
-			};
-#endif
+			//#if NETCORE
+			//			System.Runtime.Loader.AssemblyLoadContext.Default.Resolving += (context, name) =>
+			//			{
+			//				Debugger.Launch();
+			//				return AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName == name.FullName).FirstOrDefault();
+			//			};
+			//#endif
 
-			ConfigureRedirects();
 #if !NETCORE
+			ConfigureRedirects();
 			SapHanaSPS04Fixes();
 #endif
 		}
@@ -213,12 +213,6 @@ namespace LinqToDB.LINQPad
 
 		static void ConfigureRedirects()
 		{
-#if NETCORE
-			//System.Runtime.Loader.AssemblyLoadContext.Default.Resolving += (context, name) =>
-			//{
-			//	return AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName == name.FullName).FirstOrDefault();
-			//};
-#else
 			AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
 			{
 				var requestedAssembly = new AssemblyName(args.Name!);
@@ -227,7 +221,6 @@ namespace LinqToDB.LINQPad
 
 				return typeof(DataContext).Assembly;
 			};
-#endif
 		}
 
 #if !NETCORE
