@@ -52,19 +52,9 @@ namespace LinqToDB.LINQPad
 
 				var references = new List<MetadataReference>
 				{
-#if NETCORE
-					// .net core returns reference to System.Private.Corelib for some type, which is not what we need
-					// object
-					MetadataReference.CreateFromFile(Path.Combine(Path.GetDirectoryName(typeof(object).Assembly.Location)!, "System.Runtime.dll")),
-					// List<>
-					MetadataReference.CreateFromFile(Path.Combine(Path.GetDirectoryName(typeof(object).Assembly.Location)!, "System.Collections.dll")),
-					// ValueType
-					MetadataReference.CreateFromFile(Path.Combine(Path.GetDirectoryName(typeof(object).Assembly.Location)!, "netstandard.dll")),
-
-					MetadataReference.CreateFromFile(typeof(IPAddress).            Assembly.Location),
-					MetadataReference.CreateFromFile(typeof(System.Linq.Expressions.Expression).Assembly.Location),
-#endif
+#if !NETCORE
 					MetadataReference.CreateFromFile(typeof(object).               Assembly.Location),
+#endif
 					MetadataReference.CreateFromFile(typeof(Enumerable).           Assembly.Location),
 					MetadataReference.CreateFromFile(typeof(IDbConnection).        Assembly.Location),
 					MetadataReference.CreateFromFile(typeof(DataConnection).       Assembly.Location),
@@ -74,6 +64,10 @@ namespace LinqToDB.LINQPad
 				};
 
 				references.AddRange(gen.References.Select(r => MetadataReference.CreateFromFile(r)));
+
+#if NETCORE
+				references.AddRange(GetCoreFxReferenceAssemblies().Select(path => MetadataReference.CreateFromFile(path)));
+#endif
 
 				var compilation = CSharpCompilation.Create(
 					assemblyToBuild.Name!,

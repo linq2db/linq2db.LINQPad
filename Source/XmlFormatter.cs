@@ -340,7 +340,7 @@ namespace LinqToDB.LINQPad
 			try
 			{
 				if (IsNull(value))
-					return new XElement("td", new XAttribute("style", "text-align:center;"), new XElement("i", "null"));
+					return new XElement("td", new XAttribute("style", "text-align:center;"), new XElement("i", new XAttribute("style", "font-style: italic"), "null"));
 
 				var nf = GetNumberFormatter(value.GetType());
 
@@ -384,7 +384,7 @@ namespace LinqToDB.LINQPad
 		public static object FormatValue(object? value)
 		{
 			if (IsNull(value))
-				return Util.RawHtml(new XElement("span", new XAttribute("style", "text-align:center;"), new XElement("i", "null")));
+				return Util.RawHtml(new XElement("span", new XAttribute("style", "text-align:center;"), new XElement("i", new XAttribute("style", "font-style: italic"), "null")));
 
 			//TODO: formatters
 			//if (value is DB2Xml xml)
@@ -424,23 +424,41 @@ namespace LinqToDB.LINQPad
 				: dt.ToString("yyyy-MM-dd HH:mm:ss");
 		}
 
-		static string Format(char chr)
+		static object Format(char chr)
 		{
 			if (!XmlConvert.IsXmlChar(chr) && !char.IsHighSurrogate(chr) && !char.IsLowSurrogate(chr))
-				return $"\\u{((short)chr):X4}";
+				return new XElement("span", new XElement("i", new XAttribute("style", "font-style: italic"), $"\\u{((short)chr):X4}"));
 			else
 				return chr.ToString();
 		}
 
-		static string Format(string str)
+		static object Format(string str)
 		{
+			var components = new List<object>();
 			var sb = new StringBuilder();
 
 			// encode invalid characters as C# escape sequence
 			foreach (var chr in str)
-				sb.Append(Format(chr));
+			{
+				var formattedChar = Format(chr);
+				if (formattedChar is string chrStr)
+					sb.Append(chrStr);
+				else
+				{
+					if (sb.Length > 0)
+					{
+						components.Add(sb.ToString());
+						sb.Clear();
+					}
 
-			return sb.ToString();
+					components.Add(formattedChar);
+				}
+			}
+
+			if (sb.Length > 0)
+				components.Add(sb.ToString());
+
+			return new XElement("span", components.ToArray());
 		}
 
 		static string Format(byte[] value)
@@ -556,7 +574,7 @@ namespace LinqToDB.LINQPad
 
 		#region ValueFormatter
 
-		static ValueFormatter VF<T>(Func<T,string> format, string? font = null, string? size = null, bool nowrap = true)
+		static ValueFormatter VF<T>(Func<T,object> format, string? font = null, string? size = null, bool nowrap = true)
 		{
 			return new ValueFormatter<T>(format) { NoWrap = nowrap, Font = font, Size = size };
 		}
@@ -569,7 +587,7 @@ namespace LinqToDB.LINQPad
 			public string? Size;
 			public bool    NoWrap;
 
-			public abstract string FormatValue(object value);
+			public abstract object FormatValue(object value);
 		}
 
 		class DynamicFormatter : ValueFormatter
@@ -584,24 +602,24 @@ namespace LinqToDB.LINQPad
 
 			public override Type Type { get; }
 
-			public override string FormatValue(object value)
+			public override object FormatValue(object value)
 			{
-				return (string) _formatFunc.DynamicInvoke(value)!;
+				return _formatFunc.DynamicInvoke(value)!;
 			}
 		}
 
 		class ValueFormatter<T> : ValueFormatter
 		{
-			public ValueFormatter(Func<T, string> format)
+			public ValueFormatter(Func<T, object> format)
 			{
 				Format = format;
 			}
 
 			public override Type Type => typeof(T);
 
-			public readonly Func<T,string> Format;
+			public readonly Func<T,object> Format;
 
-			public override string FormatValue(object value)
+			public override object FormatValue(object value)
 			{
 				return Format((T)value);
 			}
