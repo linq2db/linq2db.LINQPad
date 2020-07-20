@@ -222,11 +222,14 @@ namespace LinqToDB.LINQPad
 				}
 			}
 
-			if (defaultSchema != null)
-				yield return defaultSchema;
+			if (useSchemaNode)
+			{
+				if (defaultSchema != null)
+					yield return defaultSchema;
 
-			foreach (var schemaNode in nonDefaultSchemas.Values)
-				yield return schemaNode;
+				foreach (var schemaNode in nonDefaultSchemas.Values)
+					yield return schemaNode;
+			}
 
 			Code
 				.AppendLine("  }")
@@ -440,7 +443,7 @@ namespace LinqToDB.LINQPad
 
 		ExplorerItem GetColumnItem(ColumnSchema column)
 		{
-			var memberType = UseProviderSpecificTypes ? (column.ProviderSpecificType ?? column.MemberType) : column.MemberType;
+			var memberType = GetMemberType(column);
 			var sqlName    = _sqlBuilder!.ConvertInline(column.ColumnName ?? "unspecified", ConvertType.NameToQueryField);
 
 			return new ExplorerItem(
@@ -553,7 +556,7 @@ namespace LinqToDB.LINQPad
 
 				classCode.AppendLine("]");
 
-				var memberType = UseProviderSpecificTypes ? (c.ProviderSpecificType ?? c.MemberType) : c.MemberType;
+				var memberType = GetMemberType(c);
 
 				classCode.AppendLine($"    public {memberType} {c.MemberName} {{ get; set; }}");
 			}
@@ -589,6 +592,24 @@ namespace LinqToDB.LINQPad
 			}
 
 			classCode.AppendLine("  }");
+		}
+
+		private string GetMemberType(ColumnSchema c)
+		{
+			if (UseProviderSpecificTypes)
+			{
+				return c.ProviderSpecificType switch
+				{
+					// those IBM.Data.DB2Types.* types cannot return value (without linq2db changes)
+					"DB2Clob" => c.MemberType,
+					"DB2Blob" => c.MemberType,
+					"DB2Xml"  => c.MemberType,
+					null      => c.MemberType,
+					_         => c.ProviderSpecificType
+				};
+			}
+
+			return c.MemberType;
 		}
 
 		ExplorerItem GetTables(string header, ExplorerIcon icon, IEnumerable<TableSchema> tableSource)

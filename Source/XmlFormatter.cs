@@ -13,11 +13,11 @@ using System.Xml;
 using System.Xml.Linq;
 using LINQPad;
 using LinqToDB.Extensions;
-using LinqToDB.Linq;
 using LinqToDB.Mapping;
 
 namespace LinqToDB.LINQPad
 {
+	// TODO: this class needs refactoring...
 	static class XmlFormatter
 	{
 		class Total
@@ -160,10 +160,8 @@ namespace LinqToDB.LINQPad
 			return type.Name;
 		}
 
-		static bool DynamicCheckForNull(string baseType, Type type, object value, ref bool isNull, string isNullProperty = "IsNull")
+		static bool DynamicCheckForNull(Type? baseTypeType, Type type, object value, ref bool isNull, string isNullProperty = "IsNull")
 		{
-			var baseTypeType = Type.GetType(baseType, false);
-
 			if (baseTypeType == null || !baseTypeType.IsSameOrParentOf(type))
 				return false;
 
@@ -178,7 +176,7 @@ namespace LinqToDB.LINQPad
 		static bool DynamicCheckForNull(Type type, object value, ref bool isNull)
 		{
 			return 
-				DynamicCheckForNull("IBM.Data.DB2Types.INullable",              type, value, ref isNull);
+				DynamicCheckForNull(type.Assembly.GetType("IBM.Data.DB2Types.INullable", false), type, value, ref isNull);
 		}
 
 		static bool IsNull([NotNullWhen(false)] object? value)
@@ -214,25 +212,28 @@ namespace LinqToDB.LINQPad
 				IsType("IBM.Data.DB2Types.INullable", type);
 		}
 
-		static NumberFormatter GenerateNumberFormatter(Type valueType, Type innerType, bool checkForNull = true, Func<ParameterExpression, Expression>? convertFunc = null)
+		static NumberFormatter GenerateNumberFormatter<T>(Type valueType, bool checkForNull = true, Func<ParameterExpression, Expression>? convertFunc = null)
 		{
 			//static NumberFormatter NF<T,TT>(Func<T,Func<TT,TT>> add, Func<TT,Func<int,object>> avr)
 
 			// add
 			// value => v => (v.IsNull ? 0 : v) + value
-			var paramValue = Expression.Parameter(valueType);
-			var paramV     = Expression.Parameter(innerType);
+			var innerType  = typeof(T);
+			var paramValue = Expression.Parameter(innerType);
+			var paramV     = Expression.Parameter(valueType);
 			var addLamba =
 				Expression.Lambda(
 					Expression.Lambda(
 						Expression.Add(
 							checkForNull
-								? (Expression) Expression.Condition(Expression.PropertyOrField(paramV, "IsNull"),
-									Expression.Constant(0, innerType), convertFunc != null ? convertFunc(paramV) : paramV)
+								? (Expression) Expression.Condition(
+									Expression.PropertyOrField(paramV, "IsNull"),
+									Expression.Constant(default(T), innerType),
+									Expression.Convert(convertFunc != null ? convertFunc(paramV) : paramV, innerType))
 								: paramV,
 							paramValue
-						), paramV
-					), paramValue);
+						), paramValue
+					), paramV);
 
 			// average
 			// v => n => v / n
@@ -241,27 +242,24 @@ namespace LinqToDB.LINQPad
 			var avgLambda =
 				Expression.Lambda(
 					Expression.Lambda(
-						Expression.Divide(paramV, paramNumber),
+						Expression.Convert(Expression.Divide(paramValue, Expression.Convert(paramNumber, innerType)), typeof(object)),
 						paramNumber
-					), paramV
+					), paramValue
 				);
 
 			// format
 			// v => new XElement("span", v)
-			var constructor = typeof(XElement).GetConstructor(new []{typeof(string), innerType});
-			if (constructor == null)
-				constructor = typeof(XElement).GetConstructor(new []{typeof(string), typeof(object)});
+			var constructor = typeof(XElement).GetConstructor(new []{typeof(XName), typeof(object) });
 
 			var formatExpr = Expression.Lambda(
-				Expression.New(constructor ?? throw new InvalidOperationException(), Expression.Constant("span"), paramV)
-			);
+				Expression.New(
+					constructor ?? throw new InvalidOperationException(),
+					Expression.Convert(Expression.Constant("span"), typeof(XName)),
+					Expression.Convert(Expression.Convert(convertFunc != null ? convertFunc(paramV) : paramV, innerType), typeof(object))),
+				paramV);
 
 			var formatterType = typeof(NumberFormatter<,>).MakeGenericType(valueType, innerType);
-			var formatter     = (NumberFormatter)Activator.CreateInstance(formatterType)!;
-
-			formatterType.GetProperty("Add")!    .SetValue(formatter, addLamba.  Compile());
-			formatterType.GetProperty("Average")!.SetValue(formatter, avgLambda.   Compile());
-			formatterType.GetProperty("Format")! .SetValue(formatter, formatExpr.Compile());
+			var formatter     = (NumberFormatter)Activator.CreateInstance(formatterType, addLamba.Compile(), avgLambda.Compile(), formatExpr.Compile())!;
 
 			return formatter;
 		}
@@ -272,10 +270,24 @@ namespace LinqToDB.LINQPad
 			{
 				switch (type.FullName)
 				{
-					case "IBM.Data.DB2Types.DB2DateTime":
-					case "IBM.Data.DB2Types.DB2Date":
+					// case "IBM.Data.DB2Types.DB2TimeSpan": // z/OS type. not used currently by schema provider (and obsoleted in provider)
+					case "IBM.Data.DB2Types.DB2Xml":
+						return GenerateValueFormatter<string>(type, v => Expression.Call(v, "GetString", Array.Empty<Type>()));
+					case "IBM.Data.DB2Types.DB2Time":
+						return GenerateValueFormatter<TimeSpan>(type, dt => Expression.PropertyOrField(dt, "Value"));
+					case "IBM.Data.DB2Types.DB2RowId": // z/OS type
 					case "IBM.Data.DB2Types.DB2Blob":
-						return GenerateValueFormatter(type, dt => Expression.PropertyOrField(dt, "Value"));
+					case "IBM.Data.DB2Types.DB2Binary":
+						return GenerateValueFormatter<byte[]>(type, dt => Expression.PropertyOrField(dt, "Value"));
+					case "IBM.Data.DB2Types.DB2Clob":
+					case "IBM.Data.DB2Types.DB2String":
+						return GenerateValueFormatter<string>(type, dt => Expression.PropertyOrField(dt, "Value"));
+					case "IBM.Data.DB2Types.DB2TimeStamp":
+						// to avoid "This value of the DB2Type will be truncated." when taking Value
+						return GenerateValueFormatter<string>(type, v => Expression.Call(v, "ToString", Array.Empty<Type>()));
+					case "IBM.Data.DB2Types.DB2Date":
+					case "IBM.Data.DB2Types.DB2DateTime": // z/OS type. not used currently by schema provider
+						return GenerateValueFormatter<DateTime>(type, dt => Expression.PropertyOrField(dt, "Value"));
 				}
 
 				return null;
@@ -300,18 +312,19 @@ namespace LinqToDB.LINQPad
 						case "IBM.Data.DB2Types.DB2Int16":
 						case "IBM.Data.DB2Types.DB2Int32":
 						case "IBM.Data.DB2Types.DB2Int64":
-							return GenerateNumberFormatter(type, typeof(long), true, p => Expression.PropertyOrField(p, "Value"));
+							return GenerateNumberFormatter<long>(type, true, p => Expression.PropertyOrField(p, "Value"));
 
 						case "IBM.Data.DB2Types.DB2Decimal":
 						case "IBM.Data.DB2Types.DB2DecimalFloat":
-							return GenerateNumberFormatter(type, typeof(decimal), true, p => Expression.PropertyOrField(p, "Value"));
+							return GenerateNumberFormatter<decimal>(type, true, p => Expression.PropertyOrField(p, "Value"));
 
 						case "IBM.Data.DB2Types.DB2Double":
 						case "IBM.Data.DB2Types.DB2Real":
-							return GenerateNumberFormatter(type, typeof(double), true, p => Expression.PropertyOrField(p, "Value"));
+						case "IBM.Data.DB2Types.DB2Real370": // z/OS type. not used currently by schema provider
+							return GenerateNumberFormatter<double>(type, true, p => Expression.PropertyOrField(p, "Value"));
 
 						case "Sap.Data.Hana.HanaDecimal":
-							return GenerateNumberFormatter(type, typeof(decimal), true, p => Expression.Call(p, type.GetMethod("ToDecimal")));
+							return GenerateNumberFormatter<decimal>(type, true, p => Expression.Call(p, type.GetMethod("ToDecimal")));
 					}
 				}
 				catch (Exception)
@@ -386,13 +399,6 @@ namespace LinqToDB.LINQPad
 			if (IsNull(value))
 				return Util.RawHtml(new XElement("span", new XAttribute("style", "text-align:center;"), new XElement("i", new XAttribute("style", "font-style: italic"), "null")));
 
-			//TODO: formatters
-			//if (value is DB2Xml xml)
-			//{
-			//	var doc = XDocument.Parse(xml.GetString());
-			//	return doc;
-			//}
-
 			if (_numberFormatters.TryGetValue(value.GetType(), out var nf) && nf != null)
 				return Util.RawHtml(nf.GetElement(value));
 
@@ -422,6 +428,12 @@ namespace LinqToDB.LINQPad
 			return dt.Hour == 0 && dt.Minute == 0 && dt.Second == 0
 				? dt.ToString("yyyy-MM-dd")
 				: dt.ToString("yyyy-MM-dd HH:mm:ss");
+		}
+
+		// used by reflection
+		static string Format(TimeSpan ts)
+		{
+			return ts.ToString("c");
 		}
 
 		static object Format(char chr)
@@ -484,25 +496,20 @@ namespace LinqToDB.LINQPad
 		//	return new ValueFormatter<T> { Format = format, NoWrap = nowrap };
 		//}
 
-		static ValueFormatter GenerateValueFormatter(Type type, Func<ParameterExpression, Expression> dataExtractor, bool nowrap = true)
+		static ValueFormatter GenerateValueFormatter<T>(Type type, Func<ParameterExpression, Expression> dataExtractor, bool nowrap = true)
 		{
 			var param = Expression.Parameter(type);
 
 			var extractedValue = dataExtractor(param);
 
-			var methodInfo = extractedValue.Type != typeof(DateTime)
-				? MethodHelper.GetMethodInfo(Format, new byte[0])
-				: MethodHelper.GetMethodInfo(Format, DateTime.MaxValue);
+			var methodInfo = typeof(XmlFormatter).GetMethodEx("Format", typeof(T));
 
 			var expr = Expression.Lambda(
 				Expression.Call(methodInfo, extractedValue),
 				param);
 
 			var formatterType = typeof(ValueFormatter<>).MakeGenericType(type);
-			var formatter = (ValueFormatter)Activator.CreateInstance(formatterType)!;
-
-			formatterType.GetProperty("Format")!.SetValue(formatter, expr.Compile());
-			formatterType.GetProperty("NoWrap")!.SetValue(formatter, nowrap);
+			var formatter = (ValueFormatter)Activator.CreateInstance(formatterType, expr.Compile(), nowrap)!;
 
 			return formatter;
 		}
@@ -576,7 +583,7 @@ namespace LinqToDB.LINQPad
 
 		static ValueFormatter VF<T>(Func<T,object> format, string? font = null, string? size = null, bool nowrap = true)
 		{
-			return new ValueFormatter<T>(format) { NoWrap = nowrap, Font = font, Size = size };
+			return new ValueFormatter<T>(format, nowrap) { Font = font, Size = size };
 		}
 
 		abstract class ValueFormatter
@@ -610,9 +617,10 @@ namespace LinqToDB.LINQPad
 
 		class ValueFormatter<T> : ValueFormatter
 		{
-			public ValueFormatter(Func<T, object> format)
+			public ValueFormatter(Func<T, object> format, bool noWrap)
 			{
 				Format = format;
+				NoWrap = noWrap;
 			}
 
 			public override Type Type => typeof(T);
@@ -687,13 +695,12 @@ namespace LinqToDB.LINQPad
 
 			public readonly Func<T,Func<TT,TT>>       Add;
 			public readonly Func<TT,Func<int,object>> Average;
+			public readonly Func<T, XElement>         Format;
 
 			public override void AddTotal(Total total, object value)
 			{
 				total.Add(Add((T)value), Average);
 			}
-
-			public readonly Func<T,XElement> Format;
 
 			public override XElement GetElement(object value)
 			{
