@@ -611,6 +611,7 @@ namespace LinqToDB.LINQPad
 
 					// temporary fix nullability for provider-specific struct types (should be done in linq2db)
 					var t when
+					// DB2/Informix
 					t == "DB2Time"         ||
 					t == "DB2RowId"        ||
 					t == "DB2Binary"       ||
@@ -625,6 +626,33 @@ namespace LinqToDB.LINQPad
 					t == "DB2DecimalFloat" ||
 					t == "DB2Real"         ||
 					t == "DB2Double"       ||
+					// NPGSQL
+					t == "NpgsqlInet"      ||
+					t == "NpgsqlPoint"     ||
+					t == "NpgsqlLine"      ||
+					t == "NpgsqlLSeg"      ||
+					t == "NpgsqlBox"       ||
+					t == "NpgsqlPath"      ||
+					t == "NpgsqlPolygon"   ||
+					t == "NpgsqlCircle"    ||
+					t == "NpgsqlDate"      ||
+					t == "NpgsqlTimeSpan"  ||
+					t == "NpgsqlDateTime"  ||
+					// SQLCE
+					t == "SqlByte"         ||
+					t == "SqlInt16"        ||
+					t == "SqlInt32"        ||
+					t == "SqlInt64"        ||
+					t == "SqlDecimal"      ||
+					t == "SqlMoney"        ||
+					t == "SqlSingle"       ||
+					t == "SqlDouble"       ||
+					t == "SqlBoolean"      ||
+					t == "SqlString"       ||
+					t == "SqlDateTime"     ||
+					t == "SqlBinary"       ||
+					t == "SqlGuid"         ||
+					// MYSQL
 					t == "MySqlDateTime" => c.IsNullable && !c.ProviderSpecificType!.EndsWith("?") ? c.ProviderSpecificType + "?" : c.ProviderSpecificType!,
 
 					null            => c.MemberType,

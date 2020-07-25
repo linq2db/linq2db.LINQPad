@@ -6,6 +6,8 @@ using System.Data.SqlTypes;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
+using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -193,30 +195,8 @@ namespace LinqToDB.LINQPad
 			return false;
 		}
 
-		static bool IsType(string baseType, Type type)
-		{
-			var baseTypeType = Type.GetType(baseType, false);
-
-			if (baseTypeType == null || !baseTypeType.IsSameOrParentOf(type))
-				return false;
-			return true;
-		}
-
-		static bool IsValue(object? value)
-		{
-			if (value == null)
-				return false;
-			var type = value.GetType();
-			return
-				value is INullable ||
-				IsType("IBM.Data.DB2Types.INullable", type);
-		}
-
 		static NumberFormatter GenerateNumberFormatter<T>(Type valueType, bool checkForNull = true, Func<ParameterExpression, Expression>? convertFunc = null)
 		{
-			//static NumberFormatter NF<T,TT>(Func<T,Func<TT,TT>> add, Func<TT,Func<int,object>> avr)
-
-			// add
 			// value => v => (v.IsNull ? 0 : v) + value
 			var innerType  = typeof(T);
 			var paramValue = Expression.Parameter(innerType);
@@ -314,9 +294,6 @@ namespace LinqToDB.LINQPad
 						case "IBM.Data.DB2Types.DB2Double":
 						case "IBM.Data.DB2Types.DB2Real":
 							return GenerateNumberFormatter<double>(type, true, p => Expression.PropertyOrField(p, "Value"));
-
-						case "Sap.Data.Hana.HanaDecimal":
-							return GenerateNumberFormatter<decimal>(type, true, p => Expression.Call(p, type.GetMethod("ToDecimal")));
 					}
 				}
 				catch (Exception)
@@ -337,7 +314,16 @@ namespace LinqToDB.LINQPad
 				if (IsNull(value))
 					return new XElement("td", new XAttribute("style", "text-align:center;"), new XElement("i", new XAttribute("style", "font-style: italic"), "null"));
 
-				var nf = GetNumberFormatter(value.GetType());
+				var type = value.GetType();
+
+				// multi-dimensional arrays not supported for now (and we don't expose them in schema)
+				if (type.IsArray && !(value is byte[]))
+					return new XElement("td", FormatArray((Array)value));
+
+				if (value is IDictionary dict)
+					return new XElement("td", FormatDictionary(dict));
+
+				var nf = GetNumberFormatter(type);
 
 				if (nf != null)
 				{
@@ -345,7 +331,7 @@ namespace LinqToDB.LINQPad
 					return new XElement("td", new XAttribute("class", "n"), value);
 				}
 
-				var vf = GetValueFormatter(value.GetType());
+				var vf = GetValueFormatter(type);
 				if (vf != null)
 				{
 					var list = new List<object>();
@@ -376,13 +362,77 @@ namespace LinqToDB.LINQPad
 			}
 		}
 
+		static XElement FormatArray(Array array)
+		{
+			var fragments = new List<object>
+			{
+				$" Len:{array.Length} ["
+			};
+
+			int i;
+
+			for (i = 0; i < array.Length && i < 10; i++)
+			{
+				if (i > 0)
+					fragments.Add(", ");
+
+				fragments.Add(FormatValueXml(array.GetValue(i)));
+			}
+
+			if (i < array.Length)
+				fragments.Add("...");
+
+			fragments.Add("]");
+
+			return new XElement("span", fragments.ToArray());
+		}
+
+		static XElement FormatDictionary(IDictionary dict)
+		{
+			var fragments = new List<object>
+			{
+				$" Size:{dict.Count} {{"
+			};
+
+			int i = 0;
+
+			foreach (var key in dict.Keys)
+			{
+				if (i > 0)
+					fragments.Add(", ");
+
+				fragments.Add("{");
+				fragments.Add(FormatValueXml(key));
+				fragments.Add(", ");
+				fragments.Add(FormatValueXml(dict[key]));
+				fragments.Add("}");
+
+				i++;
+
+				if (i == 10)
+					break;
+			}
+
+			if (i < dict.Count)
+				fragments.Add("...");
+
+			fragments.Add("}");
+
+			return new XElement("span", fragments.ToArray());
+		}
+
 		public static object FormatValue(object? value)
 		{
+			return Util.RawHtml(FormatValueXml(value));
+		}
+
+		private static XElement FormatValueXml(object? value)
+		{
 			if (IsNull(value))
-				return Util.RawHtml(new XElement("span", new XAttribute("style", "text-align:center;"), new XElement("i", new XAttribute("style", "font-style: italic"), "null")));
+				return new XElement("span", new XAttribute("style", "text-align:center;"), new XElement("i", new XAttribute("style", "font-style: italic"), "null"));
 
 			if (_numberFormatters.TryGetValue(value.GetType(), out var nf) && nf != null)
-				return Util.RawHtml(nf.GetElement(value));
+				return nf.GetElement(value);
 
 			if (_valueFormatters.TryGetValue(value.GetType(), out var vf) && vf != null)
 			{
@@ -392,17 +442,15 @@ namespace LinqToDB.LINQPad
 				if (vf.Font != null) style += $"font-family:{vf.Font};";
 				if (vf.Size != null) style += $"font-size:{vf.Size};";
 
-				return Util.RawHtml(new XElement("span",
+				return new XElement("span",
 					new XAttribute("style", style),
-					vf.FormatValue(value)));
+					vf.FormatValue(value));
 			}
 
 			if (value.GetType().Name == "SqlHierarchyId")
-				return value.ToString()!;
+				return FormatValueXml(value.ToString());
 
-			//Debug.WriteLine($"{value.GetType()}: {value} {IsValue(value)}");
-
-			return IsValue(value) ? Util.RawHtml(new XElement("span", value)) : value;
+			return new XElement("span", value);
 		}
 
 		static string Format(DateTime dt)
@@ -424,6 +472,21 @@ namespace LinqToDB.LINQPad
 			if (val is DateTime dtVal) return Format(dtVal);
 			
 			throw new InvalidOperationException($"Unsupported value type: {val.GetType()}");
+		}
+
+		static object Format(BitArray value)
+		{
+			var sb = new StringBuilder($" Len:{value.Length} 0b");
+
+			int i;
+
+			for (i = 0; i < value.Length && i < 64; i++)
+				sb.Append(value[i] ? '1' : '0');
+
+			if (i < value.Length)
+				sb.Append("...");
+
+			return sb.ToString();
 		}
 
 		static object Format(char chr)
@@ -481,11 +544,6 @@ namespace LinqToDB.LINQPad
 			return sb.ToString();
 		}
 
-		//static ValueFormatter VF<T>(Func<T,string> format, string font = null, string size = null, bool nowrap = true)
-		//{
-		//	return new ValueFormatter<T> { Format = format, NoWrap = nowrap };
-		//}
-
 		static ValueFormatter GenerateValueFormatter<T>(Type type, Func<ParameterExpression, Expression> dataExtractor, bool nowrap = true)
 		{
 			var param = Expression.Parameter(type);
@@ -506,14 +564,36 @@ namespace LinqToDB.LINQPad
 
 		static readonly ConcurrentDictionary<Type,ValueFormatter?> _valueFormatters = new ConcurrentDictionary<Type, ValueFormatter?>(new[]
 		{
-			VF<char>       (      Format),
-			VF<string>     (      Format),
-			VF<DateTime>   (      Format),
-			VF<SqlDateTime>(dt => Format(dt.Value)),
-			VF<byte[]>     (Format),
-			VF<Guid>       (v => v.      ToString("B").ToUpper(), font:"consolas", size:"110%"),
-			VF<SqlGuid>    (v => v.Value.ToString("B").ToUpper(), font:"consolas", size:"110%"),
+			VF<char>           (      Format),
+			VF<string>         (      Format),
+			VF<SqlString>      (v =>  Format(v.Value)),
+			VF<SqlBoolean>     (v =>  Format(v.Value.ToString())),
+			VF<DateTime>       (      Format),
+			VF<SqlDateTime>    (dt => Format(dt.Value)),
+			VF<byte[]>         (Format),
+			VF<SqlBinary>      (v =>  Format(v.Value)),
+			VF<Guid>           (v => v.      ToString("B").ToUpper(), font:"consolas", size:"110%"),
+			VF<SqlGuid>        (v => v.Value.ToString("B").ToUpper(), font:"consolas", size:"110%"),
+			VF<TimeSpan>       (v => v.ToString()),
 
+			VF<BitArray>       (v => Format(v)),
+			VF<IPAddress>      (v => Format(v.ToString())),
+			VF<PhysicalAddress>(v => Format(v.GetAddressBytes())),
+
+			// npgsql types
+			VF<NpgsqlTypes.NpgsqlTimeSpan>(v => Format((TimeSpan)v)),
+			VF<NpgsqlTypes.NpgsqlDateTime>(v => Format((DateTime)v)),
+			VF<NpgsqlTypes.NpgsqlDate    >(v => Format((DateTime)v)),
+			VF<NpgsqlTypes.NpgsqlBox     >(v => Format(v.ToString())),
+			VF<NpgsqlTypes.NpgsqlLSeg    >(v => Format(v.ToString())),
+			VF<NpgsqlTypes.NpgsqlLine    >(v => Format(v.ToString())),
+			VF<NpgsqlTypes.NpgsqlPoint   >(v => Format(v.ToString())),
+			VF<NpgsqlTypes.NpgsqlPath    >(v => Format(v.ToString())),
+			VF<NpgsqlTypes.NpgsqlPolygon >(v => Format(v.ToString())),
+			VF<NpgsqlTypes.NpgsqlCircle  >(v => Format(v.ToString())),
+#pragma warning disable CS0618 // NpgsqlInet obsolete
+			VF<NpgsqlTypes.NpgsqlInet    >(v => Format(v.ToString())),
+#pragma warning restore CS0618
 			// additional formatters are generated dynamically
 		}
 		.ToDictionary(f => f.Type, f => (ValueFormatter?)f));
@@ -537,6 +617,7 @@ namespace LinqToDB.LINQPad
 			NF<SqlInt64,long>   (value => v => v + value.Value,            v => n => v / n),
 			NF<SqlByte, long>   (value => v => v + value.Value,            v => n => v / n),
 			NF<SqlDecimal>      (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
+			NF<SqlMoney>        (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
 			NF<SqlDouble>       (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
 			NF<SqlSingle>       (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
 
