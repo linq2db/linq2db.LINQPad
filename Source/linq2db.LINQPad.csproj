@@ -36,7 +36,7 @@
 		<PackageReference Include="CodeJam" Version="3.1.0" />
 
 		<PackageReference Include="FirebirdSql.Data.FirebirdClient" Version="7.5.0" />
-		<PackageReference Include="MySqlConnector" Version="0.69.7" />
+		<PackageReference Include="MySqlConnector" Version="0.69.8" />
 		<PackageReference Include="AdoNetCore.AseClient" Version="0.18.0" />
 		<PackageReference Include="IBM.Data.DB.Provider" Version="11.1.4040.4" GeneratePathProperty="true" />
 	  <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.1" />

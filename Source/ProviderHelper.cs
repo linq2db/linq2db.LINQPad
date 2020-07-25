@@ -37,27 +37,26 @@ namespace LinqToDB.LINQPad
 
 		static void InitializeDataProviders()
 		{
-			AddDataProvider(new DynamicProviderRecord(ProviderName.Access,         "Microsoft Access (OleDb)",                "System.Data.OleDb.OleDbConnection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.AccessOdbc,     "Microsoft Access (ODBC)",                 "System.Data.Odbc.OdbcConnection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.Firebird,       "Firebird",                        "FirebirdSql.Data.FirebirdClient.FbConnection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.MySqlConnector, "MySql",                           "MySql.Data.MySqlClient.MySqlConnection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.PostgreSQL,     "PostgreSQL", "Npgsql.NpgsqlConnection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.SybaseManaged,  "SAP/Sybase ASE", "AdoNetCore.AseClient.AseConnection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.SQLiteClassic,  "SQLite",                          "System.Data.SQLite.SQLiteConnection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.SqlCe, "Microsoft SQL Server Compact", "System.Data.SqlServerCe.SqlCeConnection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.DB2LUW, "DB2 for Linux, UNIX and Windows", "IBM.Data.DB2.DB2Connection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.DB2zOS, "DB2 for z/OS", "IBM.Data.DB2.DB2Connection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.InformixDB2,      "Informix (IDS)", "IBM.Data.DB2.DB2Connection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.SapHanaNative,       "SAP HANA (Native)",                        "Sap.Data.Hana.HanaConnection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.SapHanaOdbc,       "SAP HANA (ODBC)", "System.Data.Odbc.OdbcConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.Access        , "Microsoft Access (OleDb)"       , "System.Data.OleDb.OleDbConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.AccessOdbc    , "Microsoft Access (ODBC)"        , "System.Data.Odbc.OdbcConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.Firebird      , "Firebird"                       , "FirebirdSql.Data.FirebirdClient.FbConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.MySqlConnector, "MySql"                          , "MySql.Data.MySqlClient.MySqlConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.PostgreSQL    , "PostgreSQL"                     , "Npgsql.NpgsqlConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.SybaseManaged , "SAP/Sybase ASE"                 , "AdoNetCore.AseClient.AseConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.SQLiteClassic , "SQLite"                         , "System.Data.SQLite.SQLiteConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.SqlCe         , "Microsoft SQL Server Compact"   , "System.Data.SqlServerCe.SqlCeConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.DB2LUW        , "DB2 for Linux, UNIX and Windows", "IBM.Data.DB2.DB2Connection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.DB2zOS        , "DB2 for z/OS"                   , "IBM.Data.DB2.DB2Connection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.InformixDB2   , "Informix (IDS)"                 , "IBM.Data.DB2.DB2Connection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.SapHanaNative , "SAP HANA (Native)"              , "Sap.Data.Hana.HanaConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.SapHanaOdbc   , "SAP HANA (ODBC)"                , "System.Data.Odbc.OdbcConnection"));
 
-			AddDataProvider(new DynamicProviderRecord(ProviderName.OracleManaged, "Oracle (Managed)",           "Oracle.ManagedDataAccess.Client.OracleConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.OracleManaged , "Oracle (Managed)"               , "Oracle.ManagedDataAccess.Client.OracleConnection"));
 #if !NETCORE
-			AddDataProvider(new DynamicProviderRecord(ProviderName.OracleNative,  "Oracle (Native)",                  "Oracle.DataAccess.Client.OracleConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.OracleNative  , "Oracle (Native)"                , "Oracle.DataAccess.Client.OracleConnection"));
 #endif
-
 			// we use System.Data.SqlClient to be able to use Microsoft.SqlServer.Types
-			AddDataProvider(new DynamicProviderRecord(ProviderName.SqlServer, "Microsoft SQL Server", "System.Data.SqlClient.SqlConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.SqlServer     , "Microsoft SQL Server"           , "System.Data.SqlClient.SqlConnection"));
 
 			//AddDataProvider(
 			//	new DynamicProviderRecord(

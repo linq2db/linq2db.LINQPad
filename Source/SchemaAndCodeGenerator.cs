@@ -600,12 +600,35 @@ namespace LinqToDB.LINQPad
 			{
 				return c.ProviderSpecificType switch
 				{
-					// those IBM.Data.DB2Types.* types cannot return value (without linq2db changes)
-					"DB2Clob" => c.MemberType,
-					"DB2Blob" => c.MemberType,
-					"DB2Xml"  => c.MemberType,
-					null      => c.MemberType,
-					_         => c.ProviderSpecificType
+					// ignore some types for various reasons
+					// DB2: those IBM.Data.DB2Types.* types cannot return value (without linq2db changes)
+					// MySql: doesn't make sense to expose as value has same byte[] type
+					var t when
+					t == "DB2Clob" ||
+					t == "DB2Blob" ||
+					t == "DB2Xml"  ||
+					t == "MySqlGeometry" => c.MemberType,
+
+					// temporary fix nullability for provider-specific struct types (should be done in linq2db)
+					var t when
+					t == "DB2Time"         ||
+					t == "DB2RowId"        ||
+					t == "DB2Binary"       ||
+					t == "DB2String"       ||
+					t == "DB2TimeStamp"    ||
+					t == "DB2Date"         ||
+					t == "DB2DateTime"     ||
+					t == "DB2Int16"        ||
+					t == "DB2Int32"        ||
+					t == "DB2Int64"        ||
+					t == "DB2Decimal"      ||
+					t == "DB2DecimalFloat" ||
+					t == "DB2Real"         ||
+					t == "DB2Double"       ||
+					t == "MySqlDateTime" => c.IsNullable && !c.ProviderSpecificType!.EndsWith("?") ? c.ProviderSpecificType + "?" : c.ProviderSpecificType!,
+
+					null            => c.MemberType,
+					_               => c.ProviderSpecificType
 				};
 			}
 

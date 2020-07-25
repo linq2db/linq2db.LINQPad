@@ -270,34 +270,27 @@ namespace LinqToDB.LINQPad
 			{
 				switch (type.FullName)
 				{
-					// case "IBM.Data.DB2Types.DB2TimeSpan": // z/OS type. not used currently by schema provider (and obsoleted in provider)
-					case "IBM.Data.DB2Types.DB2Xml":
-						return GenerateValueFormatter<string>(type, v => Expression.Call(v, "GetString", Array.Empty<Type>()));
 					case "IBM.Data.DB2Types.DB2Time":
 						return GenerateValueFormatter<TimeSpan>(type, dt => Expression.PropertyOrField(dt, "Value"));
 					case "IBM.Data.DB2Types.DB2RowId": // z/OS type
-					case "IBM.Data.DB2Types.DB2Blob":
 					case "IBM.Data.DB2Types.DB2Binary":
 						return GenerateValueFormatter<byte[]>(type, dt => Expression.PropertyOrField(dt, "Value"));
-					case "IBM.Data.DB2Types.DB2Clob":
 					case "IBM.Data.DB2Types.DB2String":
 						return GenerateValueFormatter<string>(type, dt => Expression.PropertyOrField(dt, "Value"));
 					case "IBM.Data.DB2Types.DB2TimeStamp":
 						// to avoid "This value of the DB2Type will be truncated." when taking Value
 						return GenerateValueFormatter<string>(type, v => Expression.Call(v, "ToString", Array.Empty<Type>()));
 					case "IBM.Data.DB2Types.DB2Date":
-					case "IBM.Data.DB2Types.DB2DateTime": // z/OS type. not used currently by schema provider
+					case "IBM.Data.DB2Types.DB2DateTime": // z/OS and Informix type
 						return GenerateValueFormatter<DateTime>(type, dt => Expression.PropertyOrField(dt, "Value"));
+					case "MySql.Data.Types.MySqlDateTime":
+						return GenerateValueFormatter<object>(type, dt => Expression.Condition(Expression.PropertyOrField(dt, "IsValidDateTime"), Expression.Convert(Expression.Call(dt, "GetDateTime", Array.Empty<Type>()), typeof(object)), Expression.Constant("invalid", typeof(object))));
 				}
 
 				return null;
 			});
 
 			return vf;
-			//VF                <IBM.Data.DB2Types.DB2DateTime>(dt => Format(dt.Value)),
-			//VF                <IBM.Data.DB2Types.DB2Date>    (dt => Format(dt.Value)),
-
-			//VF<IBM.Data.DB2Types.DB2Blob>(v => Format(v.Value)),
 		}
 
 		static NumberFormatter? GetNumberFormatter(Type type)
@@ -320,7 +313,6 @@ namespace LinqToDB.LINQPad
 
 						case "IBM.Data.DB2Types.DB2Double":
 						case "IBM.Data.DB2Types.DB2Real":
-						case "IBM.Data.DB2Types.DB2Real370": // z/OS type. not used currently by schema provider
 							return GenerateNumberFormatter<double>(type, true, p => Expression.PropertyOrField(p, "Value"));
 
 						case "Sap.Data.Hana.HanaDecimal":
@@ -336,16 +328,6 @@ namespace LinqToDB.LINQPad
 			});
 
 			return nf;
-
-			//NF<IBM.Data.DB2Types.DB2Int16,       Int64>     (value => v => v + value.Value,            v => n => v / n),
-			//NF<IBM.Data.DB2Types.DB2Int32,       Int64>     (value => v => v + value.Value,            v => n => v / n),
-			//NF<IBM.Data.DB2Types.DB2Int64,       Int64>     (value => v => v + value.Value,            v => n => v / n),
-			//NF<IBM.Data.DB2Types.DB2Decimal,     Decimal>   (value => v => v + value.Value,            v => n => v / n),
-			//NF<IBM.Data.DB2Types.DB2DecimalFloat,Decimal>   (value => v => v + value.Value,            v => n => v / n),
-			//NF<IBM.Data.DB2Types.DB2Double,      Double>    (value => v => v + value.Value,            v => n => v / n),
-			//NF<IBM.Data.DB2Types.DB2Real,        Double>    (value => v => v + value.Value,            v => n => v / n),
-
-			//NF<Sap.Data.Hana.HanaDecimal,        Decimal>   (value => v => v + value.ToDecimal(),      v => n => v / n),
 		}
 
 		static XElement FormatValue(Total total, object? value)
@@ -434,6 +416,14 @@ namespace LinqToDB.LINQPad
 		static string Format(TimeSpan ts)
 		{
 			return ts.ToString("c");
+		}
+
+		static object Format(object val)
+		{
+			if (val is string strVal)  return Format(strVal);
+			if (val is DateTime dtVal) return Format(dtVal);
+			
+			throw new InvalidOperationException($"Unsupported value type: {val.GetType()}");
 		}
 
 		static object Format(char chr)

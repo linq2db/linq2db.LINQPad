@@ -54,12 +54,12 @@ namespace LinqToDB.LINQPad
 				{
 #if !NETCORE
 					MetadataReference.CreateFromFile(typeof(object).               Assembly.Location),
-#endif
 					MetadataReference.CreateFromFile(typeof(Enumerable).           Assembly.Location),
 					MetadataReference.CreateFromFile(typeof(IDbConnection).        Assembly.Location),
+					MetadataReference.CreateFromFile(typeof(PhysicalAddress)      .Assembly.Location),
+#endif
 					MetadataReference.CreateFromFile(typeof(DataConnection).       Assembly.Location),
 					MetadataReference.CreateFromFile(typeof(LINQPadDataConnection).Assembly.Location),
-					MetadataReference.CreateFromFile(typeof(PhysicalAddress)      .Assembly.Location),
 					MetadataReference.CreateFromFile(typeof(SqlHierarchyId)       .Assembly.Location),
 				};
 
