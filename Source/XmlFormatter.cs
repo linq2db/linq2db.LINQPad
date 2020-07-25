@@ -404,7 +404,7 @@ namespace LinqToDB.LINQPad
 				fragments.Add("{");
 				fragments.Add(FormatValueXml(key));
 				fragments.Add(", ");
-				fragments.Add(FormatValueXml(dict[key]));
+				fragments.Add(FormatValueXml(dict[key!]));
 				fragments.Add("}");
 
 				i++;
@@ -446,9 +446,6 @@ namespace LinqToDB.LINQPad
 					new XAttribute("style", style),
 					vf.FormatValue(value));
 			}
-
-			if (value.GetType().Name == "SqlHierarchyId")
-				return FormatValueXml(value.ToString());
 
 			return new XElement("span", value);
 		}
@@ -575,10 +572,16 @@ namespace LinqToDB.LINQPad
 			VF<Guid>           (v => v.      ToString("B").ToUpper(), font:"consolas", size:"110%"),
 			VF<SqlGuid>        (v => v.Value.ToString("B").ToUpper(), font:"consolas", size:"110%"),
 			VF<TimeSpan>       (v => v.ToString()),
+			VF<SqlXml>         (v => v.Value),
 
 			VF<BitArray>       (v => Format(v)),
 			VF<IPAddress>      (v => Format(v.ToString())),
 			VF<PhysicalAddress>(v => Format(v.GetAddressBytes())),
+
+			// sql server types
+			VF<Microsoft.SqlServer.Types.SqlHierarchyId>(v => Format(v.ToString())),
+			VF<Microsoft.SqlServer.Types.SqlGeography  >(v => Format(v.ToString())),
+			VF<Microsoft.SqlServer.Types.SqlGeometry   >(v => Format(v.ToString())),
 
 			// npgsql types
 			VF<NpgsqlTypes.NpgsqlTimeSpan>(v => Format((TimeSpan)v)),

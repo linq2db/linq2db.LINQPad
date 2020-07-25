@@ -638,7 +638,7 @@ namespace LinqToDB.LINQPad
 					t == "NpgsqlDate"      ||
 					t == "NpgsqlTimeSpan"  ||
 					t == "NpgsqlDateTime"  ||
-					// SQLCE
+					// SQLCE/SQL Server
 					t == "SqlByte"         ||
 					t == "SqlInt16"        ||
 					t == "SqlInt32"        ||
@@ -652,6 +652,8 @@ namespace LinqToDB.LINQPad
 					t == "SqlDateTime"     ||
 					t == "SqlBinary"       ||
 					t == "SqlGuid"         ||
+					// sql server
+					t == "Microsoft.SqlServer.Types.SqlHierarchyId" ||
 					// MYSQL
 					t == "MySqlDateTime" => c.IsNullable && !c.ProviderSpecificType!.EndsWith("?") ? c.ProviderSpecificType + "?" : c.ProviderSpecificType!,
 
