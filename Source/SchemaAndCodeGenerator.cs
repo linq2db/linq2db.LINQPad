@@ -22,16 +22,18 @@ namespace LinqToDB.LINQPad
 		{
 			_cxInfo = cxInfo;
 
-			UseProviderSpecificTypes = ((string?)_cxInfo.DriverData.Element("useProviderSpecificTypes"))?.ToLower() == "true";
-			NormalizeJoins           = ((string?)_cxInfo.DriverData.Element("normalizeNames"))          ?.ToLower() == "true";
-			AllowMultipleQuery       = ((string?)_cxInfo.DriverData.Element("allowMultipleQuery"))      ?.ToLower() == "true";
-			ProviderName             =  (string?)_cxInfo.DriverData.Element("providerName");
-			CommandTimeout           = _cxInfo.DriverData.ElementValueOrDefault("commandTimeout", str => str.ToInt32() ?? 0, 0);
+			UseProviderSpecificTypes = ((string?)_cxInfo.DriverData.Element(CX.UseProviderSpecificTypes))?.ToLower() == "true";
+			NormalizeJoins           = ((string?)_cxInfo.DriverData.Element(CX.NormalizeNames))          ?.ToLower() == "true";
+			AllowMultipleQuery       = ((string?)_cxInfo.DriverData.Element(CX.AllowMultipleQuery))      ?.ToLower() == "true";
+			ProviderName             =  (string?)_cxInfo.DriverData.Element(CX.ProviderName);
+			ProviderPath             =  (string?)_cxInfo.DriverData.Element(CX.ProviderPath);
+			CommandTimeout           = _cxInfo.DriverData.ElementValueOrDefault(CX.CommandTimeout, str => str.ToInt32() ?? 0, 0);
 		}
 
 		public readonly int          CommandTimeout;
 		public readonly bool         UseProviderSpecificTypes;
 		public readonly string?      ProviderName;
+		public readonly string?      ProviderPath;
 		public readonly bool         NormalizeJoins;
 		public readonly bool         AllowMultipleQuery;
 		public readonly List<string> References = new List<string>();
@@ -52,7 +54,7 @@ namespace LinqToDB.LINQPad
 			typeName = ConvertToCompilable(typeName, false);
 
 			var connectionString = _cxInfo.DatabaseInfo.CustomCxString;
-			var providerInfo     = ProviderHelper.GetProvider(ProviderName);
+			var providerInfo     = ProviderHelper.GetProvider(ProviderName, ProviderPath);
 			var provider         = providerInfo.GetDataProvider(connectionString);
 
 			using (var db = new DataConnection(provider, connectionString))
@@ -64,20 +66,20 @@ namespace LinqToDB.LINQPad
 
 				var options = new GetSchemaOptions();
 
-				var includeSchemas = (string?)_cxInfo.DriverData.Element("includeSchemas");
+				var includeSchemas = (string?)_cxInfo.DriverData.Element(CX.IncludeSchemas);
 				if (includeSchemas != null) options.IncludedSchemas = includeSchemas.Split(',', ';');
 
-				var excludeSchemas = (string?)_cxInfo.DriverData.Element("excludeSchemas");
+				var excludeSchemas = (string?)_cxInfo.DriverData.Element(CX.ExcludeSchemas);
 				if (excludeSchemas != null) options.ExcludedSchemas = excludeSchemas.Split(',', ';');
 
-				var includeCatalogs = (string?)_cxInfo.DriverData.Element("includeCatalogs");
+				var includeCatalogs = (string?)_cxInfo.DriverData.Element(CX.IncludeCatalogs);
 				if (includeCatalogs != null) options.IncludedCatalogs = includeCatalogs.Split(',', ';');
 
-				var excludeCatalogs = (string?)_cxInfo.DriverData.Element("excludeCatalogs");
+				var excludeCatalogs = (string?)_cxInfo.DriverData.Element(CX.ExcludeCatalogs);
 				if (excludeCatalogs != null) options.ExcludedCatalogs = excludeCatalogs.Split(',', ';');
 
-				options.GetProcedures  = (string?)_cxInfo.DriverData.Element("excludeRoutines") != "true";
-				options.GetForeignKeys = (string?)_cxInfo.DriverData.Element("excludeFKs")      != "true";
+				options.GetProcedures  = (string?)_cxInfo.DriverData.Element(CX.ExcludeRoutines) != "true";
+				options.GetForeignKeys = (string?)_cxInfo.DriverData.Element(CX.ExcludeFKs)      != "true";
 
 				_schema = _dataProvider.GetSchemaProvider().GetSchema(db, options);
 
@@ -120,13 +122,13 @@ namespace LinqToDB.LINQPad
 				.AppendLine( "{")
 				.AppendLine($"  public class {typeName} : LinqToDB.LINQPad.LINQPadDataConnection")
 				.AppendLine( "  {")
-				.AppendLine($"    public {typeName}(string provider, string connectionString)")
-				.AppendLine( "      : base(provider, connectionString)")
+				.AppendLine($"    public {typeName}(string provider, string providerPath, string connectionString)")
+				.AppendLine("      : base(provider, providerPath, connectionString)")
 				.AppendLine( "    {")
 				.AppendLine($"      CommandTimeout = {CommandTimeout};")
 				.AppendLine( "    }")
 				.AppendLine($"    public {typeName}()")
-				.AppendLine($"      : base({CSharpTools.ToStringLiteral(ProviderName)}, {CSharpTools.ToStringLiteral(connectionString)})")
+				.AppendLine($"      : base({CSharpTools.ToStringLiteral(ProviderName)}, {CSharpTools.ToStringLiteral(ProviderPath)}, {CSharpTools.ToStringLiteral(connectionString)})")
 				.AppendLine( "    {")
 				.AppendLine($"      CommandTimeout = {CommandTimeout};")
 				.AppendLine( "    }")

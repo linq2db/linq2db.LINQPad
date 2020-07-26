@@ -28,7 +28,7 @@ namespace LinqToDB.LINQPad
 
 		public override DateTime? GetLastSchemaUpdate(IConnectionInfo cxInfo)
 		{
-			var providerName = (string?)cxInfo.DriverData.Element("providerName");
+			var providerName = (string?)cxInfo.DriverData.Element(CX.ProviderName);
 
 			if (providerName == ProviderName.SqlServer)
 				using (var db = new LINQPadDataConnection(cxInfo))
@@ -104,6 +104,7 @@ namespace LinqToDB.LINQPad
 			return new[]
 			{
 				new ParameterDescriptor("provider",         typeof(string).FullName),
+				new ParameterDescriptor("providerPath",     typeof(string).FullName),
 				new ParameterDescriptor("connectionString", typeof(string).FullName),
 			};
 		}
@@ -112,7 +113,8 @@ namespace LinqToDB.LINQPad
 		{
 			return new object?[]
 			{
-				(string?)cxInfo.DriverData.Element("providerName"),
+				(string?)cxInfo.DriverData.Element(CX.ProviderName),
+				(string?)cxInfo.DriverData.Element(CX.ProviderPath),
 				cxInfo.DatabaseInfo.CustomCxString,
 			};
 		}
@@ -122,9 +124,10 @@ namespace LinqToDB.LINQPad
 			yield return typeof(DataConnection).       Assembly.Location;
 			yield return typeof(LINQPadDataConnection).Assembly.Location;
 
-			var providerName = (string?)cxInfo.DriverData.Element("providerName");
+			var providerName = (string?)cxInfo.DriverData.Element(CX.ProviderName);
+			var providerPath = (string?)cxInfo.DriverData.Element(CX.ProviderPath);
 
-			foreach (var location in ProviderHelper.GetProvider(providerName).GetAssemblyLocation(cxInfo.DatabaseInfo.CustomCxString))
+			foreach (var location in ProviderHelper.GetProvider(providerName, providerPath).GetAssemblyLocation(cxInfo.DatabaseInfo.CustomCxString))
 			{
 				yield return location;
 			}
@@ -152,10 +155,10 @@ namespace LinqToDB.LINQPad
 			var conn = (DataConnection)context;
 
 			_mappingSchema      = conn.MappingSchema;
-			_useCustomFormatter = cxInfo.DriverData.Element("useCustomFormatter")?.Value.ToLower() == "true";
+			_useCustomFormatter = cxInfo.DriverData.Element(CX.UseCustomFormatter)?.Value.ToLower() == "true";
 
-			_allowMultipleQuery = cxInfo.DriverData.Element("allowMultipleQuery") == null || cxInfo.DriverData.Element("allowMultipleQuery")?.Value.ToLower() == "true";
-			_optimizeJoins      = cxInfo.DriverData.Element("optimizeJoins")      == null || cxInfo.DriverData.Element("optimizeJoins")     ?.Value.ToLower() == "true";
+			_allowMultipleQuery = cxInfo.DriverData.Element(CX.AllowMultipleQuery) == null || cxInfo.DriverData.Element(CX.AllowMultipleQuery)?.Value.ToLower() == "true";
+			_optimizeJoins      = cxInfo.DriverData.Element(CX.OptimizeJoins)      == null || cxInfo.DriverData.Element(CX.OptimizeJoins)     ?.Value.ToLower() == "true";
 
 			Common.Configuration.Linq.OptimizeJoins      = _optimizeJoins;
 			Common.Configuration.Linq.AllowMultipleQuery = _allowMultipleQuery;
@@ -170,13 +173,11 @@ namespace LinqToDB.LINQPad
 
 		public override IDbConnection? GetIDbConnection(IConnectionInfo cxInfo)
 		{
-			using (var conn = new LINQPadDataConnection(cxInfo))
-			{
-				if (conn.ConnectionString == null)
-					return null;
+			using var conn = new LINQPadDataConnection(cxInfo);
+			if (conn.ConnectionString == null)
+				return null;
 
-				return conn.DataProvider.CreateConnection(conn.ConnectionString);
-			}
+			return conn.DataProvider.CreateConnection(conn.ConnectionString);
 		}
 
 		public override void PreprocessObjectToWrite (ref object? objectToWrite, ObjectGraphInfo info)

@@ -139,8 +139,8 @@
 
 		<Grid Grid.Row="2" Visibility="{Binding DynamicVisibility}" >
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition/>
-				<ColumnDefinition/>
+				<ColumnDefinition Width="5*" />
+				<ColumnDefinition Width="4*" />
 			</Grid.ColumnDefinitions>
 
 			<GroupBox Grid.Column="0" Header="Data Context Options" Margin="0,0,3,0">
@@ -176,10 +176,18 @@
 					</StackPanel>
 
 					<StackPanel Grid.Column="1">
-						<CheckBox Content="Allow multiple queries" FontSize="12" IsChecked="{Binding AllowMultipleQuery}" Margin="0,5,0,0" />
-						<CheckBox Content="Optimize joins"         FontSize="12" IsChecked="{Binding OptimizeJoins}"      Margin="0,5,0,0" />
+						<CheckBox Content="Allow multiple queries" FontSize="12" IsChecked="{Binding AllowMultipleQuery}" Margin="0,0,0,5" />
+						<CheckBox Content="Optimize joins"         FontSize="12" IsChecked="{Binding OptimizeJoins}" />
 					</StackPanel>
 				</Grid>
+
+				<DockPanel Grid.Row="0" Visibility="{Binding ProviderPathVisibility}"  Margin="0,5,0,0">
+					<Label Padding="0,0,0,3" DockPanel.Dock="Right">
+						<Hyperlink Click="BrowseProvider">Browse...</Hyperlink>
+					</Label>
+					<Label Padding="1,0,1,3" Content="{Binding ProviderPathLabel, Mode=OneWay}" />
+				</DockPanel>
+				<TextBox Grid.Row="1" Text="{Binding ProviderPath}" Visibility="{Binding ProviderPathVisibility}"/>
 			</StackPanel>
 		</GroupBox>
 

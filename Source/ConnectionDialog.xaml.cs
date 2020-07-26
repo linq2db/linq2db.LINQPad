@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -33,6 +34,9 @@ namespace LinqToDB.LINQPad
 						"Including Stored Procedures may be dangerous in production if the selected database driver does not support CommandBehavior.SchemaOnly option.",
 						"Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
 				}
+
+				if (Model != null && args.PropertyName == nameof(ConnectionViewModel.ProviderPathLabel))
+					Model.ProviderPath = GetDefaultProviderPath();
 			};
 		}
 
@@ -117,6 +121,45 @@ namespace LinqToDB.LINQPad
 
 			if (dialog.ShowDialog() == true)
 				Model.CustomAssemblyPath = dialog.FileName;
+		}
+
+		string? GetDefaultProviderPath()
+		{
+			if (Model == null)
+				return null;
+
+			return Model.SelectedProvider?.Name switch
+			{
+				ProviderName.SqlCe         => IntPtr.Size == 4
+						? @"c:\Program Files (x86)\Microsoft SQL Server Compact Edition\v4.0\Private\System.Data.SqlServerCe.dll"
+						: @"c:\Program Files\Microsoft SQL Server Compact Edition\v4.0\Private\System.Data.SqlServerCe.dll",
+				ProviderName.SapHanaNative => @"c:\Program Files (x86)\sap\hdbclient\dotnetcore\v2.1\Sap.Data.Hana.Core.v2.1.dll",
+				_                          => null
+			};
+		}
+
+		void BrowseProvider(object sender, RoutedEventArgs e)
+		{
+			if (Model == null)
+				return;
+
+			var defaultPath = GetDefaultProviderPath();
+			if (defaultPath == null)
+				return;
+
+			var fileName = Path.GetFileName(defaultPath);
+
+			var dialog = new Microsoft.Win32.OpenFileDialog
+			{
+				Title            = $"Select {fileName}",
+				DefaultExt       = ".dll",
+				FileName         = Model.ProviderPath,
+				InitialDirectory = Path.GetDirectoryName(Model.ProviderPath ?? defaultPath),
+				Filter           = $"{fileName}|{fileName}",
+			};
+
+			if (dialog.ShowDialog() == true)
+				Model.ProviderPath = dialog.FileName;
 		}
 
 		void ChooseType(object sender, RoutedEventArgs e)

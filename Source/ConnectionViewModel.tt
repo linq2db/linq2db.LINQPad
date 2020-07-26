@@ -13,7 +13,7 @@
 	Model.Types.Add(
 		new Class("ConnectionViewModel",
 			new NotifyingProperty(ModelType.Create<string>(true),       "Name"),
-			new NotifyingProperty(new ModelType("ProviderInfo", true, true), "SelectedProvider"),
+			new NotifyingProperty(new ModelType("ProviderInfo", true, true), "SelectedProvider", "ProviderPathVisibility", "ProviderPathLabel", "ProviderPath"),
 			new NotifyingProperty(ModelType.Create<string>(true),       "ConnectionString"),
 			new NotifyingProperty("int",          "CommandTimeout"),
 			new NotifyingProperty("bool",         "Persist"),
@@ -39,6 +39,10 @@
 			new NotifyingProperty("bool",         "IsDynamic", "IsDynamic", "DynamicVisibility", "StaticVisibility"),
 			new NotifyingProperty("Visibility",   "DynamicVisibility").InitGetter(() => new [] { "IsDynamic ? Visibility.Visible : Visibility.Collapsed" }),
 			new NotifyingProperty("Visibility",   "StaticVisibility").InitGetter(() => new [] { "!IsDynamic ? Visibility.Visible : Visibility.Collapsed" }),
+			new NotifyingProperty("Visibility",   "ProviderPathVisibility") { Conditional = "NETCORE" }.InitGetter(() => new [] { "SelectedProvider?.Name == ProviderName.SqlCe || SelectedProvider?.Name == ProviderName.SapHanaNative ? Visibility.Visible : Visibility.Collapsed" }),
+			new NotifyingProperty("Visibility",   "ProviderPathVisibility") { Conditional = "!NETCORE" }.InitGetter(() => new [] { "Visibility.Collapsed" }),
+			new NotifyingProperty(ModelType.Create<string>(true),       "ProviderPathLabel").InitGetter(() => new [] { "SelectedProvider?.Name == ProviderName.SqlCe ? \"Specify path to System.Data.SqlServerCe.dll\" : SelectedProvider?.Name == ProviderName.SapHanaNative ? \"Specify path to Sap.Data.Hana.Core.v2.1.dll\" : null " }),
+			new NotifyingProperty(ModelType.Create<string>(true),       "ProviderPath"),
 			new NotifyingProperty("ObservableCollection<ProviderInfo>", "Providers"))
 	);
 

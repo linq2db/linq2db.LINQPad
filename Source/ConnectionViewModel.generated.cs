@@ -68,7 +68,9 @@ namespace LinqToDB.LINQPad
 					_selectedProvider = value;
 					AfterSelectedProviderChanged();
 
-					OnSelectedProviderChanged();
+					OnProviderPathVisibilityChanged();
+					OnProviderPathLabelChanged();
+					OnProviderPathChanged();
 				}
 			}
 		}
@@ -945,6 +947,117 @@ namespace LinqToDB.LINQPad
 		private void OnStaticVisibilityChanged()
 		{
 			OnPropertyChanged(_staticVisibilityChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
+		#region ProviderPathVisibility : Visibility
+
+#if NETCORE
+
+		public Visibility ProviderPathVisibility
+		{
+			get { return SelectedProvider?.Name == ProviderName.SqlCe || SelectedProvider?.Name == ProviderName.SapHanaNative ? Visibility.Visible : Visibility.Collapsed; }
+		}
+
+		#region INotifyPropertyChanged support
+
+		public const string NameOfProviderPathVisibility = "ProviderPathVisibility";
+
+		private static readonly PropertyChangedEventArgs _providerPathVisibilityChangedEventArgs = new PropertyChangedEventArgs(NameOfProviderPathVisibility);
+
+		private void OnProviderPathVisibilityChanged()
+		{
+			OnPropertyChanged(_providerPathVisibilityChangedEventArgs);
+		}
+
+		#endregion
+#endif
+
+
+		#endregion
+
+		#region ProviderPathVisibility : Visibility
+
+#if !NETCORE
+
+		public Visibility ProviderPathVisibility
+		{
+			get { return Visibility.Collapsed; }
+		}
+
+		#region INotifyPropertyChanged support
+
+		public const string NameOfProviderPathVisibility = "ProviderPathVisibility";
+
+		private static readonly PropertyChangedEventArgs _providerPathVisibilityChangedEventArgs = new PropertyChangedEventArgs(NameOfProviderPathVisibility);
+
+		private void OnProviderPathVisibilityChanged()
+		{
+			OnPropertyChanged(_providerPathVisibilityChangedEventArgs);
+		}
+
+		#endregion
+#endif
+
+
+		#endregion
+
+		#region ProviderPathLabel : string?
+
+		public string? ProviderPathLabel
+		{
+			get { return SelectedProvider?.Name == ProviderName.SqlCe ? "Specify path to System.Data.SqlServerCe.dll" : SelectedProvider?.Name == ProviderName.SapHanaNative ? "Specify path to Sap.Data.Hana.Core.v2.1.dll" : null ; }
+		}
+
+		#region INotifyPropertyChanged support
+
+		public const string NameOfProviderPathLabel = "ProviderPathLabel";
+
+		private static readonly PropertyChangedEventArgs _providerPathLabelChangedEventArgs = new PropertyChangedEventArgs(NameOfProviderPathLabel);
+
+		private void OnProviderPathLabelChanged()
+		{
+			OnPropertyChanged(_providerPathLabelChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
+		#region ProviderPath : string?
+
+		private string? _providerPath;
+		public  string?  ProviderPath
+		{
+			get { return _providerPath; }
+			set
+			{
+				if (_providerPath != value)
+				{
+					BeforeProviderPathChanged(value);
+					_providerPath = value;
+					AfterProviderPathChanged();
+
+					OnProviderPathChanged();
+				}
+			}
+		}
+
+		#region INotifyPropertyChanged support
+
+		partial void BeforeProviderPathChanged(string? newValue);
+		partial void AfterProviderPathChanged ();
+
+		public const string NameOfProviderPath = "ProviderPath";
+
+		private static readonly PropertyChangedEventArgs _providerPathChangedEventArgs = new PropertyChangedEventArgs(NameOfProviderPath);
+
+		private void OnProviderPathChanged()
+		{
+			OnPropertyChanged(_providerPathChangedEventArgs);
 		}
 
 		#endregion

@@ -37,7 +37,7 @@ namespace LinqToDB.LINQPad
 
 		public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo cxInfo)
 		{
-			var configuration = cxInfo.DriverData.Element("customConfiguration")?.Value;
+			var configuration = cxInfo.DriverData.Element(CX.CustomConfiguration)?.Value;
 
 			if (configuration != null)
 				return new[] { new ParameterDescriptor("configuration", typeof(string).FullName) };
@@ -47,7 +47,7 @@ namespace LinqToDB.LINQPad
 
 		public override object[] GetContextConstructorArguments(IConnectionInfo cxInfo)
 		{
-			var configuration = cxInfo.DriverData.Element("customConfiguration")?.Value;
+			var configuration = cxInfo.DriverData.Element(CX.CustomConfiguration)?.Value;
 
 			if (configuration != null)
 				return new object[] { configuration };
@@ -59,8 +59,8 @@ namespace LinqToDB.LINQPad
 
 		public override void InitializeContext(IConnectionInfo cxInfo, object context, QueryExecutionManager executionManager)
 		{
-			var allowMultipleQuery = cxInfo.DriverData.Element("allowMultipleQuery") == null || cxInfo.DriverData.Element("allowMultipleQuery")?.Value.ToLower() == "true";
-			var optimizeJoins      = cxInfo.DriverData.Element("optimizeJoins")      == null || cxInfo.DriverData.Element("optimizeJoins")     ?.Value.ToLower() == "true";
+			var allowMultipleQuery = cxInfo.DriverData.Element(CX.AllowMultipleQuery) == null || cxInfo.DriverData.Element(CX.AllowMultipleQuery)?.Value.ToLower() == "true";
+			var optimizeJoins      = cxInfo.DriverData.Element(CX.OptimizeJoins)      == null || cxInfo.DriverData.Element(CX.OptimizeJoins)     ?.Value.ToLower() == "true";
 
 			Common.Configuration.Linq.OptimizeJoins      = optimizeJoins;
 			Common.Configuration.Linq.AllowMultipleQuery = allowMultipleQuery;
@@ -80,10 +80,5 @@ namespace LinqToDB.LINQPad
 			dynamic ctx = context;
 			ctx.Dispose();
 		}
-
-//		public override void PreprocessObjectToWrite(ref object objectToWrite, ObjectGraphInfo info)
-//		{
-//			objectToWrite = XmlFormatter.FormatValue(objectToWrite, info);
-//		}
 	}
 }

@@ -1,7 +1,7 @@
 ﻿using System;
-using System.IO;
 using System.Buffers;
 using System.Data.Common;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -17,22 +17,19 @@ namespace LinqToDB.LINQPad
 {
 	static class DriverHelper
 	{
-		public const string Author = "Igor Tkachev";
+		public const string Author = "Linq To DB";
 
 		public static void Init()
 		{
 #if !NETCORE
 			ConfigureRedirects();
 			SapHanaSPS04Fixes();
-#else
-			RegisterSqlCEFactory();
-			RegisterSapHanaFactory();
 #endif
 		}
 
 		public static string GetConnectionDescription(IConnectionInfo cxInfo)
 		{
-			var providerName = (string?)cxInfo.DriverData.Element("providerName");
+			var providerName = (string?)cxInfo.DriverData.Element(CX.ProviderName);
 			var dbInfo = cxInfo.DatabaseInfo;
 
 			return $"[{providerName}] {dbInfo.Server}\\{dbInfo.Database} (v.{dbInfo.DbVersion})";
@@ -40,9 +37,9 @@ namespace LinqToDB.LINQPad
 
 		public static void ClearConnectionPools(IConnectionInfo cxInfo)
 		{
-			//using (var db = new LINQPadDataConnection(cxInfo))
-			//	if (db.Connection is SqlConnection connection)
-			//		SqlConnection.ClearPool(connection);
+			using var db = new LINQPadDataConnection(cxInfo);
+			if (db.Connection is SqlConnection connection)
+				SqlConnection.ClearPool(connection);
 		}
 
 		#region ShowConnectionDialog
@@ -52,7 +49,7 @@ namespace LinqToDB.LINQPad
 			var model        = new ConnectionViewModel();
 			var providerName = isNewConnection
 				? ProviderName.SqlServer
-				: (string?)cxInfo.DriverData.Element("providerName");
+				: (string?)cxInfo.DriverData.Element(CX.ProviderName);
 
 			if (providerName != null)
 				model.SelectedProvider = model.Providers.FirstOrDefault(p => p.Name == providerName);
@@ -62,70 +59,72 @@ namespace LinqToDB.LINQPad
 			model.CustomAssemblyPath       = cxInfo.CustomTypeInfo.CustomAssemblyPath;
 			model.CustomTypeName           = cxInfo.CustomTypeInfo.CustomTypeName;
 			model.AppConfigPath            = cxInfo.AppConfigPath;
-			model.CustomConfiguration      = cxInfo.DriverData.Element("customConfiguration")?.Value;
+			model.CustomConfiguration      = cxInfo.DriverData.Element(CX.CustomConfiguration)?.Value;
 			model.Persist                  = cxInfo.Persist;
 			model.IsProduction             = cxInfo.IsProduction;
 			model.EncryptConnectionString  = cxInfo.DatabaseInfo.EncryptCustomCxString;
 			model.Pluralize                = !cxInfo.DynamicSchemaOptions.NoPluralization;
 			model.Capitalize               = !cxInfo.DynamicSchemaOptions.NoCapitalization;
-			model.IncludeRoutines          = cxInfo.DriverData.Element("excludeRoutines")?.Value.ToLower() != "true";
-			model.IncludeFKs               = cxInfo.DriverData.Element("excludeFKs")?.Value.ToLower()      != "true";
-			model.ConnectionString         = cxInfo.DatabaseInfo.CustomCxString.IsNullOrWhiteSpace() ? (string?)cxInfo.DriverData.Element("connectionString") : cxInfo.DatabaseInfo.CustomCxString;
-			model.IncludeSchemas           = cxInfo.DriverData.Element("includeSchemas")          ?.Value;
-			model.ExcludeSchemas           = cxInfo.DriverData.Element("excludeSchemas")          ?.Value;
-			model.IncludeCatalogs          = cxInfo.DriverData.Element("includeCatalogs")         ?.Value;
-			model.ExcludeCatalogs          = cxInfo.DriverData.Element("excludeCatalogs")         ?.Value;
-			//model.NormalizeNames           = cxInfo.DriverData.Element("normalizeNames")          ?.Value.ToLower() == "true";
-			model.AllowMultipleQuery       = cxInfo.DriverData.Element("allowMultipleQuery")      ?.Value.ToLower() == "true";
-			model.UseProviderSpecificTypes = cxInfo.DriverData.Element("useProviderSpecificTypes")?.Value.ToLower() == "true";
-			model.UseCustomFormatter       = cxInfo.DriverData.Element("useCustomFormatter")      ?.Value.ToLower() == "true";
-			model.CommandTimeout           = cxInfo.DriverData.ElementValueOrDefault("commandTimeout", str => str.ToInt32() ?? 0, 0);
+			model.IncludeRoutines          = cxInfo.DriverData.Element(CX.ExcludeRoutines)?.Value.ToLower() != "true";
+			model.IncludeFKs               = cxInfo.DriverData.Element(CX.ExcludeFKs)?.Value.ToLower()      != "true";
+			model.ConnectionString         = cxInfo.DatabaseInfo.CustomCxString.IsNullOrWhiteSpace() ? (string?)cxInfo.DriverData.Element(CX.ConnectionString) : cxInfo.DatabaseInfo.CustomCxString;
+			model.IncludeSchemas           = cxInfo.DriverData.Element(CX.IncludeSchemas)          ?.Value;
+			model.ExcludeSchemas           = cxInfo.DriverData.Element(CX.ExcludeSchemas)          ?.Value;
+			model.IncludeCatalogs          = cxInfo.DriverData.Element(CX.IncludeCatalogs)         ?.Value;
+			model.ExcludeCatalogs          = cxInfo.DriverData.Element(CX.ExcludeCatalogs)         ?.Value;
+			//model.NormalizeNames           = cxInfo.DriverData.Element(CX.NormalizeNames)          ?.Value.ToLower() == "true";
+			model.AllowMultipleQuery       = cxInfo.DriverData.Element(CX.AllowMultipleQuery)      ?.Value.ToLower() == "true";
+			model.UseProviderSpecificTypes = cxInfo.DriverData.Element(CX.UseProviderSpecificTypes)?.Value.ToLower() == "true";
+			model.UseCustomFormatter       = cxInfo.DriverData.Element(CX.UseCustomFormatter)      ?.Value.ToLower() == "true";
+			model.CommandTimeout           = cxInfo.DriverData.ElementValueOrDefault(CX.CommandTimeout, str => str.ToInt32() ?? 0, 0);
 
-			model.OptimizeJoins            = cxInfo.DriverData.Element("optimizeJoins") == null || cxInfo.DriverData.Element("optimizeJoins")?.Value.ToLower() == "true";
+			model.OptimizeJoins            = cxInfo.DriverData.Element(CX.OptimizeJoins) == null || cxInfo.DriverData.Element(CX.OptimizeJoins)?.Value.ToLower() == "true";
+			model.ProviderPath             = (string?)cxInfo.DriverData.Element(CX.ProviderPath);
 
 			if (ConnectionDialog.Show(model, isDynamic ? (Func<ConnectionViewModel?, Exception?>?)TestConnection : null))
 			{
 				providerName = model.SelectedProvider?.Name;
 
-				cxInfo.DriverData.SetElementValue("providerName",             providerName);
-				cxInfo.DriverData.SetElementValue("connectionString",         null);
-				cxInfo.DriverData.SetElementValue("excludeRoutines",          !model.IncludeRoutines ? "true" : "false");
-				cxInfo.DriverData.SetElementValue("excludeFKs",               !model.IncludeFKs      ? "true" : "false");
-				cxInfo.DriverData.SetElementValue("includeSchemas",           model.IncludeSchemas. IsNullOrWhiteSpace() ? null : model.IncludeSchemas);
-				cxInfo.DriverData.SetElementValue("excludeSchemas",           model.ExcludeSchemas. IsNullOrWhiteSpace() ? null : model.ExcludeSchemas);
-				cxInfo.DriverData.SetElementValue("includeCatalogs",          model.IncludeCatalogs.IsNullOrWhiteSpace() ? null : model.IncludeSchemas);
-				cxInfo.DriverData.SetElementValue("excludeCatalogs",          model.ExcludeCatalogs.IsNullOrWhiteSpace() ? null : model.ExcludeSchemas);
-				cxInfo.DriverData.SetElementValue("optimizeJoins",            model.OptimizeJoins            ? "true" : "false");
-				cxInfo.DriverData.SetElementValue("allowMultipleQuery",       model.AllowMultipleQuery       ? "true" : "false");
-				//cxInfo.DriverData.SetElementValue("normalizeNames",           model.NormalizeNames           ? "true" : null);
-				cxInfo.DriverData.SetElementValue("useProviderSpecificTypes", model.UseProviderSpecificTypes ? "true" : null);
-				cxInfo.DriverData.SetElementValue("useCustomFormatter",       model.UseCustomFormatter       ? "true" : null);
-				cxInfo.DriverData.SetElementValue("commandTimeout",           model.CommandTimeout.ToString());
+				cxInfo.DriverData.SetElementValue(CX.ProviderName,             providerName);
+				cxInfo.DriverData.SetElementValue(CX.ProviderPath,             model.ProviderPath);
+				cxInfo.DriverData.SetElementValue(CX.ConnectionString,         null);
+				cxInfo.DriverData.SetElementValue(CX.ExcludeRoutines,          !model.IncludeRoutines ? "true" : "false");
+				cxInfo.DriverData.SetElementValue(CX.ExcludeFKs,               !model.IncludeFKs      ? "true" : "false");
+				cxInfo.DriverData.SetElementValue(CX.IncludeSchemas,           model.IncludeSchemas. IsNullOrWhiteSpace() ? null : model.IncludeSchemas);
+				cxInfo.DriverData.SetElementValue(CX.ExcludeSchemas,           model.ExcludeSchemas. IsNullOrWhiteSpace() ? null : model.ExcludeSchemas);
+				cxInfo.DriverData.SetElementValue(CX.IncludeCatalogs,          model.IncludeCatalogs.IsNullOrWhiteSpace() ? null : model.IncludeSchemas);
+				cxInfo.DriverData.SetElementValue(CX.ExcludeCatalogs,          model.ExcludeCatalogs.IsNullOrWhiteSpace() ? null : model.ExcludeSchemas);
+				cxInfo.DriverData.SetElementValue(CX.OptimizeJoins,            model.OptimizeJoins            ? "true" : "false");
+				cxInfo.DriverData.SetElementValue(CX.AllowMultipleQuery,       model.AllowMultipleQuery       ? "true" : "false");
+				//cxInfo.DriverData.SetElementValue(CX.NormalizeNames,           model.NormalizeNames           ? "true" : null);
+				cxInfo.DriverData.SetElementValue(CX.UseProviderSpecificTypes, model.UseProviderSpecificTypes ? "true" : null);
+				cxInfo.DriverData.SetElementValue(CX.UseCustomFormatter,       model.UseCustomFormatter       ? "true" : null);
+				cxInfo.DriverData.SetElementValue(CX.CommandTimeout,           model.CommandTimeout.ToString());
 
 				try
 				{
 					if (model.ConnectionString != null)
 					{
-						var providerInfo = ProviderHelper.GetProvider(providerName);
+						var providerInfo             = ProviderHelper.GetProvider(providerName, model.ProviderPath);
 						cxInfo.DatabaseInfo.Provider = providerInfo.GetConnectionNamespace();
-						var provider = providerInfo.GetDataProvider(model.ConnectionString);
+						var provider                 = providerInfo.GetDataProvider(model.ConnectionString);
 
-						using (var db = new DataConnection(provider, model.ConnectionString))
+						using var db = new DataConnection(provider, model.ConnectionString)
 						{
-							db.CommandTimeout = model.CommandTimeout;
+							CommandTimeout = model.CommandTimeout
+						};
 
-							cxInfo.DatabaseInfo.Provider  = db.Connection.GetType().Namespace;
-							cxInfo.DatabaseInfo.Server    = ((DbConnection)db.Connection).DataSource;
-							cxInfo.DatabaseInfo.Database  = db.Connection.Database;
-							cxInfo.DatabaseInfo.DbVersion = ((DbConnection)db.Connection).ServerVersion;
-						}
+						cxInfo.DatabaseInfo.Provider  = db.Connection.GetType().Namespace;
+						cxInfo.DatabaseInfo.Server    = ((DbConnection)db.Connection).DataSource;
+						cxInfo.DatabaseInfo.Database  = db.Connection.Database;
+						cxInfo.DatabaseInfo.DbVersion = ((DbConnection)db.Connection).ServerVersion;
 					}
 				}
 				catch
 				{
 				}
 
-				cxInfo.DriverData.SetElementValue("customConfiguration", model.CustomConfiguration.IsNullOrWhiteSpace() ? null : model.CustomConfiguration);
+				cxInfo.DriverData.SetElementValue(CX.CustomConfiguration, model.CustomConfiguration.IsNullOrWhiteSpace() ? null : model.CustomConfiguration);
 
 				cxInfo.CustomTypeInfo.CustomAssemblyPath     =  model.CustomAssemblyPath;
 				cxInfo.CustomTypeInfo.CustomTypeName         =  model.CustomTypeName;
@@ -154,13 +153,11 @@ namespace LinqToDB.LINQPad
 			{
 				if (model.SelectedProvider != null && model.ConnectionString != null)
 				{
-					var provider = ProviderHelper.GetProvider(model.SelectedProvider.Name).GetDataProvider(model.ConnectionString);
+					var provider = ProviderHelper.GetProvider(model.SelectedProvider.Name, model.ProviderPath).GetDataProvider(model.ConnectionString);
 
-					using (var  con = provider.CreateConnection(model.ConnectionString))
-					{
-						con.Open();
-						return null;
-					}
+					using var con = provider.CreateConnection(model.ConnectionString);
+					con.Open();
+					return null;
 				}
 
 				throw new InvalidOperationException();
@@ -252,39 +249,6 @@ namespace LinqToDB.LINQPad
 				domainManagerField.SetValue(domain, manager);
 			}
 			catch { /* ne shmagla */ }
-		}
-#else
-		static void RegisterSqlCEFactory()
-		{
-			try
-			{
-				// default install pathes. Hardcoded for now as hardly anyone will need other location in near future
-				var pathx64 = @"c:\Program Files\Microsoft SQL Server Compact Edition\v4.0\Private\System.Data.SqlServerCe.dll";
-				var pathx86 = @"c:\Program Files (x86)\Microsoft SQL Server Compact Edition\v4.0\Private\System.Data.SqlServerCe.dll";
-				var path = IntPtr.Size == 4 ? pathx86 : pathx64;
-				var assembly = Assembly.LoadFrom(path);
-				DbProviderFactories.RegisterFactory("System.Data.SqlServerCe.4.0", assembly.GetType("System.Data.SqlServerCe.SqlCeProviderFactory"));
-			}
-			catch { }
-		}
-		
-		static void RegisterSapHanaFactory()
-		{
-			try
-			{
-				// woo-hoo, hardcoded pathes! default install location on x64 system
-				var srcPath = @"c:\Program Files (x86)\sap\hdbclient\dotnetcore\v2.1\Sap.Data.Hana.Core.v2.1.dll";
-				var targetPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory!, Path.GetFileName(srcPath));
-				if (File.Exists(srcPath))
-				{
-					// original path contains spaces which breaks broken native dlls discovery logic in SAP provider
-					// if you run tests from path with spaces - it will not help you
-					File.Copy(srcPath, targetPath, true);
-					var sapHanaAssembly = Assembly.LoadFrom(targetPath);
-					DbProviderFactories.RegisterFactory("Sap.Data.Hana", sapHanaAssembly.GetType("Sap.Data.Hana.HanaFactory"));
-				}
-			}
-			catch { }
 		}
 #endif
 	}

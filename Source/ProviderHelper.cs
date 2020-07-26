@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -146,10 +147,8 @@ namespace LinqToDB.LINQPad
 					var connectionAssemblies = new List<Assembly>() { provider.GetType().Assembly };
 					try
 					{
-						using (var connection = provider.CreateConnection(connectionString))
-						{
-							connectionAssemblies.Add(connection.GetType().Assembly);
-						}
+						using var connection = provider.CreateConnection(connectionString);
+						connectionAssemblies.Add(connection.GetType().Assembly);
 					}
 					catch
 					{
@@ -207,8 +206,12 @@ namespace LinqToDB.LINQPad
 
 		}
 
-		public static LoadProviderInfo GetProvider(string? providerName)
+		public static LoadProviderInfo GetProvider(string? providerName, string? providerPath)
 		{
+#if NETCORE
+			RegisterProviderFactory(providerName, providerPath);
+#endif
+
 			if (providerName == null)
 				throw new ArgumentNullException($"Provider name missing");
 
@@ -231,5 +234,61 @@ namespace LinqToDB.LINQPad
 				throw new Exception($"Can not activate provider \"{providerName}\"");
 			return provider;
 		}
+
+#if NETCORE
+		static void RegisterProviderFactory(string? providerName, string? providerPath)
+		{
+			if (!string.IsNullOrWhiteSpace(providerPath))
+			{
+				switch (providerName)
+				{
+					case ProviderName.SqlCe:
+						RegisterSqlCEFactory(providerPath);
+						break;
+					case ProviderName.SapHanaNative:
+						RegisterSapHanaFactory(providerPath);
+						break;
+				}
+			}
+		}
+
+		private static bool _sqlceLoaded;
+		static void RegisterSqlCEFactory(string providerPath)
+		{
+			if (_sqlceLoaded)
+				return;
+
+			try
+			{
+				var assembly = Assembly.LoadFrom(providerPath);
+				DbProviderFactories.RegisterFactory("System.Data.SqlServerCe.4.0", assembly.GetType("System.Data.SqlServerCe.SqlCeProviderFactory"));
+				_sqlceLoaded = true;
+			}
+			catch { }
+		}
+		
+		private static bool _sapHanaLoaded;
+		static void RegisterSapHanaFactory(string providerPath)
+		{
+			if (_sapHanaLoaded)
+				return;
+
+			try
+			{
+				var targetPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory!, Path.GetFileName(providerPath));
+				if (File.Exists(providerPath))
+				{
+					// original path contains spaces which breaks broken native dlls discovery logic in SAP provider
+					// (at least SPS04 040)
+					// if you run tests from path with spaces - it will not help you
+					File.Copy(providerPath, targetPath, true);
+					var sapHanaAssembly = Assembly.LoadFrom(targetPath);
+					DbProviderFactories.RegisterFactory("Sap.Data.Hana", sapHanaAssembly.GetType("Sap.Data.Hana.HanaFactory"));
+					_sapHanaLoaded = true;
+				}
+			}
+			catch { }
+		}
+#endif
 	}
 }

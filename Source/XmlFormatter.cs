@@ -447,18 +447,9 @@ namespace LinqToDB.LINQPad
 				: dt.ToString("yyyy-MM-dd HH:mm:ss");
 		}
 
-		// used by reflection
 		static string Format(TimeSpan ts)
 		{
 			return ts.ToString("c");
-		}
-
-		static object Format(object val)
-		{
-			if (val is string strVal)  return Format(strVal);
-			if (val is DateTime dtVal) return Format(dtVal);
-			
-			throw new InvalidOperationException($"Unsupported value type: {val.GetType()}");
 		}
 
 		static object Format(BitArray value)
