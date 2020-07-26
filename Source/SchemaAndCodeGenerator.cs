@@ -601,12 +601,19 @@ namespace LinqToDB.LINQPad
 				return c.ProviderSpecificType switch
 				{
 					// ignore some types for various reasons
-					// DB2: those IBM.Data.DB2Types.* types cannot return value (without linq2db changes)
-					// MySql: doesn't make sense to expose as value has same byte[] type
+					
 					var t when
+					// DB2:those IBM.Data.DB2Types.* types cannot return value (without linq2db changes)
 					t == "DB2Clob" ||
 					t == "DB2Blob" ||
 					t == "DB2Xml"  ||
+					// Oracle: temporary ignore types, as linq2db schema provider doesn't resolve them properly
+					t == "OracleIntervalDS"   ||
+					t == "OracleIntervalYM"   ||
+					t == "OracleTimeStamp"    ||
+					t == "OracleTimeStampLTZ" ||
+					t == "OracleTimeStampTZ"  ||
+					// MySql: doesn't make sense to expose as value has same byte[] type
 					t == "MySqlGeometry" => c.MemberType,
 
 					// temporary fix nullability for provider-specific struct types (should be done in linq2db)
@@ -638,6 +645,16 @@ namespace LinqToDB.LINQPad
 					t == "NpgsqlDate"      ||
 					t == "NpgsqlTimeSpan"  ||
 					t == "NpgsqlDateTime"  ||
+					// Oracle
+					t == "OracleBinary"       ||
+					t == "OracleDate"         ||
+					t == "OracleDecimal"      ||
+					t == "OracleIntervalDS"   ||
+					t == "OracleIntervalYM"   ||
+					t == "OracleString"       ||
+					t == "OracleTimeStamp"    ||
+					t == "OracleTimeStampLTZ" ||
+					t == "OracleTimeStampTZ"  ||
 					// SQLCE/SQL Server
 					t == "SqlByte"         ||
 					t == "SqlInt16"        ||

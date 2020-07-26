@@ -583,6 +583,15 @@ namespace LinqToDB.LINQPad
 			VF<Microsoft.SqlServer.Types.SqlGeography  >(v => Format(v.ToString())),
 			VF<Microsoft.SqlServer.Types.SqlGeometry   >(v => Format(v.ToString())),
 
+			// oracle managed types
+			VF<Oracle.ManagedDataAccess.Types.OracleClob   >(v => FormatValueXml(v.IsNull ? null : v.Value)),
+			VF<Oracle.ManagedDataAccess.Types.OracleDate   >(v => Format(v.Value)),
+			VF<Oracle.ManagedDataAccess.Types.OracleBinary >(v => Format(v.Value)),
+			VF<Oracle.ManagedDataAccess.Types.OracleBFile  >(v => FormatValueXml(v.IsNull ? null : v.FileName)), // value is not accessible and file name is better
+			VF<Oracle.ManagedDataAccess.Types.OracleBlob   >(v => FormatValueXml(v.IsNull ? null : v.Value)),
+			VF<Oracle.ManagedDataAccess.Types.OracleString >(v => Format(v.Value)),
+			VF<Oracle.ManagedDataAccess.Types.OracleXmlType>(v => FormatValueXml(v.IsNull ? null : v.Value)),
+
 			// npgsql types
 			VF<NpgsqlTypes.NpgsqlTimeSpan>(v => Format((TimeSpan)v)),
 			VF<NpgsqlTypes.NpgsqlDateTime>(v => Format((DateTime)v)),
@@ -623,6 +632,9 @@ namespace LinqToDB.LINQPad
 			NF<SqlMoney>        (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
 			NF<SqlDouble>       (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
 			NF<SqlSingle>       (value => v => (v.IsNull ? 0 : v) + value, v => n => v / n),
+
+			// another option is to use BigInteger class
+			NF<Oracle.ManagedDataAccess.Types.OracleDecimal, decimal>(value => v => v + Oracle.ManagedDataAccess.Types.OracleDecimal.SetPrecision(value, 27).Value, v => n => v / n, v => new XElement("span", v.ToString())),
 
 			//Dynamic types will be genareted later
 
@@ -719,6 +731,11 @@ namespace LinqToDB.LINQPad
 		static NumberFormatter NF<T,TT>(Func<T,Func<TT,TT>> add, Func<TT,Func<int,object>> avr)
 		{
 			return new NumberFormatter<T,TT>(add, avr, v => new XElement("span", v));
+		}
+
+		static NumberFormatter NF<T, TT>(Func<T, Func<TT, TT>> add, Func<TT, Func<int, object>> avr, Func<T, XElement> format)
+		{
+			return new NumberFormatter<T, TT>(add, avr, format);
 		}
 
 		abstract class NumberFormatter
