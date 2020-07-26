@@ -263,8 +263,6 @@ namespace LinqToDB.LINQPad
 					case "IBM.Data.DB2Types.DB2Date":
 					case "IBM.Data.DB2Types.DB2DateTime": // z/OS and Informix type
 						return GenerateValueFormatter<DateTime>(type, dt => Expression.PropertyOrField(dt, "Value"));
-					case "MySql.Data.Types.MySqlDateTime":
-						return GenerateValueFormatter<object>(type, dt => Expression.Condition(Expression.PropertyOrField(dt, "IsValidDateTime"), Expression.Convert(Expression.Call(dt, "GetDateTime", Array.Empty<Type>()), typeof(object)), Expression.Constant("invalid", typeof(object))));
 				}
 
 				return null;
@@ -277,28 +275,20 @@ namespace LinqToDB.LINQPad
 		{
 			var nf = _numberFormatters.GetOrAdd(type, t =>
 			{
-
-				try
+				switch (type.FullName)
 				{
-					switch (type.FullName)
-					{
-						case "IBM.Data.DB2Types.DB2Int16":
-						case "IBM.Data.DB2Types.DB2Int32":
-						case "IBM.Data.DB2Types.DB2Int64":
-							return GenerateNumberFormatter<long>(type, true, p => Expression.PropertyOrField(p, "Value"));
+					case "IBM.Data.DB2Types.DB2Int16":
+					case "IBM.Data.DB2Types.DB2Int32":
+					case "IBM.Data.DB2Types.DB2Int64":
+						return GenerateNumberFormatter<long>(type, true, p => Expression.PropertyOrField(p, "Value"));
 
-						case "IBM.Data.DB2Types.DB2Decimal":
-						case "IBM.Data.DB2Types.DB2DecimalFloat":
-							return GenerateNumberFormatter<decimal>(type, true, p => Expression.PropertyOrField(p, "Value"));
+					case "IBM.Data.DB2Types.DB2Decimal":
+					case "IBM.Data.DB2Types.DB2DecimalFloat":
+						return GenerateNumberFormatter<decimal>(type, true, p => Expression.PropertyOrField(p, "Value"));
 
-						case "IBM.Data.DB2Types.DB2Double":
-						case "IBM.Data.DB2Types.DB2Real":
-							return GenerateNumberFormatter<double>(type, true, p => Expression.PropertyOrField(p, "Value"));
-					}
-				}
-				catch (Exception)
-				{
-					// ignored
+					case "IBM.Data.DB2Types.DB2Double":
+					case "IBM.Data.DB2Types.DB2Real":
+						return GenerateNumberFormatter<double>(type, true, p => Expression.PropertyOrField(p, "Value"));
 				}
 
 				return null;
@@ -577,6 +567,10 @@ namespace LinqToDB.LINQPad
 			VF<BitArray>       (v => Format(v)),
 			VF<IPAddress>      (v => Format(v.ToString())),
 			VF<PhysicalAddress>(v => Format(v.GetAddressBytes())),
+
+			// mysql types
+			VF<MySql.Data.Types.MySqlDateTime>(v => FormatValueXml(v.IsValidDateTime ? (object)v.GetDateTime() : "invalid")),
+
 
 			// sql server types
 			VF<Microsoft.SqlServer.Types.SqlHierarchyId>(v => Format(v.ToString())),
