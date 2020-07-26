@@ -7,8 +7,8 @@
 		<Product>linq2db.LINQPad</Product>
 		<AssemblyTitle>$(Product)</AssemblyTitle>
 		<Version>3.0.0.0</Version>
-		<AssemblyVersion>3.0.0.0</AssemblyVersion>
-		<FileVersion>3.0.0.0</FileVersion>
+		<AssemblyVersion>$(Version)</AssemblyVersion>
+		<FileVersion>$(Version)</FileVersion>
 		<Copyright>Copyright © 2020 Linq To DB</Copyright>
 		<AssemblyOriginatorKeyFile>linq2db.snk</AssemblyOriginatorKeyFile>
 		<UseWPF>true</UseWPF>

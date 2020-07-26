@@ -22,9 +22,9 @@ Following databases supported (by both LINQPad 5 and LINQPad 6 if not noted):
 
 ## Download
 
-Releases are hosted on [Github](https://github.com/linq2db/linq2db.LINQPad/releases) and on [Nuget]_(TODO:LINK) for LINQPad 6 driver.
+Releases are hosted on [Github](https://github.com/linq2db/linq2db.LINQPad/releases) and on [Nuget](https://www.nuget.org/packages/linq2db.LINQPad) for LINQPad 6 driver.
 
-Latest build is hosted on [Azure Artifacts]_(TODO_LINK).
+Latest build is hosted on [Azure Artifacts](https://dev.azure.com/linq2db/linq2db/_packaging?_a=package&feed=linq2db%40Local&package=linq2db.LINQPad&protocolType=NuGet).
 
 ## Installation
 
