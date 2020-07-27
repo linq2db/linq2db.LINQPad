@@ -54,11 +54,6 @@ namespace LinqToDB.LINQPad
 			if (objectToWrite is string || objectToWrite is XElement)
 				return objectToWrite;
 
-			if (objectToWrite is SqlDecimal value)
-			{
-				return Util.RawHtml($"<div class=\"n\">{value}</div>");
-			}
-
 			var type = objectToWrite.GetType();
 
 			if (objectToWrite is IEnumerable enumerable)
@@ -413,6 +408,10 @@ namespace LinqToDB.LINQPad
 
 		public static object FormatValue(object? value)
 		{
+			// not sure why, but LINQPad doesn't call formatter for this type properly (only this type)
+			if (value is Microsoft.SqlServer.Types.SqlHierarchyId)
+				return value.ToString();
+
 			var val = FormatValueXml(value, true);
 			if (val != null)
 				return Util.RawHtml(val);
@@ -425,10 +424,14 @@ namespace LinqToDB.LINQPad
 			if (IsNull(value))
 				return new XElement("span", new XAttribute("style", "text-align:center;"), new XElement("i", new XAttribute("style", "font-style: italic"), "null"));
 
-			if (_numberFormatters.TryGetValue(value.GetType(), out var nf) && nf != null)
+			var type = value.GetType();
+
+			var nf = GetNumberFormatter(type);
+			if (nf != null)
 				return nf.GetElement(value);
 
-			if (_valueFormatters.TryGetValue(value.GetType(), out var vf) && vf != null)
+			var vf = GetValueFormatter(type);
+			if (vf != null)
 			{
 				var style = "";
 
@@ -459,7 +462,7 @@ namespace LinqToDB.LINQPad
 			return ts.ToString("c");
 		}
 
-		static object Format(BitArray value)
+		static string Format(BitArray value)
 		{
 			var sb = new StringBuilder($" Len:{value.Length} 0b");
 
