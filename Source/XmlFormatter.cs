@@ -410,7 +410,7 @@ namespace LinqToDB.LINQPad
 		{
 			// not sure why, but LINQPad doesn't call formatter for this type properly (only this type)
 			if (value is Microsoft.SqlServer.Types.SqlHierarchyId)
-				return value.ToString();
+				return value.ToString()!;
 
 			var val = FormatValueXml(value, true);
 			if (val != null)
