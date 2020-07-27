@@ -20,6 +20,7 @@
 - [ui] tables without columns not shown anymore (e.g. Access system tables without read permissions)
 - [ui] added provider path setting for SqlCe and SAP HANA Native providers for LINQPad 6 version
 - [ui] fixed non-xml characters rendering in custom formatter
+- [ui] always use custom formatters for provider-specific types
 - [misc] added license file (MIT) to repository
 - [misc] copyrights updated to "Linq To DB"
 - [misc] migrated to Azure Pipelines from Appveyor for builds

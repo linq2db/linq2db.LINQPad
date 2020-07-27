@@ -366,7 +366,7 @@ namespace LinqToDB.LINQPad
 				if (i > 0)
 					fragments.Add(", ");
 
-				fragments.Add(FormatValueXml(array.GetValue(i)));
+				fragments.Add(FormatValueXml(array.GetValue(i))!);
 			}
 
 			if (i < array.Length)
@@ -392,9 +392,9 @@ namespace LinqToDB.LINQPad
 					fragments.Add(", ");
 
 				fragments.Add("{");
-				fragments.Add(FormatValueXml(key));
+				fragments.Add(FormatValueXml(key)!);
 				fragments.Add(", ");
-				fragments.Add(FormatValueXml(dict[key!]));
+				fragments.Add(FormatValueXml(dict[key!])!);
 				fragments.Add("}");
 
 				i++;
@@ -413,10 +413,14 @@ namespace LinqToDB.LINQPad
 
 		public static object FormatValue(object? value)
 		{
-			return Util.RawHtml(FormatValueXml(value));
+			var val = FormatValueXml(value, true);
+			if (val != null)
+				return Util.RawHtml(val);
+
+			return value!;
 		}
 
-		private static XElement FormatValueXml(object? value)
+		private static XElement? FormatValueXml(object? value, bool allowNull = false)
 		{
 			if (IsNull(value))
 				return new XElement("span", new XAttribute("style", "text-align:center;"), new XElement("i", new XAttribute("style", "font-style: italic"), "null"));
@@ -437,7 +441,10 @@ namespace LinqToDB.LINQPad
 					vf.FormatValue(value));
 			}
 
-			return new XElement("span", value);
+			if (allowNull)
+				return null;
+
+			throw new InvalidOperationException($"Unsupported value type: {value.GetType()}");
 		}
 
 		static string Format(DateTime dt)
@@ -560,7 +567,7 @@ namespace LinqToDB.LINQPad
 			VF<PhysicalAddress>(v => Format(v.GetAddressBytes())),
 
 			// mysql types
-			VF<MySql.Data.Types.MySqlDateTime>(v => FormatValueXml(v.IsValidDateTime ? (object)v.GetDateTime() : "invalid")),
+			VF<MySql.Data.Types.MySqlDateTime>(v => FormatValueXml(v.IsValidDateTime ? (object)v.GetDateTime() : "invalid")!),
 
 
 			// sql server types
@@ -569,13 +576,13 @@ namespace LinqToDB.LINQPad
 			VF<Microsoft.SqlServer.Types.SqlGeometry   >(v => Format(v.ToString())),
 
 			// oracle managed types
-			VF<Oracle.ManagedDataAccess.Types.OracleClob   >(v => FormatValueXml(v.IsNull ? null : v.Value)),
+			VF<Oracle.ManagedDataAccess.Types.OracleClob   >(v => FormatValueXml(v.IsNull ? null : v.Value)!),
 			VF<Oracle.ManagedDataAccess.Types.OracleDate   >(v => Format(v.Value)),
 			VF<Oracle.ManagedDataAccess.Types.OracleBinary >(v => Format(v.Value)),
-			VF<Oracle.ManagedDataAccess.Types.OracleBFile  >(v => FormatValueXml(v.IsNull ? null : v.FileName)), // value is not accessible and file name is better
-			VF<Oracle.ManagedDataAccess.Types.OracleBlob   >(v => FormatValueXml(v.IsNull ? null : v.Value)),
+			VF<Oracle.ManagedDataAccess.Types.OracleBFile  >(v => FormatValueXml(v.IsNull ? null : v.FileName)!), // value is not accessible and file name is better
+			VF<Oracle.ManagedDataAccess.Types.OracleBlob   >(v => FormatValueXml(v.IsNull ? null : v.Value)!),
 			VF<Oracle.ManagedDataAccess.Types.OracleString >(v => Format(v.Value)),
-			VF<Oracle.ManagedDataAccess.Types.OracleXmlType>(v => FormatValueXml(v.IsNull ? null : v.Value)),
+			VF<Oracle.ManagedDataAccess.Types.OracleXmlType>(v => FormatValueXml(v.IsNull ? null : v.Value)!),
 
 			// npgsql types
 			VF<NpgsqlTypes.NpgsqlTimeSpan>(v => Format((TimeSpan)v)),
