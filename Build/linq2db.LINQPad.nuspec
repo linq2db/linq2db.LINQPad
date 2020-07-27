@@ -38,7 +38,7 @@
 	</metadata>
 
 	<files>
-		<file src="..\Source\bin\Release\netcoreapp3.0\linq2db.dll" target="lib\" />
+		<file src="..\Source\bin\Release\netcoreapp3.0\linq2db.LINQPad.dll" target="lib\netcoreapp3.0\" />
 		<file src="..\Source\bin\Release\netcoreapp3.0\Connection.png" target="contentFiles\" />
 		<file src="..\Source\bin\Release\netcoreapp3.0\FailedConnection.png" target="contentFiles\" />
 	</files>
