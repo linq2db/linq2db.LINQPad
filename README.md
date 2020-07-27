@@ -1,6 +1,12 @@
 TODO: add azure/nuget badges
 
-# LINQ to DB LINQPad Driver
+## LINQ to DB LINQPad Driver
+
+<img align="right" alt=".NET Foundation Logo" src="https://github.com/dotnet/swag/blob/master/logo/dotnetfoundation_v4_horizontal.png" width="250px" >
+
+[![NuGet Version and Downloads count](https://buildstats.info/nuget/linq2db.LINQPad?includePreReleases=true)](https://www.nuget.org/packages/linq2db.LINQPad) [![License](https://img.shields.io/github/license/linq2db/linq2db.LINQPad)](MIT-LICENSE.txt)
+
+[![Master branch build](https://img.shields.io/azure-devops/build/linq2db/linq2db/8/master?label=build%20(master))](https://dev.azure.com/linq2db/linq2db/_build?definitionId=8&_a=summary) [![Latest build](https://img.shields.io/azure-devops/build/linq2db/linq2db/8?label=build%20(latest))](https://dev.azure.com/linq2db/linq2db/_build?definitionId=8&_a=summary)
 
 linq2db.LINQPad is a driver for [LINQPad 5](http://www.linqpad.net) and [LINQPad 6](http://www.linqpad.net).
 
@@ -20,15 +26,16 @@ Following databases supported (by both LINQPad 5 and LINQPad 6 if not noted):
 - **SAP HANA** *(client software must be installed, supports both Native and ODBC providers)*
 - **SAP/Sybase ASE**
 
-## Download
+### Download
 
 Releases are hosted on [Github](https://github.com/linq2db/linq2db.LINQPad/releases) and on [Nuget](https://www.nuget.org/packages/linq2db.LINQPad) for LINQPad 6 driver.
 
-Latest build is hosted on [Azure Artifacts](https://dev.azure.com/linq2db/linq2db/_packaging?_a=package&feed=linq2db%40Local&package=linq2db.LINQPad&protocolType=NuGet).
+Latest build is hosted on [Azure Artifacts](https://dev.azure.com/linq2db/linq2db/_packaging?_a=package&feed=linq2db%40Local&package=linq2db.LINQPad&protocolType=NuGet). Feed [URL](https://pkgs.dev.azure.com/linq2db/linq2db/_packaging/linq2db/nuget/v3/index.json) ([how to use](https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio#package-sources)).
 
-## Installation
 
-### LINQPad 6 (NuGet)
+### Installation
+
+#### LINQPad 6 (NuGet)
 
 - Download latest **.lpx6** file from the link provided above.
 - Click "Add connection" in LINQPad.
@@ -39,7 +46,7 @@ Latest build is hosted on [Azure Artifacts](https://dev.azure.com/linq2db/linq2d
 - In the "LINQ to DB connection" dialog, supply your connection information.
 - You're done.
 
-### LINQPad 6 (Manual)
+#### LINQPad 6 (Manual)
 
 - Download latest **.lpx6** file from the link provided above.
 - Click "Add connection" in LINQPad.
@@ -50,7 +57,7 @@ Latest build is hosted on [Azure Artifacts](https://dev.azure.com/linq2db/linq2d
 - In the "LINQ to DB connection" dialog, supply your connection information.
 - You're done.
 
-### LINQPad 5 (Choose a driver)
+#### LINQPad 5 (Choose a driver)
 
 - Click "Add connection" in LINQPad.
 - In the "Choose Data Context" dialog, press the "View more drivers..." button.
@@ -60,7 +67,7 @@ Latest build is hosted on [Azure Artifacts](https://dev.azure.com/linq2db/linq2d
 - In the "LINQ to DB connection" dialog, supply your connection information.
 - You're done.
 
-### LINQPad 5 (Manual)
+#### LINQPad 5 (Manual)
 
 - Download latest **.lpx** file from the link provided above.
 - Click "Add connection" in LINQPad.

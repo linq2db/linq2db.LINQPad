@@ -79,8 +79,7 @@ stages:
         command: 'pack'
         basePath: '$(Build.SourcesDirectory)/Build/linq2db.LINQPad.nuspec'
         packDestination: '$(Build.SourcesDirectory)/Build/built'
-      displayName: Publish to Azure Artifacts feed
-      condition: eq(variables['Build.SourceBranchName'], 'master')
+      displayName: Generate linq2db.LINQPad.nupkg
 
     - task: PublishPipelineArtifact@1
       inputs:
