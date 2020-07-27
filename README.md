@@ -40,7 +40,7 @@ Latest build is hosted on [Azure Artifacts](https://dev.azure.com/linq2db/linq2d
 - Download latest **.lpx6** file from the link provided above.
 - Click "Add connection" in LINQPad.
 - In the "Choose Data Context" dialog, press the "View more drivers..." button.
-- In the "LINQPad NuGet Manager" dialog, find LINQ To DB driver in list of featured drivers (TODO: review if all correct here after release) and click the "Install" button.
+- In the "LINQPad NuGet Manager" dialog, find LINQ To DB driver in list of drivers and click the "Install" button.
 - Close "LINQPad NuGet Manager" dialog
 - In the "Choose Data Context" dialog, select the "LINQ to DB" driver and click the "Next" button.
 - In the "LINQ to DB connection" dialog, supply your connection information.
