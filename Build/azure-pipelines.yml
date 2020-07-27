@@ -76,9 +76,8 @@ stages:
 
     - task: NuGetCommand@2
       inputs:
-        command: 'pack'
-        basePath: '$(Build.SourcesDirectory)/Build/linq2db.LINQPad.nuspec'
-        packDestination: '$(Build.SourcesDirectory)/Build/built'
+        command: 'custom'
+        arguments: 'pack "$(Build.SourcesDirectory)/Build/linq2db.LINQPad.nuspec" -OutputDirectory "$(Build.SourcesDirectory)/Build/built"'
       displayName: Generate linq2db.LINQPad.nupkg
 
     - task: PublishPipelineArtifact@1

@@ -1,4 +1,4 @@
-TODO: add azure/nuget badges
+
 
 ## LINQ to DB LINQPad Driver
 
