@@ -82,7 +82,7 @@ stages:
 
     - task: PublishPipelineArtifact@1
       inputs:
-        path: '$(Build.SourcesDirectory)/Build/built/linq2db.LINQPad*.nupkg'
+        path: '$(Build.SourcesDirectory)/Build/built/'
         artifact: '$(artifact_nuget)'
       displayName: Publish nuget to Artifacts
 
