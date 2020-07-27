@@ -11,7 +11,7 @@ Following databases supported (by both LINQPad 5 and LINQPad 6 if not noted):
 - **Firebird**
 - **Informix**
 - **Microsoft Access** *(supports both OleDb and ODBC)*
-- **Microsoft Sql Server** 2000+ *(including **Microsoft Sql Azure**)*
+- **Microsoft Sql Server** 2000+ *(including **Microsoft Sql Azure**. LINQPad 6 [doesn't support](https://stackoverflow.com/a/45418196) **Sql Server 2000**)*
 - **Microsoft Sql Server Compact (SqlCe)**
 - **MySql/MariaDB**
 - **Oracle**
