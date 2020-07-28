@@ -3,6 +3,8 @@
 <#@ include file="$(ProjectDir)..\LinqToDB.Templates\T4Model.ttinclude"               #>
 <#@ include file="$(ProjectDir)..\LinqToDB.Templates\NotifyPropertyChanged.ttinclude" #>
 <#
+	EnableNullableReferenceTypes = true;
+
 	Model.Usings.Add("System.Collections.ObjectModel");
 	Model.Usings.Add("System.Windows");
 
@@ -10,9 +12,9 @@
 
 	Model.Types.Add(
 		new Class("ConnectionViewModel",
-			new NotifyingProperty("string",       "Name"),
-			new NotifyingProperty("ProviderInfo", "SelectedProvider"),
-			new NotifyingProperty("string",       "ConnectionString"),
+			new NotifyingProperty(ModelType.Create<string>(true),       "Name"),
+			new NotifyingProperty(new ModelType("ProviderInfo", true, true), "SelectedProvider", "ProviderPathVisibility", "ProviderPathLabel", "ProviderPath"),
+			new NotifyingProperty(ModelType.Create<string>(true),       "ConnectionString"),
 			new NotifyingProperty("int",          "CommandTimeout"),
 			new NotifyingProperty("bool",         "Persist"),
 			new NotifyingProperty("bool",         "IsProduction"),
@@ -26,17 +28,21 @@
 			new NotifyingProperty("bool",         "AllowMultipleQuery"),
 			new NotifyingProperty("bool",         "OptimizeJoins"),
 			//new NotifyingProperty("bool",       "NormalizeNames"),
-			new NotifyingProperty("string",       "IncludeSchemas"),
-			new NotifyingProperty("string",       "ExcludeSchemas"),
-			new NotifyingProperty("string",       "IncludeCatalogs"),
-			new NotifyingProperty("string",       "ExcludeCatalogs"),
-			new NotifyingProperty("string",       "CustomAssemblyPath"),
-			new NotifyingProperty("string",       "CustomTypeName"),
-			new NotifyingProperty("string",       "AppConfigPath"),
-			new NotifyingProperty("string",       "CustomConfiguration"),
+			new NotifyingProperty(ModelType.Create<string>(true),       "IncludeSchemas"),
+			new NotifyingProperty(ModelType.Create<string>(true),       "ExcludeSchemas"),
+			new NotifyingProperty(ModelType.Create<string>(true),       "IncludeCatalogs"),
+			new NotifyingProperty(ModelType.Create<string>(true),       "ExcludeCatalogs"),
+			new NotifyingProperty(ModelType.Create<string>(true),       "CustomAssemblyPath"),
+			new NotifyingProperty(ModelType.Create<string>(true),       "CustomTypeName"),
+			new NotifyingProperty(ModelType.Create<string>(true),       "AppConfigPath"),
+			new NotifyingProperty(ModelType.Create<string>(true),       "CustomConfiguration"),
 			new NotifyingProperty("bool",         "IsDynamic", "IsDynamic", "DynamicVisibility", "StaticVisibility"),
 			new NotifyingProperty("Visibility",   "DynamicVisibility").InitGetter(() => new [] { "IsDynamic ? Visibility.Visible : Visibility.Collapsed" }),
 			new NotifyingProperty("Visibility",   "StaticVisibility").InitGetter(() => new [] { "!IsDynamic ? Visibility.Visible : Visibility.Collapsed" }),
+			new NotifyingProperty("Visibility",   "ProviderPathVisibility") { Conditional = "NETCORE" }.InitGetter(() => new [] { "SelectedProvider?.Name == ProviderName.SqlCe || SelectedProvider?.Name == ProviderName.SapHanaNative ? Visibility.Visible : Visibility.Collapsed" }),
+			new NotifyingProperty("Visibility",   "ProviderPathVisibility") { Conditional = "!NETCORE" }.InitGetter(() => new [] { "Visibility.Collapsed" }),
+			new NotifyingProperty(ModelType.Create<string>(true),       "ProviderPathLabel").InitGetter(() => new [] { "SelectedProvider?.Name == ProviderName.SqlCe ? \"Specify path to System.Data.SqlServerCe.dll\" : SelectedProvider?.Name == ProviderName.SapHanaNative ? \"Specify path to Sap.Data.Hana.Core.v2.1.dll\" : null " }),
+			new NotifyingProperty(ModelType.Create<string>(true),       "ProviderPath"),
 			new NotifyingProperty("ObservableCollection<ProviderInfo>", "Providers"))
 	);
 

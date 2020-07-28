@@ -8,10 +8,9 @@ namespace LinqToDB.LINQPad
 	internal static class CSharpTools
 	{
 		/// <summary>
-		/// Reserved words taken from
-		/// <see href="https://msdn.microsoft.com/en-us/library/x53a06bb%28v=vs.140%29.aspx"/>.
-		/// List actual for C# 7.3.
-		/// Doesn't contain "using static",
+		/// Reserved words (keywords) taken from
+		/// <see href="https://github.com/dotnet/csharplang/blob/master/spec/lexical-structure.md#keywords"/>.
+		/// List actual for C# 8.0.
 		/// </summary>
 		private static readonly ISet<string> _reservedWords
 			= new HashSet<string>()
@@ -82,7 +81,7 @@ namespace LinqToDB.LINQPad
 		/// <summary>
 		/// Converts <paramref name="name"/> to valid C# identifier.
 		/// </summary>
-		public static string ToValidIdentifier(string name)
+		public static string ToValidIdentifier(string? name)
 		{
 			if (name == null || name == string.Empty || name == "@")
 			{
@@ -134,7 +133,7 @@ namespace LinqToDB.LINQPad
 			return sb.ToString();
 		}
 
-		public static string ToStringLiteral(string value)
+		public static string ToStringLiteral(string? value)
 		{
 			if (value == null)
 				return "null";

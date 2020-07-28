@@ -164,7 +164,6 @@ namespace LinqToDB.LINQPad
 				case "System.Boolean" : return "bool";
 				case "System.Byte"    : return "byte";
 				case "System.SByte"   : return "sbyte";
-				case "System.Byte[]"  : return "byte[]";
 				case "System.Int16"   : return "short";
 				case "System.Int32"   : return "int";
 				case "System.Int64"   : return "long";
@@ -178,6 +177,9 @@ namespace LinqToDB.LINQPad
 				case "System.Char"    : return "char";
 				case "System.Object"  : return "object";
 			}
+
+			if (type.IsArray)
+				return GetTypeName(type.GetElementType()!) + "[]";
 
 			if (type.IsNullable())
 				return GetTypeName(type.ToNullableUnderlying()) + '?';

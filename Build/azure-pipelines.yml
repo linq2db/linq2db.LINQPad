@@ -1,0 +1,109 @@
+variables:
+  solution: 'linq2db.LINQPad.sln'
+  build_configuration: 'Release'
+  assemblyVersion: 3.0.0
+  nugetVersion: 3.0.0
+  nugetDevVersion: 3.0.0
+  nugetPRVersion: 3.0.0
+  artifact_lpx: 'lpx'
+  artifact_lpx6: 'lpx6'
+  artifact_nuget: 'nuget'
+
+# trigger for commits to master/release
+trigger:
+  - master
+  - release
+# trigger for PRs to master/release
+pr:
+  - master
+  - release
+
+stages:
+- stage: ''
+  displayName: ''
+  jobs:
+  - job: build_job
+    pool:
+      vmImage: 'windows-2019'
+    displayName: 'Build'
+    variables:
+      - template: nuget-vars.yml
+
+    steps:
+
+    - task: NuGetToolInstaller@1
+
+    - task: PowerShell@2
+      inputs:
+        filePath: '$(Build.SourcesDirectory)/Build/SetVersion.ps1'
+        workingDirectory: '$(Build.SourcesDirectory)'
+        arguments: -path $(Build.SourcesDirectory)/Source/linq2db.LINQPad.csproj -version $(assemblyVersion)
+      displayName: Update Assembly Version
+
+    - task: MSBuild@1
+      inputs:
+        solution: '$(solution)'
+        configuration: '$(build_configuration)'
+        msbuildArguments: '/t:Restore;Rebuild -m'
+      displayName: Build Solution
+
+    - task: PublishPipelineArtifact@1
+      inputs:
+        path: '$(Build.SourcesDirectory)/Source/linq2db.LINQPad.lpx'
+        artifact: '$(artifact_lpx)'
+      displayName: Publish .LPX to Artifacts
+
+    - task: PublishPipelineArtifact@1
+      inputs:
+        path: '$(Build.SourcesDirectory)/Source/linq2db.LINQPad.lpx6'
+        artifact: '$(artifact_lpx6)'
+      displayName: Publish .LPX6 to Artifacts
+
+############################
+#  Build and Publish nuget #
+############################
+
+    - powershell: echo "##vso[task.setvariable variable=packageVersion]$(packageVersion)-rc.$(Build.BuildId)"
+      condition: eq(variables['Build.SourceBranchName'], 'master')
+      displayName: Update nuget version
+
+    - task: PowerShell@2
+      inputs:
+        filePath: '$(Build.SourcesDirectory)/Build/BuildNuspecs.ps1'
+        workingDirectory: '$(Build.SourcesDirectory)'
+        arguments: -path $(Build.SourcesDirectory)/Build/linq2db.LINQPad.nuspec -version $(packageVersion) -branch $(Build.SourceBranchName)
+      condition: or (eq(variables['Build.SourceBranchName'], 'master'), eq(variables['Build.SourceBranchName'], 'release'))
+      displayName: Update .nuspec
+
+    - task: NuGetCommand@2
+      inputs:
+        command: 'custom'
+        arguments: 'pack "$(Build.SourcesDirectory)/Build/linq2db.LINQPad.nuspec" -OutputDirectory "$(Build.SourcesDirectory)/Build/built"'
+      condition: or (eq(variables['Build.SourceBranchName'], 'master'), eq(variables['Build.SourceBranchName'], 'release'))
+      displayName: Generate linq2db.LINQPad.nupkg
+
+    - task: PublishPipelineArtifact@1
+      inputs:
+        path: '$(Build.SourcesDirectory)/Build/built/'
+        artifact: '$(artifact_nuget)'
+      condition: or (eq(variables['Build.SourceBranchName'], 'master'), eq(variables['Build.SourceBranchName'], 'release'))
+      displayName: Publish nuget to Artifacts
+
+    - task: NuGetCommand@2
+      inputs:
+        command: 'push'
+        packagesToPush: '$(Build.SourcesDirectory)/NuGet/built/*.nupkg'
+        nuGetFeedType: 'internal'
+        publishVstsFeed: '0dcc414b-ea54-451e-a54f-d63f05367c4b/967a4107-9788-41a4-9f6d-a2318aab1410'
+      displayName: Publish to Azure Artifacts feed
+      condition: eq(variables['Build.SourceBranchName'], 'master')
+
+# apikey exires Oct/2020
+    - task: NuGetCommand@2
+      inputs:
+        command: 'push'
+        packagesToPush: '$(Build.SourcesDirectory)/NuGet/built/*.nupkg'
+        nuGetFeedType: 'external'
+        publishFeedCredentials: 'linq2db nuget.org feed'
+      displayName: Publish to Nuget.org
+      condition: eq(variables['Build.SourceBranchName'], 'release')
