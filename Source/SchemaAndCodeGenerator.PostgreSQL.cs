@@ -18,7 +18,7 @@ namespace LinqToDB.LINQPad
 		{
 			var mappings = new List<(string, IList<string>)>();
 
-			foreach (var proc in _schema.Procedures
+			foreach (var proc in _schema!.Procedures
 				.Where(p => p.IsFunction && !p.IsAggregateFunction && !p.IsTableFunction && p.Parameters.Any(pr => pr.IsOut)))
 			{
 				if (proc.Parameters.Count(pr => pr.IsOut) > 1)
@@ -45,7 +45,6 @@ namespace LinqToDB.LINQPad
 
 					foreach (var outParam in proc.Parameters.Where(_ => _.IsOut))
 					{
-						//outParam.ParameterType, outParam.ParameterName, null, null
 						result.Columns.Add(new ColumnSchema()
 						{
 							MemberType = outParam.ParameterType,
@@ -91,7 +90,7 @@ namespace LinqToDB.LINQPad
 
 		void PgSqlFixFunctionNames()
 		{
-			foreach (var proc in _schema.Procedures)
+			foreach (var proc in _schema!.Procedures)
 			{
 				if (proc.ProcedureName.Any(char.IsUpper))
 					proc.ProcedureName = "\"" + proc.ProcedureName + "\"";
@@ -100,7 +99,7 @@ namespace LinqToDB.LINQPad
 
 		void PgSqlFixTableFunctions()
 		{
-			foreach (var proc in _schema.Procedures
+			foreach (var proc in _schema!.Procedures
 				.Where(p => p.IsTableFunction && p.Parameters.Any(pr => pr.IsOut)))
 			{
 				proc.Parameters = proc.Parameters.Where(pr => !pr.IsOut).ToList();
@@ -110,7 +109,7 @@ namespace LinqToDB.LINQPad
 		void PgSqlFixVoidFunctions()
 		{
 			// generated functions should return object for void-typed functions
-			foreach (var proc in _schema.Procedures
+			foreach (var proc in _schema!.Procedures
 				.Where(p => p.IsFunction && !p.IsTableFunction && !p.Parameters.Any(pr => pr.IsResult)))
 			{
 				proc.Parameters.Add(new ParameterSchema()

@@ -15,28 +15,29 @@ namespace LinqToDB.LINQPad
 
 		public static bool MaybeChildOf(this Type type, Type parent)
 		{
+			Type? currentType = type;
 			do
 			{
-				if (type.IsGenericType)
+				if (currentType.IsGenericType)
 				{
-					var gtype = type.GetGenericTypeDefinition();
+					var gtype = currentType.GetGenericTypeDefinition();
 
 					if (gtype.MaybeEqualTo(parent))
 						return true;
 				}
 
-				foreach (var inf in type.GetInterfaces())
+				foreach (var inf in currentType.GetInterfaces())
 					if (inf.MaybeChildOf(parent))
 						return true;
 
-				type = type.BaseType;
+				currentType = currentType.BaseType;
 
-			} while(type != null);
+			} while(currentType != null);
 
 			return false;
 		}
 
-		public static dynamic GetCustomAttributeLike<T>(this MemberInfo memberInfo)
+		public static dynamic? GetCustomAttributeLike<T>(this MemberInfo memberInfo)
 		{
 			return memberInfo.GetCustomAttributes().FirstOrDefault(a => a.GetType().MaybeEqualTo(typeof(T)));
 		}

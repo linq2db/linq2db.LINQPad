@@ -1,50 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Windows;
-
-using JetBrains.Annotations;
-
-using LinqToDB.Data;
-using LinqToDB.DataProvider;
-using LinqToDB.Mapping;
-
 using LINQPad.Extensibility.DataContext;
-
+using LinqToDB.Data;
+using LinqToDB.Mapping;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using System.Net.NetworkInformation;
+using Microsoft.SqlServer.Types;
 
 namespace LinqToDB.LINQPad
 {
-	[UsedImplicitly]
 	public class LinqToDBDriver : DynamicDataContextDriver
 	{
 		public override string Name   => "LINQ to DB";
-		public override string Author => "Igor Tkachev";
+		public override string Author => DriverHelper.Author;
 
-		static LinqToDBDriver()
-		{
-			DriverHelper.ConfigureRedirects();
-			DriverHelper.SapHanaSPS04Fixes();
-		}
+		static LinqToDBDriver() => DriverHelper.Init();
 
-		public override string GetConnectionDescription(IConnectionInfo cxInfo)
-		{
-			var providerName = (string)cxInfo.DriverData.Element("providerName");
-			var dbInfo       = cxInfo.DatabaseInfo;
-
-			return $"[{providerName}] {dbInfo.Server}\\{dbInfo.Database} (v.{dbInfo.DbVersion})";
-		}
+		public override string GetConnectionDescription(IConnectionInfo cxInfo) => DriverHelper.GetConnectionDescription(cxInfo);
 
 		public override DateTime? GetLastSchemaUpdate(IConnectionInfo cxInfo)
 		{
-			var providerName = (string)cxInfo.DriverData.Element("providerName");
+			var providerName = (string?)cxInfo.DriverData.Element(CX.ProviderName);
 
 			if (providerName == ProviderName.SqlServer)
 				using (var db = new LINQPadDataConnection(cxInfo))
@@ -53,10 +37,8 @@ namespace LinqToDB.LINQPad
 			return null;
 		}
 
-		public override bool ShowConnectionDialog(IConnectionInfo cxInfo, bool isNewConnection)
-		{
-			return DriverHelper.ShowConnectionDialog(this, cxInfo, isNewConnection, true);
-		}
+		[Obsolete]
+		public override bool ShowConnectionDialog(IConnectionInfo cxInfo, bool isNewConnection) => DriverHelper.ShowConnectionDialog(cxInfo, isNewConnection, true);
 
 		public override List<ExplorerItem> GetSchemaAndBuildAssembly(
 			IConnectionInfo cxInfo, AssemblyName assemblyToBuild, ref string nameSpace, ref string typeName)
@@ -70,23 +52,30 @@ namespace LinqToDB.LINQPad
 
 				var references = new List<MetadataReference>
 				{
+#if !NETCORE
 					MetadataReference.CreateFromFile(typeof(object).               Assembly.Location),
 					MetadataReference.CreateFromFile(typeof(Enumerable).           Assembly.Location),
 					MetadataReference.CreateFromFile(typeof(IDbConnection).        Assembly.Location),
+					MetadataReference.CreateFromFile(typeof(PhysicalAddress)      .Assembly.Location),
+#endif
 					MetadataReference.CreateFromFile(typeof(DataConnection).       Assembly.Location),
 					MetadataReference.CreateFromFile(typeof(LINQPadDataConnection).Assembly.Location),
-					MetadataReference.CreateFromFile(typeof(PhysicalAddress)      .Assembly.Location),
+					MetadataReference.CreateFromFile(typeof(SqlHierarchyId)       .Assembly.Location),
 				};
 
 				references.AddRange(gen.References.Select(r => MetadataReference.CreateFromFile(r)));
 
+#if NETCORE
+				references.AddRange(GetCoreFxReferenceAssemblies().Select(path => MetadataReference.CreateFromFile(path)));
+#endif
+
 				var compilation = CSharpCompilation.Create(
-					assemblyToBuild.Name,
+					assemblyToBuild.Name!,
 					syntaxTrees : new[] { syntaxTree },
 					references  : references,
 					options     : new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
-				using (var stream = new FileStream(assemblyToBuild.CodeBase, FileMode.Create))
+				using (var stream = new FileStream(assemblyToBuild.CodeBase!, FileMode.Create))
 				{
 					var result = compilation.Emit(stream);
 
@@ -115,29 +104,30 @@ namespace LinqToDB.LINQPad
 			return new[]
 			{
 				new ParameterDescriptor("provider",         typeof(string).FullName),
+				new ParameterDescriptor("providerPath",     typeof(string).FullName),
 				new ParameterDescriptor("connectionString", typeof(string).FullName),
 			};
 		}
 
-		public override object[] GetContextConstructorArguments(IConnectionInfo cxInfo)
+		public override object?[] GetContextConstructorArguments(IConnectionInfo cxInfo)
 		{
-			return new object[]
+			return new object?[]
 			{
-				(string)cxInfo.DriverData.Element("providerName"),
+				(string?)cxInfo.DriverData.Element(CX.ProviderName),
+				(string?)cxInfo.DriverData.Element(CX.ProviderPath),
 				cxInfo.DatabaseInfo.CustomCxString,
 			};
 		}
 
 		public override IEnumerable<string> GetAssembliesToAdd(IConnectionInfo cxInfo)
 		{
-			yield return typeof(IDbConnection).        Assembly.Location;
 			yield return typeof(DataConnection).       Assembly.Location;
 			yield return typeof(LINQPadDataConnection).Assembly.Location;
 
-			var providerName = (string)cxInfo.DriverData.Element("providerName");
-			var providerInfo = ProviderHelper.GetProvider(providerName);
+			var providerName = (string?)cxInfo.DriverData.Element(CX.ProviderName);
+			var providerPath = (string?)cxInfo.DriverData.Element(CX.ProviderPath);
 
-			foreach (var location in providerInfo.GetAssemblyLocation(cxInfo.DatabaseInfo.CustomCxString))
+			foreach (var location in ProviderHelper.GetProvider(providerName, providerPath).GetAssemblyLocation(cxInfo.DatabaseInfo.CustomCxString))
 			{
 				yield return location;
 			}
@@ -149,33 +139,26 @@ namespace LinqToDB.LINQPad
 			{
 				"LinqToDB",
 				"LinqToDB.Data",
-				"LinqToDB.Mapping",
+				"LinqToDB.Mapping"
 			};
 		}
 
-		public override void ClearConnectionPools(IConnectionInfo cxInfo)
-		{
-			using (var db = new LINQPadDataConnection(cxInfo))
-				if (db.Connection is SqlConnection connection)
-					SqlConnection.ClearPool(connection);
-		}
+		public override void ClearConnectionPools(IConnectionInfo cxInfo) => DriverHelper.ClearConnectionPools(cxInfo);
 
-		IDataProvider _dataProvider;
-		MappingSchema _mappingSchema;
-		bool          _useCustomFormatter;
-		bool          _optimizeJoins;
-		bool          _allowMultipleQuery;
+		MappingSchema? _mappingSchema;
+		bool           _useCustomFormatter;
+		bool           _optimizeJoins;
+		bool           _allowMultipleQuery;
 
 		public override void InitializeContext(IConnectionInfo cxInfo, object context, QueryExecutionManager executionManager)
 		{
 			var conn = (DataConnection)context;
 
-			_dataProvider       = conn.DataProvider;
 			_mappingSchema      = conn.MappingSchema;
-			_useCustomFormatter = cxInfo.DriverData.Element("useCustomFormatter")?.Value.ToLower() == "true";
+			_useCustomFormatter = cxInfo.DriverData.Element(CX.UseCustomFormatter)?.Value.ToLower() == "true";
 
-			_allowMultipleQuery = cxInfo.DriverData.Element("allowMultipleQuery") == null || cxInfo.DriverData.Element("allowMultipleQuery")?.Value.ToLower() == "true";
-			_optimizeJoins      = cxInfo.DriverData.Element("optimizeJoins")      == null || cxInfo.DriverData.Element("optimizeJoins")     ?.Value.ToLower() == "true";
+			_allowMultipleQuery = cxInfo.DriverData.Element(CX.AllowMultipleQuery) == null || cxInfo.DriverData.Element(CX.AllowMultipleQuery)?.Value.ToLower() == "true";
+			_optimizeJoins      = cxInfo.DriverData.Element(CX.OptimizeJoins)      == null || cxInfo.DriverData.Element(CX.OptimizeJoins)     ?.Value.ToLower() == "true";
 
 			Common.Configuration.Linq.OptimizeJoins      = _optimizeJoins;
 			Common.Configuration.Linq.AllowMultipleQuery = _allowMultipleQuery;
@@ -188,24 +171,20 @@ namespace LinqToDB.LINQPad
 			((DataConnection)context).Dispose();
 		}
 
-		public override IDbConnection GetIDbConnection(IConnectionInfo cxInfo)
+		public override IDbConnection? GetIDbConnection(IConnectionInfo cxInfo)
 		{
-			using (var conn = new LINQPadDataConnection(cxInfo))
-			{
-				return conn.DataProvider.CreateConnection(conn.ConnectionString);
-			}
+			using var conn = new LINQPadDataConnection(cxInfo);
+			if (conn.ConnectionString == null)
+				return null;
+
+			return conn.DataProvider.CreateConnection(conn.ConnectionString);
 		}
 
-		public override void ExecuteESqlQuery(IConnectionInfo cxInfo, string query)
-		{
-			throw new Exception ("ESQL queries are not supported for this type of connection");
-		}
-
-		public override void PreprocessObjectToWrite (ref object objectToWrite, ObjectGraphInfo info)
+		public override void PreprocessObjectToWrite (ref object? objectToWrite, ObjectGraphInfo info)
 		{
 			objectToWrite = _useCustomFormatter
-				? XmlFormatter.Format(_mappingSchema, objectToWrite)
-				: XmlFormatter.FormatValue(objectToWrite, info);
+				? XmlFormatter.Format(_mappingSchema!, objectToWrite)
+				: XmlFormatter.FormatValue(objectToWrite);
 		}
 	}
 }

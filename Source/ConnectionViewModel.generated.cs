@@ -4,6 +4,10 @@
 //    Changes to this file may cause incorrect behavior and will be lost if the code is regenerated.
 // </auto-generated>
 //---------------------------------------------------------------------------------------------------
+
+#pragma warning disable 1591
+#nullable enable
+
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -13,10 +17,10 @@ namespace LinqToDB.LINQPad
 {
 	public partial class ConnectionViewModel : INotifyPropertyChanged
 	{
-		#region Name : string
+		#region Name : string?
 
-		private string _name;
-		public  string  Name
+		private string? _name;
+		public  string?  Name
 		{
 			get { return _name; }
 			set
@@ -34,7 +38,7 @@ namespace LinqToDB.LINQPad
 
 		#region INotifyPropertyChanged support
 
-		partial void BeforeNameChanged(string newValue);
+		partial void BeforeNameChanged(string? newValue);
 		partial void AfterNameChanged ();
 
 		public const string NameOfName = "Name";
@@ -50,10 +54,10 @@ namespace LinqToDB.LINQPad
 
 		#endregion
 
-		#region SelectedProvider : ProviderInfo
+		#region SelectedProvider : ProviderInfo?
 
-		private ProviderInfo _selectedProvider;
-		public  ProviderInfo  SelectedProvider
+		private ProviderInfo? _selectedProvider;
+		public  ProviderInfo?  SelectedProvider
 		{
 			get { return _selectedProvider; }
 			set
@@ -64,14 +68,16 @@ namespace LinqToDB.LINQPad
 					_selectedProvider = value;
 					AfterSelectedProviderChanged();
 
-					OnSelectedProviderChanged();
+					OnProviderPathVisibilityChanged();
+					OnProviderPathLabelChanged();
+					OnProviderPathChanged();
 				}
 			}
 		}
 
 		#region INotifyPropertyChanged support
 
-		partial void BeforeSelectedProviderChanged(ProviderInfo newValue);
+		partial void BeforeSelectedProviderChanged(ProviderInfo? newValue);
 		partial void AfterSelectedProviderChanged ();
 
 		public const string NameOfSelectedProvider = "SelectedProvider";
@@ -87,10 +93,10 @@ namespace LinqToDB.LINQPad
 
 		#endregion
 
-		#region ConnectionString : string
+		#region ConnectionString : string?
 
-		private string _connectionString;
-		public  string  ConnectionString
+		private string? _connectionString;
+		public  string?  ConnectionString
 		{
 			get { return _connectionString; }
 			set
@@ -108,7 +114,7 @@ namespace LinqToDB.LINQPad
 
 		#region INotifyPropertyChanged support
 
-		partial void BeforeConnectionStringChanged(string newValue);
+		partial void BeforeConnectionStringChanged(string? newValue);
 		partial void AfterConnectionStringChanged ();
 
 		public const string NameOfConnectionString = "ConnectionString";
@@ -568,10 +574,10 @@ namespace LinqToDB.LINQPad
 
 		#endregion
 
-		#region IncludeSchemas : string
+		#region IncludeSchemas : string?
 
-		private string _includeSchemas;
-		public  string  IncludeSchemas
+		private string? _includeSchemas;
+		public  string?  IncludeSchemas
 		{
 			get { return _includeSchemas; }
 			set
@@ -589,7 +595,7 @@ namespace LinqToDB.LINQPad
 
 		#region INotifyPropertyChanged support
 
-		partial void BeforeIncludeSchemasChanged(string newValue);
+		partial void BeforeIncludeSchemasChanged(string? newValue);
 		partial void AfterIncludeSchemasChanged ();
 
 		public const string NameOfIncludeSchemas = "IncludeSchemas";
@@ -605,10 +611,10 @@ namespace LinqToDB.LINQPad
 
 		#endregion
 
-		#region ExcludeSchemas : string
+		#region ExcludeSchemas : string?
 
-		private string _excludeSchemas;
-		public  string  ExcludeSchemas
+		private string? _excludeSchemas;
+		public  string?  ExcludeSchemas
 		{
 			get { return _excludeSchemas; }
 			set
@@ -626,7 +632,7 @@ namespace LinqToDB.LINQPad
 
 		#region INotifyPropertyChanged support
 
-		partial void BeforeExcludeSchemasChanged(string newValue);
+		partial void BeforeExcludeSchemasChanged(string? newValue);
 		partial void AfterExcludeSchemasChanged ();
 
 		public const string NameOfExcludeSchemas = "ExcludeSchemas";
@@ -642,10 +648,10 @@ namespace LinqToDB.LINQPad
 
 		#endregion
 
-		#region IncludeCatalogs : string
+		#region IncludeCatalogs : string?
 
-		private string _includeCatalogs;
-		public  string  IncludeCatalogs
+		private string? _includeCatalogs;
+		public  string?  IncludeCatalogs
 		{
 			get { return _includeCatalogs; }
 			set
@@ -663,7 +669,7 @@ namespace LinqToDB.LINQPad
 
 		#region INotifyPropertyChanged support
 
-		partial void BeforeIncludeCatalogsChanged(string newValue);
+		partial void BeforeIncludeCatalogsChanged(string? newValue);
 		partial void AfterIncludeCatalogsChanged ();
 
 		public const string NameOfIncludeCatalogs = "IncludeCatalogs";
@@ -679,10 +685,10 @@ namespace LinqToDB.LINQPad
 
 		#endregion
 
-		#region ExcludeCatalogs : string
+		#region ExcludeCatalogs : string?
 
-		private string _excludeCatalogs;
-		public  string  ExcludeCatalogs
+		private string? _excludeCatalogs;
+		public  string?  ExcludeCatalogs
 		{
 			get { return _excludeCatalogs; }
 			set
@@ -700,7 +706,7 @@ namespace LinqToDB.LINQPad
 
 		#region INotifyPropertyChanged support
 
-		partial void BeforeExcludeCatalogsChanged(string newValue);
+		partial void BeforeExcludeCatalogsChanged(string? newValue);
 		partial void AfterExcludeCatalogsChanged ();
 
 		public const string NameOfExcludeCatalogs = "ExcludeCatalogs";
@@ -716,10 +722,10 @@ namespace LinqToDB.LINQPad
 
 		#endregion
 
-		#region CustomAssemblyPath : string
+		#region CustomAssemblyPath : string?
 
-		private string _customAssemblyPath;
-		public  string  CustomAssemblyPath
+		private string? _customAssemblyPath;
+		public  string?  CustomAssemblyPath
 		{
 			get { return _customAssemblyPath; }
 			set
@@ -737,7 +743,7 @@ namespace LinqToDB.LINQPad
 
 		#region INotifyPropertyChanged support
 
-		partial void BeforeCustomAssemblyPathChanged(string newValue);
+		partial void BeforeCustomAssemblyPathChanged(string? newValue);
 		partial void AfterCustomAssemblyPathChanged ();
 
 		public const string NameOfCustomAssemblyPath = "CustomAssemblyPath";
@@ -753,10 +759,10 @@ namespace LinqToDB.LINQPad
 
 		#endregion
 
-		#region CustomTypeName : string
+		#region CustomTypeName : string?
 
-		private string _customTypeName;
-		public  string  CustomTypeName
+		private string? _customTypeName;
+		public  string?  CustomTypeName
 		{
 			get { return _customTypeName; }
 			set
@@ -774,7 +780,7 @@ namespace LinqToDB.LINQPad
 
 		#region INotifyPropertyChanged support
 
-		partial void BeforeCustomTypeNameChanged(string newValue);
+		partial void BeforeCustomTypeNameChanged(string? newValue);
 		partial void AfterCustomTypeNameChanged ();
 
 		public const string NameOfCustomTypeName = "CustomTypeName";
@@ -790,10 +796,10 @@ namespace LinqToDB.LINQPad
 
 		#endregion
 
-		#region AppConfigPath : string
+		#region AppConfigPath : string?
 
-		private string _appConfigPath;
-		public  string  AppConfigPath
+		private string? _appConfigPath;
+		public  string?  AppConfigPath
 		{
 			get { return _appConfigPath; }
 			set
@@ -811,7 +817,7 @@ namespace LinqToDB.LINQPad
 
 		#region INotifyPropertyChanged support
 
-		partial void BeforeAppConfigPathChanged(string newValue);
+		partial void BeforeAppConfigPathChanged(string? newValue);
 		partial void AfterAppConfigPathChanged ();
 
 		public const string NameOfAppConfigPath = "AppConfigPath";
@@ -827,10 +833,10 @@ namespace LinqToDB.LINQPad
 
 		#endregion
 
-		#region CustomConfiguration : string
+		#region CustomConfiguration : string?
 
-		private string _customConfiguration;
-		public  string  CustomConfiguration
+		private string? _customConfiguration;
+		public  string?  CustomConfiguration
 		{
 			get { return _customConfiguration; }
 			set
@@ -848,7 +854,7 @@ namespace LinqToDB.LINQPad
 
 		#region INotifyPropertyChanged support
 
-		partial void BeforeCustomConfigurationChanged(string newValue);
+		partial void BeforeCustomConfigurationChanged(string? newValue);
 		partial void AfterCustomConfigurationChanged ();
 
 		public const string NameOfCustomConfiguration = "CustomConfiguration";
@@ -947,6 +953,117 @@ namespace LinqToDB.LINQPad
 
 		#endregion
 
+		#region ProviderPathVisibility : Visibility
+
+#if NETCORE
+
+		public Visibility ProviderPathVisibility
+		{
+			get { return SelectedProvider?.Name == ProviderName.SqlCe || SelectedProvider?.Name == ProviderName.SapHanaNative ? Visibility.Visible : Visibility.Collapsed; }
+		}
+
+		#region INotifyPropertyChanged support
+
+		public const string NameOfProviderPathVisibility = "ProviderPathVisibility";
+
+		private static readonly PropertyChangedEventArgs _providerPathVisibilityChangedEventArgs = new PropertyChangedEventArgs(NameOfProviderPathVisibility);
+
+		private void OnProviderPathVisibilityChanged()
+		{
+			OnPropertyChanged(_providerPathVisibilityChangedEventArgs);
+		}
+
+		#endregion
+#endif
+
+
+		#endregion
+
+		#region ProviderPathVisibility : Visibility
+
+#if !NETCORE
+
+		public Visibility ProviderPathVisibility
+		{
+			get { return Visibility.Collapsed; }
+		}
+
+		#region INotifyPropertyChanged support
+
+		public const string NameOfProviderPathVisibility = "ProviderPathVisibility";
+
+		private static readonly PropertyChangedEventArgs _providerPathVisibilityChangedEventArgs = new PropertyChangedEventArgs(NameOfProviderPathVisibility);
+
+		private void OnProviderPathVisibilityChanged()
+		{
+			OnPropertyChanged(_providerPathVisibilityChangedEventArgs);
+		}
+
+		#endregion
+#endif
+
+
+		#endregion
+
+		#region ProviderPathLabel : string?
+
+		public string? ProviderPathLabel
+		{
+			get { return SelectedProvider?.Name == ProviderName.SqlCe ? "Specify path to System.Data.SqlServerCe.dll" : SelectedProvider?.Name == ProviderName.SapHanaNative ? "Specify path to Sap.Data.Hana.Core.v2.1.dll" : null ; }
+		}
+
+		#region INotifyPropertyChanged support
+
+		public const string NameOfProviderPathLabel = "ProviderPathLabel";
+
+		private static readonly PropertyChangedEventArgs _providerPathLabelChangedEventArgs = new PropertyChangedEventArgs(NameOfProviderPathLabel);
+
+		private void OnProviderPathLabelChanged()
+		{
+			OnPropertyChanged(_providerPathLabelChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
+		#region ProviderPath : string?
+
+		private string? _providerPath;
+		public  string?  ProviderPath
+		{
+			get { return _providerPath; }
+			set
+			{
+				if (_providerPath != value)
+				{
+					BeforeProviderPathChanged(value);
+					_providerPath = value;
+					AfterProviderPathChanged();
+
+					OnProviderPathChanged();
+				}
+			}
+		}
+
+		#region INotifyPropertyChanged support
+
+		partial void BeforeProviderPathChanged(string? newValue);
+		partial void AfterProviderPathChanged ();
+
+		public const string NameOfProviderPath = "ProviderPath";
+
+		private static readonly PropertyChangedEventArgs _providerPathChangedEventArgs = new PropertyChangedEventArgs(NameOfProviderPath);
+
+		private void OnProviderPathChanged()
+		{
+			OnPropertyChanged(_providerPathChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
 		#region Providers : ObservableCollection<ProviderInfo>
 
 		private ObservableCollection<ProviderInfo> _providers;
@@ -986,10 +1103,8 @@ namespace LinqToDB.LINQPad
 
 		#region INotifyPropertyChanged support
 
-#if !SILVERLIGHT
 		[field : NonSerialized]
-#endif
-		public virtual event PropertyChangedEventHandler PropertyChanged;
+		public virtual event PropertyChangedEventHandler? PropertyChanged;
 
 		protected void OnPropertyChanged(string propertyName)
 		{
@@ -997,20 +1112,7 @@ namespace LinqToDB.LINQPad
 
 			if (propertyChanged != null)
 			{
-#if SILVERLIGHT
-				if (System.Windows.Deployment.Current.Dispatcher.CheckAccess())
-					propertyChanged(this, new PropertyChangedEventArgs(propertyName));
-				else
-					System.Windows.Deployment.Current.Dispatcher.BeginInvoke(
-						() =>
-						{
-							var pc = PropertyChanged;
-							if (pc != null)
-								pc(this, new PropertyChangedEventArgs(propertyName));
-						});
-#else
 				propertyChanged(this, new PropertyChangedEventArgs(propertyName));
-#endif
 			}
 		}
 
@@ -1020,23 +1122,12 @@ namespace LinqToDB.LINQPad
 
 			if (propertyChanged != null)
 			{
-#if SILVERLIGHT
-				if (System.Windows.Deployment.Current.Dispatcher.CheckAccess())
-					propertyChanged(this, arg);
-				else
-					System.Windows.Deployment.Current.Dispatcher.BeginInvoke(
-						() =>
-						{
-							var pc = PropertyChanged;
-							if (pc != null)
-								pc(this, arg);
-						});
-#else
 				propertyChanged(this, arg);
-#endif
 			}
 		}
 
 		#endregion
 	}
 }
+
+#pragma warning restore 1591

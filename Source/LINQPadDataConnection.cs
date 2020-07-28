@@ -1,32 +1,18 @@
-﻿using System;
-
+﻿using LINQPad.Extensibility.DataContext;
 using LinqToDB.Data;
-using LinqToDB.DataProvider.Firebird;
-
-using LINQPad.Extensibility.DataContext;
 
 namespace LinqToDB.LINQPad
 {
 	public class LINQPadDataConnection : DataConnection
 	{
-		static LINQPadDataConnection()
-		{
-			AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
-			{
-//				Console.WriteLine(args.Name);
-//				Debug.WriteLine(args.Name);
-				return null;
-			};
-		}
-
 		public LINQPadDataConnection()
 		{
 			Init();
 			InitMappingSchema();
 		}
 
-		public LINQPadDataConnection(string providerName, string connectionString)
-			: base(ProviderHelper.GetProvider(providerName).GetDataProvider(connectionString), connectionString)
+		public LINQPadDataConnection(string providerName, string? providerPath, string connectionString)
+			: base(ProviderHelper.GetProvider(providerName, providerPath).GetDataProvider(connectionString), connectionString)
 		{
 			Init();
 			InitMappingSchema();
@@ -34,7 +20,8 @@ namespace LinqToDB.LINQPad
 
 		public LINQPadDataConnection(IConnectionInfo cxInfo)
 			: this(
-				(string)cxInfo.DriverData.Element("providerName"),
+				(string)cxInfo.DriverData.Element(CX.ProviderName),
+				(string?)cxInfo.DriverData.Element(CX.ProviderPath),
 				cxInfo.DatabaseInfo.CustomCxString)
 		{
 		}
@@ -46,7 +33,6 @@ namespace LinqToDB.LINQPad
 		static void Init()
 		{
 			TurnTraceSwitchOn();
-			FirebirdSqlBuilder.IdentifierQuoteMode = FirebirdIdentifierQuoteMode.Auto;
 		}
 	}
 }
