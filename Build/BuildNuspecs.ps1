@@ -33,7 +33,7 @@ if ($version) {
 		$xml.package.metadata.AppendChild($child)
 
 		$child = $xml.CreateElement('releaseNotes', $nsUri)
-		$child.InnerText = 'https://github.com/linq2db/linq2db.LINQPad/release-notes.md#release-' + $dotlessVersion
+		$child.InnerText = 'https://github.com/linq2db/linq2db.LINQPad/blob/master/release-notes.md#release-' + $dotlessVersion
 		$xml.package.metadata.AppendChild($child)
 
 		$child = $xml.CreateElement('copyright', $nsUri)
