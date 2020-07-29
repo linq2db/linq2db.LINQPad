@@ -1,5 +1,5 @@
-<?xml version="1.0"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
 	<metadata>
 		<id>linq2db.LINQPad</id>
 		<title>LINQ to DB driver for LINQPad 6</title>

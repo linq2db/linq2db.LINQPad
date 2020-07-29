@@ -1,3 +1,6 @@
+# Release 3.0.1
+- fixed [nuget package](https://www.nuget.org/packages/linq2db.LINQPad) fo LINQPad 6
+
 # Release 3.0.0
 
 - [linqpad] added support for LINQPad 6 including new [nuget package](https://www.nuget.org/packages/linq2db.LINQPad)  ([#29](https://github.com/linq2db/linq2db.LINQPad/issues/29))
