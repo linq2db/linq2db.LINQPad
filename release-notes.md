@@ -1,3 +1,17 @@
+# Release 3.1.0
+- [ALL] dependency update: linq2db 3.0.1 -> 3.1.4
+- [ALL] dependency update: CodeJam 3.1.0 -> 3.2.0
+- [ALL] dependency update: System.Data.SqlClient 4.8.1 -> 4.8.2
+- [ALL] dependency update: MySqlConnector 0.69.8 -> 1.0.1
+- [ALL] dependency update: IBM.Data.DB.Provider 11.1.4040.4 -> 11.5.4000.4
+- [LINQPAD5] dependency update: Oracle.ManagedDataAccess.Core 19.8.0 -> 19.9.0
+- [LINQPAD6] bumped target framework netcoreapp3.0 -> netcoreapp3.1
+- [LINQPAD6] dependency update: IBM.Data.DB2.Core 1.3.0.100 -> 3.1.0.300
+- [LINQPAD6] dependency update: Oracle.ManagedDataAccess.Core 2.19.80 -> 2.19.90
+- [LINQPAD6] dependency update: Npgsql 4.1.4 -> 4.1.5
+- [LINQPAD6] dependency update: Microsoft.CodeAnalysis.CSharp 3.6.0 -> 3.7.0
+- [LINQPAD6] dependency update: dotMorten.Microsoft.SqlServer.Types 1.1.0 -> 1.2.0
+
 # Release 3.0.1
 - fixed [nuget package](https://www.nuget.org/packages/linq2db.LINQPad) fo LINQPad 6
 
