@@ -5,7 +5,7 @@
 - [ALL] dependency update: MySqlConnector 0.69.8 -> 1.0.1
 - [ALL] dependency update: IBM.Data.DB.Provider 11.1.4040.4 -> 11.5.4000.4
 - [LINQPAD5] dependency update: Oracle.ManagedDataAccess.Core 19.8.0 -> 19.9.0
-- [LINQPAD6] bumped target framework to netcoreapp3.1 from netcoreapp3.0
+- [LINQPAD6] bumped target framework netcoreapp3.0 -> netcoreapp3.1
 - [LINQPAD6] dependency update: IBM.Data.DB2.Core 1.3.0.100 -> 3.1.0.300
 - [LINQPAD6] dependency update: Oracle.ManagedDataAccess.Core 2.19.80 -> 2.19.90
 - [LINQPAD6] dependency update: Npgsql 4.1.4 -> 4.1.5
