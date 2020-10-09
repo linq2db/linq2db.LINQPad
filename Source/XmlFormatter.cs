@@ -570,7 +570,7 @@ namespace LinqToDB.LINQPad
 			VF<PhysicalAddress>(v => Format(v.GetAddressBytes())),
 
 			// mysql types
-			VF<MySql.Data.Types.MySqlDateTime>(v => FormatValueXml(v.IsValidDateTime ? (object)v.GetDateTime() : "invalid")!),
+			VF<MySqlConnector.MySqlDateTime>(v => FormatValueXml(v.IsValidDateTime ? (object)v.GetDateTime() : "invalid")!),
 
 
 			// sql server types
