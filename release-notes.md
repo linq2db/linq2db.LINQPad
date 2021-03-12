@@ -1,4 +1,4 @@
-# Release 3.2.3
+# Release 3.2.0
 - codebase switched to C# 9
 - [ALL] "Allow multiple queries" option removed from connection configuration screen (has no effect with recent linq2db versions)
 - [ALL] fixed issue with typed data context load (https://github.com/linq2db/linq2db.LINQPad/issues/39)
