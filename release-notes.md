@@ -1,7 +1,7 @@
 # Release 3.2.0
 - codebase switched to C# 9
 - [ALL] "Allow multiple queries" option removed from connection configuration screen (has no effect with recent linq2db versions)
-- [ALL] fixed issue with typed data context load (https://github.com/linq2db/linq2db.LINQPad/issues/39)
+- [ALL] fixed issue with typed data context load ([#39](https://github.com/linq2db/linq2db.LINQPad/issues/39))
 - [LINQPAD5] .net framework version updated from 4.6.0 to 4.6.1
 - [LINQPAD6] fixed issue with wrong TFM used for provider assembly
 - [ALL] dependency update: linq2db 3.1.4 -> 3.2.3
