@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-
+using LINQPad.Extensibility.DataContext;
 using LinqToDB.Extensions;
 using LinqToDB.Mapping;
 using LinqToDB.Reflection;
-
-using LINQPad.Extensibility.DataContext;
 
 namespace LinqToDB.LINQPad
 {
@@ -136,7 +134,7 @@ namespace LinqToDB.LINQPad
 				select new ExplorerItem(
 					ma.Name,
 					ExplorerItemKind.Property,
-					pk != null || ca?.IsPrimaryKey ? ExplorerIcon.Key : ExplorerIcon.Column)
+					pk != null || ca != null && ca.IsPrimaryKey ? ExplorerIcon.Key : ExplorerIcon.Column)
 				{
 					Text = $"{ma.Name} : {GetTypeName(ma.Type)}",
 //					ToolTipText        = $"{sqlName} {column.ColumnType} {(column.IsNullable ? "NULL" : "NOT NULL")}{(column.IsIdentity ? " IDENTITY" : "")}",
