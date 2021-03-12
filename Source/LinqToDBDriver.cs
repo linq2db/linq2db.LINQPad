@@ -4,8 +4,6 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Windows;
 using LINQPad.Extensibility.DataContext;
@@ -14,11 +12,20 @@ using LinqToDB.Mapping;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.SqlServer.Types;
+#if !NETCORE
+using System.Net.NetworkInformation;
+#else
+using System.Text.RegularExpressions;
+#endif
 
 namespace LinqToDB.LINQPad
 {
 	public class LinqToDBDriver : DynamicDataContextDriver
 	{
+#if NETCORE
+		private static readonly Regex _runtimeTokenExtractor = new (@"^.+\\(?<token>[^\\]+)\\[^\\]+$", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+#endif
+
 		public override string Name   => "LINQ to DB";
 		public override string Author => DriverHelper.Author;
 
@@ -37,7 +44,7 @@ namespace LinqToDB.LINQPad
 			return null;
 		}
 
-		[Obsolete]
+		[Obsolete("base method obsoleted")]
 		public override bool ShowConnectionDialog(IConnectionInfo cxInfo, bool isNewConnection) => DriverHelper.ShowConnectionDialog(cxInfo, isNewConnection, true);
 
 		public override List<ExplorerItem> GetSchemaAndBuildAssembly(
@@ -63,10 +70,32 @@ namespace LinqToDB.LINQPad
 					MetadataReference.CreateFromFile(typeof(SqlHierarchyId)       .Assembly.Location),
 				};
 
-				references.AddRange(gen.References.Select(r => MetadataReference.CreateFromFile(r)));
-
 #if NETCORE
-				references.AddRange(GetCoreFxReferenceAssemblies().Select(path => MetadataReference.CreateFromFile(path)));
+				// TODO: find better way to do it
+				// hack to overwrite provider assembly references that target wrong runtime
+				// e.g. gen.References contains path to net5 MySqlConnector
+				// but GetCoreFxReferenceAssemblies returns netcoreapp3.1 runtime references
+				var coreAssemblies = GetCoreFxReferenceAssemblies();
+				var runtimeToken   = _runtimeTokenExtractor.Match(coreAssemblies[0]).Groups["token"].Value;
+				references.AddRange(coreAssemblies.Select(path => MetadataReference.CreateFromFile(path)));
+
+				foreach (var reference in gen.References)
+				{
+					var token = _runtimeTokenExtractor.Match(reference).Groups["token"].Value;
+					if (token != runtimeToken)
+					{
+						var newReference = reference.Replace($"\\{token}\\", $"\\{runtimeToken}\\");
+						if (File.Exists(newReference))
+						{
+							references.Add(MetadataReference.CreateFromFile(newReference));
+							continue;
+						}
+					}
+
+					references.Add(MetadataReference.CreateFromFile(reference));
+				}
+#else
+				references.AddRange(gen.References.Select(r => MetadataReference.CreateFromFile(r)));
 #endif
 
 				var compilation = CSharpCompilation.Create(
@@ -85,7 +114,7 @@ namespace LinqToDB.LINQPad
 							diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
 
 						foreach (var diagnostic in failures)
-							throw new Exception(diagnostic.ToString());
+							throw new LinqToDBLinqPadException(diagnostic.ToString());
 					}
 				}
 
@@ -148,7 +177,6 @@ namespace LinqToDB.LINQPad
 		MappingSchema? _mappingSchema;
 		bool           _useCustomFormatter;
 		bool           _optimizeJoins;
-		bool           _allowMultipleQuery;
 
 		public override void InitializeContext(IConnectionInfo cxInfo, object context, QueryExecutionManager executionManager)
 		{
@@ -157,11 +185,9 @@ namespace LinqToDB.LINQPad
 			_mappingSchema      = conn.MappingSchema;
 			_useCustomFormatter = cxInfo.DriverData.Element(CX.UseCustomFormatter)?.Value.ToLower() == "true";
 
-			_allowMultipleQuery = cxInfo.DriverData.Element(CX.AllowMultipleQuery) == null || cxInfo.DriverData.Element(CX.AllowMultipleQuery)?.Value.ToLower() == "true";
 			_optimizeJoins      = cxInfo.DriverData.Element(CX.OptimizeJoins)      == null || cxInfo.DriverData.Element(CX.OptimizeJoins)     ?.Value.ToLower() == "true";
 
 			Common.Configuration.Linq.OptimizeJoins      = _optimizeJoins;
-			Common.Configuration.Linq.AllowMultipleQuery = _allowMultipleQuery;
 
 			conn.OnTraceConnection = DriverHelper.GetOnTraceConnection(executionManager);
 		}

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -9,16 +8,19 @@ using System.Runtime.CompilerServices;
 using LinqToDB.Configuration;
 using LinqToDB.Data;
 using LinqToDB.DataProvider;
+#if NETCORE
+using System.Data.Common;
+#endif
 
 namespace LinqToDB.LINQPad
 {
 	internal class ProviderHelper
 	{
-		static readonly Dictionary<string, DynamicProviderRecord> _dynamicProviders = new Dictionary<string, DynamicProviderRecord>();
+		static readonly Dictionary<string, DynamicProviderRecord> _dynamicProviders = new ();
 
 		public static DynamicProviderRecord[] DynamicProviders => _dynamicProviders.Values.ToArray();
 
-		static readonly Dictionary<string, LoadProviderInfo> LoadedProviders = new Dictionary<string, LoadProviderInfo>();
+		static readonly Dictionary<string, LoadProviderInfo> LoadedProviders = new ();
 
 		static void AddDataProvider(DynamicProviderRecord providerInfo)
 		{
@@ -213,7 +215,7 @@ namespace LinqToDB.LINQPad
 #endif
 
 			if (providerName == null)
-				throw new ArgumentNullException($"Provider name missing");
+				throw new ArgumentNullException(nameof(providerName), $"Provider name missing");
 
 			if (LoadedProviders.TryGetValue(providerName, out var info))
 				return info;
@@ -231,7 +233,7 @@ namespace LinqToDB.LINQPad
 		{
 			var provider = DataConnection.GetDataProvider(providerName, connectionString);
 			if (provider == null)
-				throw new Exception($"Can not activate provider \"{providerName}\"");
+				throw new LinqToDBLinqPadException($"Can not activate provider \"{providerName}\"");
 			return provider;
 		}
 
@@ -275,7 +277,7 @@ namespace LinqToDB.LINQPad
 
 			try
 			{
-				var targetPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory!, Path.GetFileName(providerPath));
+				var targetPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, Path.GetFileName(providerPath));
 				if (File.Exists(providerPath))
 				{
 					// original path contains spaces which breaks broken native dlls discovery logic in SAP provider

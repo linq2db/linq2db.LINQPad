@@ -13,7 +13,6 @@
 		public const string IncludeCatalogs          = "includeCatalogs";
 		public const string ExcludeCatalogs          = "excludeCatalogs";
 		public const string OptimizeJoins            = "optimizeJoins";
-		public const string AllowMultipleQuery       = "allowMultipleQuery";
 		public const string UseProviderSpecificTypes = "useProviderSpecificTypes";
 		public const string UseCustomFormatter       = "useCustomFormatter";
 		public const string CommandTimeout           = "commandTimeout";

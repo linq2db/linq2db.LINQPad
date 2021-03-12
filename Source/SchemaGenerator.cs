@@ -28,7 +28,7 @@ namespace LinqToDB.LINQPad
 			{
 				PropertyInfo = propertyInfo;
 				Name         = propertyInfo.Name;
-				Type         = propertyInfo.PropertyType.GetItemType();
+				Type         = propertyInfo.PropertyType.GetItemType()!;
 				TypeAccessor = TypeAccessor.GetAccessor(Type);
 
 				var tableAttr = Type.GetCustomAttributeLike<TableAttribute>();
@@ -89,7 +89,7 @@ namespace LinqToDB.LINQPad
 					if (aa != null)
 					{
 						var relationship = Extensions.HasProperty(aa, "Relationship") ? aa.Relationship : Relationship.OneToOne;
-						var otherType    = relationship == Relationship.OneToMany ? ma.Type.GetItemType() : ma.Type;
+						var otherType    = relationship == Relationship.OneToMany ? ma.Type.GetItemType()! : ma.Type;
 						var otherTable   = dic.ContainsKey(otherType) ? dic[otherType] : null;
 						var typeName     = relationship == Relationship.OneToMany ? $"List<{otherType.Name}>" : otherType.Name;
 

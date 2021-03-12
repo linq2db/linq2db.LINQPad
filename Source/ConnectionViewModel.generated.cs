@@ -500,43 +500,6 @@ namespace LinqToDB.LINQPad
 
 		#endregion
 
-		#region AllowMultipleQuery : bool
-
-		private bool _allowMultipleQuery;
-		public  bool  AllowMultipleQuery
-		{
-			get { return _allowMultipleQuery; }
-			set
-			{
-				if (_allowMultipleQuery != value)
-				{
-					BeforeAllowMultipleQueryChanged(value);
-					_allowMultipleQuery = value;
-					AfterAllowMultipleQueryChanged();
-
-					OnAllowMultipleQueryChanged();
-				}
-			}
-		}
-
-		#region INotifyPropertyChanged support
-
-		partial void BeforeAllowMultipleQueryChanged(bool newValue);
-		partial void AfterAllowMultipleQueryChanged ();
-
-		public const string NameOfAllowMultipleQuery = "AllowMultipleQuery";
-
-		private static readonly PropertyChangedEventArgs _allowMultipleQueryChangedEventArgs = new PropertyChangedEventArgs(NameOfAllowMultipleQuery);
-
-		private void OnAllowMultipleQueryChanged()
-		{
-			OnPropertyChanged(_allowMultipleQueryChangedEventArgs);
-		}
-
-		#endregion
-
-		#endregion
-
 		#region OptimizeJoins : bool
 
 		private bool _optimizeJoins;
