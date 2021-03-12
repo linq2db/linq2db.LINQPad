@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
-
 using CodeJam.Strings;
 using CodeJam.Xml;
-
+using LINQPad.Extensibility.DataContext;
 using LinqToDB.Data;
 using LinqToDB.DataProvider;
 using LinqToDB.SchemaProvider;
 using LinqToDB.SqlProvider;
-
-using LINQPad.Extensibility.DataContext;
 
 namespace LinqToDB.LINQPad
 {
@@ -24,7 +20,6 @@ namespace LinqToDB.LINQPad
 
 			UseProviderSpecificTypes = ((string?)_cxInfo.DriverData.Element(CX.UseProviderSpecificTypes))?.ToLower() == "true";
 			NormalizeJoins           = ((string?)_cxInfo.DriverData.Element(CX.NormalizeNames))          ?.ToLower() == "true";
-			AllowMultipleQuery       = ((string?)_cxInfo.DriverData.Element(CX.AllowMultipleQuery))      ?.ToLower() == "true";
 			ProviderName             =  (string?)_cxInfo.DriverData.Element(CX.ProviderName);
 			ProviderPath             =  (string?)_cxInfo.DriverData.Element(CX.ProviderPath);
 			CommandTimeout           = _cxInfo.DriverData.ElementValueOrDefault(CX.CommandTimeout, str => str.ToInt32() ?? 0, 0);
@@ -35,19 +30,18 @@ namespace LinqToDB.LINQPad
 		public readonly string?      ProviderName;
 		public readonly string?      ProviderPath;
 		public readonly bool         NormalizeJoins;
-		public readonly bool         AllowMultipleQuery;
-		public readonly List<string> References = new List<string>();
+		public readonly List<string> References = new ();
 
 		readonly IConnectionInfo _cxInfo;
-		readonly StringBuilder   _classCode = new StringBuilder();
+		readonly StringBuilder   _classCode = new ();
 
 		DatabaseSchema? _schema;
 		IDataProvider?  _dataProvider;
 		ISqlBuilder?    _sqlBuilder;
 
-		public readonly StringBuilder Code = new StringBuilder();
+		public readonly StringBuilder Code = new ();
 
-		private readonly HashSet<string> _existingMemberNames = new HashSet<string>(StringComparer.InvariantCulture);
+		private readonly HashSet<string> _existingMemberNames = new (StringComparer.InvariantCulture);
 
 		public IEnumerable<ExplorerItem> GetItemsAndCode(string nameSpace, string typeName)
 		{
@@ -238,10 +232,6 @@ namespace LinqToDB.LINQPad
 				.AppendLine(_classCode.ToString())
 				.AppendLine("}")
 				;
-
-#if DEBUG
-			Debug.WriteLine(Code.ToString());
-#endif
 		}
 
 		void CodeProcedure(StringBuilder code, ProcedureSchema p, string sprocSqlName)
@@ -400,8 +390,8 @@ namespace LinqToDB.LINQPad
 
 					var str = string.Format(
 						!pr.IsIn && (pr.IsOut || pr.IsResult)
-							? "        new DataParameter({0}, null, DataType.{2})"
-							: "        new DataParameter({0}, {1}, DataType.{2})",
+							? "        new DataParameter({0}, null, LinqToDB.DataType.{2})"
+							: "        new DataParameter({0}, {1}, LinqToDB.DataType.{2})",
 						CSharpTools.ToStringLiteral(pr.SchemaName),
 						pr.ParameterName,
 						pr.DataType);
@@ -475,7 +465,8 @@ namespace LinqToDB.LINQPad
 							null,
 							null,
 							p.SchemaName == null ? null : _sqlBuilder.ConvertInline(p.SchemaName, ConvertType.NameToSchema),
-							_sqlBuilder.ConvertInline(p.ProcedureName,  ConvertType.NameToQueryTable)).ToString();
+							_sqlBuilder.ConvertInline(p.ProcedureName, ConvertType.NameToQueryTable),
+							TableOptions.NotSet).ToString();
 
 						var memberName = p.MemberName;
 
@@ -504,7 +495,7 @@ namespace LinqToDB.LINQPad
 										$"{pr.ParameterName} ({pr.ParameterType})",
 										ExplorerItemKind.Parameter,
 										ExplorerIcon.Parameter))
-								.Union(p.ResultTable?.Columns.Select(GetColumnItem) ?? new ExplorerItem[0])
+								.Union(p.ResultTable?.Columns.Select(GetColumnItem) ?? Array.Empty<ExplorerItem>())
 								.ToList(),
 						};
 
@@ -705,7 +696,8 @@ namespace LinqToDB.LINQPad
 							null,
 							null,
 							t.SchemaName == null ? null : _sqlBuilder.ConvertInline(t.SchemaName, ConvertType.NameToSchema),
-							_sqlBuilder.ConvertInline(t.TableName!,  ConvertType.NameToQueryTable)).ToString();
+							_sqlBuilder.ConvertInline(t.TableName!,  ConvertType.NameToQueryTable),
+							TableOptions.NotSet).ToString();
 
 						//Debug.WriteLine($"Table: [{t.SchemaName}].[{t.TableName}] - ${tableSqlName}");
 
@@ -783,7 +775,7 @@ namespace LinqToDB.LINQPad
 			return GetUniqueName(names, ConvertToCompilable(proposedName, capitalize));
 		}
 
-		readonly Dictionary<TableSchema,string> _contextMembers = new Dictionary<TableSchema,string>();
+		readonly Dictionary<TableSchema,string> _contextMembers = new ();
 
 		void ConvertSchema(string typeName)
 		{

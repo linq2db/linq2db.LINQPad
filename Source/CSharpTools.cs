@@ -112,12 +112,12 @@ namespace LinqToDB.LINQPad
 				var cat = CharUnicodeInfo.GetUnicodeCategory(chr);
 				if (sb.Length == 0 && !_startCharCategories.Contains(cat) && chr != '_')
 				{
-					sb.Append("_");
+					sb.Append('_');
 				}
 
 				if (sb.Length != 0 && !_otherCharsCategories.Contains(cat))
 				{
-					sb.Append("_");
+					sb.Append('_');
 				}
 				else
 				{

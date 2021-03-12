@@ -176,7 +176,6 @@
 					</StackPanel>
 
 					<StackPanel Grid.Column="1">
-						<CheckBox Content="Allow multiple queries" FontSize="12" IsChecked="{Binding AllowMultipleQuery}" Margin="0,0,0,5" />
 						<CheckBox Content="Optimize joins"         FontSize="12" IsChecked="{Binding OptimizeJoins}" />
 					</StackPanel>
 				</Grid>

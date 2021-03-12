@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-
+using LINQPad.Extensibility.DataContext;
 using LinqToDB.Extensions;
 using LinqToDB.Mapping;
 using LinqToDB.Reflection;
-
-using LINQPad.Extensibility.DataContext;
 
 namespace LinqToDB.LINQPad
 {
@@ -28,7 +26,7 @@ namespace LinqToDB.LINQPad
 			{
 				PropertyInfo = propertyInfo;
 				Name         = propertyInfo.Name;
-				Type         = propertyInfo.PropertyType.GetItemType();
+				Type         = propertyInfo.PropertyType.GetItemType()!;
 				TypeAccessor = TypeAccessor.GetAccessor(Type);
 
 				var tableAttr = Type.GetCustomAttributeLike<TableAttribute>();
@@ -89,7 +87,7 @@ namespace LinqToDB.LINQPad
 					if (aa != null)
 					{
 						var relationship = Extensions.HasProperty(aa, "Relationship") ? aa.Relationship : Relationship.OneToOne;
-						var otherType    = relationship == Relationship.OneToMany ? ma.Type.GetItemType() : ma.Type;
+						var otherType    = relationship == Relationship.OneToMany ? ma.Type.GetItemType()! : ma.Type;
 						var otherTable   = dic.ContainsKey(otherType) ? dic[otherType] : null;
 						var typeName     = relationship == Relationship.OneToMany ? $"List<{otherType.Name}>" : otherType.Name;
 
@@ -136,7 +134,7 @@ namespace LinqToDB.LINQPad
 				select new ExplorerItem(
 					ma.Name,
 					ExplorerItemKind.Property,
-					pk != null || ca?.IsPrimaryKey ? ExplorerIcon.Key : ExplorerIcon.Column)
+					pk != null || ca != null && ca.IsPrimaryKey ? ExplorerIcon.Key : ExplorerIcon.Column)
 				{
 					Text = $"{ma.Name} : {GetTypeName(ma.Type)}",
 //					ToolTipText        = $"{sqlName} {column.ColumnType} {(column.IsNullable ? "NULL" : "NOT NULL")}{(column.IsIdentity ? " IDENTITY" : "")}",

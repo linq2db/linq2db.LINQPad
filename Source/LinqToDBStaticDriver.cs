@@ -19,7 +19,7 @@ namespace LinqToDB.LINQPad
 
 		public override string GetConnectionDescription(IConnectionInfo cxInfo) => DriverHelper.GetConnectionDescription(cxInfo);
 
-		[Obsolete]
+		[Obsolete("base method obsoleted")]
 		public override bool ShowConnectionDialog(IConnectionInfo cxInfo, bool isNewConnection) => DriverHelper.ShowConnectionDialog(cxInfo, isNewConnection, false);
 
 		public override List<ExplorerItem> GetSchema(IConnectionInfo cxInfo, Type customType)
@@ -59,11 +59,9 @@ namespace LinqToDB.LINQPad
 
 		public override void InitializeContext(IConnectionInfo cxInfo, object context, QueryExecutionManager executionManager)
 		{
-			var allowMultipleQuery = cxInfo.DriverData.Element(CX.AllowMultipleQuery) == null || cxInfo.DriverData.Element(CX.AllowMultipleQuery)?.Value.ToLower() == "true";
 			var optimizeJoins      = cxInfo.DriverData.Element(CX.OptimizeJoins)      == null || cxInfo.DriverData.Element(CX.OptimizeJoins)     ?.Value.ToLower() == "true";
 
 			Common.Configuration.Linq.OptimizeJoins      = optimizeJoins;
-			Common.Configuration.Linq.AllowMultipleQuery = allowMultipleQuery;
 
 			dynamic ctx = context;
 
