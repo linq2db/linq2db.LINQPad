@@ -25,7 +25,6 @@
 			new NotifyingProperty("bool",         "EncryptConnectionString"),
 			new NotifyingProperty("bool",         "UseCustomFormatter"),
 			new NotifyingProperty("bool",         "UseProviderSpecificTypes"),
-			new NotifyingProperty("bool",         "AllowMultipleQuery"),
 			new NotifyingProperty("bool",         "OptimizeJoins"),
 			//new NotifyingProperty("bool",       "NormalizeNames"),
 			new NotifyingProperty(ModelType.Create<string>(true),       "IncludeSchemas"),

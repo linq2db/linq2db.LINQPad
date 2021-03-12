@@ -22,7 +22,6 @@ namespace LinqToDB.LINQPad
 				ProviderHelper.DynamicProviders.Select(p => new ProviderInfo(p.ProviderName, p.Description))
 					.OrderBy(s => s.Description.ToLower()));
 
-			_allowMultipleQuery = true;
 			_optimizeJoins      = true;
 		}
 	}

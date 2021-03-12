@@ -58,7 +58,7 @@ namespace LinqToDB.LINQPad
 
 			if (objectToWrite is IEnumerable enumerable)
 			{
-				var itemType = type.GetItemType();
+				var itemType = type.GetItemType()!;
 				var items    = enumerable.Cast<object>().ToList();
 				var tableID  = ++_id;
 
@@ -201,7 +201,7 @@ namespace LinqToDB.LINQPad
 					Expression.Lambda(
 						Expression.Add(
 							checkForNull
-								? (Expression) Expression.Condition(
+								? Expression.Condition(
 									Expression.PropertyOrField(paramV, "IsNull"),
 									Expression.Constant(default(T), innerType),
 									Expression.Convert(convertFunc != null ? convertFunc(paramV) : paramV, innerType))
@@ -550,7 +550,7 @@ namespace LinqToDB.LINQPad
 			return formatter;
 		}
 
-		static readonly ConcurrentDictionary<Type,ValueFormatter?> _valueFormatters = new ConcurrentDictionary<Type, ValueFormatter?>(new[]
+		static readonly ConcurrentDictionary<Type,ValueFormatter?> _valueFormatters = new (new[]
 		{
 			VF<char>           (      Format),
 			VF<string>         (      Format),
@@ -570,7 +570,7 @@ namespace LinqToDB.LINQPad
 			VF<PhysicalAddress>(v => Format(v.GetAddressBytes())),
 
 			// mysql types
-			VF<MySqlConnector.MySqlDateTime>(v => FormatValueXml(v.IsValidDateTime ? (object)v.GetDateTime() : "invalid")!),
+			VF<MySqlConnector.MySqlDateTime>(v => FormatValueXml(v.IsValidDateTime ? v.GetDateTime() : "invalid")!),
 
 
 			// sql server types
@@ -605,7 +605,7 @@ namespace LinqToDB.LINQPad
 		}
 		.ToDictionary(f => f.Type, f => (ValueFormatter?)f));
 
-		static readonly ConcurrentDictionary<Type,NumberFormatter?> _numberFormatters = new ConcurrentDictionary<Type, NumberFormatter?>(new[]
+		static readonly ConcurrentDictionary<Type,NumberFormatter?> _numberFormatters = new (new[]
 		{
 			NF<short  , long>   (value => v => v + value,                  v => n => v /       n),
 			NF<int    , long>   (value => v => v + value,                  v => n => v /       n),

@@ -1,17 +1,20 @@
 ﻿using System;
-using System.Buffers;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 using CodeJam.Strings;
 using CodeJam.Xml;
 using LINQPad.Extensibility.DataContext;
 using LinqToDB.Data;
+
+#if !NETCORE
+using System.Buffers;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+#endif
 
 namespace LinqToDB.LINQPad
 {
@@ -73,7 +76,6 @@ namespace LinqToDB.LINQPad
 			model.IncludeCatalogs          = cxInfo.DriverData.Element(CX.IncludeCatalogs)         ?.Value;
 			model.ExcludeCatalogs          = cxInfo.DriverData.Element(CX.ExcludeCatalogs)         ?.Value;
 			//model.NormalizeNames           = cxInfo.DriverData.Element(CX.NormalizeNames)          ?.Value.ToLower() == "true";
-			model.AllowMultipleQuery       = cxInfo.DriverData.Element(CX.AllowMultipleQuery)      ?.Value.ToLower() == "true";
 			model.UseProviderSpecificTypes = cxInfo.DriverData.Element(CX.UseProviderSpecificTypes)?.Value.ToLower() == "true";
 			model.UseCustomFormatter       = cxInfo.DriverData.Element(CX.UseCustomFormatter)      ?.Value.ToLower() == "true";
 			model.CommandTimeout           = cxInfo.DriverData.ElementValueOrDefault(CX.CommandTimeout, str => str.ToInt32() ?? 0, 0);
@@ -81,7 +83,7 @@ namespace LinqToDB.LINQPad
 			model.OptimizeJoins            = cxInfo.DriverData.Element(CX.OptimizeJoins) == null || cxInfo.DriverData.Element(CX.OptimizeJoins)?.Value.ToLower() == "true";
 			model.ProviderPath             = (string?)cxInfo.DriverData.Element(CX.ProviderPath);
 
-			if (ConnectionDialog.Show(model, isDynamic ? (Func<ConnectionViewModel?, Exception?>?)TestConnection : null))
+			if (ConnectionDialog.Show(model, isDynamic ? TestConnection : null))
 			{
 				providerName = model.SelectedProvider?.Name;
 
@@ -95,7 +97,6 @@ namespace LinqToDB.LINQPad
 				cxInfo.DriverData.SetElementValue(CX.IncludeCatalogs,          model.IncludeCatalogs.IsNullOrWhiteSpace() ? null : model.IncludeSchemas);
 				cxInfo.DriverData.SetElementValue(CX.ExcludeCatalogs,          model.ExcludeCatalogs.IsNullOrWhiteSpace() ? null : model.ExcludeSchemas);
 				cxInfo.DriverData.SetElementValue(CX.OptimizeJoins,            model.OptimizeJoins            ? "true" : "false");
-				cxInfo.DriverData.SetElementValue(CX.AllowMultipleQuery,       model.AllowMultipleQuery       ? "true" : "false");
 				//cxInfo.DriverData.SetElementValue(CX.NormalizeNames,           model.NormalizeNames           ? "true" : null);
 				cxInfo.DriverData.SetElementValue(CX.UseProviderSpecificTypes, model.UseProviderSpecificTypes ? "true" : null);
 				cxInfo.DriverData.SetElementValue(CX.UseCustomFormatter,       model.UseCustomFormatter       ? "true" : null);
