@@ -6,7 +6,7 @@
 		<Company>linq2db</Company>
 		<Product>linq2db.LINQPad</Product>
 		<AssemblyTitle>$(Product)</AssemblyTitle>
-		<Version>3.2.0.0</Version>
+		<Version>3.3.0.0</Version>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
 		<Copyright>Copyright © 2016-2021 Igor Tkachev, Ilya Chudin, Svyatoslav Danyliv, Dmitry Lukashenko</Copyright>

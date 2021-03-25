@@ -1,3 +1,9 @@
+# Release 3.3.0
+- [ALL] dependency update: linq2db 3.2.3 -> 3.3.0
+- [ALL] dependency update: MySqlConnector 1.3.1 -> 1.3.2
+- [LINQPAD5] dependency update: Oracle.ManagedDataAccess 19.10.1 -> 19.11.0
+- [LINQPAD6] dependency update: Npgsql 5.0.3 -> 5.0.4
+
 # Release 3.2.0
 - codebase switched to C# 9
 - [ALL] "Allow multiple queries" option removed from connection configuration screen (has no effect with recent linq2db versions)
@@ -22,7 +28,6 @@
 - [LINQPAD6] dependency update: IBM.Data.DB2.Core 3.1.0.300 -> 3.1.0.400
 - [LINQPAD6] dependency update: dotMorten.Microsoft.SqlServer.Types 1.2.0 -> 1.3.0
 - [LINQPAD6] dependency update: Npgsql 4.1.5 -> 5.0.3
-
 
 # Release 3.1.0
 - [ALL] dependency update: linq2db 3.0.1 -> 3.1.4
