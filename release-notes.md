@@ -1,3 +1,6 @@
+# Release 3.3.1
+- [LINQPAD6] fix incorrect versions for dependencies in nuget version of driver
+
 # Release 3.3.0
 - [ALL] dependency update: linq2db 3.2.3 -> 3.3.0
 - [ALL] dependency update: MySqlConnector 1.3.1 -> 1.3.2
