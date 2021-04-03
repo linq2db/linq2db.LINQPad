@@ -1,7 +1,7 @@
 ## LINQ to DB LINQPad Driver
 
 <a href="https://dotnetfoundation.org/projects/linq2db">
-<img align="right" alt=".NET Foundation Logo" src="https://github.com/dotnet/swag/blob/master/logo/dotnetfoundation_v4_horizontal.png" width="250px" ></a>
+<img align="right" alt=".NET Foundation Logo" src="https://raw.githubusercontent.com/dotnet-foundation/swag/master/logo/dotnetfoundation_v4_horizontal.png" width="250px" ></a>
 
 [![NuGet Version and Downloads count](https://buildstats.info/nuget/linq2db.LINQPad?includePreReleases=true)](https://www.nuget.org/packages/linq2db.LINQPad) [![License](https://img.shields.io/github/license/linq2db/linq2db.LINQPad)](MIT-LICENSE.txt)
 
