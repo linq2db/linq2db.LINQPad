@@ -92,11 +92,16 @@ namespace LinqToDB.LINQPad
 				.AppendLine("using LinqToDB.Data;")
 				.AppendLine("using LinqToDB.Mapping;")
 				.AppendLine("using System.Net;")
+				.AppendLine("using System.Numerics;")
 				.AppendLine("using System.Net.NetworkInformation;")
 				.AppendLine("using Microsoft.SqlServer.Types;")
 				;
 
-			if (_schema.Procedures.Any(_ => _.IsAggregateFunction))
+			// TODO: temporary, remove after update to linq2db 3.4.0
+			if (ProviderName == LinqToDB.ProviderName.Firebird)
+				Code.AppendLine("using FirebirdSql.Data.Types;");
+
+				if (_schema.Procedures.Any(_ => _.IsAggregateFunction))
 				Code
 					.AppendLine("using System.Linq.Expressions;")
 					;
