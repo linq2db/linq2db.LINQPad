@@ -2,6 +2,7 @@
 - [ALL] disable load of procedures and functions by default for new connections
 - [ALL] dependency update: MySqlConnector 1.3.2 -> 1.3.5
 - [ALL] initial support for Firebird 4 types
+- [ALL] fix issue with command timeout option being ignored ([#47](https://github.com/linq2db/linq2db.LINQPad/issues/47))
 - [LINQPAD6] dependency update: FirebirdSql.Data.FirebirdClient 7.10.1 -> 8.0.1
 - [LINQPAD6] improve fix for [#39](https://github.com/linq2db/linq2db.LINQPad/issues/39)
 
