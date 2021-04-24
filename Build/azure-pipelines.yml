@@ -1,10 +1,10 @@
 variables:
   solution: 'linq2db.LINQPad.sln'
   build_configuration: 'Release'
-  assemblyVersion: 3.3.1.0
-  nugetVersion: 3.3.1
-  nugetDevVersion: 3.3.1
-  nugetPRVersion: 3.3.1
+  assemblyVersion: 3.3.2.0
+  nugetVersion: 3.3.2
+  nugetDevVersion: 3.3.2
+  nugetPRVersion: 3.3.2
   artifact_lpx: 'lpx'
   artifact_lpx6: 'lpx6'
   artifact_nuget: 'nuget'
