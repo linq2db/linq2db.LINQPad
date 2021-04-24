@@ -1,4 +1,6 @@
-﻿using LINQPad.Extensibility.DataContext;
+﻿using CodeJam.Strings;
+using CodeJam.Xml;
+using LINQPad.Extensibility.DataContext;
 using LinqToDB.Data;
 
 namespace LinqToDB.LINQPad
@@ -24,6 +26,7 @@ namespace LinqToDB.LINQPad
 				(string?)cxInfo.DriverData.Element(CX.ProviderPath),
 				cxInfo.DatabaseInfo.CustomCxString)
 		{
+			CommandTimeout = cxInfo.DriverData.ElementValueOrDefault(CX.CommandTimeout, str => str.ToInt32() ?? 0, 0);
 		}
 
 		protected virtual void InitMappingSchema()
