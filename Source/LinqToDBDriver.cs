@@ -12,6 +12,7 @@ using LinqToDB.Mapping;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.SqlServer.Types;
+using System.Numerics;
 #if !NETCORE
 using System.Net.NetworkInformation;
 #else
@@ -47,6 +48,39 @@ namespace LinqToDB.LINQPad
 		[Obsolete("base method obsoleted")]
 		public override bool ShowConnectionDialog(IConnectionInfo cxInfo, bool isNewConnection) => DriverHelper.ShowConnectionDialog(cxInfo, isNewConnection, true);
 
+#if NETCORE
+		public IEnumerable<string> GetFallbackTokens(string forToken)
+		{
+			switch (forToken)
+			{
+				case "net6.0":
+					yield return "net6.0";
+					yield return "net5.0";
+					yield return "netcoreapp3.1";
+					yield return "netstandard2.1";
+					yield return "netstandard2.0";
+					yield break;
+				case "net5.0":
+					yield return "net5.0";
+					yield return "netcoreapp3.1";
+					yield return "netstandard2.1";
+					yield return "netstandard2.0";
+					yield break;
+				case "netcoreapp3.1":
+					yield return "netcoreapp3.1";
+					yield return "netstandard2.1";
+					yield return "netstandard2.0";
+					yield break;
+				case "netstandard2.1":
+					yield return "netstandard2.1";
+					yield return "netstandard2.0";
+					yield break;
+			}
+
+			yield return forToken;
+		}
+#endif
+
 		public override List<ExplorerItem> GetSchemaAndBuildAssembly(
 			IConnectionInfo cxInfo, AssemblyName assemblyToBuild, ref string nameSpace, ref string typeName)
 		{
@@ -64,6 +98,7 @@ namespace LinqToDB.LINQPad
 					MetadataReference.CreateFromFile(typeof(Enumerable).           Assembly.Location),
 					MetadataReference.CreateFromFile(typeof(IDbConnection).        Assembly.Location),
 					MetadataReference.CreateFromFile(typeof(PhysicalAddress)      .Assembly.Location),
+					MetadataReference.CreateFromFile(typeof(BigInteger)           .Assembly.Location),
 #endif
 					MetadataReference.CreateFromFile(typeof(DataConnection).       Assembly.Location),
 					MetadataReference.CreateFromFile(typeof(LINQPadDataConnection).Assembly.Location),
@@ -81,18 +116,28 @@ namespace LinqToDB.LINQPad
 
 				foreach (var reference in gen.References)
 				{
+					var found = false;
 					var token = _runtimeTokenExtractor.Match(reference).Groups["token"].Value;
-					if (token != runtimeToken)
+					foreach (var fallback in GetFallbackTokens(runtimeToken))
 					{
-						var newReference = reference.Replace($"\\{token}\\", $"\\{runtimeToken}\\");
+						if (token == fallback)
+						{
+							found = true;
+							references.Add(MetadataReference.CreateFromFile(reference));
+							break;
+						}
+
+						var newReference = reference.Replace($"\\{token}\\", $"\\{fallback}\\");
 						if (File.Exists(newReference))
 						{
 							references.Add(MetadataReference.CreateFromFile(newReference));
-							continue;
+							found = true;
+							break;
 						}
 					}
 
-					references.Add(MetadataReference.CreateFromFile(reference));
+					if (!found)
+						references.Add(MetadataReference.CreateFromFile(reference));
 				}
 #else
 				references.AddRange(gen.References.Select(r => MetadataReference.CreateFromFile(r)));

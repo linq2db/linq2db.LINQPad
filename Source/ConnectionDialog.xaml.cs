@@ -31,7 +31,7 @@ namespace LinqToDB.LINQPad
 				if (args.PropertyName == nameof(ConnectionViewModel.IncludeRoutines) && model.IncludeRoutines)
 				{
 					MessageBox.Show(this,
-						"Including Stored Procedures may be dangerous in production if the selected database driver does not support CommandBehavior.SchemaOnly option.",
+						"Including Stored Procedures may be dangerous in production if the selected database driver does not support CommandBehavior.SchemaOnly option or procedure is not safe for CommandBehavior.SchemaOnly execution mode.",
 						"Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
 				}
 
@@ -232,6 +232,35 @@ namespace LinqToDB.LINQPad
 			{
 				var oldCursor = Cursor;
 
+#if NETCORE
+				try
+				{
+					Mouse.OverrideCursor = Cursors.Wait;
+
+					if (Model.AppConfigPath!.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+					{
+						var config = AppJsonConfig.Load(Model.AppConfigPath!);
+						if (config.ConnectionStrings.Any())
+						{
+							var result = (string?)Dialogs.PickFromList("Choose Connection String", config.ConnectionStrings.Select(_ => _.Name).ToArray());
+
+							if (result != null)
+								Model.CustomConfiguration = result;
+						}
+					}
+
+					return;
+				}
+				catch (Exception ex)
+				{
+					MessageBox.Show(this, ex.Message, "Config file open error", MessageBoxButton.OK, MessageBoxImage.Error);
+				}
+				finally
+				{
+					Mouse.OverrideCursor = oldCursor;
+				}
+#endif
+
 				try
 				{
 					Mouse.OverrideCursor = Cursors.Wait;
@@ -247,7 +276,7 @@ namespace LinqToDB.LINQPad
 
 					Mouse.OverrideCursor = oldCursor;
 
-					var result = (string?)Dialogs.PickFromList("Choose Custom Type", configurations.ToArray());
+					var result = (string?)Dialogs.PickFromList("Choose Connection String", configurations.ToArray());
 
 					if (result != null)
 						Model.CustomConfiguration = result;
