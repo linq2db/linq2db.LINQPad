@@ -31,7 +31,7 @@ namespace LinqToDB.LINQPad
 				if (args.PropertyName == nameof(ConnectionViewModel.IncludeRoutines) && model.IncludeRoutines)
 				{
 					MessageBox.Show(this,
-						"Including Stored Procedures may be dangerous in production if the selected database driver does not support CommandBehavior.SchemaOnly option.",
+						"Including Stored Procedures may be dangerous in production if the selected database driver does not support CommandBehavior.SchemaOnly option or procedure is not safe for CommandBehavior.SchemaOnly execution mode.",
 						"Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
 				}
 
