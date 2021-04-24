@@ -1,4 +1,4 @@
-# Release 3.3.2
+# Release 3.3.3
 - [ALL] disable load of procedures and functions by default for new connections
 - [ALL] dependency update: MySqlConnector 1.3.2 -> 1.3.5
 - [ALL] initial support for Firebird 4 types
