@@ -12,7 +12,7 @@ variables:
 # trigger for commits to master/release
 trigger:
   - master
-  - releaseS
+  - release
 # trigger for PRs to master/release
 pr:
   - master
