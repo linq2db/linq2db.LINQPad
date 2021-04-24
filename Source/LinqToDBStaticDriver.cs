@@ -47,6 +47,8 @@ namespace LinqToDB.LINQPad
 
 		public override object[] GetContextConstructorArguments(IConnectionInfo cxInfo)
 		{
+			TryLoadAppSettingsJson(cxInfo);
+
 			var configuration = cxInfo.DriverData.Element(CX.CustomConfiguration)?.Value;
 
 			if (configuration != null)
@@ -77,6 +79,14 @@ namespace LinqToDB.LINQPad
 		{
 			dynamic ctx = context;
 			ctx.Dispose();
+		}
+
+		private void TryLoadAppSettingsJson(IConnectionInfo cxInfo)
+		{
+			#if NETCORE
+			if (cxInfo.AppConfigPath?.EndsWith(".json", StringComparison.OrdinalIgnoreCase) == true)
+				DataConnection.DefaultSettings = AppJsonConfig.Load(cxInfo.AppConfigPath!);
+			#endif
 		}
 	}
 }

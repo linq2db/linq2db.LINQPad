@@ -79,6 +79,7 @@
 		<PackageReference Include="Oracle.ManagedDataAccess.Core" />
 		<PackageReference Include="IBM.Data.DB2.Core" />
 		<PackageReference Include="dotMorten.Microsoft.SqlServer.Types" />
+		<PackageReference Include="System.Text.Json" />
 	</ItemGroup>
 
 	<ItemGroup>
