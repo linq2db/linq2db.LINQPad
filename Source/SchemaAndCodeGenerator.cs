@@ -72,7 +72,7 @@ namespace LinqToDB.LINQPad
 				var excludeCatalogs = (string?)_cxInfo.DriverData.Element(CX.ExcludeCatalogs);
 				if (excludeCatalogs != null) options.ExcludedCatalogs = excludeCatalogs.Split(',', ';');
 
-				options.GetProcedures  = (string?)_cxInfo.DriverData.Element(CX.ExcludeRoutines) != "true";
+				options.GetProcedures  = (string?)_cxInfo.DriverData.Element(CX.ExcludeRoutines) == "false";
 				options.GetForeignKeys = (string?)_cxInfo.DriverData.Element(CX.ExcludeFKs)      != "true";
 
 				_schema = _dataProvider.GetSchemaProvider().GetSchema(db, options);

@@ -68,7 +68,7 @@ namespace LinqToDB.LINQPad
 			model.EncryptConnectionString  = cxInfo.DatabaseInfo.EncryptCustomCxString;
 			model.Pluralize                = !cxInfo.DynamicSchemaOptions.NoPluralization;
 			model.Capitalize               = !cxInfo.DynamicSchemaOptions.NoCapitalization;
-			model.IncludeRoutines          = cxInfo.DriverData.Element(CX.ExcludeRoutines)?.Value.ToLower() != "true";
+			model.IncludeRoutines          = cxInfo.DriverData.Element(CX.ExcludeRoutines)?.Value.ToLower() == "false";
 			model.IncludeFKs               = cxInfo.DriverData.Element(CX.ExcludeFKs)?.Value.ToLower()      != "true";
 			model.ConnectionString         = cxInfo.DatabaseInfo.CustomCxString.IsNullOrWhiteSpace() ? (string?)cxInfo.DriverData.Element(CX.ConnectionString) : cxInfo.DatabaseInfo.CustomCxString;
 			model.IncludeSchemas           = cxInfo.DriverData.Element(CX.IncludeSchemas)          ?.Value;
