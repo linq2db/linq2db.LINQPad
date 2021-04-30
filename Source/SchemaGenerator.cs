@@ -54,6 +54,7 @@ namespace LinqToDB.LINQPad
 				.Where(p =>
 					p.GetCustomAttributeLike<ObsoleteAttribute>() == null &&
 					p.PropertyType.MaybeChildOf(typeof(IQueryable<>)))
+				.OrderBy(p => p.Name)
 				.Select(p => new TableInfo(p))
 				.ToList();
 
