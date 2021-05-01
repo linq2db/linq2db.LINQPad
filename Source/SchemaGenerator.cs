@@ -49,7 +49,7 @@ namespace LinqToDB.LINQPad
 		}
 
 		public IEnumerable<ExplorerItem> GetSchema()
-		{
+		{ 
 			var tables = _customType.GetProperties()
 				.Where(p =>
 					p.GetCustomAttributeLike<ObsoleteAttribute>() == null &&
@@ -124,9 +124,13 @@ namespace LinqToDB.LINQPad
 				from ma in table.TypeAccessor.Members
 				let aa = ma.MemberInfo.GetCustomAttributeLike<AssociationAttribute>()
 				where aa == null
-				let ca = ma.MemberInfo.GetCustomAttributeLike<ColumnAttribute>()
+				let ca = ma.MemberInfo.GetCustomAttributeLike<ColumnAttribute>() as ColumnAttribute
 				let id = ma.MemberInfo.GetCustomAttributeLike<IdentityAttribute>()
-				let pk = ma.MemberInfo.GetCustomAttributeLike<PrimaryKeyAttribute>()
+				let pk = ma.MemberInfo.GetCustomAttributeLike<PrimaryKeyAttribute>() 
+				orderby 
+					ca == null ? 1 : ca.Order >= 0 ? 0 : 2,
+					ca?.Order,
+					ma.Name
 				where
 					ca != null && ca.IsColumn ||
 					pk != null ||
