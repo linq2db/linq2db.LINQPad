@@ -1,3 +1,30 @@
+# Release 3.6.0
+- starting from this release we use LINQPad 7 instead of 6 for testing, so LINQPad 6 compatibility not guarantied
+- [#57](https://github.com/linq2db/linq2db.LINQPad/pull/57) use stable ordering of custom context properties. Thanks to [@RoyChase](https://github.com/RoyChase) for fix
+- [ALL] dependency update: linq2db 3.3.0 -> 3.6.0
+- [ALL] dependency update: CodeJam 3.3.1 -> 4.0.1
+- [ALL] dependency update: MySqlConnector 1.3.5 -> 2.0.0
+- [ALL] dependency update: System.Data.SQLite.Core 1.0.113.7 -> 1.0.115.5
+- [ALL] dependency update: System.Data.SqlClient 4.8.2 -> 4.8.3
+- [ALL] dependency update: Humanizer.Core 2.8.26 -> 2.13.14
+- [ALL] dependency update: System.Runtime.CompilerServices.Unsafe 5.0.0 -> 6.0.0
+- [LINQPAD5] fix DB2/Informix provider load issue
+- [LINQPAD5] dependency update: Npgsql 4.1.8 -> 4.1.10
+- [LINQPAD5] dependency update: IBM.Data.DB.Provider 11.5.4000.4861 -> 11.5.5010.4
+- [LINQPAD5] dependency update: Oracle.ManagedDataAccess 19.11.0 -> 19.13.0
+- [LINQPAD7] dependency update: FirebirdSql.Data.FirebirdClient 8.0.1 -> 8.5.4
+- [LINQPAD7] dependency update: System.Configuration.ConfigurationManager 5.0.0 -> 6.0.0
+- [LINQPAD7] dependency update: Microsoft.CodeAnalysis.CSharp 3.9.0 -> 4.0.1
+- [LINQPAD7] dependency update: System.Data.Odbc 5.0.0 -> 6.0.0
+- [LINQPAD7] dependency update: System.Data.OleDb 5.0.0 -> 6.0.0
+- [LINQPAD7] dependency update: Npgsql 5.0.4 -> 6.0.0
+- [LINQPAD7] dependency update: Oracle.ManagedDataAccess.Core 3.21.1 -> 3.21.4
+- [LINQPAD7] dependency update: IBM.Data.DB2.Core 3.1.0.400 -> 3.1.0.500
+- [LINQPAD7] dependency update: System.Text.Json 5.0.2 -> 6.0.0
+- [LINQPAD7] add readme to nuget
+- [INFRASTRUCTURE] enable C# 10 support
+- [INFRASTRUCTURE] use `net6.0` build target to validate code against recent NRT definitions
+
 # Release 3.3.3
 - [ALL] disable load of procedures and functions by default for new connections
 - [ALL] dependency update: MySqlConnector 1.3.2 -> 1.3.5

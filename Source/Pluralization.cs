@@ -26,12 +26,16 @@ namespace LinqToDB.LINQPad
 			var word    = GetLastWord(str);
 			var newWord = word.Pluralize();
 
-			if (string.Compare(word, newWord, StringComparison.OrdinalIgnoreCase) != 0)
+			if (string.Equals(word, newWord, StringComparison.OrdinalIgnoreCase))
 			{
 				if (char.IsUpper(word[0]))
 					newWord = char.ToUpper(newWord[0]) + newWord.Substring(1, newWord.Length - 1);
 
+#if NETCORE
+				return word == str ? newWord : string.Concat(str.AsSpan(0, str.Length - word.Length), newWord);
+#else
 				return word == str ? newWord : str.Substring(0, str.Length - word.Length) + newWord;
+#endif
 			}
 
 			return str;
@@ -42,12 +46,16 @@ namespace LinqToDB.LINQPad
 			var word    = GetLastWord(str);
 			var newWord = word.Singularize();
 
-			if (string.Compare(word, newWord, StringComparison.OrdinalIgnoreCase) != 0)
+			if (string.Equals(word, newWord, StringComparison.OrdinalIgnoreCase))
 			{
 				if (char.IsUpper(word[0]))
 					newWord = char.ToUpper(newWord[0]) + newWord.Substring(1, newWord.Length - 1);
 
+#if NETCORE
+				return word == str ? newWord : string.Concat(str.AsSpan(0, str.Length - word.Length), newWord);
+#else
 				return word == str ? newWord : str.Substring(0, str.Length - word.Length) + newWord;
+#endif
 			}
 
 			return str;

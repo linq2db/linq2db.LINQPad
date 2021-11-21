@@ -538,7 +538,8 @@ namespace LinqToDB.LINQPad
 
 			var extractedValue = dataExtractor(param);
 
-			var methodInfo = typeof(XmlFormatter).GetMethodEx("Format", typeof(T));
+			var methodInfo = typeof(XmlFormatter).GetMethodEx("Format", typeof(T))
+				?? throw new InvalidOperationException($"XmlFormatter.Format({typeof(T)}) method not found");
 
 			var expr = Expression.Lambda(
 				Expression.Call(methodInfo, extractedValue),
@@ -588,9 +589,11 @@ namespace LinqToDB.LINQPad
 			VF<Oracle.ManagedDataAccess.Types.OracleXmlType>(v => FormatValueXml(v.IsNull ? null : v.Value)!),
 
 			// npgsql types
+#pragma warning disable CS0618 // Type or member is obsolete
 			VF<NpgsqlTypes.NpgsqlTimeSpan>(v => Format((TimeSpan)v)),
 			VF<NpgsqlTypes.NpgsqlDateTime>(v => Format((DateTime)v)),
 			VF<NpgsqlTypes.NpgsqlDate    >(v => Format((DateTime)v)),
+#pragma warning restore CS0618 // Type or member is obsolete
 			VF<NpgsqlTypes.NpgsqlBox     >(v => Format(v.ToString())),
 			VF<NpgsqlTypes.NpgsqlLSeg    >(v => Format(v.ToString())),
 			VF<NpgsqlTypes.NpgsqlLine    >(v => Format(v.ToString())),
