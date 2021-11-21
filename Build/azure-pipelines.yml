@@ -1,10 +1,10 @@
 variables:
   solution: 'linq2db.LINQPad.sln'
   build_configuration: 'Release'
-  assemblyVersion: 3.3.3.0
-  nugetVersion: 3.3.3
-  nugetDevVersion: 3.3.3
-  nugetPRVersion: 3.3.3
+  assemblyVersion: 3.6.0.0
+  nugetVersion: 3.6.0
+  nugetDevVersion: 3.6.1
+  nugetPRVersion: 3.6.1
   artifact_lpx: 'lpx'
   artifact_lpx6: 'lpx6'
   artifact_nuget: 'nuget'
@@ -24,7 +24,7 @@ stages:
   jobs:
   - job: build_job
     pool:
-      vmImage: 'windows-2019'
+      vmImage: 'windows-2022'
     displayName: 'Build'
     variables:
       - template: nuget-vars.yml

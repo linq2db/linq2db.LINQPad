@@ -263,7 +263,7 @@ namespace LinqToDB.LINQPad
 			try
 			{
 				var assembly = Assembly.LoadFrom(providerPath);
-				DbProviderFactories.RegisterFactory("System.Data.SqlServerCe.4.0", assembly.GetType("System.Data.SqlServerCe.SqlCeProviderFactory"));
+				DbProviderFactories.RegisterFactory("System.Data.SqlServerCe.4.0", assembly.GetType("System.Data.SqlServerCe.SqlCeProviderFactory")!);
 				_sqlceLoaded = true;
 			}
 			catch { }
@@ -285,7 +285,7 @@ namespace LinqToDB.LINQPad
 					// if you run tests from path with spaces - it will not help you
 					File.Copy(providerPath, targetPath, true);
 					var sapHanaAssembly = Assembly.LoadFrom(targetPath);
-					DbProviderFactories.RegisterFactory("Sap.Data.Hana", sapHanaAssembly.GetType("Sap.Data.Hana.HanaFactory"));
+					DbProviderFactories.RegisterFactory("Sap.Data.Hana", sapHanaAssembly.GetType("Sap.Data.Hana.HanaFactory")!);
 					_sapHanaLoaded = true;
 				}
 			}

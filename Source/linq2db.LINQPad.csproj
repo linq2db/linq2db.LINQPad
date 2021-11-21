@@ -1,12 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
 	<PropertyGroup>
-		<TargetFrameworks>net461;netcoreapp3.1</TargetFrameworks>
+		<!--net6.0-windows used only as additional built target and not released-->
+		<TargetFrameworks>net461;netcoreapp3.1;net6.0-windows</TargetFrameworks>
 		<RootNamespace>LinqToDB.LINQPad</RootNamespace>
 		<Company>linq2db</Company>
 		<Product>linq2db.LINQPad</Product>
 		<AssemblyTitle>$(Product)</AssemblyTitle>
-		<Version>3.3.3.0</Version>
+		<Version>3.6.0.0</Version>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
 		<Copyright>Copyright © 2016-2021 Igor Tkachev, Ilya Chudin, Svyatoslav Danyliv, Dmitry Lukashenko</Copyright>
@@ -14,10 +15,12 @@
 		<UseWPF>true</UseWPF>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 
-		<LangVersion>9.0</LangVersion>
+		<LangVersion>10.0</LangVersion>
 		<Nullable>enable</Nullable>
-		<WarningLevel>4</WarningLevel>
+		<!--https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/errors-warnings#warninglevel-->
+		<WarningLevel>9999</WarningLevel>
 		<ErrorReport>prompt</ErrorReport>
+		<Features>strict</Features>
 
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 
@@ -34,11 +37,11 @@
 		<SignAssembly>true</SignAssembly>
 		<DelaySign>false</DelaySign>
 	</PropertyGroup>
-	
-	<PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+
+	<PropertyGroup Condition="'$(TargetFramework)' != 'net461'">
 		<DefineConstants>NETCORE</DefineConstants>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
 		<PackageReference Include="LINQPad.Reference" />
 		<PackageReference Include="linq2db" />
@@ -48,8 +51,7 @@
 		<PackageReference Include="FirebirdSql.Data.FirebirdClient" />
 		<PackageReference Include="MySqlConnector" />
 		<PackageReference Include="AdoNetCore.AseClient" />
-		<PackageReference Include="IBM.Data.DB.Provider" GeneratePathProperty="true" />
-	  <PackageReference Include="System.Data.SQLite.Core" />
+		<PackageReference Include="System.Data.SQLite.Core" />
 
 		<PackageReference Include="System.Data.SqlClient" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
@@ -66,12 +68,16 @@
 		<PackageReference Include="System.Memory" />
 		<PackageReference Include="System.Buffers" />
 		<PackageReference Include="Oracle.ManagedDataAccess" />
+		<PackageReference Include="IBM.Data.DB.Provider" GeneratePathProperty="true" />
+		<Reference Include="IBM.Data.DB2">
+			<HintPath>$(PkgIBM_Data_DB_Provider)\build\net451\x86\IBM.Data.DB2.dll</HintPath>
+		</Reference>
 
 		<!--<PackageReference Include="linq2db4iSeries" />-->
 		<PackageReference Include="Microsoft.SqlServer.Types" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
+	<ItemGroup Condition=" '$(TargetFramework)' != 'net461' ">
 		<PackageReference Include="System.Configuration.ConfigurationManager" />
 
 		<PackageReference Include="System.Data.Odbc" />
@@ -84,17 +90,17 @@
 
 	<ItemGroup>
 		<None Update="Connection.png">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 		<None Update="ConnectionViewModel.tt">
 			<Generator>TextTemplatingFileGenerator</Generator>
 			<LastGenOutput>ConnectionViewModel.generated.cs</LastGenOutput>
 		</None>
 		<None Update="FailedConnection.png">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 		<None Update="header.xml">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
 
@@ -107,7 +113,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
 
 	<Target Name="PostBuild1" AfterTargets="PostBuildEvent" Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
@@ -116,6 +122,15 @@
 
 	<Target Name="PostBuild2" AfterTargets="CopySQLiteInteropFiles" Condition="'$(TargetFramework)' == 'net461'">
 		<Exec Command="$(ProjectDir)Pack.bat $(TargetDir) lpx" />
+	</Target>
+
+	<!--disable CodeJam transitive dependency polluting global namespace-->
+	<Target Name="ChangeAliasesOfBNameAssemblies" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
+		<ItemGroup>
+			<ReferencePath Condition="'%(FileName)' == 'Theraot.Core'">
+				<Aliases>unused</Aliases>
+			</ReferencePath>
+		</ItemGroup>
 	</Target>
 
 </Project>
