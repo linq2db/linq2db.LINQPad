@@ -110,7 +110,7 @@ namespace LinqToDB.LINQPad
 				// hack to overwrite provider assembly references that target wrong runtime
 				// e.g. gen.References contains path to net5 MySqlConnector
 				// but GetCoreFxReferenceAssemblies returns netcoreapp3.1 runtime references
-				var coreAssemblies = GetCoreFxReferenceAssemblies();
+				var coreAssemblies = GetCoreFxReferenceAssemblies(cxInfo);
 				var runtimeToken   = _runtimeTokenExtractor.Match(coreAssemblies[0]).Groups["token"].Value;
 				references.AddRange(coreAssemblies.Select(path => MetadataReference.CreateFromFile(path)));
 

@@ -7,10 +7,10 @@
 		<Company>linq2db</Company>
 		<Product>linq2db.LINQPad</Product>
 		<AssemblyTitle>$(Product)</AssemblyTitle>
-		<Version>3.6.0.0</Version>
+		<Version>4.0.0.0</Version>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
-		<Copyright>Copyright © 2016-2021 Igor Tkachev, Ilya Chudin, Svyatoslav Danyliv, Dmitry Lukashenko</Copyright>
+		<Copyright>Copyright © 2016-2022 linq2db Developers</Copyright>
 		<AssemblyOriginatorKeyFile>linq2db.snk</AssemblyOriginatorKeyFile>
 		<UseWPF>true</UseWPF>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>

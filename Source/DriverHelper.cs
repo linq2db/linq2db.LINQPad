@@ -20,7 +20,7 @@ namespace LinqToDB.LINQPad
 {
 	static class DriverHelper
 	{
-		public const string Author = "Igor Tkachev, Ilya Chudin, Svyatoslav Danyliv, Dmitry Lukashenko";
+		public const string Author = "linq2db Developers";
 
 		public static void Init()
 		{
