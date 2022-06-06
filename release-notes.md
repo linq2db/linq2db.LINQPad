@@ -8,13 +8,14 @@
 - [ALL] dependency update: System.Memory 4.5.4 -> 4.5.5
 - [ALL] dependency update: MySqlConnector 2.0.0 -> 2.1.10
 - [ALL] dependency update: System.Data.SQLite.Core 1.0.115.5 -> 1.0.116
-- [ALL] dependency update: Oracle.ManagedDataAccess.Core 3.21.4 -> 3.21.61
-- [ALL] dependency update: IBM.Data.DB2.Core 3.1.0.500 -> 3.1.0.600
-- [ALL] dependency update: dotMorten.Microsoft.SqlServer.Types 1.3.0 -> 1.5.0
+- [LINQPAD7] dependency update: Oracle.ManagedDataAccess.Core 3.21.4 -> 3.21.61
+- [LINQPAD7] dependency update: IBM.Data.DB2.Core 3.1.0.500 -> 3.1.0.600
+- [LINQPAD7] dependency update: dotMorten.Microsoft.SqlServer.Types 1.3.0 -> 1.5.0
 - [LINQPAD7] dependency update: Microsoft.CodeAnalysis.CSharp 4.0.1 -> 4.2.0
 - [LINQPAD7] dependency update: Npgsql 6.0.0 -> 6.0.4
 - [LINQPAD7] dependency update: FirebirdSql.Data.FirebirdClient 8.5.4 -> 9.0.1
 - [LINQPAD7] dependency update: System.Text.Json 6.0.0 -> 6.0.4
+- [LINQPAD5] dependency update: Oracle.ManagedDataAccess 19.13.0 -> 19.14.0
 
 # Release 3.6.0
 - starting from this release we use LINQPad 7 instead of 6 for testing, so LINQPad 6 compatibility not guarantied
