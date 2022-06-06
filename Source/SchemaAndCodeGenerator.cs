@@ -465,13 +465,12 @@ namespace LinqToDB.LINQPad
 				Children = procedures
 					.Select(p =>
 					{
-						var sprocSqlName = _sqlBuilder!.BuildTableName(
+						var sprocSqlName = _sqlBuilder!.BuildObjectName(
 							new StringBuilder(),
-							null,
-							null,
-							p.SchemaName == null ? null : _sqlBuilder.ConvertInline(p.SchemaName, ConvertType.NameToSchema),
-							_sqlBuilder.ConvertInline(p.ProcedureName, ConvertType.NameToQueryTable),
-							TableOptions.NotSet).ToString();
+							new SqlQuery.SqlObjectName(
+								Name: _sqlBuilder.ConvertInline(p.ProcedureName, ConvertType.NameToProcedure), 
+								Schema: p.SchemaName == null ? null : _sqlBuilder.ConvertInline(p.SchemaName, ConvertType.NameToSchema)),
+							tableOptions: TableOptions.NotSet).ToString();
 
 						var memberName = p.MemberName;
 
@@ -696,13 +695,12 @@ namespace LinqToDB.LINQPad
 
 						CodeTable(_classCode, t, true);
 
-						var tableSqlName = _sqlBuilder!.BuildTableName(
+						var tableSqlName = _sqlBuilder!.BuildObjectName(
 							new StringBuilder(),
-							null,
-							null,
-							t.SchemaName == null ? null : _sqlBuilder.ConvertInline(t.SchemaName, ConvertType.NameToSchema),
-							_sqlBuilder.ConvertInline(t.TableName!,  ConvertType.NameToQueryTable),
-							TableOptions.NotSet).ToString();
+							new SqlQuery.SqlObjectName(
+								Name: _sqlBuilder.ConvertInline(t.TableName!, ConvertType.NameToQueryTable),
+								Schema: t.SchemaName == null ? null : _sqlBuilder.ConvertInline(t.SchemaName, ConvertType.NameToSchema)),
+							tableOptions: TableOptions.NotSet).ToString();
 
 						//Debug.WriteLine($"Table: [{t.SchemaName}].[{t.TableName}] - ${tableSqlName}");
 
