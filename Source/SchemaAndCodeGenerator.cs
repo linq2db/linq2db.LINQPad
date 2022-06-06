@@ -469,7 +469,7 @@ namespace LinqToDB.LINQPad
 							new StringBuilder(),
 							new SqlQuery.SqlObjectName(
 								Name: p.ProcedureName, 
-								Schema: p.SchemaName == null ? null : _sqlBuilder.ConvertInline(p.SchemaName, ConvertType.NameToSchema)),
+								Schema: p.SchemaName),
 							tableOptions: TableOptions.NotSet).ToString();
 
 						var memberName = p.MemberName;
@@ -699,7 +699,7 @@ namespace LinqToDB.LINQPad
 							new StringBuilder(),
 							new SqlQuery.SqlObjectName(
 								Name: t.TableName!,
-								Schema: t.SchemaName == null ? null : _sqlBuilder.ConvertInline(t.SchemaName, ConvertType.NameToSchema)),
+								Schema: t.SchemaName),
 							tableOptions: TableOptions.NotSet).ToString();
 
 						//Debug.WriteLine($"Table: [{t.SchemaName}].[{t.TableName}] - ${tableSqlName}");
