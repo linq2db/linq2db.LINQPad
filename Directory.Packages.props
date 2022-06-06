@@ -1,6 +1,6 @@
 ﻿<Project>
 	<ItemGroup>
-		<PackageVersion Include="linq2db"                                   Version="4.0.0"                                   />
+		<PackageVersion Include="linq2db"                                   Version="4.0.1"                                   />
 
 		<PackageVersion Include="LINQPad.Reference"                         Version="1.3.0"                                   />
 
@@ -15,13 +15,13 @@
 		<PackageVersion Include="MySqlConnector"                            Version="2.1.10"                                  />
 		<PackageVersion Include="AdoNetCore.AseClient"                      Version="0.19.2"                                  />
 		<PackageVersion Include="IBM.Data.DB.Provider"                      Version="11.5.5010.4" GeneratePathProperty="true" />
-		<PackageVersion Include="System.Data.SQLite.Core"                   Version="1.0.115.5"                               />
+		<PackageVersion Include="System.Data.SQLite.Core"                   Version="1.0.116"                                 />
 		<PackageVersion Include="System.Data.SqlClient"                     Version="4.8.3"                                   />
 		<PackageVersion Include="Oracle.ManagedDataAccess.Core"             Version="3.21.61"                                 />
 		<PackageVersion Include="System.Data.Odbc"                          Version="6.0.0"                                   />
 		<PackageVersion Include="System.Data.OleDb"                         Version="6.0.0"                                   />
-		<PackageVersion Include="IBM.Data.DB2.Core"                         Version="3.1.0.500"                               />
-		<PackageVersion Include="dotMorten.Microsoft.SqlServer.Types"       Version="2.5.0"                                   />
+		<PackageVersion Include="IBM.Data.DB2.Core"                         Version="3.1.0.600"                               />
+		<PackageVersion Include="dotMorten.Microsoft.SqlServer.Types"       Version="1.3.0"                                   />
 		<PackageVersion Include="Microsoft.SqlServer.Types"                 Version="14.0.1016.290"                           />
 		<!--<PackageVersion Include="linq2db4iSeries"                       Version="2.9.0"                                   />-->
 	</ItemGroup>

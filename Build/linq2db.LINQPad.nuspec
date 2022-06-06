@@ -29,7 +29,8 @@
 				<dependency id="System.Data.Odbc"                          version="5.0.0"     />
 				<dependency id="System.Data.OleDb"                         version="5.0.0"     />
 				<dependency id="Npgsql"                                    version="6.0.4"     />
-				<dependency id="Oracle.ManagedDataAccess.Core"             version="3.21.4"    />
+				<dependency id="Oracle.ManagedDataAccess"                  version="21.6.1"    />
+				<dependency id="Oracle.ManagedDataAccess.Core"             version="3.21.61"   />
 				<dependency id="IBM.Data.DB2.Core"                         version="3.1.0.600" />
 			</group>
 		</dependencies>

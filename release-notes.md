@@ -1,12 +1,11 @@
 # Release 4.0.0
 - [#55](https://github.com/linq2db/linq2db.LINQPad/pull/65) Fix bug in pluralization/singularization code
-- [ALL] dependency update: linq2db 3.6.0 -> 4.0.0
+- [ALL] dependency update: linq2db 3.6.0 -> 4.0.1
 - [ALL] dependency update: LINQPAD.Reference 1.1.0 -> 1.3.0
 - [ALL] dependency update: Humanizer.Core 2.13.14 -> 2.14.1
 - [ALL] dependency update: CodeJam 4.0.1 -> 4.1.0
 - [ALL] dependency update: System.Memory 4.5.4 -> 4.5.5
 - [ALL] dependency update: MySqlConnector 2.0.0 -> 2.1.10
-- [ALL] dependency update: dotMorten.Microsoft.SqlServer.Types 1.3.0 -> 2.5.0
 - [ALL] dependency update: Oracle.ManagedDataAccess.Core 3.21.4 -> 3.21.61
 - [LINQPAD7] dependency update: Oracle.ManagedDataAccess 19.13.0 -> 21.6.1
 

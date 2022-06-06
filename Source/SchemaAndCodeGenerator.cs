@@ -468,7 +468,7 @@ namespace LinqToDB.LINQPad
 						var sprocSqlName = _sqlBuilder!.BuildObjectName(
 							new StringBuilder(),
 							new SqlQuery.SqlObjectName(
-								Name: _sqlBuilder.ConvertInline(p.ProcedureName, ConvertType.NameToProcedure), 
+								Name: p.ProcedureName, 
 								Schema: p.SchemaName == null ? null : _sqlBuilder.ConvertInline(p.SchemaName, ConvertType.NameToSchema)),
 							tableOptions: TableOptions.NotSet).ToString();
 
@@ -698,7 +698,7 @@ namespace LinqToDB.LINQPad
 						var tableSqlName = _sqlBuilder!.BuildObjectName(
 							new StringBuilder(),
 							new SqlQuery.SqlObjectName(
-								Name: _sqlBuilder.ConvertInline(t.TableName!, ConvertType.NameToQueryTable),
+								Name: t.TableName!,
 								Schema: t.SchemaName == null ? null : _sqlBuilder.ConvertInline(t.SchemaName, ConvertType.NameToSchema)),
 							tableOptions: TableOptions.NotSet).ToString();
 
