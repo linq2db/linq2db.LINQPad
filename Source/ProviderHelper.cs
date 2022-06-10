@@ -25,7 +25,7 @@ namespace LinqToDB.LINQPad
 		static void AddDataProvider(DynamicProviderRecord providerInfo)
 		{
 			if (providerInfo == null) throw new ArgumentNullException(nameof(providerInfo));
-			_dynamicProviders.Add(providerInfo.ProviderName, providerInfo);
+			_dynamicProviders.Add(providerInfo.Name, providerInfo);
 		}
 
 		static ProviderHelper()
@@ -33,60 +33,38 @@ namespace LinqToDB.LINQPad
 			InitializeDataProviders();
 		}
 
-		//static class DB2iSeriesProviderName
-		//{
-		//	public const string DB2         = "DB2.iSeries";
-		//}
-
 		static void InitializeDataProviders()
 		{
-			AddDataProvider(new DynamicProviderRecord(ProviderName.Access        , "Microsoft Access (OleDb)"       , "System.Data.OleDb.OleDbConnection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.AccessOdbc    , "Microsoft Access (ODBC)"        , "System.Data.Odbc.OdbcConnection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.Firebird      , "Firebird"                       , "FirebirdSql.Data.FirebirdClient.FbConnection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.MySqlConnector, "MySql"                          , "MySql.Data.MySqlClient.MySqlConnection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.PostgreSQL    , "PostgreSQL"                     , "Npgsql.NpgsqlConnection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.SybaseManaged , "SAP/Sybase ASE"                 , "AdoNetCore.AseClient.AseConnection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.SQLiteClassic , "SQLite"                         , "System.Data.SQLite.SQLiteConnection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.SqlCe         , "Microsoft SQL Server Compact"   , "System.Data.SqlServerCe.SqlCeConnection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.DB2LUW        , "DB2 for Linux, UNIX and Windows", "IBM.Data.DB2.DB2Connection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.DB2zOS        , "DB2 for z/OS"                   , "IBM.Data.DB2.DB2Connection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.InformixDB2   , "Informix (IDS)"                 , "IBM.Data.DB2.DB2Connection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.SapHanaNative , "SAP HANA (Native)"              , "Sap.Data.Hana.HanaConnection"));
-			AddDataProvider(new DynamicProviderRecord(ProviderName.SapHanaOdbc   , "SAP HANA (ODBC)"                , "System.Data.Odbc.OdbcConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.Access        , ProviderName.Access        , "Microsoft Access (OleDb)"       , "System.Data.OleDb.OleDbConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.AccessOdbc    , ProviderName.AccessOdbc    , "Microsoft Access (ODBC)"        , "System.Data.Odbc.OdbcConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.Firebird      , ProviderName.Firebird      , "Firebird"                       , "FirebirdSql.Data.FirebirdClient.FbConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.MySqlConnector, ProviderName.MySqlConnector, "MySql"                          , "MySql.Data.MySqlClient.MySqlConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.PostgreSQL    , ProviderName.PostgreSQL    , "PostgreSQL"                     , "Npgsql.NpgsqlConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.SybaseManaged , ProviderName.SybaseManaged , "SAP/Sybase ASE"                 , "AdoNetCore.AseClient.AseConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.SQLiteClassic , ProviderName.SQLiteClassic , "SQLite"                         , "System.Data.SQLite.SQLiteConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.SqlCe         , ProviderName.SqlCe         , "Microsoft SQL Server Compact"   , "System.Data.SqlServerCe.SqlCeConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.DB2LUW        , ProviderName.DB2LUW        , "DB2 for Linux, UNIX and Windows", "IBM.Data.DB2.DB2Connection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.DB2zOS        , ProviderName.DB2zOS        , "DB2 for z/OS"                   , "IBM.Data.DB2.DB2Connection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.InformixDB2   , ProviderName.InformixDB2   , "Informix (IDS)"                 , "IBM.Data.DB2.DB2Connection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.SapHanaNative , ProviderName.SapHanaNative , "SAP HANA (Native)"              , "Sap.Data.Hana.HanaConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.SapHanaOdbc   , ProviderName.SapHanaOdbc   , "SAP HANA (ODBC)"                , "System.Data.Odbc.OdbcConnection"));
+			AddDataProvider(new DynamicProviderRecord(ProviderName.OracleManaged , ProviderName.OracleManaged , "Oracle (Managed)"               , "Oracle.ManagedDataAccess.Client.OracleConnection"));
 
-			AddDataProvider(new DynamicProviderRecord(ProviderName.OracleManaged , "Oracle (Managed)"               , "Oracle.ManagedDataAccess.Client.OracleConnection"));
 			// we use System.Data.SqlClient to be able to use Microsoft.SqlServer.Types
-			AddDataProvider(new DynamicProviderRecord(ProviderName.SqlServer     , "Microsoft SQL Server"           , "System.Data.SqlClient.SqlConnection"));
-
-			//AddDataProvider(
-			//	new DynamicProviderRecord(
-			//		ProviderName.SqlServer,
-			//		"Microsoft SQL Server",
-			//		"System.Data.SqlClient.SqlConnection")
-			//	{
-			//		AdditionalNamespaces = new[] { "Microsoft.SqlServer.Types" },
-			//		ProviderLibraries = "Microsoft.SqlServer.Types.dll"
-			//	});
-
-			//AddDataProvider(new DynamicProviderRecord(DB2iSeriesProviderName.DB2, "DB2 iSeries (Requires iAccess 7.1 .NET Provider)", "IBM.Data.DB2.iSeries.iDB2Connection")
-			//{
-			//	InitializationClassName = "LinqToDB.DataProvider.DB2iSeries.DB2iSeriesTools, LinqToDB.DataProvider.DB2iSeries",
-			//	ProviderLibraries = "LinqToDB.DataProvider.DB2iSeries.dll;IBM.Data.DB2.iSeries.dll"
-			//});
+			AddDataProvider(new DynamicProviderRecord(ProviderName.SqlServer     , "System.Data.SqlClient"    , "Microsoft SQL Server"           , "System.Data.SqlClient.SqlConnection"));
 		}
 
 		public class DynamicProviderRecord
 		{
+			public string                      Name                    { get; }
 			public string                      ProviderName            { get; }
 			public string                      Description             { get; }
 			public string                      ConnectionTypeName      { get; }
 			public IReadOnlyCollection<string> Libraries               { get; }
-			public string?                     InitializationClassName { get; set; }
-			public NamedValue[]?               ProviderNamedValues     { get; set; }
-			public string[]?                   AdditionalNamespaces    { get; set; }
 
-			public DynamicProviderRecord(string providerName, string description, string connectionTypeName, params string[] providerLibraries)
+			public DynamicProviderRecord(string name, string providerName, string description, string connectionTypeName, params string[] providerLibraries)
 			{
+				Name               = name;
 				ProviderName       = providerName;
 				Description        = description;
 				ConnectionTypeName = connectionTypeName;
@@ -135,14 +113,6 @@ namespace LinqToDB.LINQPad
 					var providerLibraries = loadLibraries
 						.Concat(new[] { typeof(DataConnection).Assembly })
 						.ToArray();
-
-
-					var typeName = Provider.InitializationClassName;
-					if (!string.IsNullOrEmpty(typeName))
-					{
-						var initType = Type.GetType(typeName, true)!;
-						RuntimeHelpers.RunClassConstructor(initType.TypeHandle);
-					}
 
 					var provider = ProviderHelper.GetDataProvider(Provider.ProviderName, connectionString);
 

@@ -19,7 +19,7 @@ namespace LinqToDB.LINQPad
 		public ConnectionViewModel()
 		{
 			_providers = new ObservableCollection<ProviderInfo>(
-				ProviderHelper.DynamicProviders.Select(p => new ProviderInfo(p.ProviderName, p.Description))
+				ProviderHelper.DynamicProviders.Select(p => new ProviderInfo(p.Name, p.Description))
 					.OrderBy(s => s.Description.ToLower()));
 
 			_optimizeJoins      = true;
