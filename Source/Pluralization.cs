@@ -26,7 +26,7 @@ namespace LinqToDB.LINQPad
 			var word    = GetLastWord(str);
 			var newWord = word.Pluralize();
 
-			if (string.Equals(word, newWord, StringComparison.OrdinalIgnoreCase))
+			if (!string.Equals(word, newWord, StringComparison.OrdinalIgnoreCase))
 			{
 				if (char.IsUpper(word[0]))
 					newWord = char.ToUpper(newWord[0]) + newWord.Substring(1, newWord.Length - 1);
@@ -46,7 +46,7 @@ namespace LinqToDB.LINQPad
 			var word    = GetLastWord(str);
 			var newWord = word.Singularize();
 
-			if (string.Equals(word, newWord, StringComparison.OrdinalIgnoreCase))
+			if (!string.Equals(word, newWord, StringComparison.OrdinalIgnoreCase))
 			{
 				if (char.IsUpper(word[0]))
 					newWord = char.ToUpper(newWord[0]) + newWord.Substring(1, newWord.Length - 1);

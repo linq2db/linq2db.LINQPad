@@ -20,7 +20,7 @@ namespace LinqToDB.LINQPad
 {
 	static class DriverHelper
 	{
-		public const string Author = "Igor Tkachev, Ilya Chudin, Svyatoslav Danyliv, Dmitry Lukashenko";
+		public const string Author = "Linq To DB Team";
 
 		public static void Init()
 		{
@@ -116,9 +116,9 @@ namespace LinqToDB.LINQPad
 						};
 
 						cxInfo.DatabaseInfo.Provider  = db.Connection.GetType().Namespace;
-						cxInfo.DatabaseInfo.Server    = ((DbConnection)db.Connection).DataSource;
+						cxInfo.DatabaseInfo.Server    = db.Connection.DataSource;
 						cxInfo.DatabaseInfo.Database  = db.Connection.Database;
-						cxInfo.DatabaseInfo.DbVersion = ((DbConnection)db.Connection).ServerVersion;
+						cxInfo.DatabaseInfo.DbVersion = db.Connection.ServerVersion;
 					}
 				}
 				catch
