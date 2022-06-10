@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using CodeJam.Strings;
@@ -110,11 +111,6 @@ namespace LinqToDB.LINQPad
 				Code.AppendLine($"using {_schema.ProviderSpecificTypeNamespace};");
 
 			References.AddRange(providerInfo.GetAssemblyLocation(connectionString));
-			if (providerInfo.Provider.AdditionalNamespaces != null)
-				foreach (var ns in providerInfo.Provider.AdditionalNamespaces)
-				{
-					Code.AppendLine($"using {ns};");
-				}
 
 			Code
 				.AppendLine($"namespace {nameSpace}")
@@ -249,6 +245,8 @@ namespace LinqToDB.LINQPad
 			{
 				code.Append($"    [Sql.TableFunction(Name={CSharpTools.ToStringLiteral(p.ProcedureName)}");
 
+				if (p.PackageName != null)
+					code.Append($", Package={CSharpTools.ToStringLiteral(p.PackageName)})");
 				if (p.SchemaName != null)
 					code.Append($", Schema={CSharpTools.ToStringLiteral(p.SchemaName)})");
 
@@ -335,8 +333,6 @@ namespace LinqToDB.LINQPad
 					spName          = CSharpTools.ToStringLiteral($"{{ CALL {p.ProcedureName}({paramTokens}) }}");
 				}
 
-				spName += inOrOutputParameters.Count == 0 ? ");" : ",";
-
 				var retName = "__ret__";
 				var retNo   = 0;
 
@@ -346,9 +342,78 @@ namespace LinqToDB.LINQPad
 				var hasOut = outputParameters.Any(pr => pr.IsOut || pr.IsResult);
 				var prefix = hasOut ? $"var {retName} =" : "return";
 
+				var cnt = 0;
+				var parametersVarName = "parameters";
+				while (p.Parameters.Where(par => !par.IsResult || !p.IsFunction).Any(par => par.ParameterName == parametersVarName))
+					parametersVarName = string.Format("parameters{0}", cnt++);
+
+				if (inOrOutputParameters.Count > 0)
+				{
+					code.AppendLine($"      var {parametersVarName} = new[]");
+					code.AppendLine("      {");
+
+					for (var i = 0; i < inOrOutputParameters.Count; i++)
+					{
+						var pr = inOrOutputParameters[i];
+						var hasInputValue = pr.IsIn || (pr.IsOut && pr.IsResult);
+
+						var extraInitializers = new List<(string, string)>();
+						extraInitializers.Add(("DbType", CSharpTools.ToStringLiteral(pr.SchemaType)));
+
+						if (pr.IsOut || pr.IsResult)
+							extraInitializers.Add(("Direction", pr.IsIn ? "ParameterDirection.InputOutput" : pr.IsResult ? "ParameterDirection.ReturnValue" : "ParameterDirection.Output"));
+
+						if (pr.Size != null && pr.Size.Value != 0 && pr.Size.Value >= int.MinValue && pr.Size.Value <= int.MaxValue)
+							extraInitializers.Add(("Size", pr.Size.Value.ToString(CultureInfo.InvariantCulture)));
+
+						var endLine = i < inOrOutputParameters.Count - 1 && extraInitializers.Count == 0 ? "," : "";
+
+						if (hasInputValue)
+						{
+							code.AppendLine(string.Format(
+								"\tnew DataParameter({0}, {1}, {2}){3}",
+								CSharpTools.ToStringLiteral(pr.SchemaName),
+								pr.ParameterName,
+								"LinqToDB.DataType." + pr.DataType,
+								endLine));
+						}
+						else
+						{
+							code.AppendLine(string.Format(
+								"\tnew DataParameter({0}, null, {1}){2}",
+								CSharpTools.ToStringLiteral(pr.SchemaName),
+								"LinqToDB.DataType." + pr.DataType,
+								endLine));
+						}
+
+						if (extraInitializers.Count > 0)
+						{
+							code.AppendLine("\t{");
+
+							for (var j = 0; j < extraInitializers.Count; j++)
+								code.AppendLine(string.Format(
+									"\t\t{0} = {1},",
+									extraInitializers[j].Item1,
+									extraInitializers[j].Item2));
+
+							code.AppendLine("\t},");
+						}
+					}
+
+					code.AppendLine("};");
+					code.AppendLine("");
+				}
+
+				// we need to call ToList(), because otherwise output parameters will not be updated
+				// with values. See https://docs.microsoft.com/en-us/previous-versions/dotnet/articles/ms971497(v=msdn.10)#capturing-the-gazoutas
+				var terminator = outputParameters.Count > 0 && p.ResultTable != null ? ").ToList();" : ");";
+
+				if (inOrOutputParameters.Count > 0)
+					terminator = string.Format(", {0}{1}", parametersVarName, terminator);
+
 				if (p.ResultTable == null)
 				{
-					code.Append($"      {prefix} this.ExecuteProc({spName}");
+					code.Append($"      {prefix} this.ExecuteProc({spName}{terminator}");
 				}
 				else
 				{
@@ -381,41 +446,12 @@ namespace LinqToDB.LINQPad
 						}
 
 						code.AppendLine( "        },");
-						code.AppendLine($"        {spName}");
+						code.AppendLine($"        {spName}{terminator}");
 					}
 					else
 					{
-						code.AppendLine($"      {prefix} this.QueryProc<{p.ResultTable.TypeName}>({spName}");
+						code.AppendLine($"      {prefix} this.QueryProc<{p.ResultTable.TypeName}>({spName}{terminator}");
 					}
-				}
-
-				for (var i = 0; i < inOrOutputParameters.Count; i++)
-				{
-					var pr = inOrOutputParameters[i];
-
-					var str = string.Format(
-						!pr.IsIn && (pr.IsOut || pr.IsResult)
-							? "        new DataParameter({0}, null, LinqToDB.DataType.{2})"
-							: "        new DataParameter({0}, {1}, LinqToDB.DataType.{2})",
-						CSharpTools.ToStringLiteral(pr.SchemaName),
-						pr.ParameterName,
-						pr.DataType);
-
-					if (pr.IsOut || pr.IsResult)
-					{
-						str += " { Direction = " + (pr.IsIn ? "ParameterDirection.InputOutput" : (pr.IsResult ? "ParameterDirection.ReturnValue" : "ParameterDirection.Output"));
-
-						if (pr.Size != null && pr.Size.Value != 0)
-							str += ", Size = " + pr.Size.Value;
-
-						str += " }";
-					}
-
-					// we need to call ToList(), because otherwise output parameters will not be updated
-					// with values. See https://msdn.microsoft.com/en-us/library/ms971497#gazoutas_topic6
-					str += i + 1 == inOrOutputParameters.Count ? (outputParameters.Count > 0 && p.ResultTable != null ? ").ToList();" : ");") : ",";
-
-					code.AppendLine(str);
 				}
 
 				if (hasOut)
@@ -424,7 +460,7 @@ namespace LinqToDB.LINQPad
 
 					foreach (var pr in p.Parameters.Where(_ => _.IsOut || _.IsResult))
 					{
-						var str = $"      {pr.ParameterName} = Converter.ChangeTypeTo<{pr.ParameterType}>(((IDbDataParameter)this.Command.Parameters[\"{pr.SchemaName}\"]).Value);";
+						var str = $"      {pr.ParameterName} = Converter.ChangeTypeTo<{pr.ParameterType}>({parametersVarName}[{inOrOutputParameters.IndexOf(pr)}].Value);";
 						code.AppendLine(str);
 					}
 
@@ -531,7 +567,9 @@ namespace LinqToDB.LINQPad
 			{
 				classCode.Append($"  [Table(Name={CSharpTools.ToStringLiteral(table.TableName)}");
 
-				if (table.SchemaName.NotNullNorEmpty())
+				if (table.GroupName.NotNullNorEmpty())
+					classCode.Append($", Schema={CSharpTools.ToStringLiteral(table.GroupName)}");
+				else if (table.SchemaName.NotNullNorEmpty())
 					classCode.Append($", Schema={CSharpTools.ToStringLiteral(table.SchemaName)}");
 
 				classCode.AppendLine(")]");
