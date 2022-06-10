@@ -116,9 +116,9 @@ namespace LinqToDB.LINQPad
 						};
 
 						cxInfo.DatabaseInfo.Provider  = db.Connection.GetType().Namespace;
-						cxInfo.DatabaseInfo.Server    = ((DbConnection)db.Connection).DataSource;
+						cxInfo.DatabaseInfo.Server    = db.Connection.DataSource;
 						cxInfo.DatabaseInfo.Database  = db.Connection.Database;
-						cxInfo.DatabaseInfo.DbVersion = ((DbConnection)db.Connection).ServerVersion;
+						cxInfo.DatabaseInfo.DbVersion = db.Connection.ServerVersion;
 					}
 				}
 				catch
