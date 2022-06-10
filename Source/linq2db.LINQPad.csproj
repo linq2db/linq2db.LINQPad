@@ -10,7 +10,7 @@
 		<Version>4.0.0.0</Version>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
-		<Copyright>Copyright © 2016-2022 linq2db Developers</Copyright>
+		<Copyright>Copyright © 2016-2022 Linq To DB Team</Copyright>
 		<AssemblyOriginatorKeyFile>linq2db.snk</AssemblyOriginatorKeyFile>
 		<UseWPF>true</UseWPF>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>

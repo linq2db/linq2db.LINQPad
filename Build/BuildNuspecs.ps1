@@ -10,7 +10,7 @@ Set-StrictMode -Version Latest
 if ($version) {
 
 	$nsUri = 'http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd'
-	$authors = 'linq2db Developers'
+	$authors = 'Linq To DB Team'
 	$ns = @{ns=$nsUri}
 	$dotlessVersion = $version -replace '\.',''
 	$commit = (git rev-parse HEAD)

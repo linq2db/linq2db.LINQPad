@@ -20,7 +20,7 @@ namespace LinqToDB.LINQPad
 {
 	static class DriverHelper
 	{
-		public const string Author = "linq2db Developers";
+		public const string Author = "Linq To DB Team";
 
 		public static void Init()
 		{
