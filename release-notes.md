@@ -1,3 +1,8 @@
+# Release 4.1.0
+- [ALL] dependency update: linq2db 4.0.1 -> 4.1.0
+- [LINQPAD7] dependency update: Npgsql 6.0.4 -> 6.0.5
+- [LINQPAD7] dependency update: System.Text.Json 6.0.4 -> 6.0.5
+
 # Release 4.0.0
 - [#63](https://github.com/linq2db/linq2db.LINQPad/pull/63) Update Oracle.ManagedDataAccess.Core dependency to fix warning (thanks @db2222)
 - [#65](https://github.com/linq2db/linq2db.LINQPad/pull/65) Fix bug in pluralization/singularization code
@@ -18,7 +23,7 @@
 - [LINQPAD5] dependency update: Oracle.ManagedDataAccess 19.13.0 -> 19.14.0
 
 # Release 3.6.0
-- starting from this release we use LINQPad 7 instead of 6 for testing, so LINQPad 6 compatibility not guarantied
+- starting from this release we use LINQPad 7 instead of 6 for testing, so LINQPad 6 compatibility not guaranteed
 - [#57](https://github.com/linq2db/linq2db.LINQPad/pull/57) use stable ordering of custom context properties. Thanks to [@RoyChase](https://github.com/RoyChase) for fix
 - [ALL] dependency update: linq2db 3.3.0 -> 3.6.0
 - [ALL] dependency update: CodeJam 3.3.1 -> 4.0.1
