@@ -1,3 +1,6 @@
+# Release 4.1.1
+- [LINQPAD7] nuget spec bugfix
+
 # Release 4.1.0
 - [ALL] dependency update: linq2db 4.0.1 -> 4.1.0
 - [LINQPAD7] dependency update: Npgsql 6.0.4 -> 6.0.5
