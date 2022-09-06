@@ -7,7 +7,7 @@
 		<Company>linq2db</Company>
 		<Product>linq2db.LINQPad</Product>
 		<AssemblyTitle>$(Product)</AssemblyTitle>
-		<Version>4.1.1.0</Version>
+		<Version>4.2.0.0</Version>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
 		<Copyright>Copyright © 2016-2022 Linq To DB Team</Copyright>
