@@ -2,7 +2,7 @@
 using System.IO;
 using LinqToDB.Data;
 using LinqToDB.DataProvider;
-#if NETCORE
+#if LPX6
 using System.Data.Common;
 #endif
 
@@ -172,7 +172,7 @@ internal sealed class ProviderHelper
 
 	public static LoadProviderInfo GetProvider(string? providerName, string? providerPath)
 	{
-#if NETCORE
+#if LPX6
 		RegisterProviderFactory(providerName, providerPath);
 #endif
 
@@ -199,7 +199,7 @@ internal sealed class ProviderHelper
 		return provider;
 	}
 
-#if NETCORE
+#if LPX6
 	static void RegisterProviderFactory(string? providerName, string? providerPath)
 	{
 		if (!string.IsNullOrWhiteSpace(providerPath))

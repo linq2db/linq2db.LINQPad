@@ -918,7 +918,7 @@ namespace LinqToDB.LINQPad
 
 		#region ProviderPathVisibility : Visibility
 
-#if NETCORE
+#if LPX6
 
 		public Visibility ProviderPathVisibility
 		{
@@ -944,7 +944,7 @@ namespace LinqToDB.LINQPad
 
 		#region ProviderPathVisibility : Visibility
 
-#if !NETCORE
+#if !LPX6
 
 		public Visibility ProviderPathVisibility
 		{

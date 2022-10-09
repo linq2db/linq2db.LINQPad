@@ -8,7 +8,7 @@ using LinqToDB.Mapping;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.SqlServer.Types;
-#if !NETCORE
+#if !LPX6
 using System.Net.NetworkInformation;
 using System.Numerics;
 #else
@@ -19,7 +19,7 @@ namespace LinqToDB.LINQPad;
 
 sealed class LinqToDBDriver : DynamicDataContextDriver
 {
-#if NETCORE
+#if LPX6
 	private static readonly Regex _runtimeTokenExtractor = new (@"^.+\\(?<token>[^\\]+)\\[^\\]+$", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 #endif
 
@@ -44,7 +44,7 @@ sealed class LinqToDBDriver : DynamicDataContextDriver
 	[Obsolete("base method obsoleted")]
 	public override bool ShowConnectionDialog(IConnectionInfo cxInfo, bool isNewConnection) => DriverHelper.ShowConnectionDialog(cxInfo, isNewConnection, true);
 
-#if NETCORE
+#if LPX6
 	public IEnumerable<string> GetFallbackTokens(string forToken)
 	{
 		switch (forToken)
@@ -95,7 +95,7 @@ sealed class LinqToDBDriver : DynamicDataContextDriver
 
 			var references = new List<MetadataReference>()
 			{
-#if !NETCORE
+#if !LPX6
 				MetadataReference.CreateFromFile(typeof(object).               Assembly.Location),
 				MetadataReference.CreateFromFile(typeof(Enumerable).           Assembly.Location),
 				MetadataReference.CreateFromFile(typeof(IDbConnection).        Assembly.Location),
@@ -108,7 +108,7 @@ sealed class LinqToDBDriver : DynamicDataContextDriver
 				MetadataReference.CreateFromFile(typeof(SqlHierarchyId)       .Assembly.Location),
 			};
 
-#if NETCORE
+#if LPX6
 			// TODO: find better way to do it
 			// hack to overwrite provider assembly references that target wrong runtime
 			// e.g. referenceAssemblies contains path to net5 MySqlConnector

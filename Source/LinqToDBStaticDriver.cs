@@ -113,9 +113,9 @@ public sealed class LinqToDBStaticDriver : StaticDataContextDriver
 
 	private void TryLoadAppSettingsJson(IConnectionInfo cxInfo)
 	{
-		#if NETCORE
+#if LPX6
 		if (cxInfo.AppConfigPath?.EndsWith(".json", StringComparison.OrdinalIgnoreCase) == true)
 			DataConnection.DefaultSettings = AppJsonConfig.Load(cxInfo.AppConfigPath!);
-		#endif
+#endif
 	}
 }

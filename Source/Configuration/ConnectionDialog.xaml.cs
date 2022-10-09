@@ -228,7 +228,7 @@ namespace LinqToDB.LINQPad
 			{
 				var oldCursor = Cursor;
 
-#if NETCORE
+#if LPX6
 				try
 				{
 					Mouse.OverrideCursor = Cursors.Wait;

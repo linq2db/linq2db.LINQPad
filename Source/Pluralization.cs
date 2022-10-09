@@ -29,7 +29,7 @@ static class Pluralization
 			if (char.IsUpper(word[0]))
 				newWord = char.ToUpper(newWord[0]) + newWord.Substring(1, newWord.Length - 1);
 
-#if NETCORE
+#if LPX6
 			return word == str ? newWord : string.Concat(str.AsSpan(0, str.Length - word.Length), newWord);
 #else
 			return word == str ? newWord : str.Substring(0, str.Length - word.Length) + newWord;
@@ -49,7 +49,7 @@ static class Pluralization
 			if (char.IsUpper(word[0]))
 				newWord = char.ToUpper(newWord[0]) + newWord.Substring(1, newWord.Length - 1);
 
-#if NETCORE
+#if LPX6
 			return word == str ? newWord : string.Concat(str.AsSpan(0, str.Length - word.Length), newWord);
 #else
 			return word == str ? newWord : str.Substring(0, str.Length - word.Length) + newWord;

@@ -1,4 +1,4 @@
-﻿#if NETCORE
+﻿#if LPX6
 using System.IO;
 using System.Text.Json;
 using LinqToDB.Configuration;

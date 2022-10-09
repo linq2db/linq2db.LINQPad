@@ -6,7 +6,7 @@ using LINQPad.Extensibility.DataContext;
 using LinqToDB.Data;
 using Microsoft.Data.SqlClient;
 
-#if !NETCORE
+#if !LPX6
 using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
@@ -20,7 +20,7 @@ static class DriverHelper
 
 	public static void Init()
 	{
-#if !NETCORE
+#if !LPX6
 		ConfigureRedirects();
 		SapHanaSPS04Fixes();
 #endif
@@ -204,7 +204,7 @@ static class DriverHelper
 		};
 	}
 
-#if !NETCORE
+#if !LPX6
 	static void ConfigureRedirects()
 	{
 		AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
