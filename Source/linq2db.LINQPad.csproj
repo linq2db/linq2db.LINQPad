@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
 	<PropertyGroup>
-		<!--net6.0-windows used only as additional built target and not released-->
-		<TargetFrameworks>net461;netcoreapp3.1;net6.0-windows</TargetFrameworks>
+		<!--net6.0-windows used only as additional build target for analyzers and not released-->
+		<TargetFrameworks>net48;netcoreapp3.1;net6.0-windows</TargetFrameworks>
 		<RootNamespace>LinqToDB.LINQPad</RootNamespace>
 		<Company>linq2db</Company>
 		<Product>linq2db.LINQPad</Product>
@@ -21,44 +21,63 @@
 		<WarningLevel>9999</WarningLevel>
 		<ErrorReport>prompt</ErrorReport>
 		<Features>strict</Features>
+		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+		<ImplicitUsings>enable</ImplicitUsings>
 
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+
+		<!--required for SkipLocalsInit-->
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
 		<MSBuildWarningsAsMessages>MSB3270</MSBuildWarningsAsMessages>
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<AnalysisLevel>preview</AnalysisLevel>
-		<EnableNETAnalyzers>true</EnableNETAnalyzers>
-		<RunAnalyzers>true</RunAnalyzers>
+		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+		<RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
+
+		<AnalysisLevel>preview-All</AnalysisLevel>
+		<!--enable IDExxxx analyzers during build-->
+		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+		<ReportAnalyzer>false</ReportAnalyzer>
+		<!--workaround for https://github.com/dotnet/roslyn/issues/41640, but also required for xml-doc validation -->
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
 		<SignAssembly>true</SignAssembly>
 		<DelaySign>false</DelaySign>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)' != 'net461'">
+	<PropertyGroup Condition="'$(TargetFramework)' != 'net48'">
 		<DefineConstants>NETCORE</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="LINQPad.Reference" />
+			<Using Include="System.Reflection" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="linq2db" />
+		<!--<PackageReference Include="linq2db.Tools" />-->
+
+		<PackageReference Include="LINQPad.Reference" />
+		
 		<PackageReference Include="Humanizer.Core" />
 		<PackageReference Include="CodeJam" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
 
 		<PackageReference Include="FirebirdSql.Data.FirebirdClient" />
 		<PackageReference Include="MySqlConnector" />
 		<PackageReference Include="AdoNetCore.AseClient" />
 		<PackageReference Include="System.Data.SQLite.Core" />
-
-		<PackageReference Include="System.Data.SqlClient" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+		<PackageReference Include="Microsoft.Data.SqlClient" />
 		<PackageReference Include="Npgsql" />
+		<PackageReference Include="ClickHouse.Client" />
+		<PackageReference Include="linq2db4iSeries" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net461'">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net48'">
 		<Reference Include="Microsoft.CSharp" />
 		<Reference Include="System.Configuration" />
 
@@ -67,25 +86,31 @@
 		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
 		<PackageReference Include="System.Memory" />
 		<PackageReference Include="System.Buffers" />
+		
 		<PackageReference Include="Oracle.ManagedDataAccess" />
 		<PackageReference Include="IBM.Data.DB.Provider" GeneratePathProperty="true" />
 		<Reference Include="IBM.Data.DB2">
 			<HintPath>$(PkgIBM_Data_DB_Provider)\build\net451\x86\IBM.Data.DB2.dll</HintPath>
 		</Reference>
 
-		<!--<PackageReference Include="linq2db4iSeries" />-->
 		<PackageReference Include="Microsoft.SqlServer.Types" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' != 'net461' ">
+	<ItemGroup Condition=" '$(TargetFramework)' != 'net48' ">
 		<PackageReference Include="System.Configuration.ConfigurationManager" />
+		<PackageReference Include="System.Text.Json" />
 
 		<PackageReference Include="System.Data.Odbc" />
 		<PackageReference Include="System.Data.OleDb" />
 		<PackageReference Include="Oracle.ManagedDataAccess.Core" />
 		<PackageReference Include="IBM.Data.DB2.Core" />
+		<PackageReference Include="Octonica.ClickHouseClient" />
+
 		<PackageReference Include="dotMorten.Microsoft.SqlServer.Types" />
-		<PackageReference Include="System.Text.Json" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\linq2db\Source\LinqToDB.Tools\LinqToDB.Tools.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -120,7 +145,7 @@
 		<Exec Command="$(ProjectDir)Pack.bat $(TargetDir) lpx6" />
 	</Target>
 
-	<Target Name="PostBuild2" AfterTargets="CopySQLiteInteropFiles" Condition="'$(TargetFramework)' == 'net461'">
+	<Target Name="PostBuild2" AfterTargets="CopySQLiteInteropFiles" Condition="'$(TargetFramework)' == 'net48'">
 		<Exec Command="$(ProjectDir)Pack.bat $(TargetDir) lpx" />
 	</Target>
 

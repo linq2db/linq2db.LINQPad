@@ -43,6 +43,9 @@
 			new NotifyingProperty(ModelType.Create<string>(true),       "ProviderPathLabel").InitGetter(() => new [] { "SelectedProvider?.Name == ProviderName.SqlCe ? \"Specify path to System.Data.SqlServerCe.dll\" : SelectedProvider?.Name == ProviderName.SapHanaNative ? \"Specify path to Sap.Data.Hana.Core.v2.1.dll\" : null " }),
 			new NotifyingProperty(ModelType.Create<string>(true),       "ProviderPath"),
 			new NotifyingProperty("ObservableCollection<ProviderInfo>", "Providers"))
+			{
+				AccessModifier = AccessModifier.Internal
+			}
 	);
 
 	GenerateModel();

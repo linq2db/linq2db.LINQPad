@@ -15,7 +15,7 @@ using System.Windows;
 
 namespace LinqToDB.LINQPad
 {
-	public partial class ConnectionViewModel : INotifyPropertyChanged
+	internal partial class ConnectionViewModel : INotifyPropertyChanged
 	{
 		#region Name : string?
 
@@ -1067,9 +1067,9 @@ namespace LinqToDB.LINQPad
 		#region INotifyPropertyChanged support
 
 		[field : NonSerialized]
-		public virtual event PropertyChangedEventHandler? PropertyChanged;
+		public event PropertyChangedEventHandler? PropertyChanged;
 
-		protected void OnPropertyChanged(string propertyName)
+		private void OnPropertyChanged(string propertyName)
 		{
 			var propertyChanged = PropertyChanged;
 
@@ -1079,7 +1079,7 @@ namespace LinqToDB.LINQPad
 			}
 		}
 
-		protected void OnPropertyChanged(PropertyChangedEventArgs arg)
+		private void OnPropertyChanged(PropertyChangedEventArgs arg)
 		{
 			var propertyChanged = PropertyChanged;
 

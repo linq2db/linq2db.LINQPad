@@ -219,16 +219,16 @@ void NotifyPropertyChangedImpl()
 					{
 						new Event("PropertyChangedEventHandler", "PropertyChanged", true)
 						{
-							IsVirtual  = true,
+							IsVirtual  = false,
 							Attributes = { new Attribute("field : NonSerialized") }
 						},
 						new Method(() => "void", "OnPropertyChanged", new Func<string>[] { () => "string propertyName" }, () => OnPropertyChangedBody)
 						{
-							AccessModifier = AccessModifier.Protected
+							AccessModifier = AccessModifier.Private
 						},
 						new Method(() => "void", "OnPropertyChanged", new Func<string>[] { () => "PropertyChangedEventArgs arg" }, () => OnPropertyChangedArgBody)
 						{
-							AccessModifier = AccessModifier.Protected
+							AccessModifier = AccessModifier.Private
 						},
 					}
 				});

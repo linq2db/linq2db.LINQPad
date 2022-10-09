@@ -1,0 +1,1 @@
+Folder contains helper templates for WPF view generation.

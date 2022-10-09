@@ -1,193 +1,220 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Collections;
+using System.Text;
 using LINQPad.Extensibility.DataContext;
 using LinqToDB.Extensions;
 using LinqToDB.Mapping;
 using LinqToDB.Reflection;
 
-namespace LinqToDB.LINQPad
+namespace LinqToDB.LINQPad;
+
+/// <summary>
+/// Generates schema tree structure for custom context using reflection.
+/// </summary>
+static class SchemaGenerator
 {
-	class SchemaGenerator
+	sealed class TableInfo
 	{
-		public SchemaGenerator(IConnectionInfo cxInfo, Type customType)
+		public TableInfo(PropertyInfo propertyInfo)
 		{
-			_cxInfo     = cxInfo;
-			_customType = customType;
+			Name         = propertyInfo.Name;
+			Type         = propertyInfo.PropertyType.GetItemType()!;
+			TypeAccessor = TypeAccessor.GetAccessor(Type);
+
+			var tableAttr = Type.GetCustomAttributeLike<TableAttribute>();
+
+			if (tableAttr != null)
+			{
+				IsColumnAttributeRequired = tableAttr.IsColumnAttributeRequired;
+
+				if (Extensions.HasProperty(tableAttr, "IsView"))
+					IsView = tableAttr.IsView;
+			}
 		}
 
-		readonly IConnectionInfo _cxInfo;
-		readonly Type            _customType;
+		/// <summary>
+		/// Table accessor property name.
+		/// </summary>
+		public readonly string       Name;
+		/// <summary>
+		/// Table mapping class type.
+		/// </summary>
+		public readonly Type         Type;
+		/// <summary>
+		/// Value of <see cref="TableAttribute.IsColumnAttributeRequired"/> mapping property for mapping.
+		/// </summary>
+		public readonly bool         IsColumnAttributeRequired;
+		/// <summary>
+		/// Table mapping <see cref="TypeAccessor"/> instance.
+		/// </summary>
+		public readonly TypeAccessor TypeAccessor;
+		/// <summary>
+		/// <see cref="TableAttribute.IsView"/> value for mapping.
+		/// </summary>
+		public readonly bool         IsView;
+	}
 
-		class TableInfo
+	public static List<ExplorerItem> GetSchema(Type customContextType)
+	{
+		var items = new List<ExplorerItem>();
+
+		List<ExplorerItem>? tableItems = null;
+		List<ExplorerItem>? viewItems  = null;
+
+		var tables = customContextType.GetProperties()
+			.Where(p =>
+				p.GetCustomAttributeLike<ObsoleteAttribute>() == null &&
+				p.PropertyType.MaybeChildOf(typeof(IQueryable<>)))
+			.OrderBy(p => p.Name)
+			.Select(p => new TableInfo(p));
+
+		var lookup = new Dictionary<Type, ExplorerItem>();
+
+		foreach (var table in tables)
 		{
-			public TableInfo(PropertyInfo propertyInfo)
+			var list = table.IsView ? (viewItems ??= new()) : (tableItems ??= new());
+
+			var item = GetTable(table.IsView ? ExplorerIcon.View : ExplorerIcon.Table, table);
+			list.Add(item);
+			lookup.Add(table.Type, item);
+
+			// add association nodes
+			foreach (var ma in table.TypeAccessor.Members)
 			{
-				PropertyInfo = propertyInfo;
-				Name         = propertyInfo.Name;
-				Type         = propertyInfo.PropertyType.GetItemType()!;
-				TypeAccessor = TypeAccessor.GetAccessor(Type);
+				var aa = ma.MemberInfo.GetCustomAttributeLike<AssociationAttribute>();
 
-				var tableAttr = Type.GetCustomAttributeLike<TableAttribute>();
-
-				if (tableAttr != null)
+				if (aa != null)
 				{
-					IsColumnAttributeRequired = tableAttr.IsColumnAttributeRequired;
+					var isToMany   = ma.Type is IEnumerable;
+					// TODO: try to infer this information?
+					var backToMany = true;
 
-					if (Extensions.HasProperty(tableAttr, "IsView"))
-						IsView = tableAttr.IsView;
+					var otherType  = isToMany ? ma.Type.GetItemType()! : ma.Type;
+					lookup.TryGetValue(otherType, out var otherItem);
+
+					item.Children.Add(
+						new ExplorerItem(
+							ma.Name,
+							isToMany
+								? ExplorerItemKind.CollectionLink
+								: ExplorerItemKind.ReferenceLink,
+							isToMany
+								? ExplorerIcon.OneToMany
+								: backToMany
+									? ExplorerIcon.ManyToOne
+									: ExplorerIcon.OneToOne)
+						{
+							DragText        = ma.Name,
+							ToolTipText     = GetTypeName(ma.Type),
+							SqlName         = aa.KeyName,
+							IsEnumerable    = isToMany,
+							HyperlinkTarget = otherItem
+						});
 				}
 			}
-
-			public readonly PropertyInfo PropertyInfo;
-			public readonly string       Name;
-			public readonly Type         Type;
-			public readonly bool         IsColumnAttributeRequired;
-			public readonly TypeAccessor TypeAccessor;
-			public readonly bool         IsView;
 		}
 
-		public IEnumerable<ExplorerItem> GetSchema()
-		{ 
-			var tables = _customType.GetProperties()
-				.Where(p =>
-					p.GetCustomAttributeLike<ObsoleteAttribute>() == null &&
-					p.PropertyType.MaybeChildOf(typeof(IQueryable<>)))
-				.OrderBy(p => p.Name)
-				.Select(p => new TableInfo(p))
-				.ToList();
+		if (tableItems != null)
+			items.Add(new ExplorerItem("Tables", ExplorerItemKind.Category, ExplorerIcon.Table)
+			{
+				Children = tableItems
+			});
 
-			var items = new List<ExplorerItem>();
+		if (viewItems != null)
+			items.Add(new ExplorerItem("Views", ExplorerItemKind.Category, ExplorerIcon.View)
+			{
+				Children = viewItems
+			});
 
-			if (tables.Any(t => !t.IsView)) items.Add(GetTables("Tables", ExplorerIcon.Table, tables.Where(t => !t.IsView)));
-			if (tables.Any(t => t.IsView))  items.Add(GetTables("Views",  ExplorerIcon.View,  tables.Where(t =>  t.IsView)));
+		return items;
+	}
 
-			return items;
-		}
+	static ExplorerItem GetTable(ExplorerIcon icon, TableInfo table)
+	{
+		var columns =
+		(
+			from ma in table.TypeAccessor.Members
+			let aa = ma.MemberInfo.GetCustomAttributeLike<AssociationAttribute>()
+			where aa == null
+			let ca = ma.MemberInfo.GetCustomAttributeLike<ColumnAttribute>() as ColumnAttribute
+			let id = ma.MemberInfo.GetCustomAttributeLike<IdentityAttribute>()
+			let pk = ma.MemberInfo.GetCustomAttributeLike<PrimaryKeyAttribute>()
+			orderby
+				ca == null ? 1 : ca.Order >= 0 ? 0 : 2,
+				ca?.Order,
+				ma.Name
+			where
+				ca != null && ca.IsColumn ||
+				pk != null ||
+				id != null ||
+				ca == null && !table.IsColumnAttributeRequired && MappingSchema.Default.IsScalarType(ma.Type)
+			select new ExplorerItem(
+				ma.Name,
+				ExplorerItemKind.Property,
+				pk != null || ca != null && ca.IsPrimaryKey ? ExplorerIcon.Key : ExplorerIcon.Column)
+			{
+				Text     = $"{ma.Name} : {GetTypeName(ma.Type)}",
+				DragText = ma.Name,
+			}
+		).ToList();
 
-		ExplorerItem GetTables(string header, ExplorerIcon icon, IEnumerable<TableInfo> tableSource)
+		var ret = new ExplorerItem(table.Name, ExplorerItemKind.QueryableObject, icon)
 		{
-			var tables = tableSource.ToList();
-			var dic    = tables.ToDictionary(t => t.Type, t => new { table = t, item = GetTable(icon, t) });
+			DragText     = table.Name,
+			IsEnumerable = true,
+			Children     = columns
+		};
 
-			var items = new ExplorerItem(header, ExplorerItemKind.Category, icon)
+		return ret;
+	}
+
+	static string GetTypeName(Type type)
+	{
+		switch (type.FullName)
+		{
+			case "System.Boolean" : return "bool";
+			case "System.Byte"    : return "byte";
+			case "System.SByte"   : return "sbyte";
+			case "System.Int16"   : return "short";
+			case "System.Int32"   : return "int";
+			case "System.Int64"   : return "long";
+			case "System.UInt16"  : return "ushort";
+			case "System.UInt32"  : return "uint";
+			case "System.UInt64"  : return "ulong";
+			case "System.Decimal" : return "decimal";
+			case "System.Single"  : return "float";
+			case "System.Double"  : return "double";
+			case "System.String"  : return "string";
+			case "System.Char"    : return "char";
+			case "System.Object"  : return "object";
+		}
+
+		if (type.IsArray)
+			return GetTypeName(type.GetElementType()!) + "[]";
+
+		if (type.IsNullable())
+			return GetTypeName(type.ToNullableUnderlying()) + '?';
+
+		if (type.IsGenericType)
+		{
+			var typeName = new StringBuilder();
+			typeName
+				.Append(type.Name)
+				.Append('<');
+
+			var first = true;
+			foreach (var param in type.GetGenericArguments())
 			{
-				Children = dic.Values.OrderBy(t => t.table.Name).Select(t => t.item).ToList()
-			};
+				if (first)
+					first = false;
+				else
+					typeName.Append(", ");
 
-			foreach (var table in dic.Values)
-			{
-				var entry        = table.item;
-				var typeAccessor = table.table.TypeAccessor;
-
-				foreach (var ma in typeAccessor.Members)
-				{
-					var aa = ma.MemberInfo.GetCustomAttributeLike<AssociationAttribute>();
-
-					if (aa != null)
-					{
-						var relationship = Extensions.HasProperty(aa, "Relationship") ? aa.Relationship : Relationship.OneToOne;
-						var otherType    = relationship == Relationship.OneToMany ? ma.Type.GetItemType()! : ma.Type;
-						var otherTable   = dic.ContainsKey(otherType) ? dic[otherType] : null;
-						var typeName     = relationship == Relationship.OneToMany ? $"List<{otherType.Name}>" : otherType.Name;
-
-						entry.Children.Add(
-							new ExplorerItem(
-								ma.Name,
-								relationship == Relationship.OneToMany
-									? ExplorerItemKind.CollectionLink
-									: ExplorerItemKind.ReferenceLink,
-								relationship == Relationship.OneToMany
-									? ExplorerIcon.OneToMany
-									: relationship == Relationship.ManyToOne
-										? ExplorerIcon.ManyToOne
-										: ExplorerIcon.OneToOne)
-							{
-								DragText        = ma.Name,
-								ToolTipText     = typeName + (aa.IsBackReference == true ? " // Back Reference" : ""),
-								SqlName         = aa.KeyName,
-								IsEnumerable    = ma.Type.MaybeChildOf(typeof(IEnumerable<>)) && !ma.Type.MaybeEqualTo(typeof(string)),
-								HyperlinkTarget = otherTable?.item,
-							});
-					}
-				}
+				typeName.Append(GetTypeName(param));
 			}
 
-			return items;
+			return typeName.Append('>').ToString();
 		}
 
-		ExplorerItem GetTable(ExplorerIcon icon, TableInfo table)
-		{
-			var columns =
-			(
-				from ma in table.TypeAccessor.Members
-				let aa = ma.MemberInfo.GetCustomAttributeLike<AssociationAttribute>()
-				where aa == null
-				let ca = ma.MemberInfo.GetCustomAttributeLike<ColumnAttribute>() as ColumnAttribute
-				let id = ma.MemberInfo.GetCustomAttributeLike<IdentityAttribute>()
-				let pk = ma.MemberInfo.GetCustomAttributeLike<PrimaryKeyAttribute>() 
-				orderby 
-					ca == null ? 1 : ca.Order >= 0 ? 0 : 2,
-					ca?.Order,
-					ma.Name
-				where
-					ca != null && ca.IsColumn ||
-					pk != null ||
-					id != null ||
-					ca == null && !table.IsColumnAttributeRequired && MappingSchema.Default.IsScalarType(ma.Type)
-				select new ExplorerItem(
-					ma.Name,
-					ExplorerItemKind.Property,
-					pk != null || ca != null && ca.IsPrimaryKey ? ExplorerIcon.Key : ExplorerIcon.Column)
-				{
-					Text = $"{ma.Name} : {GetTypeName(ma.Type)}",
-//					ToolTipText        = $"{sqlName} {column.ColumnType} {(column.IsNullable ? "NULL" : "NOT NULL")}{(column.IsIdentity ? " IDENTITY" : "")}",
-					DragText = ma.Name,
-//					SqlName            = sqlName,
-//					SqlTypeDeclaration = $"{column.ColumnType} {(column.IsNullable ? "NULL" : "NOT NULL")}{(column.IsIdentity ? " IDENTITY" : "")}",
-				}
-			).ToList();
-
-			var ret = new ExplorerItem(table.Name, ExplorerItemKind.QueryableObject, icon)
-			{
-				DragText = table.Name,
-//				ToolTipText  = $"ITable<{t.TypeName}>",
-				IsEnumerable = true,
-				Children     = columns.ToList(),
-			};
-
-			return ret;
-		}
-
-		string GetTypeName(Type type)
-		{
-			switch (type.FullName)
-			{
-				case "System.Boolean" : return "bool";
-				case "System.Byte"    : return "byte";
-				case "System.SByte"   : return "sbyte";
-				case "System.Int16"   : return "short";
-				case "System.Int32"   : return "int";
-				case "System.Int64"   : return "long";
-				case "System.UInt16"  : return "ushort";
-				case "System.UInt32"  : return "uint";
-				case "System.UInt64"  : return "ulong";
-				case "System.Decimal" : return "decimal";
-				case "System.Single"  : return "float";
-				case "System.Double"  : return "double";
-				case "System.String"  : return "string";
-				case "System.Char"    : return "char";
-				case "System.Object"  : return "object";
-			}
-
-			if (type.IsArray)
-				return GetTypeName(type.GetElementType()!) + "[]";
-
-			if (type.IsNullable())
-				return GetTypeName(type.ToNullableUnderlying()) + '?';
-
-			return type.Name;
-		}
+		return type.Name;
 	}
 }

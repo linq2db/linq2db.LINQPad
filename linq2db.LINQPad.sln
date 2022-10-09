@@ -3,15 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{48EE7991-A24D-4512-BB48-E947A57E02EA}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "linq2db.LINQPad", "Source\linq2db.LINQPad.csproj", "{73352DC5-D33E-4BE6-A787-6F91107B3D7C}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{BCE72B3A-E579-4C8E-9AF3-9479E3E1B088}"
-	ProjectSection(SolutionItems) = preProject
-		LinqToDB.Templates\NotifyPropertyChanged.ttinclude = LinqToDB.Templates\NotifyPropertyChanged.ttinclude
-		LinqToDB.Templates\T4Model.ttinclude = LinqToDB.Templates\T4Model.ttinclude
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".root", ".root", "{B05A0C36-8DA0-43F0-803E-B4EFFD732DE0}"
 	ProjectSection(SolutionItems) = preProject
@@ -19,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".root", ".root", "{B05A0C36
 		.gitignore = .gitignore
 		Directory.Packages.props = Directory.Packages.props
 		MIT-LICENSE.txt = MIT-LICENSE.txt
+		nuget.config = nuget.config
 		README.md = README.md
 		release-notes.md = release-notes.md
 	EndProjectSection
@@ -27,12 +20,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{A26F7937
 	ProjectSection(SolutionItems) = preProject
 		Build\azure-pipelines.yml = Build\azure-pipelines.yml
 		Build\BuildNuspecs.ps1 = Build\BuildNuspecs.ps1
+		Build\icon64.png = Build\icon64.png
 		Build\linq2db.LINQPad.nuspec = Build\linq2db.LINQPad.nuspec
 		Build\nuget-vars.yml = Build\nuget-vars.yml
 		Source\Pack.bat = Source\Pack.bat
 		Build\README.md = Build\README.md
 		Build\SetVersion.ps1 = Build\SetVersion.ps1
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{B3100892-7A58-4B4E-A926-0D5FE4309C4A}"
+	ProjectSection(SolutionItems) = preProject
+		LinqToDB.Templates\NotifyPropertyChanged.ttinclude = LinqToDB.Templates\NotifyPropertyChanged.ttinclude
+		LinqToDB.Templates\README.md = LinqToDB.Templates\README.md
+		LinqToDB.Templates\T4Model.ttinclude = LinqToDB.Templates\T4Model.ttinclude
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinqToDB.Tools", "..\linq2db\Source\LinqToDB.Tools\LinqToDB.Tools.csproj", "{91DE5A8B-4DF8-4E27-A33B-886563CF7612}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,15 +47,13 @@ Global
 		{73352DC5-D33E-4BE6-A787-6F91107B3D7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73352DC5-D33E-4BE6-A787-6F91107B3D7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73352DC5-D33E-4BE6-A787-6F91107B3D7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91DE5A8B-4DF8-4E27-A33B-886563CF7612}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91DE5A8B-4DF8-4E27-A33B-886563CF7612}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91DE5A8B-4DF8-4E27-A33B-886563CF7612}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91DE5A8B-4DF8-4E27-A33B-886563CF7612}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{73352DC5-D33E-4BE6-A787-6F91107B3D7C} = {48EE7991-A24D-4512-BB48-E947A57E02EA}
-		{BCE72B3A-E579-4C8E-9AF3-9479E3E1B088} = {48EE7991-A24D-4512-BB48-E947A57E02EA}
-		{B05A0C36-8DA0-43F0-803E-B4EFFD732DE0} = {48EE7991-A24D-4512-BB48-E947A57E02EA}
-		{A26F7937-580F-4854-B6CD-5DBDCA4ED615} = {48EE7991-A24D-4512-BB48-E947A57E02EA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {17946F59-D105-4BD7-8C31-5B14CB8A4FE2}

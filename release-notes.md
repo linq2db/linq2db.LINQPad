@@ -1,3 +1,35 @@
+# Release 5.0.0
+
+Major provider rework:
+
+- [LINQPAD5] update required framework version from .NET Framework 4.6.1 to 4.8.0
+- [ALL] migrate code-generation to new scaffolding framework
+- [LINQPAD7] .net 7 support
+- TBD
+
+New/updated dependencies:
+
+- [ALL] add new dependency: linq2db.Tools 4.3.0
+- [ALL] add new dependency: ClickHouse.Client 5.1.1
+- [ALL] switch from System.Data.SqlClient 4.8.3 to Microsoft.Data.SqlClient 5.0.1
+- [ALL] dependency update: linq2db 4.2.0 -> 4.3.0
+- [ALL] dependency update: Microsoft.CodeAnalysis.CSharp updated to 4.3.1
+- [ALL] dependency update: Npgsql updated to 6.0.7
+- [LINQPAD7] add new dependency: Octonica.ClickHouseClient 2.2.9
+- [LINQPAD5] dependency update: Oracle.ManagedDataAccess 19.14.0 -> 21.7.0
+- [LINQPAD5] dependency update: Microsoft.SqlServer.Types 14.0.1016.290 -> 160.900.6-rc0
+- [LINQPAD7] dependency update: FirebirdSql.Data.FirebirdClient 9.0.1 -> 9.0.2
+- [LINQPAD7] dependency update: dotMorten.Microsoft.SqlServer.Types 1.5.0 -> 2.5.0
+- [LINQPAD7] dependency update: FirebirdSql.Data.FirebirdClient 9.0.1 -> 9.0.2
+
+# Release 4.2.0
+- [ALL] dependency update: linq2db 4.1.0 -> 4.2.0
+- [DEPS][ALL] dependency update: MySqlConnector 2.1.10 -> 2.1.13
+- [DEPS][LINQPAD7] dependency update: Microsoft.CodeAnalysis.CSharp 4.2.0 -> 4.3.0
+- [DEPS][LINQPAD7] dependency update: FirebirdSql.Data.FirebirdClient 7.10.1 -> 9.0.1
+- [DEPS][LINQPAD7] dependency update: Npgsql 6.0.5 -> 6.0.6
+- [DEPS][LINQPAD7] dependency update: Oracle.ManagedDataAccess.Core 3.21.61 -> 3.21.70
+
 # Release 4.1.1
 - [LINQPAD7] nuget spec bugfix
 

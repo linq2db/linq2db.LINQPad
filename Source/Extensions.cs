@@ -1,55 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Dynamic;
 
-namespace LinqToDB.LINQPad
+namespace LinqToDB.LINQPad;
+
+static class Extensions
 {
-	static class Extensions
+	public static bool MaybeEqualTo(this Type type1, Type type2)
 	{
-		public static bool MaybeEqualTo(this Type type1, Type type2)
-		{
-			return type1.FullName == type2.FullName;
-		}
+		return type1.FullName == type2.FullName;
+	}
 
-		public static bool MaybeChildOf(this Type type, Type parent)
+	public static bool MaybeChildOf(this Type type, Type parent)
+	{
+		Type? currentType = type;
+		do
 		{
-			Type? currentType = type;
-			do
+			if (currentType.IsGenericType)
 			{
-				if (currentType.IsGenericType)
-				{
-					var gtype = currentType.GetGenericTypeDefinition();
+				var gtype = currentType.GetGenericTypeDefinition();
 
-					if (gtype.MaybeEqualTo(parent))
-						return true;
-				}
+				if (gtype.MaybeEqualTo(parent))
+					return true;
+			}
 
-				foreach (var inf in currentType.GetInterfaces())
-					if (inf.MaybeChildOf(parent))
-						return true;
+			foreach (var inf in currentType.GetInterfaces())
+				if (inf.MaybeChildOf(parent))
+					return true;
 
-				currentType = currentType.BaseType;
+			currentType = currentType.BaseType;
 
-			} while(currentType != null);
+		} while(currentType != null);
 
-			return false;
-		}
+		return false;
+	}
 
-		public static dynamic? GetCustomAttributeLike<T>(this MemberInfo memberInfo)
-		{
-			return memberInfo.GetCustomAttributes().FirstOrDefault(a => a.GetType().MaybeEqualTo(typeof(T)));
-		}
+	public static dynamic? GetCustomAttributeLike<T>(this MemberInfo memberInfo)
+	{
+		return memberInfo.GetCustomAttributes().FirstOrDefault(a => a.GetType().MaybeEqualTo(typeof(T)));
+	}
 
-		public static bool HasProperty(dynamic obj, string name)
-		{
-			Type objType = obj.GetType();
+	public static bool HasProperty(dynamic obj, string name)
+	{
+		Type objType = obj.GetType();
 
-			if (objType == typeof (ExpandoObject))
-				return ((IDictionary<string, object>)obj).ContainsKey(name);
+		if (objType == typeof (ExpandoObject))
+			return ((IDictionary<string, object>)obj).ContainsKey(name);
 
-			return objType.GetProperty(name) != null;
-		}
+		return objType.GetProperty(name) != null;
 	}
 }

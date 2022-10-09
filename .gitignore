@@ -1,4 +1,3 @@
-#Ignore files build by Visual Studio
 .vs/
 bin/
 obj/

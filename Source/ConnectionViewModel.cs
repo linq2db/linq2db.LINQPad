@@ -1,28 +1,26 @@
 ﻿using System.Collections.ObjectModel;
-using System.Linq;
 
-namespace LinqToDB.LINQPad
+namespace LinqToDB.LINQPad;
+
+sealed partial class ConnectionViewModel
 {
-	partial class ConnectionViewModel
+	public sealed class ProviderInfo
 	{
-		public class ProviderInfo
+		public ProviderInfo(string name, string description)
 		{
-			public ProviderInfo(string name, string description)
-			{
-				Name        = name;
-				Description = description;
-			}
-			public string Name        { get; }
-			public string Description { get; }
+			Name        = name;
+			Description = description;
 		}
+		public string Name        { get; }
+		public string Description { get; }
+	}
 
-		public ConnectionViewModel()
-		{
-			_providers = new ObservableCollection<ProviderInfo>(
-				ProviderHelper.DynamicProviders.Select(p => new ProviderInfo(p.Name, p.Description))
-					.OrderBy(s => s.Description.ToLower()));
+	public ConnectionViewModel()
+	{
+		_providers = new ObservableCollection<ProviderInfo>(
+			ProviderHelper.DynamicProviders.Select(p => new ProviderInfo(p.Name, p.Description))
+				.OrderBy(s => s.Description.ToLower()));
 
-			_optimizeJoins      = true;
-		}
+		_optimizeJoins      = true;
 	}
 }

@@ -1,5 +1,3 @@
-; What is EditorConfig? http://editorconfig.org/
-
 root = true
 
 ; use tabs identation for all files
@@ -227,6 +225,9 @@ dotnet_diagnostic.IDE0079.severity = none # IDE0079: Remove unnecessary suppress
 dotnet_diagnostic.IDE0080.severity = none # IDE0080: Remove unnecessary suppression operator
 dotnet_diagnostic.IDE0081.severity = none # IDE0081: Remove ByVal
 dotnet_diagnostic.IDE0083.severity = none # IDE0083: Use pattern matching (not operator)
+dotnet_diagnostic.IDE0130.severity = none # IDE0130: Namespace does not match folder structure
+dotnet_diagnostic.IDE0160.severity = none # IDE0160: Use block-scoped namespace
+dotnet_diagnostic.IDE0161.severity = error # IDE0161: Use file-scoped namespace
 dotnet_diagnostic.IDE1006.severity = none # IDE1006: Naming rule violation
 
 dotnet_diagnostic.CS1998.severity = error # CS1998: Async method lacks 'await' operators and will run synchronously
