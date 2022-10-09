@@ -1,1 +1,1 @@
-Folder contains helper templates for WPF view generation.
+Folder contains helper templates for provider settings WPF view class generation.

@@ -4,18 +4,18 @@
 
 [![Master branch build](https://img.shields.io/azure-devops/build/linq2db/linq2db/8/master?label=build%20(master))](https://dev.azure.com/linq2db/linq2db/_build?definitionId=8&_a=summary) [![Latest build](https://img.shields.io/azure-devops/build/linq2db/linq2db/8?label=build%20(latest))](https://dev.azure.com/linq2db/linq2db/_build?definitionId=8&_a=summary)
 
-linq2db.LINQPad is a driver for [LINQPad 5 (.NET Framework)](http://www.linqpad.net) and [LINQPad 6-7 (.NET/Core)](http://www.linqpad.net).
+linq2db.LINQPad is a driver for [LINQPad 5 (.NET Framework)](http://www.linqpad.net) and [LINQPad 6+ (.NET/Core)](http://www.linqpad.net).
 
 Following databases supported (by all LINQPad versions if other not noted):
 
-- **ClickHouse**: Binary (LINQPad 6+), HTTP and MySQL interfaces
+- **ClickHouse**: using Binary (LINQPad 6+), HTTP and MySQL interfaces
 - **DB2** (LUW, z/OS) (LINQPad 6+ supports only 64-bit version)
 - **DB2 iSeries** (using [3rd-party provider](https://github.com/LinqToDB4iSeries/Linq2DB4iSeries)) *(iAccess 7.1+ software must be installed)*. **IMPORTANT:** currently available only for LINQPad 5 using linq2db.LINQPad version 2.9.3 or earlier
 - **Firebird**
 - **Informix** (LINQPad 6+ supports only 64-bit version)
-- **Microsoft Access** *(supports both OleDb and ODBC)*
-- **Microsoft Sql Server** 2005+ *(including **Microsoft Sql Azure**)*
-- **Microsoft Sql Server Compact (SqlCe)**
+- **Microsoft Access** *(supports both OLE DB and ODBC drivers)*
+- **Microsoft SQL Server** 2005+ *(including **Microsoft SQL Azure**)*
+- **Microsoft SQL Server Compact (SQL CE)**
 - **MariaDB**
 - **MySql**
 - **Oracle**
@@ -26,7 +26,7 @@ Following databases supported (by all LINQPad versions if other not noted):
 
 ## Download
 
-Releases are hosted on [Github](https://github.com/linq2db/linq2db.LINQPad/releases) and on [Nuget](https://www.nuget.org/packages/linq2db.LINQPad) for LINQPad 6+ driver.
+Releases are hosted on [Github](https://github.com/linq2db/linq2db.LINQPad/releases) and on [nuget.org](https://www.nuget.org/packages/linq2db.LINQPad) for LINQPad 6+ driver.
 
 Latest build is hosted on [Azure Artifacts](https://dev.azure.com/linq2db/linq2db/_packaging?_a=package&feed=linq2db%40Local&package=linq2db.LINQPad&protocolType=NuGet). Feed [URL](https://pkgs.dev.azure.com/linq2db/linq2db/_packaging/linq2db/nuget/v3/index.json) ([how to use](https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio#package-sources)).
 

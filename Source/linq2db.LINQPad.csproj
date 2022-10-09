@@ -7,11 +7,11 @@
 		<Company>linq2db</Company>
 		<Product>linq2db.LINQPad</Product>
 		<AssemblyTitle>$(Product)</AssemblyTitle>
-		<Version>4.2.0.0</Version>
+		<Version>5.0.0.0</Version>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
 		<Copyright>Copyright © 2016-2022 Linq To DB Team</Copyright>
-		<AssemblyOriginatorKeyFile>linq2db.snk</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>..\Build\linq2db.snk</AssemblyOriginatorKeyFile>
 		<UseWPF>true</UseWPF>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 
@@ -114,22 +114,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="Connection.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
 		<None Update="ConnectionViewModel.tt">
 			<Generator>TextTemplatingFileGenerator</Generator>
 			<LastGenOutput>ConnectionViewModel.generated.cs</LastGenOutput>
 		</None>
-		<None Update="FailedConnection.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Update="header.xml">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-	</ItemGroup>
-
-	<ItemGroup>
 		<Compile Update="ConnectionViewModel.generated.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
@@ -138,15 +126,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<!--T4 support-->
 		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
 
 	<Target Name="PostBuild1" AfterTargets="PostBuildEvent" Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-		<Exec Command="$(ProjectDir)Pack.bat $(TargetDir) lpx6" />
+		<Exec Command="$(ProjectDir)..\Build\Pack.bat $(TargetDir) lpx6" />
 	</Target>
 
 	<Target Name="PostBuild2" AfterTargets="CopySQLiteInteropFiles" Condition="'$(TargetFramework)' == 'net48'">
-		<Exec Command="$(ProjectDir)Pack.bat $(TargetDir) lpx" />
+		<Exec Command="$(ProjectDir)..\Build\Pack.bat $(TargetDir) lpx" />
 	</Target>
 
 	<!--disable CodeJam transitive dependency polluting global namespace-->

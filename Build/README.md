@@ -6,11 +6,12 @@ Following databases supported:
 
 - **ClickHouse** (Binary, HTTP and MySQL interfaces)
 - **DB2** (LUW, z/OS) (only 64-bit version)
+- **DB2 iSeries**
 - **Firebird**
 - **Informix** (only 64-bit version)
-- **Microsoft Access** *(supports both OleDb and ODBC)*
-- **Microsoft Sql Server** 2005+ *(including **Microsoft Sql Azure**)*
-- **Microsoft Sql Server Compact (SqlCe)**
+- **Microsoft Access** *(supports both OLE DB and ODBC drivers)*
+- **Microsoft SQL Server** 2005+ *(including **Microsoft SQL Azure**)*
+- **Microsoft SQL Server Compact (SQL CE)**
 - **MariaDB**
 - **MySql**
 - **Oracle**

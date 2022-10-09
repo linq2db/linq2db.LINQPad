@@ -20,10 +20,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{A26F7937
 	ProjectSection(SolutionItems) = preProject
 		Build\azure-pipelines.yml = Build\azure-pipelines.yml
 		Build\BuildNuspecs.ps1 = Build\BuildNuspecs.ps1
+		Build\Connection.png = Build\Connection.png
+		Build\FailedConnection.png = Build\FailedConnection.png
+		Build\header.xml = Build\header.xml
 		Build\icon64.png = Build\icon64.png
 		Build\linq2db.LINQPad.nuspec = Build\linq2db.LINQPad.nuspec
+		Build\linq2db.snk = Build\linq2db.snk
 		Build\nuget-vars.yml = Build\nuget-vars.yml
-		Source\Pack.bat = Source\Pack.bat
+		Build\Pack.bat = Build\Pack.bat
 		Build\README.md = Build\README.md
 		Build\SetVersion.ps1 = Build\SetVersion.ps1
 	EndProjectSection
