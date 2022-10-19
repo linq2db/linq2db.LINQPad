@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
 	<PropertyGroup>
-		<!--net6.0-windows used only as additional build target for analyzers and not released-->
-		<TargetFrameworks>net48;netcoreapp3.1;net6.0-windows</TargetFrameworks>
+		<TargetFrameworks>net48;net6.0-windows</TargetFrameworks>
 		<RootNamespace>LinqToDB.LINQPad</RootNamespace>
 		<Company>linq2db</Company>
 		<Product>linq2db.LINQPad</Product>
@@ -11,11 +10,10 @@
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
 		<Copyright>Copyright © 2016-2022 Linq To DB Team</Copyright>
-		<AssemblyOriginatorKeyFile>..\Build\linq2db.snk</AssemblyOriginatorKeyFile>
 		<UseWPF>true</UseWPF>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 
-		<LangVersion>10.0</LangVersion>
+		<LangVersion>preview</LangVersion>
 		<Nullable>enable</Nullable>
 		<!--https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/errors-warnings#warninglevel-->
 		<WarningLevel>9999</WarningLevel>
@@ -44,11 +42,6 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
-		<SignAssembly>true</SignAssembly>
-		<DelaySign>false</DelaySign>
-	</PropertyGroup>
-
 	<PropertyGroup Condition="'$(TargetFramework)' != 'net48'">
 		<DefineConstants>LPX6</DefineConstants>
 	</PropertyGroup>
@@ -63,8 +56,6 @@
 
 		<PackageReference Include="LINQPad.Reference" />
 		
-		<PackageReference Include="Humanizer.Core" />
-		<PackageReference Include="CodeJam" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
 
 		<PackageReference Include="FirebirdSql.Data.FirebirdClient" />
@@ -130,7 +121,7 @@
 		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
 
-	<Target Name="PostBuild1" AfterTargets="PostBuildEvent" Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+	<Target Name="PostBuild1" AfterTargets="PostBuildEvent" Condition="'$(TargetFramework)' != 'net48'">
 		<Exec Command="$(ProjectDir)..\Build\Pack.bat $(TargetDir) lpx6" />
 	</Target>
 

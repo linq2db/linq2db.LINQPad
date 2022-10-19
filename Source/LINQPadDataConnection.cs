@@ -1,7 +1,4 @@
-﻿using CodeJam.Strings;
-using CodeJam.Xml;
-using LINQPad.Extensibility.DataContext;
-using LinqToDB.Data;
+﻿using LinqToDB.Data;
 
 namespace LinqToDB.LINQPad;
 
@@ -30,13 +27,13 @@ public class LINQPadDataConnection : DataConnection
 	/// <summary>
 	/// Constructor for use from code directly.
 	/// </summary>
-	internal LINQPadDataConnection(IConnectionInfo cxInfo)
+	internal LINQPadDataConnection(Settings settings)
 		: this(
-			(string?)cxInfo.DriverData.Element(CX.ProviderName),
-			(string?)cxInfo.DriverData.Element(CX.ProviderPath),
-			cxInfo.DatabaseInfo.CustomCxString)
+			settings.Provider,
+			settings.ProviderPath,
+			settings.ConnectionInfo.DatabaseInfo.CustomCxString)
 	{
-		CommandTimeout = cxInfo.DriverData.ElementValueOrDefault(CX.CommandTimeout, str => str.ToInt32() ?? 0, 0);
+		CommandTimeout = settings.CommandTimeout;
 	}
 
 	static void Init()

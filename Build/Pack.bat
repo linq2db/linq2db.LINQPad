@@ -31,7 +31,7 @@ IF %2 EQU lpx (
 	"C:\Program Files\7-Zip\7z.exe" -r a linq2db.LINQPad.%2.zip %1\*.* %1\..\..\..\..\Build\Connection.png %1\..\..\..\..\Build\FailedConnection.png %1\..\..\..\..\Build\header.xml
 )
 
-REM LINQPad 6+ driver archive generation
+REM LINQPad 7 driver archive generation
 IF %2 EQU lpx6 ("C:\Program Files\7-Zip\7z.exe" a linq2db.LINQPad.%2.zip %1\linq2db.LINQPad.dll %1\..\..\..\..\Build\Connection.png %1\..\..\..\..\Build\FailedConnection.png %1\linq2db.LINQPad.deps.json)
 
 REN linq2db.LINQPad.%2.zip linq2db.LINQPad.%2

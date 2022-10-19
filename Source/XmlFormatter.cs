@@ -594,7 +594,7 @@ static class XmlFormatter
 		VF<TimeSpan>       (v => v.ToString()),
 		VF<SqlXml>         (v => v.Value),
 
-		VF<BitArray>       (v => Format(v)),
+		VF<BitArray>       (     Format),
 		VF<IPAddress>      (v => Format(v.ToString())),
 		VF<PhysicalAddress>(v => Format(v.GetAddressBytes())),
 
@@ -617,7 +617,7 @@ static class XmlFormatter
 
 		// npgsql types
 #pragma warning disable CS0618 // Type or member is obsolete
-		VF<NpgsqlTypes.NpgsqlInterval>(v => Format(v)),
+		VF<NpgsqlTypes.NpgsqlInterval>(     Format),
 		VF<NpgsqlTypes.NpgsqlTimeSpan>(v => Format((TimeSpan)v)),
 		VF<NpgsqlTypes.NpgsqlDateTime>(v => Format((DateTime)v)),
 		VF<NpgsqlTypes.NpgsqlDate    >(v => Format((DateTime)v)),

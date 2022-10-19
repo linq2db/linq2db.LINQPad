@@ -10,26 +10,36 @@ using LinqToDB.SqlQuery;
 
 namespace LinqToDB.LINQPad;
 
-sealed class ModelProviderInterceptor : ScaffoldInterceptors
+/// <summary>
+/// Scaffold interceptor used to populate generated data model for dynamic context (with proper type/member identifiers).
+/// </summary>
+internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 {
 	private readonly ISqlBuilder _sqlBuilder;
 
-	private readonly List<AssociationData> _associations = new ();
-	private readonly Dictionary<string, SchemaData> _schemaItems = new ();
+	// stores populated model information:
+	// - FK associations
+	// - schema-scoped objects (views, tables, routines)
+	private readonly List<AssociationData>          _associations = new ();
+	private readonly Dictionary<string, SchemaData> _schemaItems  = new ();
 
-	private sealed record SchemaData(
-		List<TableData> Tables,
-		List<TableData> Views,
-		List<ProcedureData> Procedures,
-		List<TableFunctionData> TableFunctions,
-		List<ScalarOrAggregateFunctionData> ScalarFunctions,
-		List<ScalarOrAggregateFunctionData> AggregateFunctions);
+	public ModelProviderInterceptor(ISqlBuilder sqlBuilder)
+	{
+		_sqlBuilder = sqlBuilder;
+	}
 
-	private sealed record TableData(string ContextName, IType ContextType, string DbName, List<ColumnData> Columns);
+	#region model DTOs
 
-	private sealed record ColumnData(string MemberName, IType Type, string DbName, bool IsPrimaryKey, bool IsIdentity, DataType DataType, DatabaseType DbType);
-
-	private sealed record AssociationData(string MemberName, IType Type, bool FromSide, bool OneToMany, string KeyName, TableData Source, TableData Target);
+	private sealed   record SchemaData                   (List<TableData> Tables, List<TableData> Views, List<ProcedureData> Procedures, List<TableFunctionData> TableFunctions, List<ScalarOrAggregateFunctionData> ScalarFunctions, List<ScalarOrAggregateFunctionData> AggregateFunctions);
+	private sealed   record TableData                    (string ContextName, IType ContextType, string DbName, List<ColumnData> Columns);
+	private sealed   record ColumnData                   (string MemberName, IType Type, string DbName, bool IsPrimaryKey, bool IsIdentity, DataType DataType, DatabaseType DbType);
+	private sealed   record AssociationData              (string MemberName, IType Type, bool FromSide, bool OneToMany, string KeyName, TableData Source, TableData Target);
+	private sealed   record ResultColumnData             (string MemberName, IType Type, string DbName, DataType DataType, DatabaseType DbType);
+	private sealed   record ParameterData                (string Name, IType Type, ParameterDirection Direction);
+	private abstract record FunctionBaseData             (string MethodName, string DbName, IReadOnlyList<ParameterData> Parameters);
+	private sealed   record ProcedureData                (string MethodName, string DbName, IReadOnlyList<ParameterData> Parameters, IReadOnlyList<ResultColumnData>? Result) : FunctionBaseData(MethodName, DbName, Parameters);
+	private sealed   record TableFunctionData            (string MethodName, string DbName, IReadOnlyList<ParameterData> Parameters, IReadOnlyList<ResultColumnData> Result) : FunctionBaseData(MethodName, DbName, Parameters);
+	private sealed   record ScalarOrAggregateFunctionData(string MethodName, string DbName, IReadOnlyList<ParameterData> Parameters, IType ResultType) : FunctionBaseData(MethodName, DbName, Parameters);
 
 	public enum ParameterDirection
 	{
@@ -38,22 +48,21 @@ sealed class ModelProviderInterceptor : ScaffoldInterceptors
 		Out
 	}
 
-	private sealed record ResultColumnData(string MemberName, IType Type, string DbName, DataType DataType, DatabaseType DbType);
+	#endregion
 
-	private sealed record ParameterData(string Name, IType Type, ParameterDirection Direction);
+	#region Model Population
 
-	private abstract record FunctionBaseData(string MethodName, string DbName, IReadOnlyList<ParameterData> Parameters);
-
-	private sealed record ProcedureData(string MethodName, string DbName, IReadOnlyList<ParameterData> Parameters, IReadOnlyList<ResultColumnData>? Result)
-		: FunctionBaseData(MethodName, DbName, Parameters);
-	private sealed record TableFunctionData(string MethodName, string DbName, IReadOnlyList<ParameterData> Parameters, IReadOnlyList<ResultColumnData> Result)
-		: FunctionBaseData(MethodName, DbName, Parameters);
-	private sealed record ScalarOrAggregateFunctionData(string MethodName, string DbName, IReadOnlyList<ParameterData> Parameters, IType ResultType)
-		: FunctionBaseData(MethodName, DbName, Parameters);
-
-	public ModelProviderInterceptor(ISqlBuilder sqlBuilder)
+	public override void AfterSourceCodeGenerated(FinalDataModel model)
 	{
-		_sqlBuilder = sqlBuilder;
+		// tables lookup for association model population
+		var tablesLookup = new Dictionary<EntityModel, TableData>();
+
+		foreach (var entity      in model.Entities          ) ProcessEntity           (entity, tablesLookup);
+		foreach (var association in model.Associations      ) ProcessAssociation      (association, tablesLookup);
+		foreach (var proc        in model.StoredProcedures  ) ProcessStoredProcedure  (proc);
+		foreach (var func        in model.TableFunctions    ) ProcessTableFunction    (func);
+		foreach (var func        in model.ScalarFunctions   ) ProcessScalarFunction   (func);
+		foreach (var func        in model.AggregateFunctions) ProcessAggregateFunction(func);
 	}
 
 	private SchemaData GetSchema(string? schemaName)
@@ -64,25 +73,12 @@ sealed class ModelProviderInterceptor : ScaffoldInterceptors
 		return data;
 	}
 
-	private readonly Dictionary<EntityModel, TableData> _tablesLookup = new();
-
-	public override void AfterSourceCodeGenerated(FinalDataModel model)
-	{
-		foreach (var entity in model.Entities) ProcessEntity(entity);
-		foreach (var association in model.Associations) ProcessAssociation(association);
-		foreach (var proc in model.StoredProcedures) ProcessStoredProcedure(proc);
-		foreach (var func in model.TableFunctions) ProcessTableFunction(func);
-		foreach (var func in model.ScalarFunctions) ProcessScalarFunction(func);
-		foreach (var func in model.AggregateFunctions) ProcessAggregateFunction(func);
-	}
-
-	private void ProcessEntity(EntityModel entityModel)
+	private void ProcessEntity(EntityModel entityModel, Dictionary<EntityModel, TableData> tablesLookup)
 	{
 		var schemaName = entityModel.Metadata.Name!.Value.Schema;
+		var schema     = GetSchema(schemaName);
+		var columns    = new List<ColumnData>();
 
-		var schema = GetSchema(schemaName);
-
-		var columns = new List<ColumnData>();
 		foreach (var column in entityModel.Columns)
 		{
 			columns.Add(new ColumnData(
@@ -101,7 +97,7 @@ sealed class ModelProviderInterceptor : ScaffoldInterceptors
 				GetDbName(entityModel.Metadata.Name!.Value.Name, schemaName),
 				columns);
 
-		_tablesLookup.Add(entityModel, table);
+		tablesLookup.Add(entityModel, table);
 
 		if (entityModel.Metadata.IsView)
 			schema.Views.Add(table);
@@ -109,10 +105,10 @@ sealed class ModelProviderInterceptor : ScaffoldInterceptors
 			schema.Tables.Add(table);
 	}
 
-	private void ProcessAssociation(AssociationModel associationModel)
+	private void ProcessAssociation(AssociationModel associationModel, Dictionary<EntityModel, TableData> tablesLookup)
 	{
-		if (_tablesLookup.TryGetValue(associationModel.Source, out var fromTable)
-			&& _tablesLookup.TryGetValue(associationModel.Target, out var toTable))
+		if (   tablesLookup.TryGetValue(associationModel.Source, out var fromTable)
+			&& tablesLookup.TryGetValue(associationModel.Target, out var toTable))
 		{
 			_associations.Add(new AssociationData(
 				associationModel.Property!.Name,
@@ -136,10 +132,7 @@ sealed class ModelProviderInterceptor : ScaffoldInterceptors
 
 	private void ProcessStoredProcedure(StoredProcedureModel procedureModel)
 	{
-		var schemaName = procedureModel.Name.Schema;
-
-		var schema = GetSchema(schemaName);
-
+		var schema     = GetSchema(procedureModel.Name.Schema);
 		var parameters = CollectParameters(procedureModel.Parameters);
 
 		List<ResultColumnData>? result = null;
@@ -156,13 +149,9 @@ sealed class ModelProviderInterceptor : ScaffoldInterceptors
 
 	private void ProcessTableFunction(TableFunctionModel functionModel)
 	{
-		var schemaName = functionModel.Name.Schema;
-
-		var schema = GetSchema(schemaName);
-
+		var schema     = GetSchema(functionModel.Name.Schema);
 		var parameters = CollectParameters(functionModel.Parameters);
-
-		var result = CollectResultData(functionModel.Result!);
+		var result     = CollectResultData(functionModel.Result!);
 
 		schema.TableFunctions.Add(new TableFunctionData(
 			functionModel.Method.Name,
@@ -173,10 +162,7 @@ sealed class ModelProviderInterceptor : ScaffoldInterceptors
 
 	private void ProcessAggregateFunction(AggregateFunctionModel functionModel)
 	{
-		var schemaName = functionModel.Name.Schema;
-
-		var schema = GetSchema(schemaName);
-
+		var schema     = GetSchema(functionModel.Name.Schema);
 		var parameters = CollectParameters(functionModel.Parameters);
 
 		schema.AggregateFunctions.Add(new ScalarOrAggregateFunctionData(
@@ -188,10 +174,7 @@ sealed class ModelProviderInterceptor : ScaffoldInterceptors
 
 	private void ProcessScalarFunction(ScalarFunctionModel functionModel)
 	{
-		var schemaName = functionModel.Name.Schema;
-
-		var schema = GetSchema(schemaName);
-
+		var schema     = GetSchema(functionModel.Name.Schema);
 		var parameters = CollectParameters(functionModel.Parameters);
 
 		schema.ScalarFunctions.Add(new ScalarOrAggregateFunctionData(
@@ -203,7 +186,7 @@ sealed class ModelProviderInterceptor : ScaffoldInterceptors
 
 	private static List<ResultColumnData> CollectResultData(FunctionResult procedureModel)
 	{
-		var table = procedureModel.CustomTable!;
+		var table  = procedureModel.CustomTable!;
 		var result = new List<ResultColumnData>(table.Columns.Count);
 
 		foreach (var column in table.Columns)
@@ -227,9 +210,10 @@ sealed class ModelProviderInterceptor : ScaffoldInterceptors
 		{
 			var direction = param.Direction switch
 			{
-				System.Data.ParameterDirection.InputOutput => ParameterDirection.Ref,
-				System.Data.ParameterDirection.Output or System.Data.ParameterDirection.ReturnValue => ParameterDirection.Out,
-				_ => ParameterDirection.None
+				System.Data.ParameterDirection.InputOutput        => ParameterDirection.Ref,
+				System.Data.ParameterDirection.Output
+					or System.Data.ParameterDirection.ReturnValue => ParameterDirection.Out,
+				_                                                 => ParameterDirection.None
 			};
 
 			parametersData.Add(new ParameterData(
@@ -241,14 +225,17 @@ sealed class ModelProviderInterceptor : ScaffoldInterceptors
 		return parametersData;
 	}
 
+	#endregion
+
+	#region Convert data model to LINQPad tree model
+
 	public List<ExplorerItem> GetTree()
 	{
 		var tablesLookup = new Dictionary<TableData, ExplorerItem>();
 
+		// don't create schema node for single schema without name (default schema)
 		if (_schemaItems.Count == 1 && _schemaItems.ContainsKey(string.Empty))
-		{
 			return PopulateSchemaMembers(string.Empty, tablesLookup);
-		}
 
 		var model = new List<ExplorerItem>();
 
@@ -257,8 +244,8 @@ sealed class ModelProviderInterceptor : ScaffoldInterceptors
 			model.Add(new ExplorerItem(schema, ExplorerItemKind.Schema, ExplorerIcon.Schema)
 			{
 				ToolTipText = $"schema: {schema}",
-				SqlName = GetDbName(schema),
-				Children = PopulateSchemaMembers(schema, tablesLookup)
+				SqlName     = GetDbName(schema),
+				Children    = PopulateSchemaMembers(schema, tablesLookup)
 			});
 		}
 
@@ -272,7 +259,7 @@ sealed class ModelProviderInterceptor : ScaffoldInterceptors
 	private List<ExplorerItem> PopulateSchemaMembers(string schemaName, Dictionary<TableData, ExplorerItem> tablesLookup)
 	{
 		var items = new List<ExplorerItem>();
-		var data = _schemaItems[schemaName];
+		var data  = _schemaItems[schemaName];
 
 		if (data.Tables.Count > 0)
 			items.Add(PopulateTables(data.Tables, "Tables", ExplorerIcon.Table, tablesLookup));
@@ -281,24 +268,16 @@ sealed class ModelProviderInterceptor : ScaffoldInterceptors
 			items.Add(PopulateTables(data.Views, "Views", ExplorerIcon.View, tablesLookup));
 
 		if (data.Procedures.Count > 0)
-		{
 			items.Add(PopulateStoredProcedures(data.Procedures));
-		}
 
 		if (data.TableFunctions.Count > 0)
-		{
 			items.Add(PopulateTableFunctions(data.TableFunctions));
-		}
 
 		if (data.ScalarFunctions.Count > 0)
-		{
 			items.Add(PopulateScalarFunctions(data.ScalarFunctions, "Scalar Functions"));
-		}
 
 		if (data.AggregateFunctions.Count > 0)
-		{
 			items.Add(PopulateScalarFunctions(data.AggregateFunctions, "Aggregate Functions"));
-		}
 
 		return items;
 	}
@@ -318,18 +297,15 @@ sealed class ModelProviderInterceptor : ScaffoldInterceptors
 				AddParameters(func.Parameters, children);
 
 				if (func.Result != null)
-				{
 					AddResultTable(func.Result, children);
-				}
 			}
 
 			items.Add(new ExplorerItem(func.MethodName, ExplorerItemKind.QueryableObject, ExplorerIcon.StoredProc)
 			{
-				DragText = $"{func.MethodName}({string.Join(", ", func.Parameters.Select(GetParameterName))})",
-				//ToolTipText = ,
-				Children = children,
+				DragText     = $"{func.MethodName}({string.Join(", ", func.Parameters.Select(GetParameterName))})",
+				Children     = children,
 				IsEnumerable = func.Result != null,
-				SqlName = func.DbName
+				SqlName      = func.DbName
 			});
 		}
 
@@ -350,9 +326,9 @@ sealed class ModelProviderInterceptor : ScaffoldInterceptors
 
 			columns.Add(new ExplorerItem($"{column.MemberName} : {SimpleBuildTypeName(column.Type)}", ExplorerItemKind.Property, ExplorerIcon.Column)
 			{
-				ToolTipText = $"{dbName} {dbType}",
-				DragText = column.MemberName,
-				SqlName = dbName,
+				ToolTipText        = $"{dbName} {dbType}",
+				DragText           = column.MemberName,
+				SqlName            = dbName,
 				SqlTypeDeclaration = dbType,
 			});
 		}
@@ -381,17 +357,16 @@ sealed class ModelProviderInterceptor : ScaffoldInterceptors
 		foreach (var func in functions.OrderBy(f => f.MethodName))
 		{
 			var children = new List<ExplorerItem>(func.Parameters.Count + 1);
-			AddParameters(func.Parameters, children);
 
-			AddResultTable(func.Result, children);
+			AddParameters(func.Parameters, children);
+			AddResultTable(func.Result   , children);
 
 			items.Add(new ExplorerItem(func.MethodName, ExplorerItemKind.QueryableObject, ExplorerIcon.TableFunction)
 			{
-				DragText = $"{func.MethodName}({string.Join(", ", func.Parameters.Select(GetParameterName))})",
-				//ToolTipText = ,
-				Children = children,
+				DragText     = $"{func.MethodName}({string.Join(", ", func.Parameters.Select(GetParameterName))})",
+				Children     = children,
 				IsEnumerable = true,
-				SqlName = func.DbName
+				SqlName      = func.DbName
 			});
 		}
 
@@ -416,11 +391,10 @@ sealed class ModelProviderInterceptor : ScaffoldInterceptors
 
 			items.Add(new ExplorerItem(func.MethodName, ExplorerItemKind.QueryableObject, ExplorerIcon.TableFunction)
 			{
-				DragText = $"{func.MethodName}({string.Join(", ", func.Parameters.Select(GetParameterName))})",
-				//ToolTipText = ,
-				Children = children,
+				DragText     = $"{func.MethodName}({string.Join(", ", func.Parameters.Select(GetParameterName))})",
+				Children     = children,
 				IsEnumerable = false,
-				SqlName = func.DbName
+				SqlName      = func.DbName
 			});
 		}
 
@@ -449,21 +423,21 @@ sealed class ModelProviderInterceptor : ScaffoldInterceptors
 						ExplorerItemKind.Property,
 						column.IsPrimaryKey ? ExplorerIcon.Key : ExplorerIcon.Column)
 					{
-						ToolTipText = $"{dbName} {dbType}",
-						DragText = column.MemberName,
-						SqlName = dbName,
+						ToolTipText        = $"{dbName} {dbType}",
+						DragText           = column.MemberName,
+						SqlName            = dbName,
 						SqlTypeDeclaration = dbType,
 					});
 			}
 
 			var tableNode = new ExplorerItem(table.ContextName, ExplorerItemKind.QueryableObject, icon)
 			{
-				DragText = table.ContextName,
-				ToolTipText = SimpleBuildTypeName(table.ContextType),
-				SqlName = table.DbName,
+				DragText     = table.ContextName,
+				ToolTipText  = SimpleBuildTypeName(table.ContextType),
+				SqlName      = table.DbName,
 				IsEnumerable = true,
 				// we don't sort columns/associations and render associations after columns intentionally
-				Children = tableChildren
+				Children     = tableChildren
 			};
 
 			tablesLookup.Add(table, tableNode);
@@ -496,15 +470,17 @@ sealed class ModelProviderInterceptor : ScaffoldInterceptors
 									? ExplorerIcon.ManyToOne
 									: ExplorerIcon.OneToOne)
 					{
-						DragText = association.MemberName,
-						ToolTipText = $"{SimpleBuildTypeName(association.Type)}{(!association.FromSide ? " // Back Reference" : null)}",
-						SqlName = association.KeyName,
-						IsEnumerable = association.OneToMany && association.FromSide,
+						DragText        = association.MemberName,
+						ToolTipText     = $"{SimpleBuildTypeName(association.Type)}{(!association.FromSide ? " // Back Reference" : null)}",
+						SqlName         = association.KeyName,
+						IsEnumerable    = association.OneToMany && association.FromSide,
 						HyperlinkTarget = targetNode,
 					});
 			}
 		}
 	}
+
+	#endregion
 
 	private string GetDbName(string name, string? schema = null)
 	{
@@ -520,43 +496,32 @@ sealed class ModelProviderInterceptor : ScaffoldInterceptors
 		return _sqlBuilder!.BuildDataType(
 				new StringBuilder(),
 				new SqlDataType(new DbDataType(typeof(object),
-					dataType: dataType,
-					dbType: type.Name,
-					length: type.Length,
+					dataType : dataType,
+					dbType   : type.Name,
+					length   : type.Length,
 					precision: type.Precision,
-					scale: type.Scale)))
+					scale    : type.Scale)))
 			.ToString();
 	}
 
+	private readonly Dictionary<IType, string> _typeNameCache = new();
+
 	// we use this method as we don't have type-only generation logic in scaffold framework
 	// and actually we don't need such logic - simple C# type name generator below is enough for us
-
-	private readonly Dictionary<IType, string> _typeNameCache = new();
 	private string SimpleBuildTypeName(IType type)
 	{
 		if (!_typeNameCache.TryGetValue(type, out var typeName))
 		{
-			switch (type.Kind)
+			typeName = type.Kind switch
 			{
-				case TypeKind.Regular:
-				case TypeKind.TypeArgument:
-					typeName = type.Name!.Name;
-					break;
-				case TypeKind.Array:
-					typeName = $"{SimpleBuildTypeName(type.ArrayElementType!)}[]";
-					break;
-				case TypeKind.Dynamic:
-					typeName = "dynamic";
-					break;
-				case TypeKind.Generic:
-					typeName = $"{type.Name!.Name}<{string.Join(", ", type.TypeArguments!.Select(SimpleBuildTypeName))}>";
-					break;
-				case TypeKind.OpenGeneric:
-					typeName = $"{type.Name!.Name}<{string.Join(", ", type.TypeArguments!.Select(_ => string.Empty))}>";
-					break;
-				default:
-					throw new InvalidOperationException($"Unsupported type kind: {type.Kind}");
-			}
+				TypeKind.Regular
+					or TypeKind.TypeArgument => type.Name!.Name,
+				TypeKind.Array               => $"{SimpleBuildTypeName(type.ArrayElementType!)}[]",
+				TypeKind.Dynamic             => "dynamic",
+				TypeKind.Generic             => $"{type.Name!.Name}<{string.Join(", ", type.TypeArguments!.Select(SimpleBuildTypeName))}>",
+				TypeKind.OpenGeneric         => $"{type.Name!.Name}<{string.Join(", ", type.TypeArguments!.Select(_ => string.Empty))}>",
+				_                            => throw new InvalidOperationException($"Unsupported type kind: {type.Kind}")
+			};
 
 			_typeNameCache.Add(type, typeName);
 		}

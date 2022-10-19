@@ -25,7 +25,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{A26F7937
 		Build\header.xml = Build\header.xml
 		Build\icon64.png = Build\icon64.png
 		Build\linq2db.LINQPad.nuspec = Build\linq2db.LINQPad.nuspec
-		Build\linq2db.snk = Build\linq2db.snk
 		Build\nuget-vars.yml = Build\nuget-vars.yml
 		Build\Pack.bat = Build\Pack.bat
 		Build\README.md = Build\README.md

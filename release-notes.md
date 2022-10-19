@@ -3,8 +3,15 @@
 Major provider rework:
 
 - [LINQPAD5] update required framework version from .NET Framework 4.6.1 to 4.8.0
-- [ALL] migrate code-generation to new scaffolding framework
-- [LINQPAD7] .net 7 support
+- [LINQPAD5] remove strong name from driver assembly
+- [LINQPAD7] update required framework version from `netcoreapp3.1` to `net6.0-windows`
+- [LINQPAD7] .NET 7 support
+- LINQPad 6 support dropped (you can still use 4.x versions of driver with LINQPad 6)
+- migrate code-generation to new scaffolding framework
+- implemented `Close all connections` functionality for Access, DB2 LUW, DB2 z/OS, Firebird, Informix, MySql, Oracle, PostgreSQL, SAP HANA, SQLite, SAP/Sybase ASE connections (previous versions implemented only SQL Server support)
+- enable custom formatters option support for static context
+- add `LinqToDB`, `LinqToDB.Data` and `LinqToDB.Mapping` usings to queries for static context driver (as it was done before for dynamic driver)
+- implement automatic schema refresh for Access (OLE DB provider only), ClickHouse, DB2 LUW, DB2 z/OS, MySql, MariaDB, SAP HANA, Oracle and SAP/Sybase ASE (previous versions implemented only SQL Server support)
 - TBD
 
 New/updated dependencies:
@@ -15,6 +22,8 @@ New/updated dependencies:
 - [ALL] dependency update: linq2db 4.2.0 -> 4.3.0
 - [ALL] dependency update: Microsoft.CodeAnalysis.CSharp updated to 4.3.1
 - [ALL] dependency update: Npgsql updated to 6.0.7
+- [ALL] remove direct dependency on Humanizer.Core
+- [ALL] remove dependency on CodeJam
 - [LINQPAD7] add new dependency: Octonica.ClickHouseClient 2.2.9
 - [LINQPAD5] dependency update: Oracle.ManagedDataAccess 19.14.0 -> 21.7.0
 - [LINQPAD5] dependency update: Microsoft.SqlServer.Types 14.0.1016.290 -> 160.900.6-rc0
