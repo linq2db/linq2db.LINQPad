@@ -121,17 +121,10 @@ namespace LinqToDB.LINQPad
 
 		string? GetDefaultProviderPath()
 		{
-			if (Model == null)
+			if (Model == null || Model.Provider == null)
 				return null;
 
-			return Model.SelectedProvider?.Name switch
-			{
-				ProviderName.SqlCe         => IntPtr.Size == 4
-						? @"c:\Program Files (x86)\Microsoft SQL Server Compact Edition\v4.0\Private\System.Data.SqlServerCe.dll"
-						: @"c:\Program Files\Microsoft SQL Server Compact Edition\v4.0\Private\System.Data.SqlServerCe.dll",
-				ProviderName.SapHanaNative => @"c:\Program Files (x86)\sap\hdbclient\dotnetcore\v2.1\Sap.Data.Hana.Core.v2.1.dll",
-				_                          => null
-			};
+			return Model.SelectedProvider?.TryGetDefaultPath(Model.Provider);
 		}
 
 		void BrowseProvider(object sender, RoutedEventArgs e)

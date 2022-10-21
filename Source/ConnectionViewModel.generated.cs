@@ -54,10 +54,10 @@ namespace LinqToDB.LINQPad
 
 		#endregion
 
-		#region SelectedProvider : ProviderInfo?
+		#region SelectedProvider : IDatabaseProvider?
 
-		private ProviderInfo? _selectedProvider;
-		public  ProviderInfo?  SelectedProvider
+		private IDatabaseProvider? _selectedProvider;
+		public  IDatabaseProvider?  SelectedProvider
 		{
 			get { return _selectedProvider; }
 			set
@@ -77,7 +77,7 @@ namespace LinqToDB.LINQPad
 
 		#region INotifyPropertyChanged support
 
-		partial void BeforeSelectedProviderChanged(ProviderInfo? newValue);
+		partial void BeforeSelectedProviderChanged(IDatabaseProvider? newValue);
 		partial void AfterSelectedProviderChanged ();
 
 		public const string NameOfSelectedProvider = "SelectedProvider";
@@ -87,6 +87,43 @@ namespace LinqToDB.LINQPad
 		private void OnSelectedProviderChanged()
 		{
 			OnPropertyChanged(_selectedProviderChangedEventArgs);
+		}
+
+		#endregion
+
+		#endregion
+
+		#region Provider : string?
+
+		private string? _provider;
+		public  string?  Provider
+		{
+			get { return _provider; }
+			set
+			{
+				if (_provider != value)
+				{
+					BeforeProviderChanged(value);
+					_provider = value;
+					AfterProviderChanged();
+
+					OnProviderChanged();
+				}
+			}
+		}
+
+		#region INotifyPropertyChanged support
+
+		partial void BeforeProviderChanged(string? newValue);
+		partial void AfterProviderChanged ();
+
+		public const string NameOfProvider = "Provider";
+
+		private static readonly PropertyChangedEventArgs _providerChangedEventArgs = new PropertyChangedEventArgs(NameOfProvider);
+
+		private void OnProviderChanged()
+		{
+			OnPropertyChanged(_providerChangedEventArgs);
 		}
 
 		#endregion
@@ -922,7 +959,14 @@ namespace LinqToDB.LINQPad
 
 		public Visibility ProviderPathVisibility
 		{
-			get { return SelectedProvider?.Name == ProviderName.SqlCe || SelectedProvider?.Name == ProviderName.SapHanaNative ? Visibility.Visible : Visibility.Collapsed; }
+			get
+			{
+				if (Provider != null)
+				{
+					return SelectedProvider?.IsProviderPathSupported(Provider) == true ? Visibility.Visible : Visibility.Collapsed;
+				}
+				return Visibility.Collapsed;
+			}
 		}
 
 		#region INotifyPropertyChanged support
@@ -972,7 +1016,18 @@ namespace LinqToDB.LINQPad
 
 		public string? ProviderPathLabel
 		{
-			get { return SelectedProvider?.Name == ProviderName.SqlCe ? "Specify path to System.Data.SqlServerCe.dll" : SelectedProvider?.Name == ProviderName.SapHanaNative ? "Specify path to Sap.Data.Hana.Core.v2.1.dll" : null ; }
+			get
+			{
+				if (Provider != null)
+				{
+					var assemblyName = SelectedProvider?.GetProviderAssemblyName(Provider);
+					if (assemblyName != null)
+					{
+						return $"Specify path to {assemblyName}";
+					}
+				}
+				return null;
+			}
 		}
 
 		#region INotifyPropertyChanged support
@@ -1027,10 +1082,10 @@ namespace LinqToDB.LINQPad
 
 		#endregion
 
-		#region Providers : ObservableCollection<ProviderInfo>
+		#region Providers : ObservableCollection<IDatabaseProvider>
 
-		private ObservableCollection<ProviderInfo> _providers;
-		public  ObservableCollection<ProviderInfo>  Providers
+		private ObservableCollection<IDatabaseProvider> _providers;
+		public  ObservableCollection<IDatabaseProvider>  Providers
 		{
 			get { return _providers; }
 			set
@@ -1048,7 +1103,7 @@ namespace LinqToDB.LINQPad
 
 		#region INotifyPropertyChanged support
 
-		partial void BeforeProvidersChanged(ObservableCollection<ProviderInfo> newValue);
+		partial void BeforeProvidersChanged(ObservableCollection<IDatabaseProvider> newValue);
 		partial void AfterProvidersChanged ();
 
 		public const string NameOfProviders = "Providers";

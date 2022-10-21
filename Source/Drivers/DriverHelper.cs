@@ -116,7 +116,7 @@ public static void Init()
 	/// <summary>
 	/// Implements <see cref="DataContextDriver.ClearConnectionPools(IConnectionInfo)"/> method.
 	/// </summary>
-	public static void ClearConnectionPools(Settings settings) => settings.GetProvider()?.ClearAllPools();
+	public static void ClearConnectionPools(Settings settings) => settings.GetProvider().ClearAllPools();
 
 	/// <summary>
 	/// Implements <see cref="DataContextDriver.ShowConnectionDialog(IConnectionInfo, ConnectionDialogOptions)"/> method.
@@ -126,12 +126,12 @@ public static void Init()
 		var model        = new ConnectionViewModel();
 		var providerName = dialogOptions.IsNewConnection
 			? ProviderName.SqlServer
-			: settings.Provider;
+			: settings.Database;
 
 		var cxInfo = settings.ConnectionInfo;
 
 		if (providerName != null)
-			model.SelectedProvider = model.Providers.FirstOrDefault(p => p.Name == providerName);
+			model.SelectedProvider = model.Providers.FirstOrDefault(p => p.Database == providerName);
 
 		model.Name                     = cxInfo.DisplayName;
 		model.IsDynamic                = isDynamic;
@@ -162,9 +162,12 @@ public static void Init()
 
 		if (ConnectionDialog.Show(model, isDynamic ? TestConnection : null))
 		{
-			providerName = model.SelectedProvider?.Name;
+			//providerName = model.SelectedProvider?.Name;
+			var database = model.SelectedProvider?.Database;
 
-			settings.Provider     = providerName;
+			settings.Database = database;
+			// TODO
+			//settings.Provider     = providerName;
 			settings.ProviderPath = model.ProviderPath;
 			settings.ConnectionString = null;
 			// TODO
@@ -184,19 +187,15 @@ public static void Init()
 			{
 				if (model.ConnectionString != null)
 				{
-					var providerInfo             = ProviderHelper.GetProvider(providerName, model.ProviderPath);
-					cxInfo.DatabaseInfo.Provider = providerInfo.GetConnectionNamespace();
-					var provider                 = providerInfo.GetDataProvider(model.ConnectionString);
+					var databaseProvider         = DatabaseProviders.GetProviderByName(providerName!);
+					var provider                 = DatabaseProviders.GetDataProvider(providerName, model.ConnectionString, model.ProviderPath);
+					cxInfo.DatabaseInfo.Provider = databaseProvider.GetProviderFactoryName(providerName!);
 
-					using var db = new DataConnection(provider, model.ConnectionString)
-					{
-						CommandTimeout = model.CommandTimeout
-					};
+					using var cn = provider.CreateConnection(model.ConnectionString);
 
-					cxInfo.DatabaseInfo.Provider  = db.Connection.GetType().Namespace;
-					cxInfo.DatabaseInfo.Server    = db.Connection.DataSource;
-					cxInfo.DatabaseInfo.Database  = db.Connection.Database;
-					cxInfo.DatabaseInfo.DbVersion = db.Connection.ServerVersion;
+					cxInfo.DatabaseInfo.Server    = cn.DataSource;
+					cxInfo.DatabaseInfo.Database  = cn.Database;
+					cxInfo.DatabaseInfo.DbVersion = cn.ServerVersion;
 				}
 			}
 			catch
@@ -229,16 +228,17 @@ public static void Init()
 
 			try
 			{
-				if (model.SelectedProvider != null && model.ConnectionString != null)
-				{
-					var provider = ProviderHelper.GetProvider(model.SelectedProvider.Name, model.ProviderPath).GetDataProvider(model.ConnectionString);
+				if (model.SelectedProvider == null)
+					throw new LinqToDBLinqPadException("Database provider is not selected");
 
-					using var con = provider.CreateConnection(model.ConnectionString);
-					con.Open();
-					return null;
-				}
+				if (model.ConnectionString == null)
+					throw new LinqToDBLinqPadException("Connection string is not specified");
 
-				throw new InvalidOperationException();
+				var provider = DatabaseProviders.GetDataProvider(model.Name, model.ConnectionString, model.ProviderPath);
+
+				using var con = provider.CreateConnection(model.ConnectionString);
+				con.Open();
+				return null;
 			}
 			catch (Exception ex)
 			{

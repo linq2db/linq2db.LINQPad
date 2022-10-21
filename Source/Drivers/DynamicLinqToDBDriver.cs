@@ -31,7 +31,7 @@ internal sealed class DynamicLinqToDBDriver : DynamicDataContextDriver
 	public override DateTime? GetLastSchemaUpdate(IConnectionInfo cxInfo)
 	{
 		var settings = new Settings(cxInfo);
-		return settings.GetProvider()?.GetLastSchemaUpdate(settings);
+		return settings.GetProvider().GetLastSchemaUpdate(settings);
 	}
 
 	public override bool ShowConnectionDialog(IConnectionInfo cxInfo, ConnectionDialogOptions dialogOptions) => DriverHelper.ShowConnectionDialog(new (cxInfo), dialogOptions, true);
@@ -78,16 +78,47 @@ internal sealed class DynamicLinqToDBDriver : DynamicDataContextDriver
 
 		yield return forToken;
 	}
+
+	private MetadataReference MakeReferenceByRuntime(string runtimeToken, string reference)
+	{
+		var token = _runtimeTokenExtractor.Match(reference).Groups["token"].Value;
+
+		foreach (var fallback in GetFallbackTokens(runtimeToken))
+		{
+			if (token == fallback)
+			{
+				return MetadataReference.CreateFromFile(reference);
+			}
+
+			var newReference = reference.Replace($"\\{token}\\", $"\\{fallback}\\");
+
+			if (File.Exists(newReference))
+			{
+				return MetadataReference.CreateFromFile(newReference);
+			}
+		}
+
+		return MetadataReference.CreateFromFile(reference);
+	}
 #endif
 
 	public override List<ExplorerItem> GetSchemaAndBuildAssembly(IConnectionInfo cxInfo, AssemblyName assemblyToBuild, ref string? nameSpace, ref string typeName)
 	{
 		var settings = new Settings(cxInfo);
-		var provider = settings.GetProvider();
+
 		try
 		{
-			var (items, text, referenceAssemblies) = DynamicSchemaGenerator.GetModel(settings, ref nameSpace, ref typeName);
-			var syntaxTree                         = CSharpSyntaxTree.ParseText(text);
+			var (items, text, providerAssemblyLocation) = DynamicSchemaGenerator.GetModel(settings, ref nameSpace, ref typeName);
+			var syntaxTree                              = CSharpSyntaxTree.ParseText(text);
+
+#if LPX6
+			// TODO: find better way to do it
+			// hack to overwrite provider assembly references that target wrong runtime
+			// e.g. referenceAssemblies contains path to net5 MySqlConnector
+			// but GetCoreFxReferenceAssemblies returns netcoreapp3.1 runtime references
+			var coreAssemblies = GetCoreFxReferenceAssemblies(cxInfo);
+			var runtimeToken   = _runtimeTokenExtractor.Match(coreAssemblies[0]).Groups["token"].Value;
+#endif
 
 			var references = new List<MetadataReference>()
 			{
@@ -103,49 +134,18 @@ internal sealed class DynamicLinqToDBDriver : DynamicDataContextDriver
 				MetadataReference.CreateFromFile(typeof(LINQPadDataConnection).Assembly.Location),
 			};
 
-			if (provider != null)
-				foreach (var assembly in provider.GetAdditionalReferences())
-					MetadataReference.CreateFromFile(assembly.Location);
+			foreach (var assembly in settings.GetProvider().GetAdditionalReferences())
+#if LPX6
+				references.Add(MakeReferenceByRuntime(runtimeToken, assembly.Location));
+#else
+				MetadataReference.CreateFromFile(assembly.Location);
+#endif
 
 #if LPX6
-			// TODO: find better way to do it
-			// hack to overwrite provider assembly references that target wrong runtime
-			// e.g. referenceAssemblies contains path to net5 MySqlConnector
-			// but GetCoreFxReferenceAssemblies returns netcoreapp3.1 runtime references
-			var coreAssemblies = GetCoreFxReferenceAssemblies(cxInfo);
-			var runtimeToken   = _runtimeTokenExtractor.Match(coreAssemblies[0]).Groups["token"].Value;
-
+			references.Add(MakeReferenceByRuntime(runtimeToken, providerAssemblyLocation));
 			references.AddRange(coreAssemblies.Select(path => MetadataReference.CreateFromFile(path)));
-
-			foreach (var reference in referenceAssemblies)
-			{
-				var found = false;
-				var token = _runtimeTokenExtractor.Match(reference).Groups["token"].Value;
-
-				foreach (var fallback in GetFallbackTokens(runtimeToken))
-				{
-					if (token == fallback)
-					{
-						found = true;
-						references.Add(MetadataReference.CreateFromFile(reference));
-						break;
-					}
-
-					var newReference = reference.Replace($"\\{token}\\", $"\\{fallback}\\");
-
-					if (File.Exists(newReference))
-					{
-						references.Add(MetadataReference.CreateFromFile(newReference));
-						found = true;
-						break;
-					}
-				}
-
-				if (!found)
-					references.Add(MetadataReference.CreateFromFile(reference));
-			}
 #else
-			references.AddRange(referenceAssemblies.Select(r => MetadataReference.CreateFromFile(r)));
+			references.Add(MetadataReference.CreateFromFile(providerAssemblyLocation));
 #endif
 
 			var compilation = CSharpCompilation.Create(
@@ -204,9 +204,8 @@ internal sealed class DynamicLinqToDBDriver : DynamicDataContextDriver
 		yield return typeof(LINQPadDataConnection).Assembly.Location;
 
 		var settings = new Settings(cxInfo);
-
-		foreach (var location in ProviderHelper.GetProvider(settings.Provider, settings.ProviderPath).GetAssemblyLocation(cxInfo.DatabaseInfo.CustomCxString))
-			yield return location;
+		using var cn = settings.GetDataProvider().CreateConnection(settings.ConnectionString!);
+		yield return cn.GetType().Assembly.Location;
 	}
 
 	public override IEnumerable<string> GetNamespacesToAdd(IConnectionInfo cxInfo) => DriverHelper.DefaultImports;
@@ -223,16 +222,10 @@ internal sealed class DynamicLinqToDBDriver : DynamicDataContextDriver
 		((DataConnection)context).Dispose();
 	}
 
-	public override IDbConnection? GetIDbConnection(IConnectionInfo cxInfo)
+	public override IDbConnection GetIDbConnection(IConnectionInfo cxInfo)
 	{
 		var settings = new Settings(cxInfo);
-
-		using var conn = new LINQPadDataConnection(settings);
-
-		if (conn.ConnectionString == null)
-			return null;
-
-		return conn.DataProvider.CreateConnection(conn.ConnectionString);
+		return settings.GetDataProvider().CreateConnection(settings.ConnectionString!);
 	}
 
 	public override void PreprocessObjectToWrite(ref object? objectToWrite, ObjectGraphInfo info)

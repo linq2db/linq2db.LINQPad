@@ -20,14 +20,12 @@ internal static class StaticSchemaGenerator
 			Type         = propertyInfo.PropertyType.GetItemType()!;
 			TypeAccessor = TypeAccessor.GetAccessor(Type);
 
-			var tableAttr = Type.GetCustomAttributeLike<TableAttribute>();
+			var tableAttr = Type.GetCustomAttribute<TableAttribute>();
 
 			if (tableAttr != null)
 			{
 				IsColumnAttributeRequired = tableAttr.IsColumnAttributeRequired;
-
-				if (Extensions.HasProperty(tableAttr, nameof(TableAttribute.IsView)))
-					IsView = tableAttr.IsView;
+				IsView                    = tableAttr.IsView;
 			}
 		}
 
@@ -60,8 +58,10 @@ internal static class StaticSchemaGenerator
 		List<ExplorerItem>? tableItems = null;
 		List<ExplorerItem>? viewItems  = null;
 
+		// tables discovered using table access properties in context:
+		// ITable<TableRecord> Prop or // IQueryable<TableRecord> Prop
 		var tables = customContextType.GetProperties()
-			.Where(p => p.GetCustomAttributeLike<ObsoleteAttribute>() == null && p.PropertyType.MaybeChildOf(typeof(IQueryable<>)))
+			.Where(p => p.GetCustomAttribute<ObsoleteAttribute>() == null && typeof(IQueryable<>).IsSameOrParentOf(p.PropertyType))
 			.OrderBy(p => p.Name)
 			.Select(p => new TableInfo(p));
 
@@ -78,7 +78,7 @@ internal static class StaticSchemaGenerator
 			// add association nodes
 			foreach (var ma in table.TypeAccessor.Members)
 			{
-				var aa = ma.MemberInfo.GetCustomAttributeLike<AssociationAttribute>();
+				var aa = ma.MemberInfo.GetCustomAttribute<AssociationAttribute>();
 
 				if (aa != null)
 				{
@@ -103,7 +103,6 @@ internal static class StaticSchemaGenerator
 						{
 							DragText        = ma.Name,
 							ToolTipText     = GetTypeName(ma.Type),
-							SqlName         = aa.KeyName,
 							IsEnumerable    = isToMany,
 							HyperlinkTarget = otherItem
 						});
@@ -131,11 +130,11 @@ internal static class StaticSchemaGenerator
 		var columns =
 		(
 			from ma in table.TypeAccessor.Members
-			let aa = ma.MemberInfo.GetCustomAttributeLike<AssociationAttribute>()
+			let aa = ma.MemberInfo.GetCustomAttribute<AssociationAttribute>()
 			where aa == null
-			let ca = ma.MemberInfo.GetCustomAttributeLike<ColumnAttribute>() as ColumnAttribute
-			let id = ma.MemberInfo.GetCustomAttributeLike<IdentityAttribute>()
-			let pk = ma.MemberInfo.GetCustomAttributeLike<PrimaryKeyAttribute>()
+			let ca = ma.MemberInfo.GetCustomAttribute<ColumnAttribute>()
+			let id = ma.MemberInfo.GetCustomAttribute<IdentityAttribute>()
+			let pk = ma.MemberInfo.GetCustomAttribute<PrimaryKeyAttribute>()
 			orderby
 				ca == null ? 1 : ca.Order >= 0 ? 0 : 2,
 				ca?.Order,

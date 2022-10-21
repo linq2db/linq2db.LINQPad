@@ -87,7 +87,7 @@ internal static class DynamicSchemaGenerator
 		return options;
 	}
 
-	public static (List<ExplorerItem> items, string sourceCode, IReadOnlyList<string> references) GetModel(
+	public static (List<ExplorerItem> items, string sourceCode, string providerAssemblyLocation) GetModel(
 		Settings    settings,
 		ref string? contextNamespace,
 		ref string  contextName)
@@ -100,14 +100,14 @@ internal static class DynamicSchemaGenerator
 
 		var scaffoldOptions  = GetOptions(settings, contextNamespace, contextName);
 
-		var providerInfo     = ProviderHelper.GetProvider(providerName, providerPath);
-		var provider         = providerInfo.GetDataProvider(connectionString);
-		var references       = new List<string>(providerInfo.GetAssemblyLocation(connectionString));
+		var provider         = DatabaseProviders.GetDataProvider(providerName, connectionString, providerPath);
 
 		using var db         = new DataConnection(provider, connectionString)
 		{
 			CommandTimeout = commandTimeout
 		};
+
+		var providerAssemblyLocation = db.Connection.GetType().Assembly.Location;
 
 		var sqlBuilder       = db.DataProvider.CreateSqlBuilder(db.MappingSchema);
 		var language         = LanguageProviders.CSharp;
@@ -131,6 +131,6 @@ internal static class DynamicSchemaGenerator
 		contextNamespace = dataModel.DataContext.Class.Namespace;
 		contextName      = dataModel.DataContext.Class.Name;
 
-		return (interceptor.GetTree(), sourceCode, references);
+		return (interceptor.GetTree(), sourceCode, providerAssemblyLocation);
 	}
 }

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Data;
+using System.Windows;
 using LINQPad.Extensibility.DataContext;
 using LinqToDB.Data;
 using LinqToDB.Mapping;
@@ -90,5 +91,11 @@ internal sealed class StaticLinqToDBDriver : StaticDataContextDriver
 		if (appConfigPath?.EndsWith(".json", StringComparison.OrdinalIgnoreCase) == true)
 			DataConnection.DefaultSettings = AppJsonConfig.Load(appConfigPath);
 #endif
+	}
+
+	public override IDbConnection GetIDbConnection(IConnectionInfo cxInfo)
+	{
+		var settings = new Settings(cxInfo);
+		return settings.GetDataProvider().CreateConnection(settings.ConnectionString!);
 	}
 }

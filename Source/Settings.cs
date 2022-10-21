@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Xml.Linq;
 using LINQPad.Extensibility.DataContext;
 using LinqToDB.DataProvider.DB2iSeries;
 
@@ -60,7 +59,7 @@ namespace LinqToDB.LINQPad
 					or ProviderName.SqlServer
 					or DB2iSeriesProviderName.DB2
 					or ProviderName.SqlCe                              => providerName,
-				_                                                      => throw new InvalidOperationException($"Unknown provider: {providerName}")
+				_                                                      => throw new LinqToDBLinqPadException($"Unknown provider: {providerName}")
 			};
 
 			// 2. convert comma/semicolon-separated strings with schemas/catalogs to list + flag
@@ -402,10 +401,10 @@ namespace LinqToDB.LINQPad
 
 		private void SetInt32(string settingName, int? value)
 		{
-			if (value != null)
-				ConnectionInfo.DriverData.SetElementValue(settingName, value.Value.ToString(CultureInfo.InvariantCulture));
-			else
-				ConnectionInfo.DriverData.Element(settingName)?.Remove();
+			//if (value != null)
+			//	ConnectionInfo.DriverData.SetElementValue(settingName, value.Value.ToString(CultureInfo.InvariantCulture));
+			//else
+			//	ConnectionInfo.DriverData.Element(settingName)?.Remove();
 		}
 
 		[return: NotNullIfNotNull(nameof(defaultValue))]
@@ -418,10 +417,10 @@ namespace LinqToDB.LINQPad
 
 		private void SetBoolean(string settingName, bool? value)
 		{
-			if (value != null)
-				ConnectionInfo.DriverData.SetElementValue(settingName, value.Value ? "true" : "false");
-			else
-				ConnectionInfo.DriverData.Element(settingName)?.Remove();
+			//if (value != null)
+			//	ConnectionInfo.DriverData.SetElementValue(settingName, value.Value ? "true" : "false");
+			//else
+			//	ConnectionInfo.DriverData.Element(settingName)?.Remove();
 		}
 
 		[return: NotNullIfNotNull(nameof(defaultValue))]
@@ -432,10 +431,10 @@ namespace LinqToDB.LINQPad
 
 		private void SetString(string settingName, string? value)
 		{
-			if (value != null)
-				ConnectionInfo.DriverData.SetElementValue(settingName, value);
-			else
-				ConnectionInfo.DriverData.Element(settingName)?.Remove();
+			//if (value != null)
+			//	ConnectionInfo.DriverData.SetElementValue(settingName, value);
+			//else
+			//	ConnectionInfo.DriverData.Element(settingName)?.Remove();
 		}
 
 		private IReadOnlySet<TValue>? GetSet<TValue>(string settingName, Func<string, TValue?> parser)
@@ -462,21 +461,21 @@ namespace LinqToDB.LINQPad
 
 		private void SetSet<TValue>(string settingName, IReadOnlySet<TValue>? values, Func<TValue, string> serializer)
 		{
-			ConnectionInfo.DriverData.Element(settingName)?.Remove();
+			//ConnectionInfo.DriverData.Element(settingName)?.Remove();
 
-			if (values != null && values.Count > 0)
-			{
-				var children = new XElement[values.Count];
-				var idx = 0;
+			//if (values != null && values.Count > 0)
+			//{
+			//	var children = new XElement[values.Count];
+			//	var idx = 0;
 
-				foreach (var value in values)
-				{
-					children[idx] = new XElement(LIST_ITEM_NODE, serializer(value));
-					idx++;
-				}
+			//	foreach (var value in values)
+			//	{
+			//		children[idx] = new XElement(LIST_ITEM_NODE, serializer(value));
+			//		idx++;
+			//	}
 
-				ConnectionInfo.DriverData.Add(new XElement(settingName, children));
-			}
+			//	ConnectionInfo.DriverData.Add(new XElement(settingName, children));
+			//}
 		}
 
 		#endregion

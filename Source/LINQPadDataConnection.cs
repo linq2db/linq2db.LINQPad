@@ -3,25 +3,18 @@
 namespace LinqToDB.LINQPad;
 
 /// <summary>
-/// Base class for generated contexts and context for use directly.
+/// Base class for generated contexts and context for direct use.
 /// </summary>
 public class LINQPadDataConnection : DataConnection
 {
 	/// <summary>
 	/// Constructor for inherited context.
 	/// </summary>
-	protected LINQPadDataConnection()
+	protected LINQPadDataConnection(string? providerName, string? providerPath, string? connectionString)
+		: base(
+			DatabaseProviders.GetDataProvider(providerName, connectionString, providerPath),
+			connectionString ?? throw new LinqToDBLinqPadException("Connection string missing"))
 	{
-		Init();
-	}
-
-	/// <summary>
-	/// Constructor for inherited context.
-	/// </summary>
-	protected LINQPadDataConnection(string? providerName, string? providerPath, string connectionString)
-		: base(ProviderHelper.GetProvider(providerName, providerPath).GetDataProvider(connectionString), connectionString)
-	{
-		Init();
 	}
 
 	/// <summary>
@@ -31,13 +24,8 @@ public class LINQPadDataConnection : DataConnection
 		: this(
 			settings.Provider,
 			settings.ProviderPath,
-			settings.ConnectionInfo.DatabaseInfo.CustomCxString)
+			settings.ConnectionString)
 	{
 		CommandTimeout = settings.CommandTimeout;
-	}
-
-	static void Init()
-	{
-		TurnTraceSwitchOn();
 	}
 }

@@ -5,6 +5,10 @@ using LinqToDB.Configuration;
 
 namespace LinqToDB.LINQPad;
 
+/// <summary>
+/// Implements Linq To DB connection settings provider, which use data from JSON config.
+/// Used as settings source for static data context.
+/// </summary>
 internal sealed class AppJsonConfig : ILinqToDBSettings
 {
 	public static ILinqToDBSettings Load(string configPath)

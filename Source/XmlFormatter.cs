@@ -441,7 +441,7 @@ static class XmlFormatter
 		if (allowNull)
 			return null;
 
-		throw new InvalidOperationException($"Unsupported value type: {value.GetType()}");
+		throw new LinqToDBLinqPadException($"Unsupported value type: {type}");
 	}
 
 	static string Format(DateTime dt)
@@ -567,7 +567,7 @@ static class XmlFormatter
 		var extractedValue = dataExtractor(param);
 
 		var methodInfo = typeof(XmlFormatter).GetMethodEx("Format", typeof(T))
-			?? throw new InvalidOperationException($"XmlFormatter.Format({typeof(T)}) method not found");
+			?? throw new LinqToDBLinqPadException($"XmlFormatter.Format({typeof(T)}) method not found");
 
 		var expr = Expression.Lambda(
 			Expression.Call(methodInfo, extractedValue),
