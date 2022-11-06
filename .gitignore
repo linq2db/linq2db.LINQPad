@@ -4,3 +4,4 @@ obj/
 *.zip
 *.lpx
 *.lpx6
+*.csproj.user

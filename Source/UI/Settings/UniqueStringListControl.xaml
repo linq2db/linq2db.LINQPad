@@ -1,0 +1,27 @@
+﻿<UserControl
+	x:Class         ="LinqToDB.LINQPad.UI.UniqueStringListControl"
+	x:ClassModifier ="internal"
+	xmlns           = "http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x         = "http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d         = "http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc        = "http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:us        = "clr-namespace:LinqToDB.LINQPad.UI"
+	mc:Ignorable    = "d"
+	d:DataContext   = "{d:DesignInstance us:UniqueStringListModel, IsDesignTimeCreatable=true}"
+	>
+
+	<GroupBox Header="{Binding Title}">
+		<StackPanel ToolTip="{Binding ToolTip}">
+			<CheckBox Content="Include" IsChecked="{Binding Include}" />
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+					<ColumnDefinition Width="80" />
+				</Grid.ColumnDefinitions>
+				<TextBox Name="_textBox" Grid.Column="0" KeyDown="KeyDown_TextBox" GotFocus="GotFocus_TextBox" />
+				<Button Name="_button" Grid.Column="1" Content="Add" Click="Click_Button" />
+			</Grid>
+			<ListBox Height="150" Name="_listBox" ItemsSource="{Binding Items}" KeyDown="KeyDown_ListBox" SelectionChanged="SelectionChanged_ListBox" />
+		</StackPanel>
+	</GroupBox>
+</UserControl>

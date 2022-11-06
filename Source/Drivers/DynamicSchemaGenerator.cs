@@ -1,6 +1,7 @@
 ﻿using LINQPad.Extensibility.DataContext;
 using LinqToDB.CodeModel;
 using LinqToDB.Data;
+using LinqToDB.DataModel;
 using LinqToDB.Metadata;
 using LinqToDB.Naming;
 using LinqToDB.Scaffold;
@@ -10,31 +11,28 @@ namespace LinqToDB.LINQPad;
 
 internal static class DynamicSchemaGenerator
 {
-	private static ScaffoldOptions GetOptions(Settings settings, string? contextNamespace, string contextName)
+	private static ScaffoldOptions GetOptions(ConnectionSettings settings, string? contextNamespace, string contextName)
 	{
 		var options = ScaffoldOptions.Default();
 
-		var dontPluralize  = settings.ConnectionInfo.DynamicSchemaOptions.NoPluralization;
-		var dontCapitalize = settings.ConnectionInfo.DynamicSchemaOptions.NoCapitalization;
-
 		// set schema load options
-		options.Schema.IncludeSchemas = settings.IncludeSchemas;
-		foreach (var schema in (settings.Schemas ?? (IEnumerable<string>)Array.Empty<string>()))
+		options.Schema.IncludeSchemas = settings.Schema.IncludeSchemas;
+		foreach (var schema in (settings.Schema.Schemas ?? (IEnumerable<string>)Array.Empty<string>()))
 			options.Schema.Schemas.Add(schema);
 
-		options.Schema.IncludeCatalogs = settings.IncludeCatalogs;
-		foreach (var catalog in (settings.Catalogs ?? (IEnumerable<string>)Array.Empty<string>()))
+		options.Schema.IncludeCatalogs = settings.Schema.IncludeCatalogs;
+		foreach (var catalog in (settings.Schema.Catalogs ?? (IEnumerable<string>)Array.Empty<string>()))
 			options.Schema.Catalogs.Add(catalog);
 
 		options.Schema.LoadedObjects = SchemaObjects.Table | SchemaObjects.View;
 
-		if (settings.LoadForeignKeys       ) options.Schema.LoadedObjects |= SchemaObjects.ForeignKey;
-		if (settings.LoadProcedures        ) options.Schema.LoadedObjects |= SchemaObjects.StoredProcedure;
-		if (settings.LoadTableFunctions    ) options.Schema.LoadedObjects |= SchemaObjects.TableFunction;
-		if (settings.LoadScalarFunctions   ) options.Schema.LoadedObjects |= SchemaObjects.ScalarFunction;
-		if (settings.LoadAggregateFunctions) options.Schema.LoadedObjects |= SchemaObjects.AggregateFunction;
+		if (settings.Schema.LoadForeignKeys       ) options.Schema.LoadedObjects |= SchemaObjects.ForeignKey;
+		if (settings.Schema.LoadProcedures        ) options.Schema.LoadedObjects |= SchemaObjects.StoredProcedure;
+		if (settings.Schema.LoadTableFunctions    ) options.Schema.LoadedObjects |= SchemaObjects.TableFunction;
+		if (settings.Schema.LoadScalarFunctions   ) options.Schema.LoadedObjects |= SchemaObjects.ScalarFunction;
+		if (settings.Schema.LoadAggregateFunctions) options.Schema.LoadedObjects |= SchemaObjects.AggregateFunction;
 
-		options.Schema.PreferProviderSpecificTypes = settings.UseProviderTypes;
+		options.Schema.PreferProviderSpecificTypes = settings.Scaffold.UseProviderTypes;
 		options.Schema.IgnoreDuplicateForeignKeys  = false;
 		options.Schema.UseSafeSchemaLoad           = false;
 		options.Schema.LoadDatabaseName            = false;
@@ -42,12 +40,13 @@ internal static class DynamicSchemaGenerator
 		options.Schema.EnableSqlServerReturnValue  = true;
 
 		// set data model options
-		if (dontCapitalize)
+		if (!settings.Scaffold.Capitalize)
 			options.DataModel.EntityColumnPropertyNameOptions.Casing = NameCasing.None;
-		if (dontPluralize)
-			options.DataModel.EntityContextPropertyNameOptions.Pluralization = Pluralization.None;
-		if (dontPluralize)
+		if (!settings.Scaffold.Pluralize)
+		{
+			options.DataModel.EntityContextPropertyNameOptions.Pluralization             = Pluralization.None;
 			options.DataModel.TargetMultipleAssociationPropertyNameOptions.Pluralization = Pluralization.None;
+		}
 
 		options.DataModel.GenerateDefaultSchema              = true;
 		options.DataModel.GenerateDataType                   = true;
@@ -74,7 +73,7 @@ internal static class DynamicSchemaGenerator
 		options.DataModel.GenerateProcedureAsync             = false;
 		options.DataModel.GenerateSchemaAsType               = false;
 		options.DataModel.GenerateIEquatable                 = false;
-		options.DataModel.GenerateFindExtensions             = DataModel.FindTypes.None;
+		options.DataModel.GenerateFindExtensions             = FindTypes.None;
 		options.DataModel.OrderFindParametersByColumnOrdinal = true;
 
 		// set code generation options
@@ -88,24 +87,17 @@ internal static class DynamicSchemaGenerator
 	}
 
 	public static (List<ExplorerItem> items, string sourceCode, string providerAssemblyLocation) GetModel(
-		Settings    settings,
-		ref string? contextNamespace,
-		ref string  contextName)
+		ConnectionSettings settings,
+		ref string?        contextNamespace,
+		ref string         contextName)
 	{
-
-		var providerName     = settings.Provider;
-		var connectionString = settings.ConnectionInfo.DatabaseInfo.CustomCxString;
-		var providerPath     = settings.ProviderPath;
-		var commandTimeout   = settings.CommandTimeout;
-
 		var scaffoldOptions  = GetOptions(settings, contextNamespace, contextName);
 
-		var provider         = DatabaseProviders.GetDataProvider(providerName, connectionString, providerPath);
+		var provider         = DatabaseProviders.GetDataProvider(settings);
 
-		using var db         = new DataConnection(provider, connectionString)
-		{
-			CommandTimeout = commandTimeout
-		};
+		using var db         = new DataConnection(provider, settings.Connection.ConnectionString!);
+		if (settings.Connection.CommandTimeout != null)
+			db.CommandTimeout = settings.Connection.CommandTimeout.Value;
 
 		var providerAssemblyLocation = db.Connection.GetType().Assembly.Location;
 
@@ -113,15 +105,36 @@ internal static class DynamicSchemaGenerator
 		var language         = LanguageProviders.CSharp;
 		var interceptor      = new ModelProviderInterceptor(sqlBuilder);
 		var generator        = new Scaffolder(language, HumanizerNameConverter.Instance, scaffoldOptions, interceptor);
-		var schemaProvider   = new LegacySchemaProvider(db, scaffoldOptions.Schema, language);
-		var dataModel        = generator.LoadDataModel(schemaProvider, schemaProvider);
+
+		var legacySchemaProvider = new LegacySchemaProvider(db, scaffoldOptions.Schema, language);
+		ISchemaProvider      schemaProvider       = legacySchemaProvider;
+		ITypeMappingProvider typeMappingsProvider = legacySchemaProvider;
+
+		DatabaseModel dataModel;
+		if (settings.Connection.Database == ProviderName.Access && settings.Connection.SecondaryConnectionString != null)
+		{
+			var secondaryProvider = DatabaseProviders.GetDataProvider(settings.Connection.SecondaryProvider, settings.Connection.SecondaryConnectionString, null);
+			using var sdc         = new DataConnection(secondaryProvider, settings.Connection.SecondaryConnectionString);
+
+			if (settings.Connection.CommandTimeout != null)
+				sdc.CommandTimeout = settings.Connection.CommandTimeout.Value;
+
+			var secondLegacyProvider = new LegacySchemaProvider(sdc, scaffoldOptions.Schema, language);
+			schemaProvider           = settings.Connection.Provider == ProviderName.Access
+				? new MergedAccessSchemaProvider(schemaProvider, secondLegacyProvider)
+				: new MergedAccessSchemaProvider(secondLegacyProvider, schemaProvider);
+			typeMappingsProvider     = new AggregateTypeMappingsProvider(typeMappingsProvider, secondLegacyProvider);
+			dataModel                = generator.LoadDataModel(schemaProvider, typeMappingsProvider);
+		}
+		else
+			dataModel = generator.LoadDataModel(schemaProvider, typeMappingsProvider);
 
 		var files = generator.GenerateCodeModel(
 			sqlBuilder,
 			dataModel,
 			MetadataBuilders.GetAttributeBasedMetadataBuilder(generator.Language, sqlBuilder),
 			SqlBoolEqualityConverter.Create(generator.Language),
-			new DataModelAugmentor(language, language.TypeParser.Parse<LINQPadDataConnection>(), commandTimeout));
+			new DataModelAugmentor(language, language.TypeParser.Parse<LINQPadDataConnection>(), settings.Connection.CommandTimeout));
 
 		// IMPORTANT:
 		// real identifiers from generated code set to data model only after this line (GenerateSourceCode call)

@@ -13,12 +13,12 @@ internal sealed class DataModelAugmentor : ConvertCodeModelVisitor
 	private readonly IEqualityComparer<IType> _typeComparer;
 	private readonly IType                    _baseContextType;
 	private readonly CodeBuilder              _ast;
-	private readonly int                      _commandTimeout;
+	private readonly int?                     _commandTimeout;
 
 	public DataModelAugmentor(
 		ILanguageProvider languageProvider,
 		IType             baseContextType,
-		int               commandTimeout)
+		int?              commandTimeout)
 	{
 		_ast             = languageProvider.ASTBuilder;
 		_typeComparer    = languageProvider.TypeEqualityComparerWithoutNRT;
@@ -64,9 +64,12 @@ internal sealed class DataModelAugmentor : ConvertCodeModelVisitor
 				.Base(providerParam.Reference, assemblyPathParam.Reference, connectionStringParam.Reference);
 
 			// set default CommandTimeout from LINQPad connection settings
-			parametrizedCtor
-				.Body()
-				.Append(_ast.Assign(_ast.Member(@class.This, WellKnownTypes.LinqToDB.Data.DataConnection_CommandTimeout), _ast.Constant(_commandTimeout, true)));
+			if (_commandTimeout != null)
+			{
+				parametrizedCtor
+					.Body()
+					.Append(_ast.Assign(_ast.Member(@class.This, WellKnownTypes.LinqToDB.Data.DataConnection_CommandTimeout), _ast.Constant(_commandTimeout.Value, true)));
+			}
 
 			return @class;
 		}

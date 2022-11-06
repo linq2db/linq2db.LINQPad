@@ -42,6 +42,15 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
+	<PropertyGroup Label="Strong name setup" Condition="'$(TargetFramework)' == 'net48'">
+		<!--IMPORTANT: while nor we nor LINQPad require strong name, we cannot just remove it now:
+				LINQPad will not bind old connection settings from strong-named version to unsigned version after update-->
+		<AssemblyOriginatorKeyFile>..\Build\linq2db.snk</AssemblyOriginatorKeyFile>
+		<SignAssembly>true</SignAssembly>
+		<DelaySign>false</DelaySign>
+		<NoWarn>$(NoWarn);CS8002</NoWarn>
+	</PropertyGroup>
+
 	<PropertyGroup Condition="'$(TargetFramework)' != 'net48'">
 		<DefineConstants>LPX6</DefineConstants>
 	</PropertyGroup>
@@ -55,8 +64,9 @@
 		<!--<PackageReference Include="linq2db.Tools" />-->
 
 		<PackageReference Include="LINQPad.Reference" />
-		
+
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+		<PackageReference Include="System.Text.Json" />
 
 		<PackageReference Include="FirebirdSql.Data.FirebirdClient" />
 		<PackageReference Include="MySqlConnector" />
@@ -66,6 +76,7 @@
 		<PackageReference Include="Npgsql" />
 		<PackageReference Include="ClickHouse.Client" />
 		<PackageReference Include="linq2db4iSeries" />
+		<PackageReference Include="Microsoft.SqlServer.Types" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net48'">
@@ -77,27 +88,23 @@
 		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
 		<PackageReference Include="System.Memory" />
 		<PackageReference Include="System.Buffers" />
-		
+
 		<PackageReference Include="Oracle.ManagedDataAccess" />
 		<PackageReference Include="IBM.Data.DB.Provider" GeneratePathProperty="true" />
 		<Reference Include="IBM.Data.DB2">
 			<HintPath>$(PkgIBM_Data_DB_Provider)\build\net451\x86\IBM.Data.DB2.dll</HintPath>
 		</Reference>
 
-		<PackageReference Include="Microsoft.SqlServer.Types" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' != 'net48' ">
 		<PackageReference Include="System.Configuration.ConfigurationManager" />
-		<PackageReference Include="System.Text.Json" />
 
 		<PackageReference Include="System.Data.Odbc" />
 		<PackageReference Include="System.Data.OleDb" />
 		<PackageReference Include="Oracle.ManagedDataAccess.Core" />
 		<PackageReference Include="IBM.Data.DB2.Core" />
 		<PackageReference Include="Octonica.ClickHouseClient" />
-
-		<PackageReference Include="dotMorten.Microsoft.SqlServer.Types" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -105,20 +112,46 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="ConnectionViewModel.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>ConnectionViewModel.generated.cs</LastGenOutput>
-		</None>
-		<Compile Update="ConnectionViewModel.generated.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>ConnectionViewModel.tt</DependentUpon>
-		</Compile>
+		<!--T4 support-->
+		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<!--T4 support-->
-		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	  <Page Update="UI\Settings\DynamicConnectionTab.xaml">
+	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+	    <SubType>Designer</SubType>
+	  </Page>
+	  <Page Update="UI\Settings\LinqToDBTab.xaml">
+	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+	    <SubType>Designer</SubType>
+	  </Page>
+	  <Page Update="UI\Settings\SchemaTab.xaml">
+	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+	    <SubType>Designer</SubType>
+	  </Page>
+	  <Page Update="UI\Settings\ScaffoldTab.xaml">
+	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+	    <SubType>Designer</SubType>
+	  </Page>
+	  <Page Update="UI\Settings\UniqueStringListControl.xaml">
+	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+	    <SubType>Designer</SubType>
+	  </Page>
+	  <Page Update="UI\Settings\SharedConnectionOptions.xaml">
+	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+	    <SubType>Designer</SubType>
+	  </Page>
+	  <Page Update="UI\Settings\StaticConnectionTab.xaml">
+	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+	    <SubType>Designer</SubType>
+	  </Page>
+	  <Page Update="UI\Settings\AboutTab.xaml">
+	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+	    <SubType>Designer</SubType>
+	  </Page>
+	  <Page Update="UI\Settings\SettingsDialog.xaml">
+	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+	  </Page>
 	</ItemGroup>
 
 	<Target Name="PostBuild1" AfterTargets="PostBuildEvent" Condition="'$(TargetFramework)' != 'net48'">
@@ -137,5 +170,10 @@
 			</ReferencePath>
 		</ItemGroup>
 	</Target>
+
+	<ItemGroup>
+		<Resource Include="..\Build\icon64.png" Link="Resources\Logo.png" />
+
+	</ItemGroup>
 
 </Project>

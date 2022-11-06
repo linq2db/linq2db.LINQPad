@@ -1,5 +1,4 @@
-﻿#if LPX6
-using System.IO;
+﻿using System.IO;
 using System.Text.Json;
 using LinqToDB.Configuration;
 
@@ -53,4 +52,3 @@ internal sealed class AppJsonConfig : ILinqToDBSettings
 		bool    IConnectionStringSettings.IsGlobal         => false;
 	}
 }
-#endif

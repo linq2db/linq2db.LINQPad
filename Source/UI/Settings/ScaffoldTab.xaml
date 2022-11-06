@@ -1,0 +1,36 @@
+﻿<TabItem
+	x:Class                ="LinqToDB.LINQPad.UI.ScaffoldTab"
+	x:ClassModifier        ="internal"
+	xmlns                  = "http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x                = "http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d                = "http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc               = "http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:us               = "clr-namespace:LinqToDB.LINQPad.UI"
+	mc:Ignorable           = "d"
+	Header                 = "Scaffold"
+	d:DataContext          = "{d:DesignInstance us:ScaffoldModel, IsDesignTimeCreatable=true}"
+	>
+
+	<StackPanel Margin="10 0 0 0">
+		<TextBlock Margin="0 10 0 20">
+			Configure data model classes generation options
+		</TextBlock>
+
+		<CheckBox
+			IsChecked="{Binding Capitalize}"
+			Content="Generate column property name in PascalCase"
+			ToolTip="When option is not set property name generated as-is based on column name. Otherwise we will try to generate name in pascal case, e.g. for column with user_id name property name will be UserId when option enabled and user_id when disabled" />
+
+		<CheckBox
+			 Margin="0 5 0 0"
+			IsChecked="{Binding Pluralize}"
+			Content="Pluralize table and one-to-many association names in model"
+			ToolTip="When option is set we will try to convert identifier to plural form when it has singular form" />
+
+		<CheckBox
+			 Margin="0 5 0 0"
+			IsChecked="{Binding UseProviderTypes}"
+			Content="Use ADO.NET provider custom types"
+			ToolTip="Some ADO.NET providers provide custom types to store database values of some database types. Usually it is done when standard .NET type doesn't implement required precision to store any value for database type." />
+	</StackPanel>
+</TabItem>

@@ -1,37 +1,46 @@
 ﻿using System.Data;
-using System.Windows;
 using LINQPad.Extensibility.DataContext;
 using LinqToDB.Data;
 using LinqToDB.Mapping;
 
 namespace LinqToDB.LINQPad;
 
+// IMPORTANT:
+// 1. driver must be public or it will be missing from create connection dialog (existing connections will work)
+// 2. don't rename class or namespace as it is used by LINQPad as driver identifier. If renamed, old connections will disappear from UI
 /// <summary>
 /// Implements LINQPad driver for static (pre-compiled) model.
 /// </summary>
-internal sealed class StaticLinqToDBDriver : StaticDataContextDriver
+public sealed class LinqToDBStaticDriver : StaticDataContextDriver
 {
 	private MappingSchema? _mappingSchema;
-	private bool           _useCustomFormatter;
 
+	/// <inheritdoc/>
 	public override string Name   => DriverHelper.Name;
+	/// <inheritdoc/>
 	public override string Author => DriverHelper.Author;
 
-	static StaticLinqToDBDriver() => DriverHelper.Init();
+	static LinqToDBStaticDriver() => DriverHelper.Init();
 
-	public override string GetConnectionDescription(IConnectionInfo cxInfo) => DriverHelper.GetConnectionDescription(new(cxInfo));
+	/// <inheritdoc/>
+	public override string GetConnectionDescription(IConnectionInfo cxInfo) => DriverHelper.GetConnectionDescription(cxInfo);
 
-	public override bool ShowConnectionDialog(IConnectionInfo cxInfo, ConnectionDialogOptions dialogOptions) => DriverHelper.ShowConnectionDialog(new(cxInfo), dialogOptions, false);
+	/// <inheritdoc/>
+	public override bool ShowConnectionDialog(IConnectionInfo cxInfo, ConnectionDialogOptions dialogOptions) => DriverHelper.ShowConnectionDialog(cxInfo, dialogOptions, false);
 
-	public override List<ExplorerItem> GetSchema(IConnectionInfo cxInfo, Type customType)
+	/// <inheritdoc/>
+	public override List<ExplorerItem> GetSchema(IConnectionInfo cxInfo, Type? customType)
 	{
+		if (customType == null)
+			return new();
+
 		try
 		{
 			return StaticSchemaGenerator.GetSchema(customType);
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show($"{ex}\n{ex.StackTrace}", "Schema Build Error", MessageBoxButton.OK, MessageBoxImage.Error);
+			Notification.Error($"{ex}\n{ex.StackTrace}", "Schema Load Error");
 			throw;
 		}
 	}
@@ -41,61 +50,109 @@ internal sealed class StaticLinqToDBDriver : StaticDataContextDriver
 		new ParameterDescriptor("configuration", typeof(string).FullName)
 	};
 
+	/// <inheritdoc/>
 	public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo cxInfo)
 	{
-		var settings = new Settings(cxInfo);
+		try
+		{
+			var settings = ConnectionSettings.Load(cxInfo);
 
-		if (settings.CustomConfiguration != null)
-			return _contextParameters;
+			if (settings.StaticContext.ConfigurationName != null)
+				return _contextParameters;
 
-		return base.GetContextConstructorParameters(cxInfo);
+			return base.GetContextConstructorParameters(cxInfo);
+		}
+		catch (Exception ex)
+		{
+			DriverHelper.HandleException(ex, nameof(GetContextConstructorParameters));
+			return Array.Empty<ParameterDescriptor>();
+		}
 	}
 
+	/// <inheritdoc/>
 	public override object[] GetContextConstructorArguments(IConnectionInfo cxInfo)
 	{
-		TryLoadAppSettingsJson(cxInfo.AppConfigPath);
+		try
+		{
+			var settings = ConnectionSettings.Load(cxInfo);
 
-		var configuration = new Settings(cxInfo).CustomConfiguration;
+#if !LPX6
+			var configurationPath = settings.StaticContext.LocalConfigurationPath ?? settings.StaticContext.ConfigurationPath;
+#else
+			var configurationPath = settings.StaticContext.ConfigurationPath;
+#endif
+			TryLoadAppSettingsJson(configurationPath);
 
-		if (configuration != null)
-			return new object[] { configuration };
+			if (settings.StaticContext.ConfigurationName != null)
+				return new object[] { settings.StaticContext.ConfigurationName };
 
-		return base.GetContextConstructorArguments(cxInfo);
+			return base.GetContextConstructorArguments(cxInfo);
+		}
+		catch (Exception ex)
+		{
+			DriverHelper.HandleException(ex, nameof(GetContextConstructorArguments));
+			return Array.Empty<object>();
+		}
 	}
 
+	/// <inheritdoc/>
 	public override IEnumerable<string> GetNamespacesToAdd(IConnectionInfo cxInfo) => DriverHelper.DefaultImports;
 
-	public override void ClearConnectionPools(IConnectionInfo cxInfo) => DriverHelper.ClearConnectionPools(new(cxInfo));
+	/// <inheritdoc/>
+	public override void ClearConnectionPools(IConnectionInfo cxInfo) => DriverHelper.ClearConnectionPools(cxInfo);
 
+	/// <inheritdoc/>
 	public override void InitializeContext(IConnectionInfo cxInfo, object context, QueryExecutionManager executionManager)
 	{
-		(_mappingSchema, _useCustomFormatter) = DriverHelper.InitializeContext(new(cxInfo), (DataConnection)context, executionManager);
+		_mappingSchema = DriverHelper.InitializeContext(cxInfo, (DataConnection)context, executionManager);
 	}
 
+	/// <inheritdoc/>
 	public override void TearDownContext(IConnectionInfo cxInfo, object context, QueryExecutionManager executionManager, object[] constructorArguments)
 	{
-		if (context is IDisposable ctx)
-			ctx.Dispose();
+		try
+		{
+			if (context is IDisposable ctx)
+				ctx.Dispose();
+		}
+		catch (Exception ex)
+		{
+			DriverHelper.HandleException(ex, nameof(TearDownContext));
+		}
 	}
 
+	/// <inheritdoc/>
 	public override void PreprocessObjectToWrite(ref object? objectToWrite, ObjectGraphInfo info)
 	{
-		objectToWrite = _useCustomFormatter
-			? XmlFormatter.Format(_mappingSchema!, objectToWrite)
-			: XmlFormatter.FormatValue(objectToWrite);
+		try
+		{
+			//objectToWrite = _useCustomFormatter
+			//	? XmlFormatter.Format(_mappingSchema!, objectToWrite)
+			//	: XmlFormatter.FormatValue(objectToWrite);
+		}
+		catch (Exception ex)
+		{
+			DriverHelper.HandleException(ex, nameof(PreprocessObjectToWrite));
+		}
 	}
 
 	private void TryLoadAppSettingsJson(string? appConfigPath)
 	{
-#if LPX6
 		if (appConfigPath?.EndsWith(".json", StringComparison.OrdinalIgnoreCase) == true)
 			DataConnection.DefaultSettings = AppJsonConfig.Load(appConfigPath);
-#endif
 	}
 
+	/// <inheritdoc/>
 	public override IDbConnection GetIDbConnection(IConnectionInfo cxInfo)
 	{
-		var settings = new Settings(cxInfo);
-		return settings.GetDataProvider().CreateConnection(settings.ConnectionString!);
+		try
+		{
+			return DatabaseProviders.CreateConnection(ConnectionSettings.Load(cxInfo));
+		}
+		catch (Exception ex)
+		{
+			DriverHelper.HandleException(ex, nameof(GetIDbConnection));
+			throw;
+		}
 	}
 }

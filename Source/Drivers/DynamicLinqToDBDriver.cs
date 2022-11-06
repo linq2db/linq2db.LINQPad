@@ -1,12 +1,10 @@
 ﻿using System.Data;
-using System.Diagnostics;
-using System.IO;
-using System.Windows;
 using LINQPad.Extensibility.DataContext;
 using LinqToDB.Data;
 using LinqToDB.Mapping;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using System.IO;
 #if !LPX6
 using System.Net.NetworkInformation;
 using System.Numerics;
@@ -16,60 +14,64 @@ using System.Text.RegularExpressions;
 
 namespace LinqToDB.LINQPad;
 
-internal sealed class DynamicLinqToDBDriver : DynamicDataContextDriver
+// IMPORTANT:
+// 1. driver must be public or it will be missing from create connection dialog (existing connections will work)
+// 2. don't rename class or namespace as it is used by LINQPad as driver identifier. If renamed, old connections will disappear from UI
+/// <summary>
+/// Implements LINQPad driver for synamic (scaffolded from DB schema) model.
+/// </summary>
+public sealed class LinqToDBDriver : DynamicDataContextDriver
 {
 	private MappingSchema? _mappingSchema;
-	private bool           _useCustomFormatter;
 
+	/// <inheritdoc/>
 	public override string Name    => DriverHelper.Name;
+	/// <inheritdoc/>
 	public override string Author  => DriverHelper.Author;
 
-	static DynamicLinqToDBDriver() => DriverHelper.Init();
+	static LinqToDBDriver() => DriverHelper.Init();
 
-	public override string GetConnectionDescription(IConnectionInfo cxInfo) => DriverHelper.GetConnectionDescription(new (cxInfo));
+	/// <inheritdoc/>
+	public override string GetConnectionDescription(IConnectionInfo cxInfo) => DriverHelper.GetConnectionDescription(cxInfo);
 
+	/// <inheritdoc/>
 	public override DateTime? GetLastSchemaUpdate(IConnectionInfo cxInfo)
 	{
-		var settings = new Settings(cxInfo);
-		return settings.GetProvider().GetLastSchemaUpdate(settings);
+		try
+		{
+			var settings = ConnectionSettings.Load(cxInfo);
+			return DatabaseProviders.GetProvider(settings.Connection.Database).GetLastSchemaUpdate(settings);
+		}
+		catch (Exception ex)
+		{
+			DriverHelper.HandleException(ex, nameof(GetLastSchemaUpdate));
+			return null;
+		}
 	}
 
-	public override bool ShowConnectionDialog(IConnectionInfo cxInfo, ConnectionDialogOptions dialogOptions) => DriverHelper.ShowConnectionDialog(new (cxInfo), dialogOptions, true);
+	/// <inheritdoc/>
+	public override bool ShowConnectionDialog(IConnectionInfo cxInfo, ConnectionDialogOptions dialogOptions) => DriverHelper.ShowConnectionDialog(cxInfo, dialogOptions, true);
 
 #if LPX6
 	// TODO: switch to generator
 	private static readonly Regex _runtimeTokenExtractor = new (@"^.+\\(?<token>[^\\]+)\\[^\\]+$", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
-	public IEnumerable<string> GetFallbackTokens(string forToken)
+	private static IEnumerable<string> GetFallbackTokens(string forToken)
 	{
 		switch (forToken)
 		{
 			case "net7.0":
 				yield return "net7.0";
-				yield return "net6.0";
-				yield return "net5.0";
-				yield return "netcoreapp3.1";
-				yield return "netstandard2.1";
-				yield return "netstandard2.0";
-				yield break;
+				goto case "net6.0";
 			case "net6.0":
 				yield return "net6.0";
-				yield return "net5.0";
-				yield return "netcoreapp3.1";
-				yield return "netstandard2.1";
-				yield return "netstandard2.0";
-				yield break;
+				goto case "net5.0";
 			case "net5.0":
 				yield return "net5.0";
-				yield return "netcoreapp3.1";
-				yield return "netstandard2.1";
-				yield return "netstandard2.0";
-				yield break;
+				goto case "netcoreapp3.1";
 			case "netcoreapp3.1":
 				yield return "netcoreapp3.1";
-				yield return "netstandard2.1";
-				yield return "netstandard2.0";
-				yield break;
+				goto case "netstandard2.1";
 			case "netstandard2.1":
 				yield return "netstandard2.1";
 				yield return "netstandard2.0";
@@ -86,28 +88,24 @@ internal sealed class DynamicLinqToDBDriver : DynamicDataContextDriver
 		foreach (var fallback in GetFallbackTokens(runtimeToken))
 		{
 			if (token == fallback)
-			{
 				return MetadataReference.CreateFromFile(reference);
-			}
 
 			var newReference = reference.Replace($"\\{token}\\", $"\\{fallback}\\");
 
 			if (File.Exists(newReference))
-			{
 				return MetadataReference.CreateFromFile(newReference);
-			}
 		}
 
 		return MetadataReference.CreateFromFile(reference);
 	}
 #endif
 
+	/// <inheritdoc/>
 	public override List<ExplorerItem> GetSchemaAndBuildAssembly(IConnectionInfo cxInfo, AssemblyName assemblyToBuild, ref string? nameSpace, ref string typeName)
 	{
-		var settings = new Settings(cxInfo);
-
 		try
 		{
+			var settings = ConnectionSettings.Load(cxInfo);
 			var (items, text, providerAssemblyLocation) = DynamicSchemaGenerator.GetModel(settings, ref nameSpace, ref typeName);
 			var syntaxTree                              = CSharpSyntaxTree.ParseText(text);
 
@@ -134,7 +132,7 @@ internal sealed class DynamicLinqToDBDriver : DynamicDataContextDriver
 				MetadataReference.CreateFromFile(typeof(LINQPadDataConnection).Assembly.Location),
 			};
 
-			foreach (var assembly in settings.GetProvider().GetAdditionalReferences())
+			foreach (var assembly in DatabaseProviders.GetProvider(settings.Connection.Database).GetAdditionalReferences(settings.Connection.Provider!))
 #if LPX6
 				references.Add(MakeReferenceByRuntime(runtimeToken, assembly.Location));
 #else
@@ -171,8 +169,7 @@ internal sealed class DynamicLinqToDBDriver : DynamicDataContextDriver
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show($"{ex}\n{ex.StackTrace}", "Schema Build Error", MessageBoxButton.OK, MessageBoxImage.Error);
-			Debug.WriteLine($"{ex}\n{ex.StackTrace}");
+			Notification.Error($"{ex}\n{ex.StackTrace}", "Schema Build Error");
 			throw;
 		}
 	}
@@ -184,54 +181,102 @@ internal sealed class DynamicLinqToDBDriver : DynamicDataContextDriver
 		new ParameterDescriptor("connectionString", typeof(string).FullName),
 	};
 
+	/// <inheritdoc/>
 	public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo cxInfo) => _contextParameters;
 
+	/// <inheritdoc/>
 	public override object?[] GetContextConstructorArguments(IConnectionInfo cxInfo)
 	{
-		var settings = new Settings(cxInfo);
-
-		return new object?[]
+		try
 		{
-			settings.Provider,
-			settings.ProviderPath,
-			cxInfo.DatabaseInfo.CustomCxString
-		};
+			var settings = ConnectionSettings.Load(cxInfo);
+
+			return new object?[]
+			{
+				settings.Connection.Provider,
+				settings.Connection.ProviderPath,
+				settings.Connection.ConnectionString
+			};
+		}
+		catch (Exception ex)
+		{
+			DriverHelper.HandleException(ex, nameof(GetContextConstructorArguments));
+			return new object[3];
+		}
 	}
 
+	/// <inheritdoc/>
 	public override IEnumerable<string> GetAssembliesToAdd(IConnectionInfo cxInfo)
 	{
-		yield return typeof(DataConnection).       Assembly.Location;
+		yield return typeof(DataConnection).Assembly.Location;
 		yield return typeof(LINQPadDataConnection).Assembly.Location;
 
-		var settings = new Settings(cxInfo);
-		using var cn = settings.GetDataProvider().CreateConnection(settings.ConnectionString!);
-		yield return cn.GetType().Assembly.Location;
+		Type cnType;
+		try
+		{
+			using var cn = DatabaseProviders.CreateConnection(ConnectionSettings.Load(cxInfo));
+			cnType = cn.GetType();
+		}
+		catch (Exception ex)
+		{
+			DriverHelper.HandleException(ex, nameof(GetAssembliesToAdd));
+			yield break;
+		}
+
+		yield return cnType.Assembly.Location;
 	}
 
+	/// <inheritdoc/>
 	public override IEnumerable<string> GetNamespacesToAdd(IConnectionInfo cxInfo) => DriverHelper.DefaultImports;
 
-	public override void ClearConnectionPools(IConnectionInfo cxInfo) => DriverHelper.ClearConnectionPools(new (cxInfo));
+	/// <inheritdoc/>
+	public override void ClearConnectionPools(IConnectionInfo cxInfo) => DriverHelper.ClearConnectionPools(cxInfo);
 
+	/// <inheritdoc/>
 	public override void InitializeContext(IConnectionInfo cxInfo, object context, QueryExecutionManager executionManager)
 	{
-		(_mappingSchema, _useCustomFormatter) = DriverHelper.InitializeContext(new (cxInfo), (DataConnection)context, executionManager);
+		_mappingSchema = DriverHelper.InitializeContext(cxInfo, (DataConnection)context, executionManager);
 	}
 
+	/// <inheritdoc/>
 	public override void TearDownContext(IConnectionInfo cxInfo, object context, QueryExecutionManager executionManager, object[] constructorArguments)
 	{
-		((DataConnection)context).Dispose();
+		try
+		{
+			((DataConnection)context).Dispose();
+		}
+		catch (Exception ex)
+		{
+			DriverHelper.HandleException(ex, nameof(TearDownContext));
+		}
 	}
 
+	/// <inheritdoc/>
 	public override IDbConnection GetIDbConnection(IConnectionInfo cxInfo)
 	{
-		var settings = new Settings(cxInfo);
-		return settings.GetDataProvider().CreateConnection(settings.ConnectionString!);
+		try
+		{
+			return DatabaseProviders.CreateConnection(ConnectionSettings.Load(cxInfo));
+		}
+		catch (Exception ex)
+		{
+			DriverHelper.HandleException(ex, nameof(GetIDbConnection));
+			throw;
+		}
 	}
 
+	/// <inheritdoc/>
 	public override void PreprocessObjectToWrite(ref object? objectToWrite, ObjectGraphInfo info)
 	{
-		objectToWrite = _useCustomFormatter
-			? XmlFormatter.Format(_mappingSchema!, objectToWrite)
-			: XmlFormatter.FormatValue(objectToWrite);
+		try
+		{
+		}
+		catch (Exception ex)
+		{
+			DriverHelper.HandleException(ex, nameof(PreprocessObjectToWrite));
+		}
+		//objectToWrite = _useCustomFormatter
+		//	? XmlFormatter.Format(_mappingSchema!, objectToWrite)
+		//	: XmlFormatter.FormatValue(objectToWrite);
 	}
 }

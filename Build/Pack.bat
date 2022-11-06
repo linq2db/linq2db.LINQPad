@@ -6,8 +6,6 @@ DEL linq2db.LINQPad.%2.zip
 
 REM LINQPad 5 driver archive generation
 IF %2 EQU lpx (
-	REM xcopy /s /y ..\Redist\IBM\*.dll %1
-
 	REM remove resource satellite assemblies
 	RD /S /Q %1\cs
 	RD /S /Q %1\de
@@ -32,7 +30,8 @@ IF %2 EQU lpx (
 )
 
 REM LINQPad 7 driver archive generation
-IF %2 EQU lpx6 ("C:\Program Files\7-Zip\7z.exe" a linq2db.LINQPad.%2.zip %1\linq2db.LINQPad.dll %1\..\..\..\..\Build\Connection.png %1\..\..\..\..\Build\FailedConnection.png %1\linq2db.LINQPad.deps.json)
+REM IF %2 EQU lpx6 ("C:\Program Files\7-Zip\7z.exe" a linq2db.LINQPad.%2.zip %1\linq2db.LINQPad.dll %1\..\..\..\..\Build\Connection.png %1\..\..\..\..\Build\FailedConnection.png %1\linq2db.LINQPad.deps.json)
+IF %2 EQU lpx6 ("C:\Program Files\7-Zip\7z.exe" a linq2db.LINQPad.%2.zip %1\linq2db.LINQPad.dll %1\linq2db.Tools.dll %1\..\..\..\..\Build\Connection.png %1\..\..\..\..\Build\FailedConnection.png %1\linq2db.LINQPad.deps.json)
 
 REN linq2db.LINQPad.%2.zip linq2db.LINQPad.%2
 

@@ -25,17 +25,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{A26F7937
 		Build\header.xml = Build\header.xml
 		Build\icon64.png = Build\icon64.png
 		Build\linq2db.LINQPad.nuspec = Build\linq2db.LINQPad.nuspec
+		Build\linq2db.snk = Build\linq2db.snk
 		Build\nuget-vars.yml = Build\nuget-vars.yml
 		Build\Pack.bat = Build\Pack.bat
 		Build\README.md = Build\README.md
 		Build\SetVersion.ps1 = Build\SetVersion.ps1
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{B3100892-7A58-4B4E-A926-0D5FE4309C4A}"
-	ProjectSection(SolutionItems) = preProject
-		LinqToDB.Templates\NotifyPropertyChanged.ttinclude = LinqToDB.Templates\NotifyPropertyChanged.ttinclude
-		LinqToDB.Templates\README.md = LinqToDB.Templates\README.md
-		LinqToDB.Templates\T4Model.ttinclude = LinqToDB.Templates\T4Model.ttinclude
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinqToDB.Tools", "..\linq2db\Source\LinqToDB.Tools\LinqToDB.Tools.csproj", "{91DE5A8B-4DF8-4E27-A33B-886563CF7612}"

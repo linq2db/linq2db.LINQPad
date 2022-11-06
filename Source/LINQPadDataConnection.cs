@@ -20,12 +20,13 @@ public class LINQPadDataConnection : DataConnection
 	/// <summary>
 	/// Constructor for use from code directly.
 	/// </summary>
-	internal LINQPadDataConnection(Settings settings)
+	internal LINQPadDataConnection(ConnectionSettings settings)
 		: this(
-			settings.Provider,
-			settings.ProviderPath,
-			settings.ConnectionString)
+			settings.Connection.Provider,
+			settings.Connection.ProviderPath,
+			settings.Connection.ConnectionString)
 	{
-		CommandTimeout = settings.CommandTimeout;
+		if (settings.Connection.CommandTimeout != null)
+			CommandTimeout = settings.Connection.CommandTimeout.Value;
 	}
 }

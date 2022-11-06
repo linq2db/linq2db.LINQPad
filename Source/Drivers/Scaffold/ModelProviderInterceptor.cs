@@ -235,7 +235,11 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 
 		// don't create schema node for single schema without name (default schema)
 		if (_schemaItems.Count == 1 && _schemaItems.ContainsKey(string.Empty))
-			return PopulateSchemaMembers(string.Empty, tablesLookup);
+		{
+			var result = PopulateSchemaMembers(string.Empty, tablesLookup);
+			PopulateAssociations(_associations, tablesLookup);
+			return result;
+		}
 
 		var model = new List<ExplorerItem>();
 

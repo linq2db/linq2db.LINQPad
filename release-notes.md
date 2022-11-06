@@ -2,23 +2,26 @@
 
 Major provider rework:
 
-- [LINQPAD5] update required framework version from .NET Framework 4.6.1 to 4.8.0
-- [LINQPAD5] remove strong name from driver assembly
+- [LINQPAD5] update required framework version from .NET Framework 4.6.1 to 4.8
+- [LINQPAD5] add `json` configuration files support to static context (ported from LINQPad 7 version)
 - [LINQPAD7] update required framework version from `netcoreapp3.1` to `net6.0-windows`
-- [LINQPAD7] .NET 7 support
+- [LINQPAD7] add .NET 7 support
+- fixed connection strings load from custom `app.config` for static context
 - LINQPad 6 support dropped (you can still use 4.x versions of driver with LINQPad 6)
 - migrate code-generation to new scaffolding framework
 - implemented `Close all connections` functionality for Access, DB2 LUW, DB2 z/OS, Firebird, Informix, MySql, Oracle, PostgreSQL, SAP HANA, SQLite, SAP/Sybase ASE connections (previous versions implemented only SQL Server support)
-- enable custom formatters option support for static context
-- add `LinqToDB`, `LinqToDB.Data` and `LinqToDB.Mapping` usings to queries for static context driver (as it was done before for dynamic driver)
+- add `LinqToDB`, `LinqToDB.Data` and `LinqToDB.Mapping` usings to queries also for static context driver
 - implement automatic schema refresh for Access (OLE DB provider only), ClickHouse, DB2 LUW, DB2 z/OS, MySql, MariaDB, SAP HANA, Oracle and SAP/Sybase ASE (previous versions implemented only SQL Server support)
-- TBD
+- removed `Use LINQ To DB Formatter` option. Custom formatters will be used only for types, not rendered properly by LINQPad
+- redesigned connection options dialog, added help tooltips to options
+- add separate schema load options for stored procedures and functions
+- add additional connection string support for Access to mitigate schema issues in ODBC and OLE DB providers
 
 New/updated dependencies:
 
 - [ALL] add new dependency: linq2db.Tools 4.3.0
 - [ALL] add new dependency: ClickHouse.Client 5.1.1
-- [ALL] switch from System.Data.SqlClient 4.8.3 to Microsoft.Data.SqlClient 5.0.1
+- [ALL] switch from System.Data.SqlClient 4.8.3 to Microsoft.Data.SqlClient 5.0.0
 - [ALL] dependency update: linq2db 4.2.0 -> 4.3.0
 - [ALL] dependency update: Microsoft.CodeAnalysis.CSharp updated to 4.3.1
 - [ALL] dependency update: Npgsql updated to 6.0.7
@@ -28,7 +31,7 @@ New/updated dependencies:
 - [LINQPAD5] dependency update: Oracle.ManagedDataAccess 19.14.0 -> 21.7.0
 - [LINQPAD5] dependency update: Microsoft.SqlServer.Types 14.0.1016.290 -> 160.900.6-rc0
 - [LINQPAD7] dependency update: FirebirdSql.Data.FirebirdClient 9.0.1 -> 9.0.2
-- [LINQPAD7] dependency update: dotMorten.Microsoft.SqlServer.Types 1.5.0 -> 2.5.0
+- [LINQPAD7] replace dependency on dotMorten.Microsoft.SqlServer.Types with Microsoft.SqlServer.Types
 - [LINQPAD7] dependency update: FirebirdSql.Data.FirebirdClient 9.0.1 -> 9.0.2
 
 # Release 4.2.0
