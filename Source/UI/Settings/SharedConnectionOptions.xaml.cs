@@ -1,10 +1,9 @@
-﻿namespace LinqToDB.LINQPad.UI
+﻿namespace LinqToDB.LINQPad.UI;
+
+internal sealed partial class SharedConnectionOptions
 {
-	partial class SharedConnectionOptions
+	public SharedConnectionOptions()
 	{
-		public SharedConnectionOptions()
-		{
-			InitializeComponent();
-		}
+		InitializeComponent();
 	}
 }

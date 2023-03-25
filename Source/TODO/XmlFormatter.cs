@@ -589,8 +589,8 @@ static class XmlFormatter
 		VF<SqlDateTime>    (dt => Format(dt.Value)),
 		VF<byte[]>         (Format),
 		VF<SqlBinary>      (v =>  Format(v.Value)),
-		VF<Guid>           (v => v.      ToString("B").ToUpper(), font:"consolas", size:"110%"),
-		VF<SqlGuid>        (v => v.Value.ToString("B").ToUpper(), font:"consolas", size:"110%"),
+		VF<Guid>           (v => v.      ToString("B").ToUpperInvariant(), font:"consolas", size:"110%"),
+		VF<SqlGuid>        (v => v.Value.ToString("B").ToUpperInvariant(), font:"consolas", size:"110%"),
 		VF<TimeSpan>       (v => v.ToString()),
 		VF<SqlXml>         (v => v.Value),
 
@@ -618,9 +618,6 @@ static class XmlFormatter
 		// npgsql types
 #pragma warning disable CS0618 // Type or member is obsolete
 		VF<NpgsqlTypes.NpgsqlInterval>(     Format),
-		VF<NpgsqlTypes.NpgsqlTimeSpan>(v => Format((TimeSpan)v)),
-		VF<NpgsqlTypes.NpgsqlDateTime>(v => Format((DateTime)v)),
-		VF<NpgsqlTypes.NpgsqlDate    >(v => Format((DateTime)v)),
 #pragma warning restore CS0618 // Type or member is obsolete
 		VF<NpgsqlTypes.NpgsqlBox     >(v => Format(v.ToString())),
 		VF<NpgsqlTypes.NpgsqlLSeg    >(v => Format(v.ToString())),

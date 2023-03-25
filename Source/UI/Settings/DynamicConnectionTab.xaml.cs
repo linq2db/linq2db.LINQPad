@@ -6,7 +6,7 @@ using Microsoft.Win32;
 
 namespace LinqToDB.LINQPad.UI;
 
-partial class DynamicConnectionTab
+internal sealed partial class DynamicConnectionTab
 {
 	private DynamicConnectionModel Model => (DynamicConnectionModel)DataContext;
 

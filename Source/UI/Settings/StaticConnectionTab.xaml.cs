@@ -10,7 +10,7 @@ using Microsoft.Win32;
 
 namespace LinqToDB.LINQPad.UI;
 
-partial class StaticConnectionTab
+internal sealed partial class StaticConnectionTab
 {
 	private const string IDATACONTEXT_NAME = $"{nameof(LinqToDB)}.{nameof(IDataContext)}";
 

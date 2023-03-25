@@ -1,10 +1,9 @@
-﻿namespace LinqToDB.LINQPad.UI
+﻿namespace LinqToDB.LINQPad.UI;
+
+internal sealed partial class ScaffoldTab
 {
-	partial class ScaffoldTab
+	public ScaffoldTab()
 	{
-		public ScaffoldTab()
-		{
-			InitializeComponent();
-		}
+		InitializeComponent();
 	}
 }

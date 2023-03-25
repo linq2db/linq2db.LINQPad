@@ -101,10 +101,10 @@ internal static class DynamicSchemaGenerator
 
 		var providerAssemblyLocation = db.Connection.GetType().Assembly.Location;
 
-		var sqlBuilder       = db.DataProvider.CreateSqlBuilder(db.MappingSchema);
-		var language         = LanguageProviders.CSharp;
-		var interceptor      = new ModelProviderInterceptor(sqlBuilder);
-		var generator        = new Scaffolder(language, HumanizerNameConverter.Instance, scaffoldOptions, interceptor);
+		var sqlBuilder  = db.DataProvider.CreateSqlBuilder(db.MappingSchema, db.Options);
+		var language    = LanguageProviders.CSharp;
+		var interceptor = new ModelProviderInterceptor(sqlBuilder);
+		var generator   = new Scaffolder(language, HumanizerNameConverter.Instance, scaffoldOptions, interceptor);
 
 		var legacySchemaProvider = new LegacySchemaProvider(db, scaffoldOptions.Schema, language);
 		ISchemaProvider      schemaProvider       = legacySchemaProvider;
@@ -132,8 +132,8 @@ internal static class DynamicSchemaGenerator
 		var files = generator.GenerateCodeModel(
 			sqlBuilder,
 			dataModel,
-			MetadataBuilders.GetAttributeBasedMetadataBuilder(generator.Language, sqlBuilder),
-			SqlBoolEqualityConverter.Create(generator.Language),
+			MetadataBuilders.GetMetadataBuilder(generator.Language, MetadataSource.Attributes),
+			new ProviderSpecificStructsEqualityFixer(generator.Language),
 			new DataModelAugmentor(language, language.TypeParser.Parse<LINQPadDataConnection>(), settings.Connection.CommandTimeout));
 
 		// IMPORTANT:

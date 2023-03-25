@@ -1,41 +1,40 @@
-﻿namespace LinqToDB.LINQPad.UI
+﻿namespace LinqToDB.LINQPad.UI;
+
+internal abstract class ConnectionModelBase : OptionalTabModelBase
 {
-	internal abstract class ConnectionModelBase : OptionalTabModelBase
+	protected ConnectionModelBase(ConnectionSettings settings, bool enabled)
+		: base(settings, enabled)
 	{
-		protected ConnectionModelBase(ConnectionSettings settings, bool enabled)
-			: base(settings, enabled)
-		{
-			IsSelected = enabled;
-		}
+		IsSelected = enabled;
+	}
 
-		public string? Name
+	public string? Name
+	{
+		get
 		{
-			get
-			{
-				if (string.IsNullOrWhiteSpace(Settings.Connection.DisplayName))
-					return null;
-				return Settings.Connection.DisplayName;
-			}
-			set
-			{
-				if (string.IsNullOrWhiteSpace(value))
-					value = null;
-				Settings.Connection.DisplayName = value;
-			}
+			if (string.IsNullOrWhiteSpace(Settings.Connection.DisplayName))
+				return null;
+			return Settings.Connection.DisplayName;
 		}
-
-		public bool IsSelected { get; set; }
-
-		public bool Persistent
+		set
 		{
-			get => Settings.Connection.Persistent;
-			set => Settings.Connection.Persistent = value;
+			if (string.IsNullOrWhiteSpace(value))
+				value = null;
+			Settings.Connection.DisplayName = value;
 		}
+	}
 
-		public bool Production
-		{
-			get => Settings.Connection.IsProduction;
-			set => Settings.Connection.IsProduction = value;
-		}
+	public bool IsSelected { get; set; }
+
+	public bool Persistent
+	{
+		get => Settings.Connection.Persistent;
+		set => Settings.Connection.Persistent = value;
+	}
+
+	public bool Production
+	{
+		get => Settings.Connection.IsProduction;
+		set => Settings.Connection.IsProduction = value;
 	}
 }

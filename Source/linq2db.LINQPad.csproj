@@ -9,7 +9,7 @@
 		<Version>5.0.0.0</Version>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
-		<Copyright>Copyright © 2016-2022 Linq To DB Team</Copyright>
+		<Copyright>Copyright © 2016-2023 Linq To DB Team</Copyright>
 		<UseWPF>true</UseWPF>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 
@@ -61,7 +61,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="linq2db" />
-		<!--<PackageReference Include="linq2db.Tools" />-->
+		<PackageReference Include="linq2db.Tools" />
 
 		<PackageReference Include="LINQPad.Reference" />
 
@@ -103,12 +103,8 @@
 		<PackageReference Include="System.Data.Odbc" />
 		<PackageReference Include="System.Data.OleDb" />
 		<PackageReference Include="Oracle.ManagedDataAccess.Core" />
-		<PackageReference Include="IBM.Data.DB2.Core" />
+		<PackageReference Include="Net.IBM.Data.Db2" />
 		<PackageReference Include="Octonica.ClickHouseClient" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\..\linq2db\Source\LinqToDB.Tools\LinqToDB.Tools.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

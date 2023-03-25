@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace LinqToDB.LINQPad.UI;
 
-partial class UniqueStringListControl
+internal sealed partial class UniqueStringListControl
 {
 	private UniqueStringListModel Model => (UniqueStringListModel)DataContext;
 

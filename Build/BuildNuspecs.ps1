@@ -37,7 +37,7 @@ if ($version) {
 		$xml.package.metadata.AppendChild($child)
 
 		$child = $xml.CreateElement('copyright', $nsUri)
-		$child.InnerText = 'Copyright © 2016-2022 ' + $authors
+		$child.InnerText = 'Copyright © 2016-2023 ' + $authors
 		$xml.package.metadata.AppendChild($child)
 
 		$child = $xml.CreateElement('authors', $nsUri)

@@ -3,7 +3,7 @@ using System.Windows.Controls;
 
 namespace LinqToDB.LINQPad.UI;
 
-partial class SchemaTab
+internal sealed partial class SchemaTab
 {
 	public SchemaTab()
 	{

@@ -1,121 +1,120 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace LinqToDB.LINQPad.UI
+namespace LinqToDB.LINQPad.UI;
+
+internal sealed class StaticConnectionModel : ConnectionModelBase, INotifyPropertyChanged
 {
-	internal sealed class StaticConnectionModel : ConnectionModelBase, INotifyPropertyChanged
+	public StaticConnectionModel(ConnectionSettings settings, bool enabled)
+		: base(settings, enabled)
 	{
-		public StaticConnectionModel(ConnectionSettings settings, bool enabled)
-			: base(settings, enabled)
+	}
+
+	private static readonly PropertyChangedEventArgs _contextAssemblyPathChangedEventArgs = new (nameof(ContextAssemblyPath));
+	public string? ContextAssemblyPath
+	{
+		get
 		{
+			if (string.IsNullOrWhiteSpace(Settings.StaticContext.ContextAssemblyPath))
+				return null;
+			return Settings.StaticContext.ContextAssemblyPath;
 		}
-
-		private static readonly PropertyChangedEventArgs _contextAssemblyPathChangedEventArgs = new (nameof(ContextAssemblyPath));
-		public string? ContextAssemblyPath
+		set
 		{
-			get
-			{
-				if (string.IsNullOrWhiteSpace(Settings.StaticContext.ContextAssemblyPath))
-					return null;
-				return Settings.StaticContext.ContextAssemblyPath;
-			}
-			set
-			{
-				if (string.IsNullOrWhiteSpace(value))
-					value = null;
-				else
-					value = value!.Trim();
+			if (string.IsNullOrWhiteSpace(value))
+				value = null;
+			else
+				value = value!.Trim();
 
-				if (Settings.StaticContext.ContextAssemblyPath != value)
-				{
-					Settings.StaticContext.ContextAssemblyPath = value;
-					OnPropertyChanged(_contextAssemblyPathChangedEventArgs);
-				}
+			if (Settings.StaticContext.ContextAssemblyPath != value)
+			{
+				Settings.StaticContext.ContextAssemblyPath = value;
+				OnPropertyChanged(_contextAssemblyPathChangedEventArgs);
 			}
 		}
+	}
 
-		public string? ContextTypeName
+	public string? ContextTypeName
+	{
+		get
 		{
-			get
-			{
-				if (string.IsNullOrWhiteSpace(Settings.StaticContext.ContextTypeName))
-					return null;
-				return Settings.StaticContext.ContextTypeName;
-			}
-			set
-			{
-				if (string.IsNullOrWhiteSpace(value))
-					value = null;
-				Settings.StaticContext.ContextTypeName = value;
-			}
+			if (string.IsNullOrWhiteSpace(Settings.StaticContext.ContextTypeName))
+				return null;
+			return Settings.StaticContext.ContextTypeName;
 		}
-
-		private static readonly PropertyChangedEventArgs _configurationPathChangedEventArgs = new (nameof(ConfigurationPath));
-		public string? ConfigurationPath
+		set
 		{
-			get
-			{
+			if (string.IsNullOrWhiteSpace(value))
+				value = null;
+			Settings.StaticContext.ContextTypeName = value;
+		}
+	}
+
+	private static readonly PropertyChangedEventArgs _configurationPathChangedEventArgs = new (nameof(ConfigurationPath));
+	public string? ConfigurationPath
+	{
+		get
+		{
 #if !LPX6
-				if (!string.IsNullOrWhiteSpace(Settings.StaticContext.LocalConfigurationPath))
-					return Settings.StaticContext.LocalConfigurationPath;
+			if (!string.IsNullOrWhiteSpace(Settings.StaticContext.LocalConfigurationPath))
+				return Settings.StaticContext.LocalConfigurationPath;
 #endif
-				if (string.IsNullOrWhiteSpace(Settings.StaticContext.ConfigurationPath))
-					return null;
-				return Settings.StaticContext.ConfigurationPath;
-			}
-			set
-			{
-				if (string.IsNullOrWhiteSpace(value))
-					value = null;
-				else
-					value = value!.Trim();
+			if (string.IsNullOrWhiteSpace(Settings.StaticContext.ConfigurationPath))
+				return null;
+			return Settings.StaticContext.ConfigurationPath;
+		}
+		set
+		{
+			if (string.IsNullOrWhiteSpace(value))
+				value = null;
+			else
+				value = value!.Trim();
 
 #if !LPX6
-				Settings.StaticContext.ConfigurationPath = null;
-				Settings.StaticContext.LocalConfigurationPath = null;
+			Settings.StaticContext.ConfigurationPath = null;
+			Settings.StaticContext.LocalConfigurationPath = null;
 
-				if (value != null && value.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+			if (value != null && value.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+			{
+				if (Settings.StaticContext.LocalConfigurationPath != value)
 				{
-					if (Settings.StaticContext.LocalConfigurationPath != value)
-					{
-						Settings.StaticContext.LocalConfigurationPath = value;
-						OnPropertyChanged(_configurationPathChangedEventArgs);
-					}
-				}
-				else
-#endif
-				if (Settings.StaticContext.ConfigurationPath != value)
-				{
-					Settings.StaticContext.ConfigurationPath = value;
+					Settings.StaticContext.LocalConfigurationPath = value;
 					OnPropertyChanged(_configurationPathChangedEventArgs);
 				}
 			}
-		}
-
-		public string? ConfigurationName
-		{
-			get
+			else
+#endif
+			if (Settings.StaticContext.ConfigurationPath != value)
 			{
-				if (string.IsNullOrWhiteSpace(Settings.StaticContext.ConfigurationName))
-					return null;
-				return Settings.StaticContext.ConfigurationName;
-			}
-			set
-			{
-				if (string.IsNullOrWhiteSpace(value))
-					value = null;
-				Settings.StaticContext.ConfigurationName = value;
+				Settings.StaticContext.ConfigurationPath = value;
+				OnPropertyChanged(_configurationPathChangedEventArgs);
 			}
 		}
-
-		public ObservableCollection<string> ContextTypes { get; } = new();
-
-		public ObservableCollection<string> Configurations { get; } = new();
-
-		#region INotifyPropertyChanged
-		public event PropertyChangedEventHandler? PropertyChanged;
-
-		private void OnPropertyChanged(PropertyChangedEventArgs args) => PropertyChanged?.Invoke(this, args);
-		#endregion
 	}
+
+	public string? ConfigurationName
+	{
+		get
+		{
+			if (string.IsNullOrWhiteSpace(Settings.StaticContext.ConfigurationName))
+				return null;
+			return Settings.StaticContext.ConfigurationName;
+		}
+		set
+		{
+			if (string.IsNullOrWhiteSpace(value))
+				value = null;
+			Settings.StaticContext.ConfigurationName = value;
+		}
+	}
+
+	public ObservableCollection<string> ContextTypes { get; } = new();
+
+	public ObservableCollection<string> Configurations { get; } = new();
+
+	#region INotifyPropertyChanged
+	public event PropertyChangedEventHandler? PropertyChanged;
+
+	private void OnPropertyChanged(PropertyChangedEventArgs args) => PropertyChanged?.Invoke(this, args);
+	#endregion
 }

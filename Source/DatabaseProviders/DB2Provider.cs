@@ -3,7 +3,7 @@ using LinqToDB.Data;
 #if !LPX6
 using IBM.Data.DB2;
 #else
-using IBM.Data.DB2.Core;
+using IBM.Data.Db2;
 #endif
 
 namespace LinqToDB.LINQPad;

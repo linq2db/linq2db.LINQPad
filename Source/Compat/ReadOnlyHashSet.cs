@@ -1,7 +1,7 @@
 ﻿#if !NET5_0_OR_GREATER
 namespace System.Collections.Generic;
 
-internal class ReadOnlyHashSet<T> : IReadOnlySet<T>
+internal sealed class ReadOnlyHashSet<T> : IReadOnlySet<T>
 {
 	private readonly ISet<T> _set;
 
