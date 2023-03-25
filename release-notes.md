@@ -19,20 +19,20 @@ Major provider rework:
 
 New/updated dependencies:
 
-- [ALL] add new dependency: linq2db.Tools 4.3.0
-- [ALL] add new dependency: ClickHouse.Client 5.1.1
-- [ALL] switch from System.Data.SqlClient 4.8.3 to Microsoft.Data.SqlClient 5.0.0
-- [ALL] dependency update: linq2db 4.2.0 -> 4.3.0
-- [ALL] dependency update: Microsoft.CodeAnalysis.CSharp updated to 4.3.1
-- [ALL] dependency update: Npgsql updated to 6.0.7
+- [ALL] add new dependency: linq2db.Tools 5.1.1
+- [ALL] add new dependency: ClickHouse.Client 6.5.0
+- [ALL] switch from System.Data.SqlClient 4.8.3 to Microsoft.Data.SqlClient 5.1.0
+- [ALL] dependency update: linq2db 4.2.0 -> 5.1.1
+- [ALL] dependency update: Microsoft.CodeAnalysis.CSharp updated to 4.5.0
+- [ALL] dependency update: Npgsql updated to 7.0.2
 - [ALL] remove direct dependency on Humanizer.Core
 - [ALL] remove dependency on CodeJam
 - [LINQPAD7] add new dependency: Octonica.ClickHouseClient 2.2.9
-- [LINQPAD5] dependency update: Oracle.ManagedDataAccess 19.14.0 -> 21.7.0
-- [LINQPAD5] dependency update: Microsoft.SqlServer.Types 14.0.1016.290 -> 160.900.6-rc0
-- [LINQPAD7] dependency update: FirebirdSql.Data.FirebirdClient 9.0.1 -> 9.0.2
+- [LINQPAD5] dependency update: Oracle.ManagedDataAccess 19.14.0 -> 21.9.0
+- [LINQPAD5] dependency update: Microsoft.SqlServer.Types 14.0.1016.290 -> 160.1000.6
+- [LINQPAD7] dependency update: FirebirdSql.Data.FirebirdClient 9.0.1 -> 9.1.1
 - [LINQPAD7] replace dependency on dotMorten.Microsoft.SqlServer.Types with Microsoft.SqlServer.Types
-- [LINQPAD7] dependency update: FirebirdSql.Data.FirebirdClient 9.0.1 -> 9.0.2
+- [LINQPAD7] replace dependency on IBM.Data.DB2.Core with Net.IBM.Data.Db2
 
 # Release 4.2.0
 - [ALL] dependency update: linq2db 4.1.0 -> 4.2.0

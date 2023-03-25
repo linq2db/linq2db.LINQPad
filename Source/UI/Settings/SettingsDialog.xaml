@@ -22,12 +22,24 @@
 			<RowDefinition Height="40" />
 		</Grid.RowDefinitions>
 		<TabControl Grid.Row="0" SelectionChanged="TabControl_SelectionChanged" Name="_tabControl">
-			<us:StaticConnectionTab  DataContext="{Binding StaticConnection}"  Visibility="{Binding Visibility}" IsSelected="{Binding IsSelected}" />
-			<us:DynamicConnectionTab DataContext="{Binding DynamicConnection}" Visibility="{Binding Visibility}" IsSelected="{Binding IsSelected}" />
-			<us:SchemaTab            DataContext="{Binding Schema}"            Visibility="{Binding Visibility}" />
-			<us:ScaffoldTab          DataContext="{Binding Scaffold}"          Visibility="{Binding Visibility}" />
-			<us:LinqToDBTab          DataContext="{Binding LinqToDB}" />
-			<us:AboutTab             DataContext="{Binding About}" />
+			<TabItem Header = "Connection" Visibility="{Binding StaticConnection.Visibility}" IsSelected="{Binding StaticConnection.IsSelected}">
+				<us:StaticConnectionTab  DataContext="{Binding StaticConnection}" />
+			</TabItem>
+			<TabItem Header = "Connection" Visibility="{Binding DynamicConnection.Visibility}" IsSelected="{Binding DynamicConnection.IsSelected}">
+				<us:DynamicConnectionTab DataContext="{Binding DynamicConnection}" />
+			</TabItem>
+			<TabItem Header = "Schema"     Visibility="{Binding Schema.Visibility}">
+				<us:SchemaTab            DataContext="{Binding Schema}" />
+			</TabItem>
+			<TabItem Header = "Scaffold"   Visibility="{Binding Scaffold.Visibility}">
+				<us:ScaffoldTab          DataContext="{Binding Scaffold}" />
+			</TabItem>
+			<TabItem Header = "Linq To DB">
+				<us:LinqToDBTab          DataContext="{Binding LinqToDB}" />
+			</TabItem>
+			<TabItem Header = "About">
+				<us:AboutTab             DataContext="{Binding About}" />
+			</TabItem>
 		</TabControl>
 
 		<Grid Grid.Row="1" VerticalAlignment="Bottom" Margin="0 0 10 10">

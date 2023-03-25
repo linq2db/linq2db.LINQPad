@@ -1,4 +1,4 @@
-﻿<TabItem
+﻿<UserControl
 	x:Class                ="LinqToDB.LINQPad.UI.LinqToDBTab"
 	x:ClassModifier        ="internal"
 	xmlns                  = "http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -7,7 +7,6 @@
 	xmlns:mc               = "http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:us               = "clr-namespace:LinqToDB.LINQPad.UI"
 	mc:Ignorable           = "d"
-	Header                 = "Linq To DB"
 	d:DataContext          = "{d:DesignInstance us:LinqToDBModel, IsDesignTimeCreatable=true}"
 	>
 
@@ -27,4 +26,4 @@
 			</TextBlock>
 		</CheckBox>
 	</StackPanel>
-</TabItem>
+</UserControl>

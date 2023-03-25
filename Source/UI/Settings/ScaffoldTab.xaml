@@ -1,4 +1,4 @@
-﻿<TabItem
+﻿<UserControl
 	x:Class                ="LinqToDB.LINQPad.UI.ScaffoldTab"
 	x:ClassModifier        ="internal"
 	xmlns                  = "http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -7,7 +7,6 @@
 	xmlns:mc               = "http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:us               = "clr-namespace:LinqToDB.LINQPad.UI"
 	mc:Ignorable           = "d"
-	Header                 = "Scaffold"
 	d:DataContext          = "{d:DesignInstance us:ScaffoldModel, IsDesignTimeCreatable=true}"
 	>
 
@@ -33,4 +32,4 @@
 			Content="Use ADO.NET provider custom types"
 			ToolTip="Some ADO.NET providers provide custom types to store database values of some database types. Usually it is done when standard .NET type doesn't implement required precision to store any value for database type." />
 	</StackPanel>
-</TabItem>
+</UserControl>

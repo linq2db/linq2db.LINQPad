@@ -1,4 +1,4 @@
-﻿<TabItem
+﻿<UserControl
 	x:Class                ="LinqToDB.LINQPad.UI.DynamicConnectionTab"
 	x:ClassModifier        ="internal"
 	xmlns                  = "http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -8,7 +8,6 @@
 	xmlns:us               = "clr-namespace:LinqToDB.LINQPad.UI"
 	xmlns:main             = "clr-namespace:LinqToDB.LINQPad"
 	mc:Ignorable           = "d"
-	Header                 = "Connection"
 	d:DataContext          = "{d:DesignInstance us:DynamicConnectionModel, IsDesignTimeCreatable=true}"
 	>
 
@@ -81,4 +80,4 @@
 		</StackPanel>
 	</StackPanel>
 
-</TabItem>
+</UserControl>

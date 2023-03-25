@@ -1,4 +1,4 @@
-﻿<TabItem
+﻿<UserControl
 	x:Class                ="LinqToDB.LINQPad.UI.SchemaTab"
 	x:ClassModifier        ="internal"
 	xmlns                  = "http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -7,7 +7,6 @@
 	xmlns:mc               = "http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:us               = "clr-namespace:LinqToDB.LINQPad.UI"
 	mc:Ignorable           = "d"
-	Header                 = "Schema"
 	d:DataContext          = "{d:DesignInstance us:SchemaModel, IsDesignTimeCreatable=true}"
 	>
 
@@ -28,4 +27,4 @@
 		<CheckBox Content="Include scalar functions" IsChecked="{Binding LoadScalarFunctions}" ToolTip="Enables generation of methods for scalar functions" />
 		<CheckBox Content="Include aggregate functions" IsChecked="{Binding LoadAggregateFunctions}" ToolTip="Enables generation of methods for aggregate functions" />
 	</StackPanel>
-</TabItem>
+</UserControl>
