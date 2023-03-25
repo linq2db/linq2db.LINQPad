@@ -7,7 +7,7 @@ internal sealed class SchemaModel : OptionalTabModelBase
 	{
 		Schemas = new UniqueStringListModel()
 		{
-			Title   = "Include/Exclude Schemas/Users",
+			Title   = "Include/Exclude Schemas (Users)",
 			ToolTip = "Include or exclude objects from specified schemas",
 			Include = Settings.Schema.IncludeSchemas,
 		};
@@ -18,7 +18,7 @@ internal sealed class SchemaModel : OptionalTabModelBase
 
 		Catalogs = new UniqueStringListModel()
 		{
-			Title   = "Include/Exclude Catalogs/Databases",
+			Title   = "Include/Exclude Catalogs (Databases)",
 			ToolTip = "Include or exclude objects from specified catalogs",
 			Include = Settings.Schema.IncludeSchemas,
 		};

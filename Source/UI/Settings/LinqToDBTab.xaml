@@ -1,24 +1,22 @@
 ﻿<UserControl
-	x:Class                ="LinqToDB.LINQPad.UI.LinqToDBTab"
-	x:ClassModifier        ="internal"
-	xmlns                  = "http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x                = "http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d                = "http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc               = "http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:us               = "clr-namespace:LinqToDB.LINQPad.UI"
-	mc:Ignorable           = "d"
-	d:DataContext          = "{d:DesignInstance us:LinqToDBModel, IsDesignTimeCreatable=true}"
+	x:Class         = "LinqToDB.LINQPad.UI.LinqToDBTab"
+	x:ClassModifier = "internal"
+	xmlns           = "http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x         = "http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d         = "http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc        = "http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:us        = "clr-namespace:LinqToDB.LINQPad.UI"
+	mc:Ignorable    = "d"
+	d:DataContext   = "{d:DesignInstance us:LinqToDBModel, IsDesignTimeCreatable=true}"
 	>
 
-	<StackPanel Margin="10 0 0 0">
-		<TextBlock Margin="0 10 0 20">
-			Configure Linq To DB library options
-		</TextBlock>
-
+	<GroupBox Header="Linq To DB Options">
+	<StackPanel Margin="5">
 		<CheckBox
+			Margin="5"
 			IsChecked="{Binding OptimizeJoins}"
 			ToolTip="Allows Linq To DB to remove unnecessary JOINs from LINQ queries" >
-			<TextBlock>Enable JOINs optimization (<Hyperlink
+			<TextBlock>Enable JOINs optimization in LINQ queries (<Hyperlink
 					RequestNavigate="Url_Click"
 					NavigateUri="https://linq2db.github.io/api/LinqToDB.Common.Configuration.Linq.html#LinqToDB_Common_Configuration_Linq_OptimizeJoins">
 					<TextBlock Text="details"/>
@@ -26,4 +24,5 @@
 			</TextBlock>
 		</CheckBox>
 	</StackPanel>
+	</GroupBox>
 </UserControl>

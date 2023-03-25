@@ -1,33 +1,34 @@
 ﻿<UserControl
-	x:Class         ="LinqToDB.LINQPad.UI.SharedConnectionOptions"
-	x:ClassModifier ="internal"
+	x:Class         = "LinqToDB.LINQPad.UI.SharedConnectionOptions"
+	x:ClassModifier = "internal"
 	xmlns           = "http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x         = "http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d         = "http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc        = "http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:us        = "clr-namespace:LinqToDB.LINQPad.UI"
 	mc:Ignorable    = "d"
-	Width           = "500"
 	d:DataContext   = "{d:DesignInstance us:ConnectionModelBase, IsDesignTimeCreatable=true}"
 	>
 
-	<StackPanel>
-		<Grid>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="50" />
-				<ColumnDefinition />
-			</Grid.ColumnDefinitions>
-			<Label  Grid.Column="0" Content="Name" ToolTip="Connection name (optional)"/>
-			<TextBox  Grid.Column="1" Text="{Binding Name}" ToolTip="Connection name (optional)" />
-		</Grid>
-		<Grid>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition />
-				<ColumnDefinition />
-			</Grid.ColumnDefinitions>
+	<GroupBox Header="Connection Options">
+		<StackPanel Margin="5">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="50" />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+				<Label  Grid.Column="0" Content="Name" ToolTip="Connection name (optional)"/>
+				<TextBox Padding="5" Grid.Column="1" Text="{Binding Name}" ToolTip="Connection name (optional)" />
+			</Grid>
+			<Grid Margin="5">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
 
-			<CheckBox Grid.Column="0" Content="Save connection" IsChecked="{Binding Persistent}" ToolTip="When not checked connection settings will be lost after LINQPad closed" />
-			<CheckBox Grid.Column="1" Content="Database contains production data" IsChecked="{Binding Production}" ToolTip="LINQPad will show 'Production' label in tree and query window as warning" />
-		</Grid>
-	</StackPanel>
+				<CheckBox Grid.Column="0" Content="Save connection" IsChecked="{Binding Persistent}" ToolTip="When not checked connection settings will be lost after LINQPad closed" />
+				<CheckBox Grid.Column="1" Content="Production data" IsChecked="{Binding Production}" ToolTip="LINQPad will show 'Production' label in tree and query window as warning" />
+			</Grid>
+		</StackPanel>
+	</GroupBox>
 </UserControl>
