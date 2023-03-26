@@ -32,7 +32,7 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 
 	private sealed   record SchemaData                   (List<TableData> Tables, List<TableData> Views, List<ProcedureData> Procedures, List<TableFunctionData> TableFunctions, List<ScalarOrAggregateFunctionData> ScalarFunctions, List<ScalarOrAggregateFunctionData> AggregateFunctions);
 	private sealed   record TableData                    (string ContextName, IType ContextType, string DbName, List<ColumnData> Columns);
-	private sealed   record ColumnData                   (string MemberName, IType Type, string DbName, bool IsPrimaryKey, bool IsIdentity, DataType DataType, DatabaseType DbType);
+	private sealed   record ColumnData                   (string MemberName, IType Type, string DbName, bool IsPrimaryKey, bool IsIdentity, DataType? DataType, DatabaseType DbType);
 	private sealed   record AssociationData              (string MemberName, IType Type, bool FromSide, bool OneToMany, string KeyName, TableData Source, TableData Target);
 	private sealed   record ResultColumnData             (string MemberName, IType Type, string DbName, DataType DataType, DatabaseType DbType);
 	private sealed   record ParameterData                (string Name, IType Type, ParameterDirection Direction);
@@ -87,7 +87,7 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 				column.Metadata.Name!,
 				column.Metadata.IsPrimaryKey,
 				column.Metadata.IsIdentity,
-				column.Metadata.DataType!.Value,
+				column.Metadata.DataType,
 				column.Metadata.DbType!));
 		}
 
@@ -495,12 +495,12 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 			.ToString();
 	}
 
-	private string GetTypeName(DataType dataType, DatabaseType type)
+	private string GetTypeName(DataType? dataType, DatabaseType type)
 	{
 		return _sqlBuilder!.BuildDataType(
 				new StringBuilder(),
 				new SqlDataType(new DbDataType(typeof(object),
-					dataType : dataType,
+					dataType : dataType ?? DataType.Undefined,
 					dbType   : type.Name,
 					length   : type.Length,
 					precision: type.Precision,

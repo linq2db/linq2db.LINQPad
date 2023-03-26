@@ -27,7 +27,7 @@
 					</ComboBox>
 				</DockPanel>
 
-				<DockPanel Margin="0 5 0 0" ToolTip="Select SQL dialect version or database provider">
+				<DockPanel Margin="0 5 0 0" ToolTip="Select SQL dialect version or database provider" Visibility="{Binding ProviderVisibility}">
 					<Label>Provider</Label>
 					<ComboBox Width="380" Margin="10 0 0 0" ItemsSource="{Binding Providers}" SelectedValue="{Binding Provider}" DisplayMemberPath="DisplayName" HorizontalAlignment="Right" />
 				</DockPanel>
