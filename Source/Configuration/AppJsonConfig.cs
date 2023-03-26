@@ -14,7 +14,7 @@ internal sealed class AppJsonConfig : ILinqToDBSettings
 	{
 		var config = JsonSerializer.Deserialize<JsonConfig>(File.ReadAllText(configPath));
 
-		return new AppJsonConfig(config?.ConnectionStrings?.Select(entry => (IConnectionStringSettings)new ConnectionStringSettings(entry.Key, entry.Value)).ToArray()
+		return new AppJsonConfig(config?.ConnectionStrings?.Select(static entry => (IConnectionStringSettings)new ConnectionStringSettings(entry.Key, entry.Value)).ToArray()
 			?? Array.Empty<IConnectionStringSettings>());
 	}
 

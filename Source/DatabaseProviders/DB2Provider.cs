@@ -1,5 +1,6 @@
 ﻿using LinqToDB.DataProvider.DB2iSeries;
 using LinqToDB.Data;
+using System.Data.Common;
 #if !LPX6
 using IBM.Data.DB2;
 #else
@@ -8,7 +9,7 @@ using IBM.Data.Db2;
 
 namespace LinqToDB.LINQPad;
 
-internal sealed class DB2Provider : IDatabaseProvider
+internal sealed class DB2Provider : DatabaseProviderBase
 {
 	private static readonly IReadOnlyList<ProviderInfo> _providers = new ProviderInfo[]
 	{
@@ -18,24 +19,17 @@ internal sealed class DB2Provider : IDatabaseProvider
 		new (DB2iSeriesProviderName.DB2, "DB2 for i (iSeries)"                  ),
 	};
 
-	string                      IDatabaseProvider.Database                    => ProviderName.DB2;
-	string                      IDatabaseProvider.Description                 => "IBM DB2 (LUW, z/OS or iSeries)";
-	IReadOnlyList<ProviderInfo> IDatabaseProvider.Providers                   => _providers;
-	bool                        IDatabaseProvider.SupportsSecondaryConnection => false;
-	bool                        IDatabaseProvider.AutomaticProviderSelection  => false;
+	public DB2Provider()
+		: base(ProviderName.DB2, "IBM DB2 (LUW, z/OS or iSeries)", _providers)
+	{
+	}
 
-	ProviderInfo?                 IDatabaseProvider.GetProviderByConnectionString(string  connectionString) => null;
-	void                          IDatabaseProvider.ClearAllPools                (string  providerName    ) => DB2Connection.ReleaseObjectPool();
-	IReadOnlyCollection<Assembly> IDatabaseProvider.GetAdditionalReferences      (string  providerName    ) => Array.Empty<Assembly>();
-	bool                          IDatabaseProvider.IsProviderPathSupported      (string  providerName    ) => false;
-	string?                       IDatabaseProvider.GetProviderAssemblyName      (string  providerName    ) => null;
-	string?                       IDatabaseProvider.GetProviderDownloadUrl       (string? providerName    ) => null;
-	string?                       IDatabaseProvider.TryGetDefaultPath            (string  providerName    ) => null;
-	string                        IDatabaseProvider.GetProviderFactoryName       (string  providerName    ) => "IBM.Data.DB2";
+	public override void ClearAllPools(string providerName)
+	{
+		DB2Connection.ReleaseObjectPool();
+	}
 
-	void IDatabaseProvider.RegisterProviderFactory(string providerName, string providerPath) { }
-
-	DateTime? IDatabaseProvider.GetLastSchemaUpdate(ConnectionSettings settings)
+	public override DateTime? GetLastSchemaUpdate(ConnectionSettings settings)
 	{
 		var sql = settings.Connection.Provider switch
 		{
@@ -47,5 +41,10 @@ internal sealed class DB2Provider : IDatabaseProvider
 
 		using var db = new LINQPadDataConnection(settings);
 		return db.Query<DateTime?>(sql).FirstOrDefault();
+	}
+
+	public override DbProviderFactory GetProviderFactory(string providerName)
+	{
+		return DB2Factory.Instance;
 	}
 }

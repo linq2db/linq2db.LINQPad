@@ -82,6 +82,6 @@ internal sealed partial class SettingsDialog
 
 	private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
 	{
-		_testButton.Visibility = _tabControl.SelectedItem is DynamicConnectionTab ? Visibility.Visible : Visibility.Hidden;
+		_testButton.Visibility = _tabControl.SelectedItem is TabItem ti && ti.Content is DynamicConnectionTab ? Visibility.Visible : Visibility.Hidden;
 	}
 }

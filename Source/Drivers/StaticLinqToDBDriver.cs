@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Data.Common;
 using LINQPad.Extensibility.DataContext;
 using LinqToDB.Data;
 using LinqToDB.Mapping;
@@ -152,6 +153,20 @@ public sealed class LinqToDBStaticDriver : StaticDataContextDriver
 		catch (Exception ex)
 		{
 			DriverHelper.HandleException(ex, nameof(GetIDbConnection));
+			throw;
+		}
+	}
+
+	/// <inheritdoc/>
+	public override DbProviderFactory GetProviderFactory(IConnectionInfo cxInfo)
+	{
+		try
+		{
+			return DatabaseProviders.GetProviderFactory(ConnectionSettings.Load(cxInfo));
+		}
+		catch (Exception ex)
+		{
+			DriverHelper.HandleException(ex, nameof(GetProviderFactory));
 			throw;
 		}
 	}

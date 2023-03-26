@@ -9,6 +9,7 @@ using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Reflection.Metadata;
 #endif
 
 namespace LinqToDB.LINQPad;
@@ -37,8 +38,8 @@ internal static class DriverHelper
 	public static void Init()
 	{
 #if !LPX6
-		// Dynamically resolve assembly bindings to currently used assembly version for transitive dependencies. Used by.NET Framework build(LINQPad 6).
-		AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
+		// Dynamically resolve assembly bindings to currently used assembly version for transitive dependencies. Used by.NET Framework build (LINQPad 5).
+		AppDomain.CurrentDomain.AssemblyResolve += static (sender, args) =>
 		{
 			var requestedAssembly = new AssemblyName(args.Name!);
 
@@ -58,19 +59,18 @@ internal static class DriverHelper
 				return typeof(ImmutableArray).Assembly;
 			if (requestedAssembly.Name == "System.Diagnostics.DiagnosticSource")
 				return typeof(DiagnosticSource).Assembly;
+			if (requestedAssembly.Name == "System.Reflection.Metadata")
+				return typeof(Blob).Assembly;
 
 			return null;
 		};
 #endif
-}
+	}
 
-/// <summary>
-/// Implements <see cref="DataContextDriver.InitializeContext(IConnectionInfo, object, QueryExecutionManager)"/> method.
-/// </summary>
-public static MappingSchema InitializeContext(
-		IConnectionInfo       cxInfo,
-		IDataContext          context,
-		QueryExecutionManager executionManager)
+	/// <summary>
+	/// Implements <see cref="DataContextDriver.InitializeContext(IConnectionInfo, object, QueryExecutionManager)"/> method.
+	/// </summary>
+	public static MappingSchema InitializeContext(IConnectionInfo cxInfo, IDataContext context, QueryExecutionManager executionManager)
 	{
 		try
 		{
@@ -137,10 +137,10 @@ public static MappingSchema InitializeContext(
 		}
 	}
 
-/// <summary>
-/// Implements <see cref="DataContextDriver.GetConnectionDescription(IConnectionInfo)"/> method.
-/// </summary>
-public static string GetConnectionDescription(IConnectionInfo cxInfo)
+	/// <summary>
+	/// Implements <see cref="DataContextDriver.GetConnectionDescription(IConnectionInfo)"/> method.
+	/// </summary>
+	public static string GetConnectionDescription(IConnectionInfo cxInfo)
 	{
 		try
 		{
@@ -182,7 +182,7 @@ public static string GetConnectionDescription(IConnectionInfo cxInfo)
 			isDynamic ? TestDynamicConnection : TestStaticConnection,
 			isDynamic ? "Connection to database failed." : "Invalid configuration."))
 		{
-			model   .Save();
+			model.Save();
 			settings.Save(cxInfo);
 			return true;
 		}

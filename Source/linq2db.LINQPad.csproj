@@ -19,7 +19,7 @@
 		<WarningLevel>9999</WarningLevel>
 		<ErrorReport>prompt</ErrorReport>
 		<Features>strict</Features>
-		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<ImplicitUsings>enable</ImplicitUsings>
 
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>

@@ -1,4 +1,5 @@
-﻿using System.Data.OleDb;
+﻿using System.Data.Common;
+using System.Data.OleDb;
 using System.Data.Odbc;
 using System.Data;
 using System.Runtime.InteropServices;
@@ -6,7 +7,7 @@ using LinqToDB.DataProvider;
 
 namespace LinqToDB.LINQPad;
 
-internal sealed class AccessProvider : IDatabaseProvider
+internal sealed class AccessProvider : DatabaseProviderBase
 {
 	private static readonly IReadOnlyList<ProviderInfo> _providers = new ProviderInfo[]
 	{
@@ -14,22 +15,20 @@ internal sealed class AccessProvider : IDatabaseProvider
 		new (ProviderName.AccessOdbc, "ODBC"  ),
 	};
 
-	string                      IDatabaseProvider.Database                    => ProviderName.Access;
-	string                      IDatabaseProvider.Description                 => "Microsoft Access";
-	IReadOnlyList<ProviderInfo> IDatabaseProvider.Providers                   => _providers;
-	bool                        IDatabaseProvider.SupportsSecondaryConnection => true;
-	bool                        IDatabaseProvider.AutomaticProviderSelection  => true;
+	public AccessProvider()
+		: base(ProviderName.Access, "Microsoft Access", _providers)
+	{
+	}
 
-	IReadOnlyCollection<Assembly> IDatabaseProvider.GetAdditionalReferences(string  providerName) => Array.Empty<Assembly>();
-	bool                          IDatabaseProvider.IsProviderPathSupported(string  providerName) => false;
-	string?                       IDatabaseProvider.GetProviderAssemblyName(string  providerName) => null;
-	string?                       IDatabaseProvider.GetProviderDownloadUrl (string? providerName) => "https://www.microsoft.com/en-us/download/details.aspx?id=54920";
-	string?                       IDatabaseProvider.TryGetDefaultPath      (string  providerName) => null;
-	string                        IDatabaseProvider.GetProviderFactoryName (string  providerName) => providerName == ProviderName.Access ? "System.Data.OleDb" : "System.Data.Odbc";
+	public override bool SupportsSecondaryConnection => true;
+	public override bool AutomaticProviderSelection  => true;
 
-	void IDatabaseProvider.RegisterProviderFactory(string providerName, string providerPath) { }
+	public override string? GetProviderDownloadUrl(string? providerName)
+	{
+		return "https://www.microsoft.com/en-us/download/details.aspx?id=54920";
+	}
 
-	void IDatabaseProvider.ClearAllPools(string providerName)
+	public override void ClearAllPools(string providerName)
 	{
 		if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && providerName == ProviderName.Access)
 			OleDbConnection.ReleaseObjectPool();
@@ -38,7 +37,7 @@ internal sealed class AccessProvider : IDatabaseProvider
 			OdbcConnection.ReleaseObjectPool();
 	}
 
-	DateTime? IDatabaseProvider.GetLastSchemaUpdate(ConnectionSettings settings)
+	public override DateTime? GetLastSchemaUpdate(ConnectionSettings settings)
 	{
 		var connectionString = settings.Connection.Provider == ProviderName.Access
 			? settings.Connection.ConnectionString
@@ -59,17 +58,25 @@ internal sealed class AccessProvider : IDatabaseProvider
 		using var cn = (OleDbConnection)provider.CreateConnection(connectionString);
 		cn.Open();
 
-		var dt1 = cn.GetSchema("Tables"    ).Rows.Cast<DataRow>().Max(r => (DateTime)r["DATE_MODIFIED"]);
-		var dt2 = cn.GetSchema("Procedures").Rows.Cast<DataRow>().Max(r => (DateTime)r["DATE_MODIFIED"]);
+		var dt1 = cn.GetSchema("Tables"    ).Rows.Cast<DataRow>().Max(static r => (DateTime)r["DATE_MODIFIED"]);
+		var dt2 = cn.GetSchema("Procedures").Rows.Cast<DataRow>().Max(static r => (DateTime)r["DATE_MODIFIED"]);
 		return dt1 > dt2 ? dt1 : dt2;
 	}
 
-	ProviderInfo? IDatabaseProvider.GetProviderByConnectionString(string connectionString)
+	public override ProviderInfo? GetProviderByConnectionString(string connectionString)
 	{
 		var isOleDb = connectionString.IndexOf("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase) != -1
 			|| connectionString.IndexOf("Microsoft.ACE.OLEDB", StringComparison.OrdinalIgnoreCase) != -1;
 
 		// we don't check for ODBC provider marker - it will fail on connection test if wrong
 		return _providers[isOleDb ? 0 : 1];
+	}
+
+	public override DbProviderFactory GetProviderFactory(string providerName)
+	{
+		if (providerName == ProviderName.AccessOdbc)
+			return OdbcFactory.Instance;
+
+		return OleDbFactory.Instance;
 	}
 }

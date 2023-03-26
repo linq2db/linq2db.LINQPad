@@ -1,31 +1,33 @@
-﻿using System.Data.SQLite;
+﻿using System.Data.Common;
+using System.Data.SQLite;
 
 namespace LinqToDB.LINQPad;
 
-internal sealed class SQLiteProvider : IDatabaseProvider
+internal sealed class SQLiteProvider : DatabaseProviderBase
 {
 	private static readonly IReadOnlyList<ProviderInfo> _providers = new ProviderInfo[]
 	{
 		new(ProviderName.SQLiteClassic, "SQLite")
 	};
 
-	string                      IDatabaseProvider.Database                    => ProviderName.SQLite;
-	string                      IDatabaseProvider.Description                 => "SQLite";
-	IReadOnlyList<ProviderInfo> IDatabaseProvider.Providers                   => _providers;
-	bool                        IDatabaseProvider.SupportsSecondaryConnection => false;
-	bool                        IDatabaseProvider.AutomaticProviderSelection  => false;
+	public SQLiteProvider()
+		: base(ProviderName.SQLite, "SQLite", _providers)
+	{
+	}
 
-	ProviderInfo?                 IDatabaseProvider.GetProviderByConnectionString(string connectionString    ) => null;
-	void                          IDatabaseProvider.ClearAllPools                (string providerName        ) => SQLiteConnection.ClearAllPools();
-	IReadOnlyCollection<Assembly> IDatabaseProvider.GetAdditionalReferences      (string providerName        ) => Array.Empty<Assembly>();
-	// no information in schema
-	DateTime?                     IDatabaseProvider.GetLastSchemaUpdate          (ConnectionSettings settings) => null;
-	bool                          IDatabaseProvider.IsProviderPathSupported      (string  providerName       ) => false;
-	string?                       IDatabaseProvider.GetProviderAssemblyName      (string  providerName       ) => null;
-	string?                       IDatabaseProvider.GetProviderDownloadUrl       (string? providerName       ) => null;
-	string?                       IDatabaseProvider.TryGetDefaultPath            (string  providerName       ) => null;
-	// there is no provider-defined default factory name, use assembly/namespace name
-	string                        IDatabaseProvider.GetProviderFactoryName       (string  providerName       ) => "System.Data.SQLite";
+	public override void ClearAllPools(string providerName)
+	{
+		SQLiteConnection.ClearAllPools();
+	}
 
-	void IDatabaseProvider.RegisterProviderFactory(string providerName, string providerPath) { }
+	public override DateTime? GetLastSchemaUpdate(ConnectionSettings settings)
+	{
+		// no information in schema
+		return null;
+	}
+
+	public override DbProviderFactory GetProviderFactory(string providerName)
+	{
+		return SQLiteFactory.Instance;
+	}
 }

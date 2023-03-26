@@ -61,9 +61,9 @@ internal static class StaticSchemaGenerator
 		// tables discovered using table access properties in context:
 		// ITable<TableRecord> Prop or // IQueryable<TableRecord> Prop
 		var tables = customContextType.GetProperties()
-			.Where(p => p.GetCustomAttribute<ObsoleteAttribute>() == null && typeof(IQueryable<>).IsSameOrParentOf(p.PropertyType))
-			.OrderBy(p => p.Name)
-			.Select(p => new TableInfo(p));
+			.Where(static p => p.GetCustomAttribute<ObsoleteAttribute>() == null && typeof(IQueryable<>).IsSameOrParentOf(p.PropertyType))
+			.OrderBy(static p => p.Name)
+			.Select(static p => new TableInfo(p));
 
 		var lookup = new Dictionary<Type, ExplorerItem>();
 

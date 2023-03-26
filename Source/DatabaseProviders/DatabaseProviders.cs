@@ -41,6 +41,8 @@ internal static class DatabaseProviders
 
 	public static DbConnection CreateConnection (ConnectionSettings settings) => GetDataProvider(settings).CreateConnection(settings.Connection.ConnectionString!);
 
+	public static DbProviderFactory GetProviderFactory(ConnectionSettings settings) => GetProviderByName(settings.Connection.Provider!).GetProviderFactory(settings.Connection.Provider!);
+
 	public static IDataProvider GetDataProvider(ConnectionSettings settings) => GetDataProvider(settings.Connection.Provider, settings.Connection.ConnectionString, settings.Connection.ProviderPath);
 
 	public static IDataProvider GetDataProvider(string? providerName, string? connectionString, string? providerPath)

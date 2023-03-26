@@ -5,6 +5,7 @@ using LinqToDB.Mapping;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using System.IO;
+using System.Data.Common;
 #if !LPX6
 using System.Net.NetworkInformation;
 using System.Numerics;
@@ -60,6 +61,9 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 	{
 		switch (forToken)
 		{
+			case "net8.0":
+				yield return "net8.0";
+				goto case "net7.0";
 			case "net7.0":
 				yield return "net7.0";
 				goto case "net6.0";
@@ -141,7 +145,7 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 
 #if LPX6
 			references.Add(MakeReferenceByRuntime(runtimeToken, providerAssemblyLocation));
-			references.AddRange(coreAssemblies.Select(path => MetadataReference.CreateFromFile(path)));
+			references.AddRange(coreAssemblies.Select(static path => MetadataReference.CreateFromFile(path)));
 #else
 			references.Add(MetadataReference.CreateFromFile(providerAssemblyLocation));
 #endif
@@ -158,7 +162,7 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 
 				if (!result.Success)
 				{
-					var failures = result.Diagnostics.Where(diagnostic => diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
+					var failures = result.Diagnostics.Where(static diagnostic => diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
 
 					foreach (var diagnostic in failures)
 						throw new LinqToDBLinqPadException(diagnostic.ToString());
@@ -278,5 +282,19 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 		//objectToWrite = _useCustomFormatter
 		//	? XmlFormatter.Format(_mappingSchema!, objectToWrite)
 		//	: XmlFormatter.FormatValue(objectToWrite);
+	}
+
+	/// <inheritdoc/>
+	public override DbProviderFactory GetProviderFactory(IConnectionInfo cxInfo)
+	{
+		try
+		{
+			return DatabaseProviders.GetProviderFactory(ConnectionSettings.Load(cxInfo));
+		}
+		catch (Exception ex)
+		{
+			DriverHelper.HandleException(ex, nameof(GetProviderFactory));
+			throw;
+		}
 	}
 }

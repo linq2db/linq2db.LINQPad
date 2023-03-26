@@ -1,14 +1,14 @@
-﻿using System.Data.Odbc;
-using LinqToDB.DataProvider.SapHana;
+﻿using System.Data.Common;
+using System.Data.Odbc;
 using LinqToDB.Data;
+using LinqToDB.DataProvider.SapHana;
 #if LPX6
 using System.IO;
-using System.Data.Common;
 #endif
 
 namespace LinqToDB.LINQPad;
 
-internal sealed class SapHanaProvider : IDatabaseProvider
+internal sealed class SapHanaProvider : DatabaseProviderBase
 {
 	private static readonly IReadOnlyList<ProviderInfo> _providers = new ProviderInfo[]
 	{
@@ -16,16 +16,17 @@ internal sealed class SapHanaProvider : IDatabaseProvider
 		new(ProviderName.SapHanaOdbc  , "ODBC Provider (HANAODBC/HANAODBC32)"),
 	};
 
-	string                      IDatabaseProvider.Database                    => ProviderName.SapHana;
-	string                      IDatabaseProvider.Description                 => "SAP HANA";
-	IReadOnlyList<ProviderInfo> IDatabaseProvider.Providers                   => _providers;
-	bool                        IDatabaseProvider.SupportsSecondaryConnection => false;
-	bool                        IDatabaseProvider.AutomaticProviderSelection  => false;
+	public SapHanaProvider()
+		: base(ProviderName.SapHana, "SAP HANA", _providers)
+	{
+	}
 
-	IReadOnlyCollection<Assembly> IDatabaseProvider.GetAdditionalReferences(string  providerName) => Array.Empty<Assembly>();
-	string?                       IDatabaseProvider.GetProviderDownloadUrl (string? providerName) => "https://tools.hana.ondemand.com/#hanatools";
+	public override string? GetProviderDownloadUrl(string? providerName)
+	{
+		return "https://tools.hana.ondemand.com/#hanatools";
+	}
 
-	void IDatabaseProvider.ClearAllPools(string providerName)
+	public override void ClearAllPools(string providerName)
 	{
 		if (providerName == ProviderName.SapHanaOdbc)
 			OdbcConnection.ReleaseObjectPool();
@@ -36,19 +37,33 @@ internal sealed class SapHanaProvider : IDatabaseProvider
 		}
 	}
 
-	DateTime? IDatabaseProvider.GetLastSchemaUpdate(ConnectionSettings settings)
+	public override DateTime? GetLastSchemaUpdate(ConnectionSettings settings)
 	{
 		using var db = new LINQPadDataConnection(settings);
 		return db.Query<DateTime?>("SELECT MAX(time) FROM (SELECT MAX(CREATE_TIME) AS time FROM M_CS_TABLES UNION SELECT MAX(MODIFY_TIME) FROM M_CS_TABLES UNION SELECT MAX(CREATE_TIME) FROM M_RS_TABLES UNION SELECT MAX(CREATE_TIME) FROM PROCEDURES UNION SELECT MAX(CREATE_TIME) FROM FUNCTIONS)").FirstOrDefault();
 	}
 
-	ProviderInfo? IDatabaseProvider.GetProviderByConnectionString(string connectionString) => null;
+	public override DbProviderFactory GetProviderFactory(string providerName)
+	{
+		if (providerName == ProviderName.SapHanaOdbc)
+			return OdbcFactory.Instance;
+
+		var typeName = $"{SapHanaProviderAdapter.ClientNamespace}.HanaFactory, {SapHanaProviderAdapter.AssemblyName}";
+		return (DbProviderFactory)Type.GetType(typeName, false)?.GetField("Instance", BindingFlags.Public | BindingFlags.Static)?.GetValue(null)!;
+	}
 
 #if LPX6
-	bool    IDatabaseProvider.IsProviderPathSupported(string providerName) => providerName == ProviderName.SapHanaNative;
-	string? IDatabaseProvider.GetProviderAssemblyName(string providerName) => providerName == ProviderName.SapHanaNative ? "Sap.Data.Hana.Core.v2.1.dll" : null;
+	public override bool IsProviderPathSupported(string providerName)
+	{
+		return providerName == ProviderName.SapHanaNative;
+	}
 
-	string? IDatabaseProvider.TryGetDefaultPath(string providerName)
+	public override string? GetProviderAssemblyName(string providerName)
+	{
+		return providerName == ProviderName.SapHanaNative ? "Sap.Data.Hana.Core.v2.1.dll" : null;
+	}
+
+	public override string? TryGetDefaultPath(string providerName)
 	{
 		if (providerName == ProviderName.SapHanaNative)
 		{
@@ -68,7 +83,7 @@ internal sealed class SapHanaProvider : IDatabaseProvider
 	}
 
 	private static bool _factoryRegistered;
-	void IDatabaseProvider.RegisterProviderFactory(string providerName, string providerPath)
+	public override void RegisterProviderFactory(string providerName, string providerPath)
 	{
 		if (providerName == ProviderName.SapHanaNative && !_factoryRegistered)
 		{
@@ -108,13 +123,5 @@ internal sealed class SapHanaProvider : IDatabaseProvider
 			//}
 		}
 	}
-#else
-	bool    IDatabaseProvider.IsProviderPathSupported(string providerName) => false;
-	string? IDatabaseProvider.GetProviderAssemblyName(string providerName) => null;
-	string? IDatabaseProvider.TryGetDefaultPath      (string providerName) => null;
-
-	void IDatabaseProvider.RegisterProviderFactory(string providerName, string providerPath) { }
 #endif
-
-	string IDatabaseProvider.GetProviderFactoryName(string providerName) => providerName == ProviderName.SapHanaNative ? "Sap.Data.Hana" : "System.Data.Odbc";
 }

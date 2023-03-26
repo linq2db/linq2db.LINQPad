@@ -1,9 +1,10 @@
-﻿using LinqToDB.Data;
+﻿using System.Data.Common;
+using LinqToDB.Data;
 using Oracle.ManagedDataAccess.Client;
 
 namespace LinqToDB.LINQPad;
 
-internal sealed class OracleProvider : IDatabaseProvider
+internal sealed class OracleProvider : DatabaseProviderBase
 {
 	private static readonly IReadOnlyList<ProviderInfo> _providers = new ProviderInfo[]
 	{
@@ -11,27 +12,24 @@ internal sealed class OracleProvider : IDatabaseProvider
 		new (ProviderName.OracleManaged  , "Oracle 12c Dialect"),
 	};
 
-	string                      IDatabaseProvider.Database                    => ProviderName.Oracle;
-	string                      IDatabaseProvider.Description                 => "Oracle";
-	IReadOnlyList<ProviderInfo> IDatabaseProvider.Providers                   => _providers;
-	bool                        IDatabaseProvider.SupportsSecondaryConnection => false;
-	bool                        IDatabaseProvider.AutomaticProviderSelection  => false;
+	public OracleProvider()
+		: base(ProviderName.Oracle, "Oracle", _providers)
+	{
+	}
 
-	ProviderInfo?                 IDatabaseProvider.GetProviderByConnectionString(string  connectionString) => null;
-	IReadOnlyCollection<Assembly> IDatabaseProvider.GetAdditionalReferences      (string  providerName    ) => Array.Empty<Assembly>();
-	void                          IDatabaseProvider.ClearAllPools                (string  providerName    ) => OracleConnection.ClearAllPools();
-	bool                          IDatabaseProvider.IsProviderPathSupported      (string  providerName    ) => false;
-	string?                       IDatabaseProvider.GetProviderAssemblyName      (string  providerName    ) => null;
-	string?                       IDatabaseProvider.GetProviderDownloadUrl       (string? providerName    ) => null;
-	string?                       IDatabaseProvider.TryGetDefaultPath            (string  providerName    ) => null;
-	// use namespace
-	string                        IDatabaseProvider.GetProviderFactoryName       (string  providerName    ) => "Oracle.ManagedDataAccess.Client";
+	public override void ClearAllPools(string providerName)
+	{
+		OracleConnection.ClearAllPools();
+	}
 
-	void IDatabaseProvider.RegisterProviderFactory(string providerName, string providerPath) { }
-
-	DateTime? IDatabaseProvider.GetLastSchemaUpdate(ConnectionSettings settings)
+	public override DateTime? GetLastSchemaUpdate(ConnectionSettings settings)
 	{
 		using var db = new LINQPadDataConnection(settings);
 		return db.Query<DateTime?>("SELECT MAX(LAST_DDL_TIME) FROM USER_OBJECTS WHERE OBJECT_TYPE IN ('TABLE', 'VIEW', 'INDEX', 'FUNCTION', 'PACKAGE', 'PACKAGE BODY', 'PROCEDURE', 'MATERIALIZED VIEW')").FirstOrDefault();
+	}
+
+	public override DbProviderFactory GetProviderFactory(string providerName)
+	{
+		return OracleClientFactory.Instance;
 	}
 }

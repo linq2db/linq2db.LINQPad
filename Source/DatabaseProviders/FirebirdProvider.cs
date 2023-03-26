@@ -1,31 +1,33 @@
-﻿using FirebirdSql.Data.FirebirdClient;
+﻿using System.Data.Common;
+using FirebirdSql.Data.FirebirdClient;
 
 namespace LinqToDB.LINQPad;
 
-internal sealed class FirebirdProvider : IDatabaseProvider
+internal sealed class FirebirdProvider : DatabaseProviderBase
 {
 	private static readonly IReadOnlyList<ProviderInfo> _providers = new ProviderInfo[]
 	{
 		new (ProviderName.Firebird, "Firebird"),
 	};
 
-	string                      IDatabaseProvider.Database                    => ProviderName.Firebird;
-	string                      IDatabaseProvider.Description                 => "Firebird";
-	IReadOnlyList<ProviderInfo> IDatabaseProvider.Providers                   => _providers;
-	bool                        IDatabaseProvider.SupportsSecondaryConnection => false;
-	bool                        IDatabaseProvider.AutomaticProviderSelection  => false;
+	public FirebirdProvider()
+		: base(ProviderName.Firebird, "Firebird", _providers)
+	{
+	}
 
-	ProviderInfo?                 IDatabaseProvider.GetProviderByConnectionString(string connectionString    ) => null;
-	void                          IDatabaseProvider.ClearAllPools                (string providerName        ) => FbConnection.ClearAllPools();
-	IReadOnlyCollection<Assembly> IDatabaseProvider.GetAdditionalReferences      (string providerName        ) => Array.Empty<Assembly>();
-	// no information in schema
-	DateTime?                     IDatabaseProvider.GetLastSchemaUpdate          (ConnectionSettings settings) => null;
-	bool                          IDatabaseProvider.IsProviderPathSupported      (string  providerName       ) => false;
-	string?                       IDatabaseProvider.GetProviderAssemblyName      (string  providerName       ) => null;
-	string?                       IDatabaseProvider.GetProviderDownloadUrl       (string? providerName       ) => null;
-	string?                       IDatabaseProvider.TryGetDefaultPath            (string  providerName       ) => null;
-	// https://github.com/FirebirdSQL/NETProvider/blob/master/src/EntityFramework.Firebird/FbProviderServices.cs#L39
-	string                        IDatabaseProvider.GetProviderFactoryName       (string  providerName       ) => "FirebirdSql.Data.FirebirdClient";
+	public override void ClearAllPools(string providerName)
+	{
+		FbConnection.ClearAllPools();
+	}
 
-	void IDatabaseProvider.RegisterProviderFactory(string providerName, string providerPath) { }
+	public override DateTime? GetLastSchemaUpdate(ConnectionSettings settings)
+	{
+		// no information in schema
+		return null;
+	}
+
+	public override DbProviderFactory GetProviderFactory(string providerName)
+	{
+		return FirebirdClientFactory.Instance;
+	}
 }

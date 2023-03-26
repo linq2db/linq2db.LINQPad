@@ -9,7 +9,7 @@ internal sealed class DynamicConnectionModel : ConnectionModelBase, INotifyPrope
 	public DynamicConnectionModel(ConnectionSettings settings, bool enabled)
 		: base(settings, enabled)
 	{
-		foreach (var db in DatabaseProviders.Providers.Values.OrderBy(db => db.Description))
+		foreach (var db in DatabaseProviders.Providers.Values.OrderBy(static db => db.Description))
 			Databases.Add(db);
 
 		UpdateProviders();
@@ -116,9 +116,14 @@ internal sealed class DynamicConnectionModel : ConnectionModelBase, INotifyPrope
 	{
 		get
 		{
-			if (string.IsNullOrWhiteSpace(Settings.Connection.Provider))
+			if (Database == null || string.IsNullOrWhiteSpace(Settings.Connection.Provider))
 				return null;
-			return Database?.Providers.FirstOrDefault(p => p.Name == Settings.Connection.Provider);
+
+			foreach (var provider in Database.Providers)
+				if (provider.Name == Settings.Connection.Provider)
+					return provider;
+
+			return null;
 		}
 		set
 		{
@@ -202,9 +207,14 @@ internal sealed class DynamicConnectionModel : ConnectionModelBase, INotifyPrope
 	{
 		get
 		{
-			if (string.IsNullOrWhiteSpace(Settings.Connection.SecondaryProvider))
+			if (Database == null || string.IsNullOrWhiteSpace(Settings.Connection.SecondaryProvider))
 				return null;
-			return Database?.Providers.FirstOrDefault(p => p.Name == Settings.Connection.SecondaryProvider);
+
+			foreach (var provider in Database.Providers)
+				if (provider.Name == Settings.Connection.SecondaryProvider)
+					return provider;
+
+			return null;
 		}
 		set
 		{

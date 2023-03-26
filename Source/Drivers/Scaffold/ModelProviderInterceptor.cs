@@ -243,7 +243,7 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 
 		var model = new List<ExplorerItem>();
 
-		foreach (var schema in _schemaItems.Keys.OrderBy(_ => _))
+		foreach (var schema in _schemaItems.Keys.OrderBy(static _ => _))
 		{
 			model.Add(new ExplorerItem(schema, ExplorerItemKind.Schema, ExplorerIcon.Schema)
 			{
@@ -290,7 +290,7 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 	{
 		var items = new List<ExplorerItem>(procedures.Count);
 
-		foreach (var func in procedures.OrderBy(f => f.MethodName))
+		foreach (var func in procedures.OrderBy(static f => f.MethodName))
 		{
 			List<ExplorerItem>? children = null;
 			var size = func.Parameters.Count + (func.Result != null ? 1 : 0);
@@ -306,7 +306,7 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 
 			items.Add(new ExplorerItem(func.MethodName, ExplorerItemKind.QueryableObject, ExplorerIcon.StoredProc)
 			{
-				DragText     = $"{func.MethodName}({string.Join(", ", func.Parameters.Select(GetParameterName))})",
+				DragText     = $"this.{func.MethodName}({string.Join(", ", func.Parameters.Select(GetParameterName))})",
 				Children     = children,
 				IsEnumerable = func.Result != null,
 				SqlName      = func.DbName
@@ -358,7 +358,7 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 	{
 		var items = new List<ExplorerItem>(functions.Count);
 
-		foreach (var func in functions.OrderBy(f => f.MethodName))
+		foreach (var func in functions.OrderBy(static f => f.MethodName))
 		{
 			var children = new List<ExplorerItem>(func.Parameters.Count + 1);
 
@@ -384,7 +384,7 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 	{
 		var items = new List<ExplorerItem>(functions.Count);
 
-		foreach (var func in functions.OrderBy(f => f.MethodName))
+		foreach (var func in functions.OrderBy(static f => f.MethodName))
 		{
 			List<ExplorerItem>? children = null;
 			if (func.Parameters.Count > 0)
@@ -412,7 +412,7 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 	{
 		var children = new List<ExplorerItem>(tables.Count);
 
-		foreach (var table in tables.OrderBy(t => t.ContextName))
+		foreach (var table in tables.OrderBy(static t => t.ContextName))
 		{
 			var tableChildren = new List<ExplorerItem>(table.Columns.Count);
 
@@ -523,7 +523,7 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 				TypeKind.Array               => $"{SimpleBuildTypeName(type.ArrayElementType!)}[]",
 				TypeKind.Dynamic             => "dynamic",
 				TypeKind.Generic             => $"{type.Name!.Name}<{string.Join(", ", type.TypeArguments!.Select(SimpleBuildTypeName))}>",
-				TypeKind.OpenGeneric         => $"{type.Name!.Name}<{string.Join(", ", type.TypeArguments!.Select(_ => string.Empty))}>",
+				TypeKind.OpenGeneric         => $"{type.Name!.Name}<{string.Join(", ", type.TypeArguments!.Select(static _ => string.Empty))}>",
 				_                            => throw new InvalidOperationException($"Unsupported type kind: {type.Kind}")
 			};
 

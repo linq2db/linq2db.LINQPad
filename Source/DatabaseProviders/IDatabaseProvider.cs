@@ -1,4 +1,4 @@
-﻿using LINQPad.Extensibility.DataContext;
+﻿using System.Data.Common;
 
 namespace LinqToDB.LINQPad;
 
@@ -21,12 +21,6 @@ internal interface IDatabaseProvider
 	/// When <c>true</c>, database provider supports secondary connection for database schema population.
 	/// </summary>
 	bool SupportsSecondaryConnection { get; }
-
-	/// <summary>
-	/// Returns provider factory name. Used to initialize <see cref="IDatabaseInfo.Provider"/>, but probably we don't need it at all as we override
-	/// <see cref="DataContextDriver.GetIDbConnection(IConnectionInfo)"/>.
-	/// </summary>
-	string? GetProviderFactoryName(string providerName);
 
 	/// <summary>
 	/// Release all connections.
@@ -87,4 +81,11 @@ internal interface IDatabaseProvider
 	/// performs provider factory registration to allow Linq To DB locate provider assembly.
 	/// </summary>
 	void RegisterProviderFactory(string providerName, string providerPath);
+
+	// Technically, factory is needed for raw SQL queries only for LINQPad 5 as v6+ has code to work without factory. Still it wasn't backported to LINQPad 5 and doesn't hurt to support.
+	// LINQPad currently calls only CreateCommand and CreateDataAdapter methods.
+	/// <summary>
+	/// Returns ADO.NET provider classes factory.
+	/// </summary>
+	DbProviderFactory GetProviderFactory(string providerName);
 }

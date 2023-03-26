@@ -1,43 +1,61 @@
-﻿#if LPX6
-using System.Data.Common;
+﻿using System.Data.Common;
+#if LPX6
 using System.IO;
 #endif
 
+
 namespace LinqToDB.LINQPad;
 
-internal sealed class SqlCeProvider : IDatabaseProvider
+internal sealed class SqlCeProvider : DatabaseProviderBase
 {
 	private static readonly IReadOnlyList<ProviderInfo> _providers = new ProviderInfo[]
 	{
 		new (ProviderName.SqlCe, "Microsoft SQL Server Compact Edition")
 	};
 
-	string                      IDatabaseProvider.Database                    => ProviderName.SqlCe;
-	string                      IDatabaseProvider.Description                 => "Microsoft SQL Server Compact Edition (SQL CE)";
-	IReadOnlyList<ProviderInfo> IDatabaseProvider.Providers                   => _providers;
-	bool                        IDatabaseProvider.SupportsSecondaryConnection => false;
-	bool                        IDatabaseProvider.AutomaticProviderSelection  => false;
+	public SqlCeProvider()
+		: base(ProviderName.SqlCe, "Microsoft SQL Server Compact Edition (SQL CE)", _providers)
+	{
+	}
 
-	ProviderInfo?                 IDatabaseProvider.GetProviderByConnectionString(string connectionString    ) => null;
-	// no information in schema
-	DateTime?                     IDatabaseProvider.GetLastSchemaUpdate          (ConnectionSettings settings) => null;
-	IReadOnlyCollection<Assembly> IDatabaseProvider.GetAdditionalReferences      (string  providerName       ) => Array.Empty<Assembly>();
-	string                        IDatabaseProvider.GetProviderFactoryName       (string  providerName       ) => "System.Data.SqlServerCe.4.0";
-	string?                       IDatabaseProvider.GetProviderDownloadUrl       (string? providerName       ) => "https://www.microsoft.com/en-us/download/details.aspx?id=30709";
+	public override DateTime? GetLastSchemaUpdate(ConnectionSettings settings)
+	{
+		// no information in schema
+		return null;
+	}
 
-	// connection pooling not supported by provider
-	void IDatabaseProvider.ClearAllPools(string providerName) { }
+	public override string? GetProviderDownloadUrl(string? providerName)
+	{
+		return "https://www.microsoft.com/en-us/download/details.aspx?id=30709";
+	}
+
+	public override void ClearAllPools(string providerName)
+	{
+		// connection pooling not supported by provider
+	}
+
+	public override DbProviderFactory GetProviderFactory(string providerName)
+	{
+		var typeName = "System.Data.SqlServerCe.SqlCeProviderFactory, System.Data.SqlServerCe";
+		return (DbProviderFactory)Type.GetType(typeName, false)?.GetField("Instance", BindingFlags.Public | BindingFlags.Static)?.GetValue(null)!;
+	}
 
 #if LPX6
-	bool    IDatabaseProvider.IsProviderPathSupported(string providerName) => true;
-	string? IDatabaseProvider.GetProviderAssemblyName(string providerName) => "System.Data.SqlServerCe.dll";
+	public override bool IsProviderPathSupported(string providerName)
+	{
+		return true;
+	}
 
-	string? IDatabaseProvider.TryGetDefaultPath(string providerName)
+	public override string? GetProviderAssemblyName(string providerName)
+	{
+		return "System.Data.SqlServerCe.dll";
+	}
+
+	public override string? TryGetDefaultPath(string providerName)
 	{
 		var programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
 		if (!string.IsNullOrEmpty(programFiles))
 		{
-
 			var path = Path.Combine(programFiles, "Microsoft SQL Server Compact Edition\\v4.0\\Private\\System.Data.SqlServerCe.dll");
 
 			if (File.Exists(path))
@@ -48,7 +66,7 @@ internal sealed class SqlCeProvider : IDatabaseProvider
 	}
 
 	private static bool _factoryRegistered;
-	void IDatabaseProvider.RegisterProviderFactory(string providerName, string providerPath)
+	public override void RegisterProviderFactory(string providerName, string providerPath)
 	{
 		if (_factoryRegistered)
 			return;
@@ -67,12 +85,5 @@ internal sealed class SqlCeProvider : IDatabaseProvider
 			throw new LinqToDBLinqPadException($"Failed to initialize SQL CE provider factory: ({ex.GetType().Name}) {ex.Message}");
 		}
 	}
-
-#else
-	bool    IDatabaseProvider.IsProviderPathSupported(string providerName) => false;
-	string? IDatabaseProvider.GetProviderAssemblyName(string providerName) => null;
-	string? IDatabaseProvider.TryGetDefaultPath      (string providerName) => null;
-
-	void IDatabaseProvider.RegisterProviderFactory(string providerName, string providerPath) { }
 #endif
 }
