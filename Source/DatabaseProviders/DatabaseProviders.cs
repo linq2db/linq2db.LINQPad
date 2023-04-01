@@ -20,6 +20,8 @@ internal static class DatabaseProviders
 		ProvidersByProviderName = providersByName;
 		_typeRenderers          = typeRenderers;
 
+		ValueFormatter.RegisterSharedRenderers(typeRenderers);
+
 		Register(providers, providersByName, typeRenderers, new AccessProvider    ());
 		Register(providers, providersByName, typeRenderers, new FirebirdProvider  ());
 		Register(providers, providersByName, typeRenderers, new MySqlProvider     ());

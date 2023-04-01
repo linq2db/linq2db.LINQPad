@@ -1,15 +1,10 @@
-// expression to render values of provider-specific types (and some runtime types without built-in renderer)
+﻿// firebird
 new object[]
 {
 	new
 	{
-		// generic types
-		Null = (string)null,
-		// custom renderer needed for LINQPad 5 only
-		DBNull = DBNull.Value,
 		BigInteger = System.Numerics.BigInteger.Parse("-2352454252352345235235235235235346353523523"),
 
-		// firebird client
 		FbDecFloat1 = new FirebirdSql.Data.Types.FbDecFloat(System.Numerics.BigInteger.Parse("-1234"), 0),
 		FbDecFloat2 = new FirebirdSql.Data.Types.FbDecFloat(System.Numerics.BigInteger.Parse("-1234"), 1),
 		FbDecFloat3 = new FirebirdSql.Data.Types.FbDecFloat(System.Numerics.BigInteger.Parse("-1234"), -1),
@@ -22,5 +17,32 @@ new object[]
 		FbDecFloat0 = new FirebirdSql.Data.Types.FbDecFloat(System.Numerics.BigInteger.Parse("1234"), -5),
 		FbZonedDateTime = new FirebirdSql.Data.Types.FbZonedDateTime(DateTime.UtcNow, "Europe/Amsterdam"),
 		FbZonedTime = new FirebirdSql.Data.Types.FbZonedTime(TimeSpan.FromMinutes(-2222), "Europe/Amsterdam"),
+	}
+}
+
+// sqlce
+new object[]
+{
+	new
+	{
+		SqlBinary = new System.Data.SqlTypes.SqlBinary(new byte[]{0,1,2,3,4,5}),
+		SqlBinaryNull = new System.Data.SqlTypes.SqlBinary(null),
+		SqlBoolean = new System.Data.SqlTypes.SqlBoolean(true),
+		SqlBooleanFalse = new System.Data.SqlTypes.SqlBoolean(false),
+		SqlBooleanNull = System.Data.SqlTypes.SqlBoolean.Null,
+		SqlByte = new System.Data.SqlTypes.SqlByte(255),
+		SqlBytes = new System.Data.SqlTypes.SqlBytes(new byte[]{0,1,2,3,4,5}),
+		SqlChars = new System.Data.SqlTypes.SqlChars(new char[]{(char)0,(char)1, 'S', 'ы'}),
+		SqlDateTime = new System.Data.SqlTypes.SqlDateTime(DateTime.Now),
+		SqlDecimal = new System.Data.SqlTypes.SqlDecimal(-123.456m),
+		SqlDouble = new System.Data.SqlTypes.SqlDouble(-123.456e123),
+		SqlGuid = new System.Data.SqlTypes.SqlGuid(Guid.NewGuid()),
+		SqlInt16 = new System.Data.SqlTypes.SqlInt16(short.MinValue),
+		SqlInt32 = new System.Data.SqlTypes.SqlInt32(int.MinValue),
+		SqlInt64 = new System.Data.SqlTypes.SqlInt64(long.MinValue),
+		SqlMoney = new System.Data.SqlTypes.SqlMoney(-123.456m),
+		SqlSingle = new System.Data.SqlTypes.SqlSingle(-123.456e-23),
+		SqlString = new System.Data.SqlTypes.SqlString("test\0\r\nтест"),
+		SqlXml = new System.Data.SqlTypes.SqlXml(new MemoryStream(Encoding.UTF8.GetBytes("<root>тест</root>"))),
 	}
 }
