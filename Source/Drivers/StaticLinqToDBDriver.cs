@@ -127,9 +127,7 @@ public sealed class LinqToDBStaticDriver : StaticDataContextDriver
 	{
 		try
 		{
-			//objectToWrite = _useCustomFormatter
-			//	? XmlFormatter.Format(_mappingSchema!, objectToWrite)
-			//	: XmlFormatter.FormatValue(objectToWrite);
+			DatabaseProviders.RenderValue(ref objectToWrite);
 		}
 		catch (Exception ex)
 		{

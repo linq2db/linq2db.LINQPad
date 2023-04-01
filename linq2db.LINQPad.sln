@@ -32,6 +32,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{A26F7937
 		Build\SetVersion.ps1 = Build\SetVersion.ps1
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{3F9534AE-BE83-4515-B8AF-2D692D01168D}"
+	ProjectSection(SolutionItems) = preProject
+		Testing\TypeRenderingTests.txt = Testing\TypeRenderingTests.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

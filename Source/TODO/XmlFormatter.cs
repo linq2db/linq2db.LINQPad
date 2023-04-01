@@ -24,11 +24,11 @@
 //		public Func<int,object?>? GetAverage;
 //		public bool               IsNumber;
 
-//		public void Add<T>(Func<T,T> add, Func<T,Func<int,object?>> avr)
+//		public void Add<T>(Func<T, T> add, Func<T, Func<int, object?>> avr)
 //		{
 //			if (Value == null)
 //			{
-//				Value    = add(default!);
+//				Value = add(default!);
 //				IsNumber = true;
 //			}
 //			else
@@ -136,8 +136,8 @@
 //	{
 //		return
 //			Attribute.IsDefined(type, typeof(CompilerGeneratedAttribute), false) &&
-//			type.IsGenericType && type.Name.Contains("AnonymousType")            &&
-//			(type.Name.StartsWith("<>") || type.Name.StartsWith("VB$"))          &&
+//			type.IsGenericType && type.Name.Contains("AnonymousType") &&
+//			(type.Name.StartsWith("<>") || type.Name.StartsWith("VB$")) &&
 //			(type.Attributes & TypeAttributes.NotPublic) == TypeAttributes.NotPublic;
 //	}
 
@@ -148,7 +148,7 @@
 
 //		if (IsAnonymousType(type))
 //			return "new";
-		
+
 //		return type.Name;
 //	}
 
@@ -161,7 +161,7 @@
 //		if (prop == null)
 //			return false;
 
-//		isNull = (bool) prop.GetValue(value)!;
+//		isNull = (bool)prop.GetValue(value)!;
 //		return true;
 //	}
 
@@ -505,43 +505,6 @@
 //		return sb.ToString();
 //	}
 
-//	static object Format(char chr)
-//	{
-//		if (!XmlConvert.IsXmlChar(chr) && !char.IsHighSurrogate(chr) && !char.IsLowSurrogate(chr))
-//			return new XElement("span", new XElement("i", new XAttribute("style", "font-style: italic"), $"\\u{((short)chr):X4}"));
-//		else
-//			return chr.ToString();
-//	}
-
-//	static object Format(string str)
-//	{
-//		var components = new List<object>();
-//		var sb = new StringBuilder();
-
-//		// encode invalid characters as C# escape sequence
-//		foreach (var chr in str)
-//		{
-//			var formattedChar = Format(chr);
-//			if (formattedChar is string chrStr)
-//				sb.Append(chrStr);
-//			else
-//			{
-//				if (sb.Length > 0)
-//				{
-//					components.Add(sb.ToString());
-//					sb.Clear();
-//				}
-
-//				components.Add(formattedChar);
-//			}
-//		}
-
-//		if (sb.Length > 0)
-//			components.Add(sb.ToString());
-
-//		return new XElement("span", components.ToArray());
-//	}
-
 //	static string Format(byte[] value)
 //	{
 //		var sb = new StringBuilder($" Len:{value.Length} ");
@@ -675,14 +638,14 @@
 //	{
 //		private readonly Func<T,bool> _isNullFunc;
 
-//		public IsNullChecker(Func<T,bool> isNullFunc)
+//		public IsNullChecker(Func<T, bool> isNullFunc)
 //		{
 //			_isNullFunc = isNullFunc;
 //		}
 
 //		public override bool IsNull(object value)
 //		{
-//			return _isNullFunc((T) value);
+//			return _isNullFunc((T)value);
 //		}
 //	}
 
@@ -690,14 +653,14 @@
 
 //	#region ValueFormatter
 
-//	static ValueFormatter VF<T>(Func<T,object> format, string? font = null, string? size = null, bool nowrap = true)
+//	static ValueFormatter VF<T>(Func<T, object> format, string? font = null, string? size = null, bool nowrap = true)
 //	{
 //		return new ValueFormatter<T>(format, nowrap) { Font = font, Size = size };
 //	}
 
 //	abstract class ValueFormatter
 //	{
-//		public abstract Type   Type { get; }
+//		public abstract Type Type { get; }
 
 //		public string? Font;
 //		public string? Size;
@@ -746,14 +709,14 @@
 
 //	#region NumberFormatter
 
-//	static NumberFormatter NF<T>(Func<T,Func<T,T>> add, Func<T,Func<int,object>> avr)
+//	static NumberFormatter NF<T>(Func<T, Func<T, T>> add, Func<T, Func<int, object>> avr)
 //	{
 //		return new NumberFormatter<T>(add, avr, static v => new XElement("span", v));
 //	}
 
-//	static NumberFormatter NF<T,TT>(Func<T,Func<TT,TT>> add, Func<TT,Func<int,object>> avr)
+//	static NumberFormatter NF<T, TT>(Func<T, Func<TT, TT>> add, Func<TT, Func<int, object>> avr)
 //	{
-//		return new NumberFormatter<T,TT>(add, avr, static v => new XElement("span", v));
+//		return new NumberFormatter<T, TT>(add, avr, static v => new XElement("span", v));
 //	}
 
 //	static NumberFormatter NF<T, TT>(Func<T, Func<TT, TT>> add, Func<TT, Func<int, object>> avr, Func<T, XElement> format)
@@ -765,7 +728,7 @@
 //	{
 //		public abstract Type Type { get; }
 
-//		public abstract void     AddTotal  (Total total, object value);
+//		public abstract void AddTotal(Total total, object value);
 //		public abstract XElement GetElement(object value);
 //	}
 
@@ -773,9 +736,9 @@
 //	{
 //		public NumberFormatter(Func<T, Func<T, T>> add, Func<T, Func<int, object>> average, Func<T, XElement> format)
 //		{
-//			Add     = add;
+//			Add = add;
 //			Average = average;
-//			Format  = format;
+//			Format = format;
 //		}
 
 //		public override Type Type => typeof(T);
@@ -796,13 +759,13 @@
 //		}
 //	}
 
-//	sealed class NumberFormatter<T,TT> : NumberFormatter
+//	sealed class NumberFormatter<T, TT> : NumberFormatter
 //	{
 //		public NumberFormatter(Func<T, Func<TT, TT>> add, Func<TT, Func<int, object>> average, Func<T, XElement> format)
 //		{
-//			Add     = add;
+//			Add = add;
 //			Average = average;
-//			Format  = format;
+//			Format = format;
 //		}
 
 //		public override Type Type => typeof(T);

@@ -274,14 +274,12 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 	{
 		try
 		{
+			DatabaseProviders.RenderValue(ref objectToWrite);
 		}
 		catch (Exception ex)
 		{
 			DriverHelper.HandleException(ex, nameof(PreprocessObjectToWrite));
 		}
-		//objectToWrite = _useCustomFormatter
-		//	? XmlFormatter.Format(_mappingSchema!, objectToWrite)
-		//	: XmlFormatter.FormatValue(objectToWrite);
 	}
 
 	/// <inheritdoc/>

@@ -16,6 +16,7 @@ Major provider rework:
 - redesigned connection options dialog, added help tooltips to options
 - add separate schema load options for stored procedures and functions
 - add additional connection string support for Access to mitigate schema issues in ODBC and OLE DB providers
+- add packages in schema tree for supporting databases
 
 New/updated dependencies:
 

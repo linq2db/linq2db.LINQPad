@@ -1,0 +1,26 @@
+// expression to render values of provider-specific types (and some runtime types without built-in renderer)
+new object[]
+{
+	new
+	{
+		// generic types
+		Null = (string)null,
+		// custom renderer needed for LINQPad 5 only
+		DBNull = DBNull.Value,
+		BigInteger = System.Numerics.BigInteger.Parse("-2352454252352345235235235235235346353523523"),
+
+		// firebird client
+		FbDecFloat1 = new FirebirdSql.Data.Types.FbDecFloat(System.Numerics.BigInteger.Parse("-1234"), 0),
+		FbDecFloat2 = new FirebirdSql.Data.Types.FbDecFloat(System.Numerics.BigInteger.Parse("-1234"), 1),
+		FbDecFloat3 = new FirebirdSql.Data.Types.FbDecFloat(System.Numerics.BigInteger.Parse("-1234"), -1),
+		FbDecFloat4 = new FirebirdSql.Data.Types.FbDecFloat(System.Numerics.BigInteger.Parse("-1234"), -4),
+		FbDecFloat5 = new FirebirdSql.Data.Types.FbDecFloat(System.Numerics.BigInteger.Parse("-1234"), -5),
+		FbDecFloat6 = new FirebirdSql.Data.Types.FbDecFloat(System.Numerics.BigInteger.Parse("1234"), 0),
+		FbDecFloat7 = new FirebirdSql.Data.Types.FbDecFloat(System.Numerics.BigInteger.Parse("1234"), 1),
+		FbDecFloat8 = new FirebirdSql.Data.Types.FbDecFloat(System.Numerics.BigInteger.Parse("1234"), -1),
+		FbDecFloat9 = new FirebirdSql.Data.Types.FbDecFloat(System.Numerics.BigInteger.Parse("1234"), -4),
+		FbDecFloat0 = new FirebirdSql.Data.Types.FbDecFloat(System.Numerics.BigInteger.Parse("1234"), -5),
+		FbZonedDateTime = new FirebirdSql.Data.Types.FbZonedDateTime(DateTime.UtcNow, "Europe/Amsterdam"),
+		FbZonedTime = new FirebirdSql.Data.Types.FbZonedTime(TimeSpan.FromMinutes(-2222), "Europe/Amsterdam"),
+	}
+}
