@@ -6,49 +6,39 @@ namespace LinqToDB.LINQPad;
 
 internal static class DatabaseProviders
 {
-	private static readonly IReadOnlyDictionary<Type, Func<object, object>> _typeRenderers;
-
 	public static readonly IReadOnlyDictionary<string, IDatabaseProvider> Providers;
 	public static readonly IReadOnlyDictionary<string, IDatabaseProvider> ProvidersByProviderName;
 
 	static DatabaseProviders()
 	{
-		var typeRenderers       = new Dictionary<Type  , Func<object, object>>();
 		var providers           = new Dictionary<string, IDatabaseProvider  >();
 		var providersByName     = new Dictionary<string, IDatabaseProvider  >();
 		Providers               = providers;
 		ProvidersByProviderName = providersByName;
-		_typeRenderers          = typeRenderers;
 
-		ValueFormatter.RegisterSharedRenderers(typeRenderers);
-
-		Register(providers, providersByName, typeRenderers, new AccessProvider    ());
-		Register(providers, providersByName, typeRenderers, new FirebirdProvider  ());
-		Register(providers, providersByName, typeRenderers, new MySqlProvider     ());
-		Register(providers, providersByName, typeRenderers, new PostgreSQLProvider());
-		Register(providers, providersByName, typeRenderers, new SybaseAseProvider ());
-		Register(providers, providersByName, typeRenderers, new SQLiteProvider    ());
-		Register(providers, providersByName, typeRenderers, new SqlCeProvider     ());
-		Register(providers, providersByName, typeRenderers, new DB2Provider       ());
-		Register(providers, providersByName, typeRenderers, new InformixProvider  ());
-		Register(providers, providersByName, typeRenderers, new SapHanaProvider   ());
-		Register(providers, providersByName, typeRenderers, new OracleProvider    ());
-		Register(providers, providersByName, typeRenderers, new SqlServerProvider ());
-		Register(providers, providersByName, typeRenderers, new ClickHouseProvider());
+		Register(providers, providersByName, new AccessProvider    ());
+		Register(providers, providersByName, new FirebirdProvider  ());
+		Register(providers, providersByName, new MySqlProvider     ());
+		Register(providers, providersByName, new PostgreSQLProvider());
+		Register(providers, providersByName, new SybaseAseProvider ());
+		Register(providers, providersByName, new SQLiteProvider    ());
+		Register(providers, providersByName, new SqlCeProvider     ());
+		Register(providers, providersByName, new DB2Provider       ());
+		Register(providers, providersByName, new InformixProvider  ());
+		Register(providers, providersByName, new SapHanaProvider   ());
+		Register(providers, providersByName, new OracleProvider    ());
+		Register(providers, providersByName, new SqlServerProvider ());
+		Register(providers, providersByName, new ClickHouseProvider());
 
 		static void Register(
-			Dictionary<string, IDatabaseProvider  > providers,
-			Dictionary<string, IDatabaseProvider  > providersByName,
-			Dictionary<Type  , Func<object, object>> typeRenderers,
-			IDatabaseProvider provider)
+			Dictionary<string, IDatabaseProvider> providers,
+			Dictionary<string, IDatabaseProvider> providersByName,
+			IDatabaseProvider                     provider)
 		{
 			providers.Add(provider.Database, provider);
 
 			foreach (var info in provider.Providers)
 				providersByName.Add(info.Name, provider);
-
-			foreach (var (type, renderer) in provider.GetTypeRenderers())
-				typeRenderers.Add(type, renderer);
 		}
 	}
 
@@ -91,13 +81,5 @@ internal static class DatabaseProviders
 			return provider;
 
 		throw new LinqToDBLinqPadException($"Cannot find provider for database '{database}'");
-	}
-
-	public static object RenderValue(object value)
-	{
-		if (_typeRenderers.TryGetValue(value.GetType(), out var renderer))
-			value = renderer(value);
-
-		return ValueFormatter.Format(value);
 	}
 }

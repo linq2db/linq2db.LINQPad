@@ -5,6 +5,7 @@ using LinqToDB.LINQPad.UI;
 using LinqToDB.Mapping;
 
 #if !LPX6
+using System.Text.Json;
 using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
@@ -61,6 +62,8 @@ internal static class DriverHelper
 				return typeof(DiagnosticSource).Assembly;
 			if (requestedAssembly.Name == "System.Reflection.Metadata")
 				return typeof(Blob).Assembly;
+			if (requestedAssembly.Name == "System.Text.Json")
+				return typeof(JsonDocument).Assembly;
 
 			return null;
 		};

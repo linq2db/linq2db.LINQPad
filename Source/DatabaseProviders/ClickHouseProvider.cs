@@ -2,6 +2,9 @@
 using ClickHouse.Client.ADO;
 using LinqToDB.Data;
 using MySqlConnector;
+#if LPX6
+using Octonica.ClickHouseClient;
+#endif
 
 namespace LinqToDB.LINQPad;
 
@@ -40,6 +43,10 @@ internal sealed class ClickHouseProvider : DatabaseProviderBase
 	{
 		if (providerName == ProviderName.ClickHouseClient)
 			return new ClickHouseConnectionFactory();
+#if LPX6
+		if (providerName == ProviderName.ClickHouseOctonica)
+			return new ClickHouseDbProviderFactory();
+#endif
 
 		return MySqlConnectorFactory.Instance;
 	}

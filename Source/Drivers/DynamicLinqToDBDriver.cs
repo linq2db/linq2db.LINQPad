@@ -274,7 +274,7 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 	{
 		try
 		{
-			objectToWrite = DatabaseProviders.RenderValue(objectToWrite);
+			objectToWrite = ValueFormatter.Format(objectToWrite);
 		}
 		catch (Exception ex)
 		{

@@ -31,10 +31,4 @@ internal sealed class SybaseAseProvider : DatabaseProviderBase
 	{
 		return AseClientFactory.Instance;
 	}
-	public override IEnumerable<(Type type, Func<object, object> renderer)> GetTypeRenderers()
-	{
-		yield return (typeof(AseDecimal), RenderAseDecimal);
-	}
-
-	private static object RenderAseDecimal(object value) => value.ToString()!;
 }

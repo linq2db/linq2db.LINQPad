@@ -127,7 +127,7 @@ public sealed class LinqToDBStaticDriver : StaticDataContextDriver
 	{
 		try
 		{
-			objectToWrite = DatabaseProviders.RenderValue(objectToWrite);
+			objectToWrite = ValueFormatter.Format(objectToWrite);
 		}
 		catch (Exception ex)
 		{

@@ -29,6 +29,4 @@ internal abstract class DatabaseProviderBase : IDatabaseProvider
 	public abstract void              ClearAllPools      (string providerName        );
 	public abstract DateTime?         GetLastSchemaUpdate(ConnectionSettings settings);
 	public abstract DbProviderFactory GetProviderFactory (string providerName        );
-
-	public virtual IEnumerable<(Type type, Func<object, object> renderer)> GetTypeRenderers() => Array.Empty<(Type, Func<object, object>)>();
 }

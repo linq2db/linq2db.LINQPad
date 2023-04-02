@@ -88,10 +88,4 @@ internal interface IDatabaseProvider
 	/// Returns ADO.NET provider classes factory.
 	/// </summary>
 	DbProviderFactory GetProviderFactory(string providerName);
-
-	/// <summary>
-	/// Returns list of type rendering delegates for specific types.
-	/// Must include only provider-specific type renderers to avoid type conflicts with other providers.
-	/// </summary>
-	IEnumerable<(Type type, Func<object, object> renderer)> GetTypeRenderers();
 }

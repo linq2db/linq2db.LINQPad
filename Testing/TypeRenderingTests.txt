@@ -1,10 +1,20 @@
-﻿// firebird
+﻿// generic
 new object[]
 {
 	new
 	{
 		BigInteger = System.Numerics.BigInteger.Parse("-2352454252352345235235235235235346353523523"),
+		IPv4 = System.Net.IPAddress.Parse("127.0.0.1"),
+		IPv6 = System.Net.IPAddress.Parse("2001:0db8:85a3:0000:0000:8a2e:0370:7334"),
+	}
+}
 
+
+// firebird
+new object[]
+{
+	new
+	{
 		FbDecFloat1 = new FirebirdSql.Data.Types.FbDecFloat(System.Numerics.BigInteger.Parse("-1234"), 0),
 		FbDecFloat2 = new FirebirdSql.Data.Types.FbDecFloat(System.Numerics.BigInteger.Parse("-1234"), 1),
 		FbDecFloat3 = new FirebirdSql.Data.Types.FbDecFloat(System.Numerics.BigInteger.Parse("-1234"), -1),
@@ -54,5 +64,26 @@ new object[]
 	new
 	{
 		AseDecimal = AdoNetCore.AseClient.AseDecimal.Parse("-99999999999999999999.999999999999999999"),
+	}
+}
+
+// clickhouse client
+new object[]
+{
+	new
+	{
+		ClickHouseDecimal = new ClickHouse.Client.Numerics.ClickHouseDecimal(System.Numerics.BigInteger.Parse("-2352454252352345235235235235235346353523523"), 10),
+	}
+}
+
+// mysqlconnector
+new object[]
+{
+	new
+	{
+		MySqlDateTime  = new MySqlConnector.MySqlDateTime(DateTime.Now),
+		MySqlDateTimeZero  = new MySqlConnector.MySqlDateTime(),
+		MySqlDecimal = Activator.CreateInstance(typeof(MySqlConnector.MySqlDecimal), BindingFlags.NonPublic | BindingFlags.Instance, null, new object[]{"-23524542523523452352352352352.35346353523523"}, null),
+		MySqlGeometry = MySqlConnector.MySqlGeometry.FromWkb(123, new byte[] { 0x00, 0x00, 0x00, 0x00, 0x01, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }),
 	}
 }
