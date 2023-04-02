@@ -6,16 +6,16 @@ namespace LinqToDB.LINQPad;
 
 internal static class DatabaseProviders
 {
-	private static readonly IReadOnlyDictionary<Type, TypeRenderer> _typeRenderers;
+	private static readonly IReadOnlyDictionary<Type, Func<object, object>> _typeRenderers;
 
 	public static readonly IReadOnlyDictionary<string, IDatabaseProvider> Providers;
 	public static readonly IReadOnlyDictionary<string, IDatabaseProvider> ProvidersByProviderName;
 
 	static DatabaseProviders()
 	{
-		var typeRenderers       = new Dictionary<Type, TypeRenderer>();
-		var providers           = new Dictionary<string, IDatabaseProvider>();
-		var providersByName     = new Dictionary<string, IDatabaseProvider>();
+		var typeRenderers       = new Dictionary<Type  , Func<object, object>>();
+		var providers           = new Dictionary<string, IDatabaseProvider  >();
+		var providersByName     = new Dictionary<string, IDatabaseProvider  >();
 		Providers               = providers;
 		ProvidersByProviderName = providersByName;
 		_typeRenderers          = typeRenderers;
@@ -37,9 +37,9 @@ internal static class DatabaseProviders
 		Register(providers, providersByName, typeRenderers, new ClickHouseProvider());
 
 		static void Register(
-			Dictionary<string, IDatabaseProvider> providers,
-			Dictionary<string, IDatabaseProvider> providersByName,
-			Dictionary<Type  , TypeRenderer     > typeRenderers,
+			Dictionary<string, IDatabaseProvider  > providers,
+			Dictionary<string, IDatabaseProvider  > providersByName,
+			Dictionary<Type  , Func<object, object>> typeRenderers,
 			IDatabaseProvider provider)
 		{
 			providers.Add(provider.Database, provider);
@@ -93,11 +93,11 @@ internal static class DatabaseProviders
 		throw new LinqToDBLinqPadException($"Cannot find provider for database '{database}'");
 	}
 
-	public static void RenderValue(ref object? value)
+	public static object RenderValue(object value)
 	{
-		if (value != null && _typeRenderers.TryGetValue(value.GetType(), out var renderer))
-			renderer(ref value);
+		if (_typeRenderers.TryGetValue(value.GetType(), out var renderer))
+			value = renderer(value);
 
-		value = ValueFormatter.Format(value);
+		return ValueFormatter.Format(value);
 	}
 }

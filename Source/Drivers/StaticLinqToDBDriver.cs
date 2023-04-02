@@ -123,11 +123,11 @@ public sealed class LinqToDBStaticDriver : StaticDataContextDriver
 	}
 
 	/// <inheritdoc/>
-	public override void PreprocessObjectToWrite(ref object? objectToWrite, ObjectGraphInfo info)
+	public override void PreprocessObjectToWrite(ref object objectToWrite, ObjectGraphInfo info)
 	{
 		try
 		{
-			DatabaseProviders.RenderValue(ref objectToWrite);
+			objectToWrite = DatabaseProviders.RenderValue(objectToWrite);
 		}
 		catch (Exception ex)
 		{

@@ -11,7 +11,7 @@ internal static class ValueFormatter
 {
 	private static readonly object _null = Util.RawHtml(new XElement("span", new XAttribute("style", "text-align:center;"), new XElement("i", new XAttribute("style", "font-style: italic"), "null")));
 
-	public static object? Format(object? value)
+	public static object Format(object value)
 	{
 		if (IsNull(value))
 			return _null;
@@ -112,7 +112,7 @@ internal static class ValueFormatter
 
 	// renderers for shared types (used by more than one provider)
 
-	public static void RegisterSharedRenderers(Dictionary<Type, TypeRenderer> typeRenderers)
+	public static void RegisterSharedRenderers(Dictionary<Type, Func<object, object>> typeRenderers)
 	{
 		typeRenderers.Add(typeof(BigInteger), RenderToString);
 		typeRenderers.Add(typeof(SqlXml)    , RenderSqlXml);
@@ -121,37 +121,38 @@ internal static class ValueFormatter
 		typeRenderers.Add(typeof(SqlBinary) , RenderSqlBinary);
 	}
 
-	private static void RenderToString(ref object? value)
-	{
-		// for types that already implement rendering of all data using ToString
-		value = value!.ToString();
-	}
+	// for types that already implement rendering of all data using ToString
+	private static object RenderToString(object value) => value.ToString()!;
 
-	private static void RenderSqlXml(ref object? value)
+	private static object RenderSqlXml(object value)
 	{
-		var val = (SqlXml)value!;
+		var val = (SqlXml)value;
 		if (!val.IsNull)
 			value = val.Value;
+		return value;
 	}
 
-	private static void RenderSqlChars(ref object? value)
+	private static object RenderSqlChars(object value)
 	{
-		var val = (SqlChars)value!;
+		var val = (SqlChars)value;
 		if (!val.IsNull)
 			value = val.Value;
+		return value;
 	}
 
-	private static void RenderSqlBytes(ref object? value)
+	private static object RenderSqlBytes(object value)
 	{
-		var val = (SqlBytes)value!;
+		var val = (SqlBytes)value;
 		if (!val.IsNull)
 			value = val.Value;
+		return value;
 	}
 
-	private static void RenderSqlBinary(ref object? value)
+	private static object RenderSqlBinary(object value)
 	{
-		var val = (SqlBinary)value!;
+		var val = (SqlBinary)value;
 		if (!val.IsNull)
 			value = val.Value;
+		return value;
 	}
 }

@@ -34,19 +34,19 @@ internal sealed class FirebirdProvider : DatabaseProviderBase
 		return FirebirdClientFactory.Instance;
 	}
 
-	public override IEnumerable<(Type type, TypeRenderer renderer)> GetTypeRenderers()
+	public override IEnumerable<(Type type, Func<object, object> renderer)> GetTypeRenderers()
 	{
 		yield return (typeof(FbDecFloat)     , RenderFbDecFloat);
-		yield return (typeof(FbZonedTime)    , RenderFbZonedTime);
-		yield return (typeof(FbZonedDateTime), RenderFbZonedDateTime);
+		yield return (typeof(FbZonedTime)    , RenderFbZoned);
+		yield return (typeof(FbZonedDateTime), RenderFbZoned);
 	}
 
-	private static void RenderFbDecFloat(ref object? value)
+	private static object RenderFbDecFloat(object value)
 	{
 		// type reders as {Coefficient}E{Exponent} which is not very noice
 		var typedValue = (FbDecFloat)value!;
 		var isNegative = typedValue.Coefficient < 0;
-		var strValue = (isNegative ? BigInteger.Negate(typedValue.Coefficient) : typedValue.Coefficient).ToString(CultureInfo.InvariantCulture);
+		var strValue   = (isNegative ? BigInteger.Negate(typedValue.Coefficient) : typedValue.Coefficient).ToString(CultureInfo.InvariantCulture);
 
 		// semi-localized rendering...
 		if (typedValue.Exponent < 0)
@@ -62,18 +62,8 @@ internal sealed class FirebirdProvider : DatabaseProviderBase
 		else if (typedValue.Exponent > 0)
 			strValue = $"{strValue}{new string('0', typedValue.Exponent)}";
 
-		value = isNegative ? $"-{strValue}" : strValue;
+		return isNegative ? $"-{strValue}" : strValue;
 	}
 
-	private static void RenderFbZonedTime(ref object? value)
-	{
-		// type already implements rendering of all data
-		value = value!.ToString();
-	}
-
-	private static void RenderFbZonedDateTime(ref object? value)
-	{
-		// type already implements rendering of all data
-		value = value!.ToString();
-	}
+	private static object RenderFbZoned(object value) => value.ToString()!;
 }

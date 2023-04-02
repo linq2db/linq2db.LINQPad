@@ -30,5 +30,5 @@ internal abstract class DatabaseProviderBase : IDatabaseProvider
 	public abstract DateTime?         GetLastSchemaUpdate(ConnectionSettings settings);
 	public abstract DbProviderFactory GetProviderFactory (string providerName        );
 
-	public virtual IEnumerable<(Type type, TypeRenderer renderer)> GetTypeRenderers() => Array.Empty<(Type, TypeRenderer)>();
+	public virtual IEnumerable<(Type type, Func<object, object> renderer)> GetTypeRenderers() => Array.Empty<(Type, Func<object, object>)>();
 }

@@ -317,7 +317,28 @@ internal sealed class ConnectionSettings
 		/// <summary>
 		/// Database provider assembly path.
 		/// </summary>
-		public string? ProviderPath { get; set; }
+		[JsonIgnore]
+		public string? ProviderPath
+		{
+			get => IntPtr.Size == 4 ? ProviderPathx86 ?? ProviderPathx64 : ProviderPathx64 ?? ProviderPathx86;
+			set
+			{
+				if (IntPtr.Size == 4)
+					ProviderPathx86 = value;
+				else
+					ProviderPathx64 = value;
+			}
+		}
+
+		/// <summary>
+		/// Database provider assembly path.
+		/// </summary>
+		public string? ProviderPathx86 { get; set; }
+
+		/// <summary>
+		/// Database provider assembly path.
+		/// </summary>
+		public string? ProviderPathx64 { get; set; }
 
 		/// <summary>
 		/// Command timeout. <c>null</c> for provider/database default timeout.

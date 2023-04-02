@@ -93,5 +93,5 @@ internal interface IDatabaseProvider
 	/// Returns list of type rendering delegates for specific types.
 	/// Must include only provider-specific type renderers to avoid type conflicts with other providers.
 	/// </summary>
-	IEnumerable<(Type type, TypeRenderer renderer)> GetTypeRenderers();
+	IEnumerable<(Type type, Func<object, object> renderer)> GetTypeRenderers();
 }
