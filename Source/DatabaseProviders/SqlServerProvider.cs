@@ -1,5 +1,7 @@
 ﻿using System.Data.Common;
 using LinqToDB.Data;
+using LinqToDB.DataProvider;
+using LinqToDB.DataProvider.SqlServer;
 using Microsoft.Data.SqlClient;
 using Microsoft.SqlServer.Types;
 
@@ -45,5 +47,23 @@ internal sealed class SqlServerProvider : DatabaseProviderBase
 	public override DbProviderFactory GetProviderFactory(string providerName)
 	{
 		return SqlClientFactory.Instance;
+	}
+
+	public override IDataProvider GetDataProvider(string providerName, string connectionString)
+	{
+		// provider detector fails to detect Microsoft.Data.SqlClient
+		// kinda regression in linq2db v5
+		return providerName switch
+		{
+			ProviderName.SqlServer2005 => SqlServerTools.GetDataProvider(SqlServerVersion.v2005, DataProvider.SqlServer.SqlServerProvider.MicrosoftDataSqlClient, connectionString),
+			ProviderName.SqlServer2008 => SqlServerTools.GetDataProvider(SqlServerVersion.v2008, DataProvider.SqlServer.SqlServerProvider.MicrosoftDataSqlClient, connectionString),
+			ProviderName.SqlServer2012 => SqlServerTools.GetDataProvider(SqlServerVersion.v2012, DataProvider.SqlServer.SqlServerProvider.MicrosoftDataSqlClient, connectionString),
+			ProviderName.SqlServer2014 => SqlServerTools.GetDataProvider(SqlServerVersion.v2014, DataProvider.SqlServer.SqlServerProvider.MicrosoftDataSqlClient, connectionString),
+			ProviderName.SqlServer2016 => SqlServerTools.GetDataProvider(SqlServerVersion.v2016, DataProvider.SqlServer.SqlServerProvider.MicrosoftDataSqlClient, connectionString),
+			ProviderName.SqlServer2017 => SqlServerTools.GetDataProvider(SqlServerVersion.v2017, DataProvider.SqlServer.SqlServerProvider.MicrosoftDataSqlClient, connectionString),
+			ProviderName.SqlServer2019 => SqlServerTools.GetDataProvider(SqlServerVersion.v2019, DataProvider.SqlServer.SqlServerProvider.MicrosoftDataSqlClient, connectionString),
+			ProviderName.SqlServer2022 => SqlServerTools.GetDataProvider(SqlServerVersion.v2022, DataProvider.SqlServer.SqlServerProvider.MicrosoftDataSqlClient, connectionString),
+			_                          => base.GetDataProvider(providerName, connectionString)
+		};
 	}
 }

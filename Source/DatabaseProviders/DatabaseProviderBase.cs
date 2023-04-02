@@ -1,4 +1,6 @@
 ﻿using System.Data.Common;
+using LinqToDB.Data;
+using LinqToDB.DataProvider;
 
 namespace LinqToDB.LINQPad;
 
@@ -29,4 +31,10 @@ internal abstract class DatabaseProviderBase : IDatabaseProvider
 	public abstract void              ClearAllPools      (string providerName        );
 	public abstract DateTime?         GetLastSchemaUpdate(ConnectionSettings settings);
 	public abstract DbProviderFactory GetProviderFactory (string providerName        );
+
+	public virtual IDataProvider GetDataProvider(string providerName, string connectionString)
+	{
+		return DataConnection.GetDataProvider(providerName, connectionString)
+			?? throw new LinqToDBLinqPadException($"Can not activate provider '{providerName}'");
+	}
 }

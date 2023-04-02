@@ -1,4 +1,5 @@
 ﻿using System.Data.Common;
+using LinqToDB.DataProvider;
 
 namespace LinqToDB.LINQPad;
 
@@ -88,4 +89,9 @@ internal interface IDatabaseProvider
 	/// Returns ADO.NET provider classes factory.
 	/// </summary>
 	DbProviderFactory GetProviderFactory(string providerName);
+
+	/// <summary>
+	/// Returns linq2db data provider.
+	/// </summary>
+	IDataProvider GetDataProvider(string providerName, string connectionString);
 }

@@ -87,3 +87,14 @@ new object[]
 		MySqlGeometry = MySqlConnector.MySqlGeometry.FromWkb(123, new byte[] { 0x00, 0x00, 0x00, 0x00, 0x01, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }),
 	}
 }
+
+// sqlserver.types
+new object[]
+{
+	new
+	{
+		SqlHierarchyId = Microsoft.SqlServer.Types.SqlHierarchyId.Parse("/1/2/3/4/5/"),
+		SqlGeometry = Microsoft.SqlServer.Types.SqlGeometry.Point(123.56, -124.2343, 123),
+		SqlGeography = Microsoft.SqlServer.Types.SqlGeography.Point(123.56, -124.2343, 123),
+	}
+}

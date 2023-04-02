@@ -137,11 +137,7 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 			};
 
 			foreach (var assembly in DatabaseProviders.GetProvider(settings.Connection.Database).GetAdditionalReferences(settings.Connection.Provider!))
-#if LPX6
-				references.Add(MakeReferenceByRuntime(runtimeToken, assembly.Location));
-#else
-				MetadataReference.CreateFromFile(assembly.Location);
-#endif
+				references.Add(MetadataReference.CreateFromFile(assembly.Location));
 
 #if LPX6
 			references.Add(MakeReferenceByRuntime(runtimeToken, providerAssemblyLocation));

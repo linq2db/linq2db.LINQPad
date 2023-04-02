@@ -1,5 +1,4 @@
 ﻿using System.Data.Common;
-using LinqToDB.Data;
 using LinqToDB.DataProvider;
 
 namespace LinqToDB.LINQPad;
@@ -56,11 +55,11 @@ internal static class DatabaseProviders
 		if (string.IsNullOrWhiteSpace(connectionString))
 			throw new LinqToDBLinqPadException($"Can not activate provider '{providerName}'. Connection string not specified.");
 
+		var databaseProvider = GetProviderByName(providerName!);
 		if (providerPath != null)
-			GetProviderByName(providerName!).RegisterProviderFactory(providerName!, providerPath);
+			databaseProvider.RegisterProviderFactory(providerName!, providerPath);
 
-		return DataConnection.GetDataProvider(providerName!, connectionString!)
-			?? throw new LinqToDBLinqPadException($"Can not activate provider '{providerName}'");
+		return databaseProvider.GetDataProvider(providerName!, connectionString!);
 	}
 
 	private static IDatabaseProvider GetProviderByName(string providerName)
