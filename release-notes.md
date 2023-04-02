@@ -2,6 +2,7 @@
 
 Major provider rework:
 
+- [BREAKING][LINQPAD5] strong name was removed to allow work with unsigned providers without hacks. Because LINQPad 5 use full assembly name for provider, your old connections will disappear after update from left pane (they still stored in LINQPad settings, but visible only to older driver versions) and should be recreated
 - [LINQPAD5] update required framework version from .NET Framework 4.6.1 to 4.8
 - [LINQPAD5] add `json` configuration files support to static context (ported from LINQPad 7 version)
 - [LINQPAD7] update required framework version from `netcoreapp3.1` to `net6.0-windows`
@@ -17,6 +18,7 @@ Major provider rework:
 - add separate schema load options for stored procedures and functions
 - add additional connection string support for Access to mitigate schema issues in ODBC and OLE DB providers
 - add packages in schema tree for supporting databases
+- add nullability information for columns and parameters for both value and reference types
 
 New/updated dependencies:
 

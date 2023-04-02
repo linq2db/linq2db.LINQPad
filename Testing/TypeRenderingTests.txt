@@ -46,3 +46,13 @@ new object[]
 		SqlXml = new System.Data.SqlTypes.SqlXml(new MemoryStream(Encoding.UTF8.GetBytes("<root>тест</root>"))),
 	}
 }
+
+
+// ase
+new object[]
+{
+	new
+	{
+		AseDecimal = AdoNetCore.AseClient.AseDecimal.Parse("-99999999999999999999.999999999999999999"),
+	}
+}

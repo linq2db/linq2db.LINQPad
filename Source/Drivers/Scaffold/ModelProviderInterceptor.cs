@@ -35,7 +35,7 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 	private sealed   record TableData                    (string ContextName, IType ContextType, string DbName, List<ColumnData> Columns);
 	private sealed   record ColumnData                   (string MemberName, IType Type, string DbName, bool IsPrimaryKey, bool IsIdentity, DataType? DataType, DatabaseType DbType);
 	private sealed   record AssociationData              (string MemberName, IType Type, bool FromSide, bool OneToMany, string KeyName, TableData Source, TableData Target);
-	private sealed   record ResultColumnData             (string MemberName, IType Type, string DbName, DataType DataType, DatabaseType DbType);
+	private sealed   record ResultColumnData             (string MemberName, IType Type, string DbName, DataType? DataType, DatabaseType DbType);
 	private sealed   record ParameterData                (string Name, IType Type, ParameterDirection Direction);
 	private abstract record FunctionBaseData             (string MethodName, string DbName, IReadOnlyList<ParameterData> Parameters);
 	private sealed   record ProcedureData                (string MethodName, string DbName, IReadOnlyList<ParameterData> Parameters, IReadOnlyList<ResultColumnData>? Result) : FunctionBaseData(MethodName, DbName, Parameters);
@@ -143,6 +143,9 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 		var schema     = GetSchemaOrPackage(procedureModel.Name.Schema, procedureModel.Name.Package);
 		var parameters = CollectParameters(procedureModel.Parameters);
 
+		if (procedureModel.Return != null)
+			parameters.Add(new ParameterData(procedureModel.Return.Parameter.Name, procedureModel.Return.Parameter.Type, ParameterDirection.Out));
+
 		List<ResultColumnData>? result = null;
 
 		if (procedureModel.Results.Count > 0)
@@ -206,7 +209,7 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 				column.Property.Name,
 				column.Property.Type!,
 				column.Metadata.Name!,
-				column.Metadata.DataType!.Value,
+				column.Metadata.DataType,
 				column.Metadata.DbType!));
 		}
 
@@ -567,6 +570,9 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 				TypeKind.OpenGeneric         => $"{type.Name!.Name}<{string.Join(", ", type.TypeArguments!.Select(static _ => string.Empty))}>",
 				_                            => throw new InvalidOperationException($"Unsupported type kind: {type.Kind}")
 			};
+
+			if (type.IsNullable)
+				typeName += "?";
 
 			_typeNameCache.Add(type, typeName);
 		}

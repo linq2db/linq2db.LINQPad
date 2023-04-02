@@ -42,15 +42,6 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
-	<PropertyGroup Label="Strong name setup" Condition="'$(TargetFramework)' == 'net48'">
-		<!--IMPORTANT: while nor we nor LINQPad require strong name, we cannot just remove it now:
-				LINQPad will not bind old connection settings from strong-named version to unsigned version after update-->
-		<AssemblyOriginatorKeyFile>..\Build\linq2db.snk</AssemblyOriginatorKeyFile>
-		<SignAssembly>true</SignAssembly>
-		<DelaySign>false</DelaySign>
-		<NoWarn>$(NoWarn);CS8002</NoWarn>
-	</PropertyGroup>
-
 	<PropertyGroup Condition="'$(TargetFramework)' != 'net48'">
 		<DefineConstants>LPX6</DefineConstants>
 	</PropertyGroup>
