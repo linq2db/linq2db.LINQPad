@@ -121,7 +121,6 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 			var coreAssemblies = GetCoreFxReferenceAssemblies(cxInfo);
 			var runtimeToken   = _runtimeTokenExtractor.Match(coreAssemblies[0]).Groups["token"].Value;
 #endif
-
 			var references = new List<MetadataReference>()
 			{
 #if !LPX6
@@ -131,6 +130,7 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 				MetadataReference.CreateFromFile(typeof(PhysicalAddress)      .Assembly.Location),
 				MetadataReference.CreateFromFile(typeof(BigInteger)           .Assembly.Location),
 				MetadataReference.CreateFromFile(typeof(IAsyncDisposable)     .Assembly.Location),
+				MetadataReference.CreateFromFile(Path.Combine(Path.GetDirectoryName(typeof(string).Assembly.Location), "netstandard.dll")),
 #endif
 				MetadataReference.CreateFromFile(typeof(DataConnection).       Assembly.Location),
 				MetadataReference.CreateFromFile(typeof(LINQPadDataConnection).Assembly.Location),
