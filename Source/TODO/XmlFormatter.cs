@@ -505,24 +505,6 @@
 //		return sb.ToString();
 //	}
 
-//	static string Format(byte[] value)
-//	{
-//		var sb = new StringBuilder($" Len:{value.Length} ");
-
-//		int i;
-
-//		for (i = 0; i < value.Length && i < 10; i++)
-//			sb.Append($"{value[i]:X2}:");
-
-//		if (i > 0)
-//			sb.Length--;
-
-//		if (i < value.Length)
-//			sb.Append("...");
-
-//		return sb.ToString();
-//	}
-
 //	static ValueFormatter GenerateValueFormatter<T>(Type type, Func<ParameterExpression, Expression> dataExtractor, bool nowrap = true)
 //	{
 //		var param = Expression.Parameter(type);

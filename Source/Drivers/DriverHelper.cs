@@ -67,7 +67,11 @@ internal static class DriverHelper
 
 			return null;
 		};
+
+		AppDomain.CurrentDomain.DomainUnload += static (_, _) => DatabaseProviders.Unload();
 #endif
+
+		DatabaseProviders.Init();
 	}
 
 	/// <summary>
@@ -264,5 +268,36 @@ internal static class DriverHelper
 	public static void HandleException(Exception ex, string method)
 	{
 		Notification.Error($"Unhandled error in method '{method}': {ex.Message}\r\n{ex.StackTrace}", "Linq To DB Driver Error");
+	}
+
+	public static IEnumerable<string> GetAssembliesToAdd(IConnectionInfo cxInfo)
+	{
+#if LPX6
+		yield return "*";
+#else
+		yield return typeof(DataConnection).Assembly.Location;
+		yield return typeof(LINQPadDataConnection).Assembly.Location;
+
+		var settings = ConnectionSettings.Load(cxInfo);
+
+		Type              cnType;
+		IDatabaseProvider provider;
+		try
+		{
+			provider     = DatabaseProviders.GetProvider(settings.Connection.Database);
+			using var cn = DatabaseProviders.CreateConnection(ConnectionSettings.Load(cxInfo));
+			cnType       = cn.GetType();
+		}
+		catch (Exception ex)
+		{
+			HandleException(ex, nameof(GetAssembliesToAdd));
+			yield break;
+		}
+
+		foreach (var assembly in provider.GetAdditionalReferences(settings.Connection.Provider!))
+			yield return assembly.FullName!;
+
+		yield return cnType.Assembly.Location;
+#endif
 	}
 }

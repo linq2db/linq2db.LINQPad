@@ -94,4 +94,11 @@ internal interface IDatabaseProvider
 	/// Returns linq2db data provider.
 	/// </summary>
 	IDataProvider GetDataProvider(string providerName, string connectionString);
+
+#if !LPX6
+	/// <summary>
+	/// Performs clanup on domain unload.
+	/// </summary>
+	void Unload();
+#endif
 }

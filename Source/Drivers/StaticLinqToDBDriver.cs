@@ -168,4 +168,7 @@ public sealed class LinqToDBStaticDriver : StaticDataContextDriver
 			throw;
 		}
 	}
+
+	/// <inheritdoc/>
+	public override IEnumerable<string> GetAssembliesToAdd(IConnectionInfo cxInfo) => DriverHelper.GetAssembliesToAdd(cxInfo);
 }

@@ -94,7 +94,7 @@ new object[]
 	new
 	{
 		SqlHierarchyId = Microsoft.SqlServer.Types.SqlHierarchyId.Parse("/1/2/3/4/5/"),
-		SqlGeometry = Microsoft.SqlServer.Types.SqlGeometry.Point(123.56, -124.2343, 123),
-		SqlGeography = Microsoft.SqlServer.Types.SqlGeography.Point(123.56, -124.2343, 123),
+		SqlGeometry = Microsoft.SqlServer.Types.SqlGeometry.Point(66.56, -66.2343, 4977),
+		SqlGeography = Microsoft.SqlServer.Types.SqlGeography.Point(66.56, -66.2343, 4977),
 	}
 }

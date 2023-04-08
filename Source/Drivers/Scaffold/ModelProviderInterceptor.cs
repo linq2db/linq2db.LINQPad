@@ -439,7 +439,7 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 
 			items.Add(new ExplorerItem(func.MethodName, ExplorerItemKind.QueryableObject, ExplorerIcon.TableFunction)
 			{
-				DragText     = $"{func.MethodName}({string.Join(", ", func.Parameters.Select(GetParameterName))})",
+				DragText     = $"ExtensionMethods.{func.MethodName}({string.Join(", ", func.Parameters.Select(GetParameterName))})",
 				Children     = children,
 				IsEnumerable = false,
 				SqlName      = func.DbName

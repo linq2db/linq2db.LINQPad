@@ -206,25 +206,7 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 	}
 
 	/// <inheritdoc/>
-	public override IEnumerable<string> GetAssembliesToAdd(IConnectionInfo cxInfo)
-	{
-		yield return typeof(DataConnection).Assembly.Location;
-		yield return typeof(LINQPadDataConnection).Assembly.Location;
-
-		Type cnType;
-		try
-		{
-			using var cn = DatabaseProviders.CreateConnection(ConnectionSettings.Load(cxInfo));
-			cnType = cn.GetType();
-		}
-		catch (Exception ex)
-		{
-			DriverHelper.HandleException(ex, nameof(GetAssembliesToAdd));
-			yield break;
-		}
-
-		yield return cnType.Assembly.Location;
-	}
+	public override IEnumerable<string> GetAssembliesToAdd(IConnectionInfo cxInfo) => DriverHelper.GetAssembliesToAdd(cxInfo);
 
 	/// <inheritdoc/>
 	public override IEnumerable<string> GetNamespacesToAdd(IConnectionInfo cxInfo) => DriverHelper.DefaultImports;

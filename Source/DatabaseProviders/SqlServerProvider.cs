@@ -1,4 +1,10 @@
 ﻿using System.Data.Common;
+#if !LPX6
+using System.Diagnostics;
+using System.IO;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+#endif
 using LinqToDB.Data;
 using LinqToDB.DataProvider;
 using LinqToDB.DataProvider.SqlServer;
@@ -9,6 +15,41 @@ namespace LinqToDB.LINQPad;
 
 internal sealed class SqlServerProvider : DatabaseProviderBase
 {
+#if !LPX6
+	static SqlServerProvider()
+	{
+		var oldCurrent = Directory.GetCurrentDirectory();
+		var newCurrent = Path.GetDirectoryName(_additionalAssemblies[0].Location);
+
+		if (oldCurrent != newCurrent)
+			Directory.SetCurrentDirectory(newCurrent);
+
+		// This will trigger GLNativeMethods .cctor, which loads native runtime for spatial types from relative path
+		// We need to reset current directory before it otherwise it fails to find runtime dll as LINQPad 5 default directory is LINQPad directory, not driver's dir
+		var type = _additionalAssemblies[0].GetType("Microsoft.SqlServer.Types.GLNativeMethods");
+		RuntimeHelpers.RunClassConstructor(type.TypeHandle);
+
+		if (oldCurrent != newCurrent)
+			Directory.SetCurrentDirectory(oldCurrent);
+	}
+
+	[DllImport("kernel32", SetLastError = true)]
+	private static extern bool FreeLibrary(IntPtr hModule);
+
+	public static void UnloadModule(string moduleName)
+	{
+	}
+
+	public override void Unload()
+	{
+		// must unload unmanaged dlls to allow LINQPad 5 to delete old driver instance without error
+		// as SQL Server types lib doesn't implement cleanup for unloadable domains...
+		foreach (ProcessModule mod in Process.GetCurrentProcess().Modules)
+			if (string.Equals(mod.ModuleName, "SqlServerSpatial160.dll", StringComparison.OrdinalIgnoreCase))
+				FreeLibrary(mod.BaseAddress);
+	}
+#endif
+
 	private static readonly IReadOnlyList<ProviderInfo> _providers = new ProviderInfo[]
 	{
 		new (ProviderName.SqlServer2005, "SQL Server 2005 Dialect"),
@@ -26,7 +67,7 @@ internal sealed class SqlServerProvider : DatabaseProviderBase
 	{
 	}
 
-	private static readonly IReadOnlyCollection<Assembly> _additionalAssemblies = new[] { typeof(SqlHierarchyId).Assembly };
+	private static readonly IReadOnlyList<Assembly> _additionalAssemblies = new[] { typeof(SqlHierarchyId).Assembly };
 
 	public override void ClearAllPools(string providerName)
 	{
@@ -48,6 +89,7 @@ internal sealed class SqlServerProvider : DatabaseProviderBase
 	{
 		return SqlClientFactory.Instance;
 	}
+
 
 	public override IDataProvider GetDataProvider(string providerName, string connectionString)
 	{

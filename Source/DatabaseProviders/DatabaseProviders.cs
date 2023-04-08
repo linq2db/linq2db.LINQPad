@@ -41,6 +41,19 @@ internal static class DatabaseProviders
 		}
 	}
 
+	public static void Unload()
+	{
+#if !LPX6
+		foreach (var provider in Providers.Values)
+			provider.Unload();
+#endif
+	}
+
+	public static void Init()
+	{
+		// trigger .cctors
+	}
+
 	public static DbConnection CreateConnection (ConnectionSettings settings) => GetDataProvider(settings).CreateConnection(settings.Connection.ConnectionString!);
 
 	public static DbProviderFactory GetProviderFactory(ConnectionSettings settings) => GetProviderByName(settings.Connection.Provider!).GetProviderFactory(settings.Connection.Provider!);

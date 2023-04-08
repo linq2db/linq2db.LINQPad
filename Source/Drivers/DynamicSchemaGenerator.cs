@@ -37,7 +37,9 @@ internal static class DynamicSchemaGenerator
 		options.Schema.UseSafeSchemaLoad           = false;
 		options.Schema.LoadDatabaseName            = false;
 		options.Schema.LoadProceduresSchema        = true;
-		options.Schema.EnableSqlServerReturnValue  = true;
+		// TODO: disabled due to generation bug in current scaffolder
+		options.Schema.EnableSqlServerReturnValue  = false;
+		//options.Schema.EnableSqlServerReturnValue  = true;
 
 		// set data model options
 		if (!settings.Scaffold.Capitalize)

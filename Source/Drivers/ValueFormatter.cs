@@ -9,6 +9,7 @@ using AdoNetCore.AseClient;
 using ClickHouse.Client.Numerics;
 using FirebirdSql.Data.Types;
 using LINQPad;
+using Microsoft.SqlServer.Types;
 using MySqlConnector;
 
 namespace LinqToDB.LINQPad;
@@ -52,6 +53,9 @@ internal static class ValueFormatter
 		typeConverters.Add(typeof(MySqlDateTime), ConvertToString);
 		typeConverters.Add(typeof(MySqlDecimal), ConvertToString);
 		typeConverters.Add(typeof(MySqlGeometry), ConvertMySqlGeometry);
+		// sql server spatial types
+		typeConverters.Add(typeof(SqlGeography), ConvertToString);
+		typeConverters.Add(typeof(SqlGeometry), ConvertToString);
 	}
 
 	public static object Format(object value)
@@ -78,6 +82,9 @@ internal static class ValueFormatter
 
 		if (value is char[] chars)
 			return Format(chars);
+
+		if (value is byte[] binary)
+			return Format(binary);
 
 		return value;
 	}
@@ -153,6 +160,24 @@ internal static class ValueFormatter
 			components.Add(sb.ToString());
 
 		return Util.RawHtml(new XElement("span", components.ToArray()));
+	}
+
+	private static object Format(byte[] value)
+	{
+		var sb = new StringBuilder($" Len:{value.Length} ");
+
+		int i;
+
+		for (i = 0; i < value.Length && i < 10; i++)
+			sb.Append($"{value[i]:X2}:");
+
+		if (i > 0)
+			sb.Length--;
+
+		if (i < value.Length)
+			sb.Append("...");
+
+		return Util.RawHtml(new XElement("span", sb.ToString()));
 	}
 
 	private static object Format(char chr)
