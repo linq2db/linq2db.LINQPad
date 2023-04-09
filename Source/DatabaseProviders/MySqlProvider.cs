@@ -24,7 +24,7 @@ internal sealed class MySqlProvider : DatabaseProviderBase
 	public override DateTime? GetLastSchemaUpdate(ConnectionSettings settings)
 	{
 		using var db = new LINQPadDataConnection(settings);
-		return db.Query<DateTime?>("SELECT MAX(u.time) FROM (SELECT MAX(UPDATE_TIME) AS time FROM information_schema.TABLES UNION SELECT MAX(CREATE_TIME) FROM information_schema.TABLES UNION SELECT MAX(LAST_ALTERED) FROM information_schema.ROUTINES) as u").FirstOrDefault();
+		return db.Query<DateTime?>("SELECT MAX(u.time) FROM (SELECT MAX(UPDATE_TIME) AS time FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() UNION SELECT MAX(CREATE_TIME) FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() UNION SELECT MAX(LAST_ALTERED) FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = DATABASE()) as u").FirstOrDefault();
 	}
 
 	public override DbProviderFactory GetProviderFactory(string providerName)
