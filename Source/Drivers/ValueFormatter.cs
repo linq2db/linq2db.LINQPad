@@ -1,6 +1,9 @@
-﻿using System.Data.SqlTypes;
+﻿using System.Collections;
+using System.Collections.Specialized;
+using System.Data.SqlTypes;
 using System.Globalization;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Numerics;
 using System.Text;
 using System.Xml;
@@ -11,6 +14,7 @@ using FirebirdSql.Data.Types;
 using LINQPad;
 using Microsoft.SqlServer.Types;
 using MySqlConnector;
+using NpgsqlTypes;
 
 namespace LinqToDB.LINQPad;
 
@@ -26,36 +30,66 @@ internal static class ValueFormatter
 
 	static ValueFormatter()
 	{
-		var typeConverters = new Dictionary<Type, Func<object, object>>();
+		var typeConverters     = new Dictionary<Type, Func<object, object>>();
 		var baseTypeConverters = new Dictionary<Type, Func<object, object>>();
-		_typeConverters   = typeConverters;
-		_baseTypeConverters = baseTypeConverters;
+		_typeConverters        = typeConverters;
+		_baseTypeConverters    = baseTypeConverters;
 
 		// generic types
 		typeConverters.Add(typeof(BigInteger), ConvertToString);
-		typeConverters.Add(typeof(IPAddress), ConvertToString);
-		// IPAddress use internal derived type for instances
+		typeConverters.Add(typeof(BitArray), ConvertBitArray);
+		typeConverters.Add(typeof(BitVector32), ConvertToString);
+		typeConverters.Add(typeof(PhysicalAddress), ConvertToString);
+
+		// base generic types
 		baseTypeConverters.Add(typeof(IPAddress), ConvertToString);
+		//baseTypeConverters.Add(typeof(ITuple), ConvertTuple);
+
+		// provider-specific types
+
 		// SQLCE/SQLSERVER types
 		typeConverters.Add(typeof(SqlXml), ConvertSqlXml);
 		typeConverters.Add(typeof(SqlChars), ConvertSqlChars);
 		typeConverters.Add(typeof(SqlBytes), ConvertSqlBytes);
 		typeConverters.Add(typeof(SqlBinary), ConvertSqlBinary);
+
 		// ClickHouse.Client
 		typeConverters.Add(typeof(ClickHouseDecimal), ConvertToString);
+
 		// Firebird
 		typeConverters.Add(typeof(FbZonedTime), ConvertToString);
 		typeConverters.Add(typeof(FbZonedDateTime), ConvertToString);
 		typeConverters.Add(typeof(FbDecFloat), ConvertFbDecFloat);
+
 		// Sybase ASE
 		typeConverters.Add(typeof(AseDecimal), ConvertToString);
+
 		// MySqlConnector
 		typeConverters.Add(typeof(MySqlDateTime), ConvertToString);
 		typeConverters.Add(typeof(MySqlDecimal), ConvertToString);
 		typeConverters.Add(typeof(MySqlGeometry), ConvertMySqlGeometry);
+
 		// sql server spatial types
 		typeConverters.Add(typeof(SqlGeography), ConvertToString);
 		typeConverters.Add(typeof(SqlGeometry), ConvertToString);
+
+		// npgsql
+		baseTypeConverters.Add(typeof(NpgsqlTsQuery), ConvertToString);
+#pragma warning disable CS0618 // Type or member is obsolete
+		typeConverters.Add(typeof(NpgsqlInet), ConvertToString);
+#pragma warning restore CS0618 // Type or member is obsolete
+		typeConverters.Add(typeof(NpgsqlInterval), ConvertNpgsqlInterval);
+		typeConverters.Add(typeof(NpgsqlLogSequenceNumber), ConvertToString);
+		typeConverters.Add(typeof(NpgsqlTid), ConvertToString);
+		typeConverters.Add(typeof(NpgsqlTsVector), ConvertToString);
+
+		typeConverters.Add(typeof(NpgsqlLine), ConvertToString);
+		typeConverters.Add(typeof(NpgsqlCircle), ConvertToString);
+		typeConverters.Add(typeof(NpgsqlPolygon), ConvertToString);
+		typeConverters.Add(typeof(NpgsqlPath), ConvertToString);
+		typeConverters.Add(typeof(NpgsqlBox), ConvertToString);
+		typeConverters.Add(typeof(NpgsqlLSeg), ConvertToString);
+		typeConverters.Add(typeof(NpgsqlPoint), ConvertToString);
 	}
 
 	public static object Format(object value)
@@ -98,6 +132,7 @@ internal static class ValueFormatter
 		return value is INullable nullable && nullable.IsNull;
 	}
 
+	#region Final formatters
 	private static object Format(string str)
 	{
 		var components = new List<object>();
@@ -190,16 +225,51 @@ internal static class ValueFormatter
 		else
 			return chr.ToString();
 	}
+	#endregion
 
-	// renderers for shared types (used by more than one provider)
+
+	#region Primitives (final types)
 
 	// for types that already implement rendering of all data using ToString
 	private static object ConvertToString(object value) => value.ToString()!;
-	private static object ConvertSqlXml(object value) => ((SqlXml)value).Value;
-	private static object ConvertSqlChars(object value) => ((SqlChars)value).Value;
-	private static object ConvertSqlBytes(object value) => ((SqlBytes)value).Value;
-	private static object ConvertSqlBinary(object value) => ((SqlBinary)value).Value;
 
+	#region Runtime
+	private static object ConvertBitArray(object value)
+	{
+		var val = (BitArray)value;
+		var sb = new StringBuilder($" Len:{val.Length} 0b");
+
+		int i;
+
+		for (i = 0; i < val.Length && i < 64; i++)
+			sb.Append(val[i] ? '1' : '0');
+
+		if (i < val.Length)
+			sb.Append("...");
+
+		return sb.ToString();
+	}
+	#endregion
+
+	#region Npgsql
+	private static object ConvertNpgsqlInterval(object value)
+	{
+		var val = (NpgsqlInterval)value;
+		// let's use ISO8601 duration format
+		// Time is microseconds
+		return $"P{val.Months}M{val.Days}DT{((decimal)val.Time) / 1_000_000}S";
+	}
+	#endregion
+
+	#region MySqlConnector
+	private static object ConvertMySqlGeometry(object value)
+	{
+		var val = (MySqlGeometry)value;
+		return new { SRID = val.SRID, WKB = val.Value.Skip(4) };
+	}
+	#endregion
+
+	#region Firebird
 	private static object ConvertFbDecFloat(object value)
 	{
 		// type reders as {Coefficient}E{Exponent} which is not very noice
@@ -223,12 +293,15 @@ internal static class ValueFormatter
 
 		return isNegative ? $"-{strValue}" : strValue;
 	}
+	#endregion
 
-	private static object ConvertMySqlGeometry(object value)
-	{
-		var val = (MySqlGeometry)value;
-		return new { SRID = val.SRID, WKB = val.Value.Skip(4) };
-	}
+	#region Sql*
+	private static object ConvertSqlXml(object value) => ((SqlXml)value).Value;
+	private static object ConvertSqlChars(object value) => ((SqlChars)value).Value;
+	private static object ConvertSqlBytes(object value) => ((SqlBytes)value).Value;
+	private static object ConvertSqlBinary(object value) => ((SqlBinary)value).Value;
+	#endregion
 
+	#endregion
 
 }

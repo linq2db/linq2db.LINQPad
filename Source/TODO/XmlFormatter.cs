@@ -490,20 +490,6 @@
 //		return sb.Length > 0 ? sb.ToString() : "0 days";
 //	}
 
-//	static string Format(BitArray value)
-//	{
-//		var sb = new StringBuilder($" Len:{value.Length} 0b");
-
-//		int i;
-
-//		for (i = 0; i < value.Length && i < 64; i++)
-//			sb.Append(value[i] ? '1' : '0');
-
-//		if (i < value.Length)
-//			sb.Append("...");
-
-//		return sb.ToString();
-//	}
 
 //	static ValueFormatter GenerateValueFormatter<T>(Type type, Func<ParameterExpression, Expression> dataExtractor, bool nowrap = true)
 //	{

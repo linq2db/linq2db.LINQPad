@@ -98,3 +98,47 @@ new object[]
 		SqlGeography = Microsoft.SqlServer.Types.SqlGeography.Point(66.56, -66.2343, 4977),
 	}
 }
+
+// npgsql
+new object[]
+{
+	new
+	{
+		NpgsqlLogSequenceNumber = new NpgsqlTypes.NpgsqlLogSequenceNumber(123),
+		NpgsqlTid = new NpgsqlTypes.NpgsqlTid(123, 456),
+		NpgsqlTsQueryLexeme = new NpgsqlTypes.NpgsqlTsQueryLexeme("one two", NpgsqlTypes.NpgsqlTsQueryLexeme.Weight.C, true),
+		NpgsqlTsQueryAnd = new NpgsqlTypes.NpgsqlTsQueryAnd(new NpgsqlTypes.NpgsqlTsQueryLexeme("x ы", NpgsqlTypes.NpgsqlTsQueryLexeme.Weight.C, true), new NpgsqlTypes.NpgsqlTsQueryLexeme("one two", NpgsqlTypes.NpgsqlTsQueryLexeme.Weight.C, true)),
+		NpgsqlTsQueryNot = new NpgsqlTypes.NpgsqlTsQueryNot(new NpgsqlTypes.NpgsqlTsQueryLexeme("one two", NpgsqlTypes.NpgsqlTsQueryLexeme.Weight.C, true)),
+		NpgsqlTsQueryOr = new NpgsqlTypes.NpgsqlTsQueryOr(new NpgsqlTypes.NpgsqlTsQueryLexeme("x ы", NpgsqlTypes.NpgsqlTsQueryLexeme.Weight.C, true), new NpgsqlTypes.NpgsqlTsQueryLexeme("one two", NpgsqlTypes.NpgsqlTsQueryLexeme.Weight.C, true)),
+		NpgsqlTsQueryFollowedBy = new NpgsqlTypes.NpgsqlTsQueryFollowedBy(new NpgsqlTypes.NpgsqlTsQueryLexeme("x ы", NpgsqlTypes.NpgsqlTsQueryLexeme.Weight.C, true), 3, new NpgsqlTypes.NpgsqlTsQueryLexeme("one two", NpgsqlTypes.NpgsqlTsQueryLexeme.Weight.C, true)),
+		NpgsqlTsQueryEmpty = new NpgsqlTypes.NpgsqlTsQueryEmpty(),
+		NpgsqlTsVector = NpgsqlTypes.NpgsqlTsVector.Parse("dg80h wi0fhweiofwe "),
+		NpgsqlInet = new NpgsqlTypes.NpgsqlInet(System.Net.IPAddress.Parse("2001:0db8:85a3:0000:0000:8a2e:0370:7334"), 123),
+		NpgsqlInterval = new NpgsqlTypes.NpgsqlInterval(1, 2, 3),
+		NpgsqlLine = new NpgsqlTypes.NpgsqlLine(-1, -2, -3),
+		NpgsqlPoint = new NpgsqlTypes.NpgsqlPoint(1, 2),
+		NpgsqlCircle = new NpgsqlTypes.NpgsqlCircle(1, 2, 3),
+		NpgsqlPolygon = new NpgsqlTypes.NpgsqlPolygon(new []{new NpgsqlTypes.NpgsqlPoint(1, 2), new NpgsqlTypes.NpgsqlPoint(3, -2)}),
+		NpgsqlPath = new NpgsqlTypes.NpgsqlPath(new []{new NpgsqlTypes.NpgsqlPoint(1, 2), new NpgsqlTypes.NpgsqlPoint(3, -2)}, true),
+		NpgsqlBox = new NpgsqlTypes.NpgsqlBox(new NpgsqlTypes.NpgsqlPoint(1, 2), new NpgsqlTypes.NpgsqlPoint(3, -2)),
+		NpgsqlLSeg = new NpgsqlTypes.NpgsqlLSeg(new NpgsqlTypes.NpgsqlPoint(1, 2), new NpgsqlTypes.NpgsqlPoint(3, -2)),
+		BitArray = new BitArray(new byte[]{0x7E}),
+		BitVector32 = new System.Collections.Specialized.BitVector32(1354467),
+		Tuple = Tuple.Create(new NpgsqlTypes.NpgsqlBox(new NpgsqlTypes.NpgsqlPoint(1, 2), new NpgsqlTypes.NpgsqlPoint(3, -2)), 123),
+		ValueTuple = (new NpgsqlTypes.NpgsqlBox(new NpgsqlTypes.NpgsqlPoint(1, 2), new NpgsqlTypes.NpgsqlPoint(3, -2)), 123),
+		PhysicalAddress = System.Net.NetworkInformation.PhysicalAddress.Parse("00-11-22-33-44-55"),
+		Array1 = new int[]{ 1, 2,3 },
+		Array2 = new object[]{ 1, 2,3 },
+		Array3 = new NpgsqlTypes.NpgsqlPoint[]{ new NpgsqlTypes.NpgsqlPoint(1, 2), new NpgsqlTypes.NpgsqlPoint(1, 2)},
+		Array4 = new object[]{ new NpgsqlTypes.NpgsqlPoint(1, 2), new NpgsqlTypes.NpgsqlPoint(1, 2), 1 },
+		Array5 = new object[][]{ new object[]{new NpgsqlTypes.NpgsqlPoint(1, 2), 2 }, new object[]{1,new NpgsqlTypes.NpgsqlPoint(1, 2) } },
+		List = new List<object>(){ new NpgsqlTypes.NpgsqlPoint(1, 2), new NpgsqlTypes.NpgsqlPath(new []{new NpgsqlTypes.NpgsqlPoint(1, 2), new NpgsqlTypes.NpgsqlPoint(3, -2)}, true), 1 },
+		NpgsqlRange1 = new NpgsqlTypes.NpgsqlRange<int>(-1, true, 22, false),
+		NpgsqlRange2 = new NpgsqlTypes.NpgsqlRange<NpgsqlTypes.NpgsqlPoint>(new NpgsqlTypes.NpgsqlPoint(1, 2), true, new NpgsqlTypes.NpgsqlPoint(31, 22), false),
+		Memory = new System.Memory<byte>(new byte[]{1,2,3}),
+		ReadOnlyMemory = new System.ReadOnlyMemory<byte>(new byte[]{1,2,3}),
+		Dictionary1 = System.Collections.Immutable.ImmutableDictionary.CreateRange<int, NpgsqlTypes.NpgsqlPoint>(new System.Collections.Generic.Dictionary<int, NpgsqlTypes.NpgsqlPoint>() { { 1, new NpgsqlTypes.NpgsqlPoint(1, 2) } }),
+		Dictionary2 = new System.Collections.Generic.Dictionary<int, NpgsqlTypes.NpgsqlPoint>() { { 1, new NpgsqlTypes.NpgsqlPoint(1, 2) } },
+		ArraySegment = new ArraySegment<NpgsqlTypes.NpgsqlPoint>(new[]{new NpgsqlTypes.NpgsqlPoint(1, 2), new NpgsqlTypes.NpgsqlPoint(1, 22)}),
+	}
+}
