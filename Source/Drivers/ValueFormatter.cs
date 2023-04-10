@@ -15,6 +15,7 @@ using LINQPad;
 using Microsoft.SqlServer.Types;
 using MySqlConnector;
 using NpgsqlTypes;
+using Oracle.ManagedDataAccess.Types;
 
 namespace LinqToDB.LINQPad;
 
@@ -82,7 +83,6 @@ internal static class ValueFormatter
 		typeConverters.Add(typeof(NpgsqlLogSequenceNumber), ConvertToString);
 		typeConverters.Add(typeof(NpgsqlTid), ConvertToString);
 		typeConverters.Add(typeof(NpgsqlTsVector), ConvertToString);
-
 		typeConverters.Add(typeof(NpgsqlLine), ConvertToString);
 		typeConverters.Add(typeof(NpgsqlCircle), ConvertToString);
 		typeConverters.Add(typeof(NpgsqlPolygon), ConvertToString);
@@ -90,6 +90,23 @@ internal static class ValueFormatter
 		typeConverters.Add(typeof(NpgsqlBox), ConvertToString);
 		typeConverters.Add(typeof(NpgsqlLSeg), ConvertToString);
 		typeConverters.Add(typeof(NpgsqlPoint), ConvertToString);
+
+
+		// oracle
+		typeConverters.Add(typeof(OracleClob), ConvertOracleClob);
+		typeConverters.Add(typeof(OracleBinary), ConvertOracleBinary);
+		typeConverters.Add(typeof(OracleBoolean), ConvertOracleBoolean);
+		typeConverters.Add(typeof(OracleDate), ConvertToString);
+		typeConverters.Add(typeof(OracleDecimal), ConvertToString);
+		typeConverters.Add(typeof(OracleIntervalDS), ConvertToString);
+		typeConverters.Add(typeof(OracleIntervalYM), ConvertToString);
+		typeConverters.Add(typeof(OracleString), ConvertToString);
+		typeConverters.Add(typeof(OracleTimeStamp), ConvertToString);
+		typeConverters.Add(typeof(OracleTimeStampLTZ), ConvertToString);
+		typeConverters.Add(typeof(OracleTimeStampTZ), ConvertToString);
+		typeConverters.Add(typeof(OracleBlob), ConvertOracleBlob);
+		typeConverters.Add(typeof(OracleBFile), ConvertOracleBFile);
+		typeConverters.Add(typeof(OracleXmlType), ConvertOracleXmlType);
 	}
 
 	public static object Format(object value)
@@ -114,6 +131,9 @@ internal static class ValueFormatter
 		if (value is string strVal)
 			return Format(strVal);
 
+		if (value is bool boolVal)
+			return Format(boolVal);
+		
 		if (value is char[] chars)
 			return Format(chars);
 
@@ -129,7 +149,8 @@ internal static class ValueFormatter
 		// It will not call it for null and DBNull values so we cannot change their formatting (technically we can do it by formatting owner object, but it doesn't make sense)
 
 		// INullable implemented by System.Data.SqlTypes.Sql* types
-		return value is INullable nullable && nullable.IsNull;
+		return (value is System.Data.SqlTypes.INullable nullable && nullable.IsNull)
+			|| (value is Oracle.ManagedDataAccess.Types.INullable onull && onull.IsNull);
 	}
 
 	#region Final formatters
@@ -225,6 +246,11 @@ internal static class ValueFormatter
 		else
 			return chr.ToString();
 	}
+
+	private static object Format(bool value)
+	{
+		return Util.RawHtml(new XElement("span", value.ToString()));
+	}
 	#endregion
 
 
@@ -300,6 +326,16 @@ internal static class ValueFormatter
 	private static object ConvertSqlChars(object value) => ((SqlChars)value).Value;
 	private static object ConvertSqlBytes(object value) => ((SqlBytes)value).Value;
 	private static object ConvertSqlBinary(object value) => ((SqlBinary)value).Value;
+	#endregion
+
+	#region Oracle
+	private static object ConvertOracleClob(object value) => $"OracleClob(Length = {((OracleClob)value).Length})";
+	private static object ConvertOracleBlob(object value) => $"OracleBlob(Length = {((OracleBlob)value).Length})";
+	private static object ConvertOracleBFile(object value) => $"OracleBFile(Directory = {((OracleBFile)value).DirectoryName}, FileName = {((OracleBFile)value).FileName})";
+	private static object ConvertOracleBinary(object value) => ((OracleBinary)value).Value;
+	private static object ConvertOracleBoolean(object value) => ((OracleBoolean)value).Value;
+	private static object ConvertOracleXmlType(object value) => ((OracleXmlType)value).Value;
+
 	#endregion
 
 	#endregion

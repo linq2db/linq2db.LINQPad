@@ -142,3 +142,33 @@ new object[]
 		ArraySegment = new ArraySegment<NpgsqlTypes.NpgsqlPoint>(new[]{new NpgsqlTypes.NpgsqlPoint(1, 2), new NpgsqlTypes.NpgsqlPoint(1, 22)}),
 	}
 }
+
+// oracle
+new object[]
+{
+	new
+	{
+		Null = Oracle.ManagedDataAccess.Types.OracleBFile.Null,
+		//OracleBFile = new Oracle.ManagedDataAccess.Types.OracleBFile(cn),
+		//OracleBlob = new Oracle.ManagedDataAccess.Types.OracleBlob(cn),
+		//OracleClob = new Oracle.ManagedDataAccess.Types.OracleClob(cn),
+		//OracleRef = new Oracle.ManagedDataAccess.Types.OracleRef(),
+		//OracleRefCursor = new Oracle.ManagedDataAccess.Types.OracleRefCursor(),
+		//OracleXmlType = new Oracle.ManagedDataAccess.Types.OracleXmlType(),
+		OracleBinary = new Oracle.ManagedDataAccess.Types.OracleBinary(new byte[]{1,2,3}),
+		OracleBoolean1 = new Oracle.ManagedDataAccess.Types.OracleBoolean(true),
+		OracleBoolean2 = new Oracle.ManagedDataAccess.Types.OracleBoolean(2),
+		OracleDate = Oracle.ManagedDataAccess.Types.OracleDate.MinValue,
+		OracleDecimal1 = Oracle.ManagedDataAccess.Types.OracleDecimal.Pi,
+		OracleDecimal2 = Oracle.ManagedDataAccess.Types.OracleDecimal.MinValue,
+		OracleIntervalDS = Oracle.ManagedDataAccess.Types.OracleIntervalDS.MinValue,
+		OracleIntervalYM = Oracle.ManagedDataAccess.Types.OracleIntervalYM.MinValue,
+		OracleString = new Oracle.ManagedDataAccess.Types.OracleString("ткст"),
+		OracleTimeStamp1 = Oracle.ManagedDataAccess.Types.OracleTimeStamp.MinValue,
+		OracleTimeStamp2 = Oracle.ManagedDataAccess.Types.OracleTimeStamp.MaxValue,
+		OracleTimeStampLTZ1 = Oracle.ManagedDataAccess.Types.OracleTimeStampLTZ.MinValue,
+		OracleTimeStampLTZ2 = Oracle.ManagedDataAccess.Types.OracleTimeStampLTZ.MaxValue,
+		OracleTimeStampTZ1 = Oracle.ManagedDataAccess.Types.OracleTimeStampTZ.MinValue,
+		OracleTimeStampTZ2 = Oracle.ManagedDataAccess.Types.OracleTimeStampTZ.MaxValue,
+	}
+}
