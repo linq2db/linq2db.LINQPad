@@ -172,3 +172,13 @@ new object[]
 		OracleTimeStampTZ2 = Oracle.ManagedDataAccess.Types.OracleTimeStampTZ.MaxValue,
 	}
 }
+
+// sap hana native
+new object[]
+{
+	new
+	{
+		Decimal1 = new Sap.Data.Hana.HanaDecimal(decimal.MinValue),
+		Decimal2 = new Sap.Data.Hana.HanaDecimal("423534872389057234523486234.2345238465234908523457234"),
+	}
+}

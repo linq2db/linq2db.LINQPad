@@ -100,27 +100,6 @@ internal sealed class SapHanaProvider : DatabaseProviderBase
 			{
 				throw new LinqToDBLinqPadException($"Failed to initialize SAP HANA provider factory: ({ex.GetType().Name}) {ex.Message}");
 			}
-
-			// TODO: remove after testing
-			//try
-			//{
-			//	var targetPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, Path.GetFileName(providerPath));
-
-			//	if (File.Exists(providerPath))
-			//	{
-			//		// original path contains spaces which breaks broken native dlls discovery logic in SAP provider
-			//		// (at least SPS04 040)
-			//		// if you run tests from path with spaces - it will not help you
-			//		File.Copy(providerPath, targetPath, true);
-			//		var sapHanaAssembly = Assembly.LoadFrom(targetPath);
-			//		DbProviderFactories.RegisterFactory("Sap.Data.Hana", sapHanaAssembly.GetType("Sap.Data.Hana.HanaFactory")!);
-			//		_factoryRegistered = true;
-			//	}
-			//}
-			//catch (Exception ex)
-			//{
-			//	throw new LinqToDBLinqPadException($"Failed to register SAP HANA factory: ({ex.GetType().Name}) {ex.Message}");
-			//}
 		}
 	}
 #endif

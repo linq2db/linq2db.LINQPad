@@ -274,7 +274,7 @@ internal static class DriverHelper
 	{
 #if LPX6
 		yield return "*";
-#else
+#endif
 		yield return typeof(DataConnection).Assembly.Location;
 		yield return typeof(LINQPadDataConnection).Assembly.Location;
 
@@ -298,6 +298,5 @@ internal static class DriverHelper
 			yield return assembly.FullName!;
 
 		yield return cnType.Assembly.Location;
-#endif
 	}
 }

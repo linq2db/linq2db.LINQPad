@@ -26,15 +26,18 @@ internal static class ValueFormatter
 	// don't use IDatabaseProvider interface as:
 	// 1. some providers used by multiple databases
 	// 2. user could use those types with any database
-	private static readonly IReadOnlyDictionary<Type, Func<object, object>> _typeConverters;
-	private static readonly IReadOnlyDictionary<Type, Func<object, object>> _baseTypeConverters;
+	private static readonly IReadOnlyDictionary<Type, Func<object, object>>   _typeConverters;
+	private static readonly IReadOnlyDictionary<Type, Func<object, object>>   _baseTypeConverters;
+	private static readonly IReadOnlyDictionary<string, Func<object, object>> _byTypeNameConverters;
 
 	static ValueFormatter()
 	{
-		var typeConverters     = new Dictionary<Type, Func<object, object>>();
-		var baseTypeConverters = new Dictionary<Type, Func<object, object>>();
-		_typeConverters        = typeConverters;
-		_baseTypeConverters    = baseTypeConverters;
+		var typeConverters       = new Dictionary<Type, Func<object, object>>();
+		var baseTypeConverters   = new Dictionary<Type, Func<object, object>>();
+		var byTypeNameConverters = new Dictionary<string, Func<object, object>>();
+		_typeConverters          = typeConverters;
+		_baseTypeConverters      = baseTypeConverters;
+		_byTypeNameConverters    = byTypeNameConverters;
 
 		// generic types
 		typeConverters.Add(typeof(BigInteger), ConvertToString);
@@ -107,6 +110,9 @@ internal static class ValueFormatter
 		typeConverters.Add(typeof(OracleBlob), ConvertOracleBlob);
 		typeConverters.Add(typeof(OracleBFile), ConvertOracleBFile);
 		typeConverters.Add(typeof(OracleXmlType), ConvertOracleXmlType);
+
+		// sap hana
+		byTypeNameConverters.Add("Sap.Data.Hana.HanaDecimal", ConvertToString);
 	}
 
 	public static object Format(object value)
@@ -118,6 +124,8 @@ internal static class ValueFormatter
 		// convert specialized type to simple value (e.g. string)
 		var valueType = value.GetType();
 		if (_typeConverters.TryGetValue(valueType, out var converter))
+			value = converter(value);
+		else if (_byTypeNameConverters.TryGetValue(valueType.FullName!, out converter))
 			value = converter(value);
 		else
 			foreach (var type in _baseTypeConverters.Keys)
