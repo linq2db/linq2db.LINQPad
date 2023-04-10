@@ -182,3 +182,31 @@ new object[]
 		Decimal2 = new Sap.Data.Hana.HanaDecimal("423534872389057234523486234.2345238465234908523457234"),
 	}
 }
+
+// db2/ifx
+new object[]
+{
+	new
+	{
+		Null = IBM.Data.DB2Types.DB2Binary.Null,
+		DB2Binary = new IBM.Data.DB2Types.DB2Binary(new byte[]{1,2,3}),
+		DB2Blob = new IBM.Data.DB2Types.DB2Blob(new byte[]{1,2,3}),
+		DB2Clob = new IBM.Data.DB2Types.DB2Clob("тест"),
+		DB2Date = IBM.Data.DB2Types.DB2Date.MaxValue,
+		DB2DateTime = IBM.Data.DB2Types.DB2DateTime.MinValue,
+		DB2Decimal = IBM.Data.DB2Types.DB2Decimal.MinValue,
+		DB2DecimalFloat = IBM.Data.DB2Types.DB2DecimalFloat.MinValue,
+		DB2Double = IBM.Data.DB2Types.DB2Double.MinValue,
+		DB2Int16 = IBM.Data.DB2Types.DB2Int16.MinValue,
+		DB2Int32 = IBM.Data.DB2Types.DB2Int32.MinValue,
+		DB2Int64 = IBM.Data.DB2Types.DB2Int64.MinValue,
+		DB2Real = IBM.Data.DB2Types.DB2Real.MinValue,
+		DB2Real370 = IBM.Data.DB2Types.DB2Real370.MinValue,
+		DB2RowId = new IBM.Data.DB2Types.DB2RowId(),
+		DB2String = new IBM.Data.DB2Types.DB2String("Тест"),
+		DB2Time = IBM.Data.DB2Types.DB2Time.MaxValue,
+		DB2TimeStamp = IBM.Data.DB2Types.DB2TimeStamp.MaxValue,
+		DB2TimeStampOffset = IBM.Data.DB2Types.DB2TimeStampOffset.MaxValue,
+		DB2XsrObjectId = new IBM.Data.DB2Types.DB2XsrObjectId(),
+	}
+}

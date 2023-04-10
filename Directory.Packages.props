@@ -28,7 +28,7 @@
 		<PackageVersion Include="FirebirdSql.Data.FirebirdClient"           Version="9.1.1"                                   />
 		<PackageVersion Include="Npgsql"                                    Version="7.0.2"                                   />
 		<PackageVersion Include="Octonica.ClickHouseClient"                 Version="2.2.9"                                   />
-		<PackageVersion Include="linq2db4iSeries"                           Version="5.1.0"                                   />
+		<!--<PackageVersion Include="linq2db4iSeries"                           Version="5.1.0"                                   />-->
 
 		<PackageVersion Include="Microsoft.SqlServer.Types"                 Version="160.1000.6"                              />
 	</ItemGroup>

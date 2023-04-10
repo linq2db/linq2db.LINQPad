@@ -9,10 +9,9 @@ linq2db.LINQPad is a driver for [LINQPad 5 (.NET Framework 4.8)](http://www.linq
 Following databases supported (by all LINQPad versions if other not noted):
 
 - **ClickHouse**: using Binary (LINQPad 7), HTTP and MySQL interfaces
-- **DB2** (LUW, z/OS) (LINQPad 7 supports only 64-bit version)
-- **DB2 iSeries** (using [3rd-party provider](https://github.com/LinqToDB4iSeries/Linq2DB4iSeries)) *(iAccess 7.1+ software must be installed)*. **IMPORTANT:** currently available only for LINQPad 5 using linq2db.LINQPad version 2.9.3 or earlier
+- **DB2** (LUW, z/OS) (LINQPad 7 x64 and LINQPad 5 x86)
 - **Firebird**
-- **Informix** (LINQPad 7 supports only 64-bit version)
+- **Informix** (LINQPad 7 x64 and LINQPad 5 x86)
 - **Microsoft Access** *(supports both OLE DB and ODBC drivers)*
 - **Microsoft SQL Server** 2005+ *(including **Microsoft SQL Azure**)*
 - **Microsoft SQL Server Compact (SQL CE)**

@@ -5,7 +5,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Xml.Linq;
 using LINQPad.Extensibility.DataContext;
-using LinqToDB.DataProvider.DB2iSeries;
 using LinqToDB.LINQPad.Json;
 using PN = LinqToDB.ProviderName;
 
@@ -190,7 +189,7 @@ internal sealed class ConnectionSettings
 					or PN.DB2LUW
 					or PN.DB2zOS
 					or PN.SqlServer
-					or DB2iSeriesProviderName.DB2
+					//or DB2iSeriesProviderName.DB2
 					or PN.SqlCe       => settings.Connection.Provider,
 				_                     => null
 			};

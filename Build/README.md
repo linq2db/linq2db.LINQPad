@@ -6,7 +6,6 @@ Following databases supported:
 
 - **ClickHouse** (Binary, HTTP and MySQL interfaces)
 - **DB2** (LUW, z/OS) (only 64-bit version)
-- **DB2 iSeries**
 - **Firebird**
 - **Informix** (only 64-bit version)
 - **Microsoft Access** *(supports both OLE DB and ODBC drivers)*

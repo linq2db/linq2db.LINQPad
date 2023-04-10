@@ -3,7 +3,7 @@
 	<metadata>
 		<id>linq2db.LINQPad</id>
 		<title>LINQ to DB driver for LINQPad 7</title>
-		<description>Supported databases: IBM DB2 LUW/zOS/iSeries, Firebird, IBM Informix, Microsoft Access, Microsoft Sql Server (+Azure), Microsoft Sql Server Compact, MySql, MariaDB, Oracle, PostgreSQL, SQLite, SAP HANA, SAP/Sybase ASE, ClickHouse.</description>
+		<description>Supported databases: IBM DB2 LUW/zOS, Firebird, IBM Informix, Microsoft Access, Microsoft Sql Server (+Azure), Microsoft Sql Server Compact, MySql, MariaDB, Oracle, PostgreSQL, SQLite, SAP HANA, SAP/Sybase ASE, ClickHouse.</description>
 		<summary />
 		<tags>
 			linqpaddriver linqpad linq2db linqtodb access msaccess db2 odbc oledb azure firebird informix mysql mariadb oracle postgres postgresql saphana sqlce sqlserverce sqlserver sybase ase sap sqlite database clickhouse iseries

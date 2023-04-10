@@ -11,6 +11,7 @@ using System.Xml.Linq;
 using AdoNetCore.AseClient;
 using ClickHouse.Client.Numerics;
 using FirebirdSql.Data.Types;
+using IBM.Data.DB2Types;
 using LINQPad;
 using Microsoft.SqlServer.Types;
 using MySqlConnector;
@@ -113,6 +114,28 @@ internal static class ValueFormatter
 
 		// sap hana
 		byTypeNameConverters.Add("Sap.Data.Hana.HanaDecimal", ConvertToString);
+
+		// db2
+		typeConverters.Add(typeof(DB2Binary), ConvertToString);
+		typeConverters.Add(typeof(DB2Blob), ConvertToString);
+		typeConverters.Add(typeof(DB2Clob), ConvertToString);
+		typeConverters.Add(typeof(DB2Date), ConvertToString);
+		typeConverters.Add(typeof(DB2DateTime), ConvertToString);
+		typeConverters.Add(typeof(DB2Decimal), ConvertToString);
+		typeConverters.Add(typeof(DB2DecimalFloat), ConvertToString);
+		typeConverters.Add(typeof(DB2Double), ConvertToString);
+		typeConverters.Add(typeof(DB2Int16), ConvertToString);
+		typeConverters.Add(typeof(DB2Int32), ConvertToString);
+		typeConverters.Add(typeof(DB2Int64), ConvertToString);
+		typeConverters.Add(typeof(DB2Real), ConvertToString);
+		typeConverters.Add(typeof(DB2Real370), ConvertToString);
+		typeConverters.Add(typeof(DB2RowId), ConvertToString);
+		typeConverters.Add(typeof(DB2String), ConvertToString);
+		typeConverters.Add(typeof(DB2Time), ConvertToString);
+		typeConverters.Add(typeof(DB2TimeStamp), ConvertToString);
+		typeConverters.Add(typeof(DB2TimeStampOffset), ConvertToString);
+		typeConverters.Add(typeof(DB2XsrObjectId), ConvertToString);
+		typeConverters.Add(typeof(DB2Xml), ConvertDB2Xml);
 	}
 
 	public static object Format(object value)
@@ -158,7 +181,8 @@ internal static class ValueFormatter
 
 		// INullable implemented by System.Data.SqlTypes.Sql* types
 		return (value is System.Data.SqlTypes.INullable nullable && nullable.IsNull)
-			|| (value is Oracle.ManagedDataAccess.Types.INullable onull && onull.IsNull);
+			|| (value is Oracle.ManagedDataAccess.Types.INullable onull && onull.IsNull)
+			|| (value is IBM.Data.DB2Types.INullable db2null && db2null.IsNull);
 	}
 
 	#region Final formatters
@@ -343,9 +367,11 @@ internal static class ValueFormatter
 	private static object ConvertOracleBinary(object value) => ((OracleBinary)value).Value;
 	private static object ConvertOracleBoolean(object value) => ((OracleBoolean)value).Value;
 	private static object ConvertOracleXmlType(object value) => ((OracleXmlType)value).Value;
+	#endregion
 
+	#region DB2
+	private static object ConvertDB2Xml(object value) => ((DB2Xml)value).GetString();
 	#endregion
 
 	#endregion
-
 }

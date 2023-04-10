@@ -22,7 +22,13 @@ internal static class DatabaseProviders
 		Register(providers, providersByName, new SybaseAseProvider ());
 		Register(providers, providersByName, new SQLiteProvider    ());
 		Register(providers, providersByName, new SqlCeProvider     ());
-		Register(providers, providersByName, new DB2Provider       ());
+#if LPX6
+		if (IntPtr.Size == 8)
+			Register(providers, providersByName, new DB2Provider   ());
+#else
+		if (IntPtr.Size == 4)
+			Register(providers, providersByName, new DB2Provider   ());
+#endif
 		Register(providers, providersByName, new InformixProvider  ());
 		Register(providers, providersByName, new SapHanaProvider   ());
 		Register(providers, providersByName, new OracleProvider    ());
