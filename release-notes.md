@@ -1,43 +1,44 @@
 # Release 5.0.0
 
-Major provider rework:
+Complete driver rewrite:
 
-- [BREAKING][LINQPAD5] strong name was removed to allow work with unsigned providers without hacks. Because LINQPad 5 use full assembly name for provider, your old connections will disappear after update from left pane (they still stored in LINQPad settings, but visible only to older driver versions) and should be recreated
-- [LINQPAD5] update required framework version from .NET Framework 4.6.1 to 4.8
-- [LINQPAD5] add `json` configuration files support to static context (ported from LINQPad 7 version)
-- [LINQPAD7] update required framework version from `netcoreapp3.1` to `net6.0-windows`
-- [LINQPAD7] add .NET 7 support
-- fixed connection strings load from custom `app.config` for static context
+- complete redesign of configuration dialog
 - LINQPad 6 support dropped (you can still use 4.x versions of driver with LINQPad 6)
-- migrate code-generation to new scaffolding framework
+- migrateed dynamic context code-generation to new scaffolding framework
 - implemented `Close all connections` functionality for Access, DB2 LUW, DB2 z/OS, Firebird, Informix, MySql, Oracle, PostgreSQL, SAP HANA, SQLite, SAP/Sybase ASE connections (previous versions implemented only SQL Server support)
-- add `LinqToDB`, `LinqToDB.Data` and `LinqToDB.Mapping` usings to queries also for static context driver
 - implement automatic schema refresh for Access (OLE DB provider only), ClickHouse, DB2 LUW, DB2 z/OS, MySql, MariaDB, SAP HANA, Oracle and SAP/Sybase ASE (previous versions implemented only SQL Server support)
-- removed `Use LINQ To DB Formatter` option. Custom formatters will be used only for types, not rendered properly by LINQPad
-- redesigned connection options dialog, added help tooltips to options
-- add separate schema load options for stored procedures and functions
+- added `LinqToDB`, `LinqToDB.Data` and `LinqToDB.Mapping` usings to queries also for static context driver
+- stored procedures and functions schema load options now allow you to select which routine types to load (e.g. only stored procedures)
 - add additional connection string support for Access to mitigate schema issues in ODBC and OLE DB providers
-- add packages in schema tree for supporting databases
+- show packages in schema tree for supporting databases
 - add nullability information for columns and parameters for both value and reference types
+- add SQL dialog selection for databases for which Linq To DB supports multiple dialects
+- [LINQPAD5] rise required framework version from .NET Framework 4.6.1 to 4.8
+- [LINQPAD7] rise required framework version from `netcoreapp3.1` to `net6.0-windows`
+- [LINQPAD7] add .NET 7 and 8 support
+- [LINQPAD5] strong name removed from driver. Because LINQPad 5 use fully-qualified assembly name to store connection settings, your old connections will not be visible in LINQPad 5 with new driver and should be recreated (or you could try to edit assembly name in LINQPad settings file for old connections)
+- [LINQPAD5] add support for connection configuration load from json files for static contexts
+- [LINQPAD7] add support for connection configuration load from app.config files for static contexts
 
-New/updated dependencies:
+Issues fixed:
 
-- [ALL] add new dependency: linq2db.Tools 5.1.1
-- [ALL] add new dependency: ClickHouse.Client 6.5.0
-- [ALL] switch from System.Data.SqlClient 4.8.3 to Microsoft.Data.SqlClient 5.1.0
-- [ALL] dependency update: linq2db 4.2.0 -> 5.1.1
-- [ALL] dependency update: Microsoft.CodeAnalysis.CSharp updated to 4.5.0
-- [ALL] dependency update: Npgsql updated to 7.0.2
-- [ALL] remove direct dependency on Humanizer.Core
-- [ALL] remove dependency on CodeJam
-- [LINQPAD7] add new dependency: Octonica.ClickHouseClient 2.2.9
-- [LINQPAD5] dependency update: Oracle.ManagedDataAccess 19.14.0 -> 21.9.0
-- [LINQPAD5] dependency update: Microsoft.SqlServer.Types 14.0.1016.290 -> 160.1000.6
-- [LINQPAD7] dependency update: FirebirdSql.Data.FirebirdClient 9.0.1 -> 9.1.1
-- [LINQPAD7] replace dependency on dotMorten.Microsoft.SqlServer.Types with Microsoft.SqlServer.Types
-- [LINQPAD7] replace dependency on IBM.Data.DB2.Core with Net.IBM.Data.Db2
+- [#58](https://github.com/linq2db/linq2db.LINQPad/pull/58): fixed raw SQL execution support for all databases
+- [#79](https://github.com/linq2db/linq2db.LINQPad/pull/79): added ClickHouse support using MySql, HTTP(s) and binary protocols
+
+Changes to dependencies (except version bumps):
+
+- removed: Humanizer.Core
+- removed: CodeJam
+- [ALL] new: linq2db.Tools
+- [ALL] new: ClickHouse.Client
+- [ALL] replaced: System.Data.SqlClient -> Microsoft.Data.SqlClient
+- [LINQPAD5] new: System.Text.Json
+- [LINQPAD7] new: Octonica.ClickHouseClient
+- [LINQPAD7] replaced: IBM.Data.DB2.Core -> Net.IBM.Data.Db2
+- [LINQPAD7] replaced: dotMorten.Microsoft.SqlServer.Types -> Microsoft.SqlServer.Types
 
 # Release 4.2.0
+
 - [ALL] dependency update: linq2db 4.1.0 -> 4.2.0
 - [DEPS][ALL] dependency update: MySqlConnector 2.1.10 -> 2.1.13
 - [DEPS][LINQPAD7] dependency update: Microsoft.CodeAnalysis.CSharp 4.2.0 -> 4.3.0
