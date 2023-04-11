@@ -17,6 +17,7 @@ internal sealed class StaticConnectionModel : ConnectionModelBase, INotifyProper
 		{
 			if (string.IsNullOrWhiteSpace(Settings.StaticContext.ContextAssemblyPath))
 				return null;
+
 			return Settings.StaticContext.ContextAssemblyPath;
 		}
 		set
@@ -40,12 +41,14 @@ internal sealed class StaticConnectionModel : ConnectionModelBase, INotifyProper
 		{
 			if (string.IsNullOrWhiteSpace(Settings.StaticContext.ContextTypeName))
 				return null;
+
 			return Settings.StaticContext.ContextTypeName;
 		}
 		set
 		{
 			if (string.IsNullOrWhiteSpace(value))
 				value = null;
+
 			Settings.StaticContext.ContextTypeName = value;
 		}
 	}
@@ -55,12 +58,13 @@ internal sealed class StaticConnectionModel : ConnectionModelBase, INotifyProper
 	{
 		get
 		{
-#if !LPX6
+#if NETFRAMEWORK
 			if (!string.IsNullOrWhiteSpace(Settings.StaticContext.LocalConfigurationPath))
 				return Settings.StaticContext.LocalConfigurationPath;
 #endif
 			if (string.IsNullOrWhiteSpace(Settings.StaticContext.ConfigurationPath))
 				return null;
+
 			return Settings.StaticContext.ConfigurationPath;
 		}
 		set
@@ -70,8 +74,8 @@ internal sealed class StaticConnectionModel : ConnectionModelBase, INotifyProper
 			else
 				value = value!.Trim();
 
-#if !LPX6
-			Settings.StaticContext.ConfigurationPath = null;
+#if NETFRAMEWORK
+			Settings.StaticContext.ConfigurationPath      = null;
 			Settings.StaticContext.LocalConfigurationPath = null;
 
 			if (value != null && value.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
@@ -98,17 +102,19 @@ internal sealed class StaticConnectionModel : ConnectionModelBase, INotifyProper
 		{
 			if (string.IsNullOrWhiteSpace(Settings.StaticContext.ConfigurationName))
 				return null;
+
 			return Settings.StaticContext.ConfigurationName;
 		}
 		set
 		{
 			if (string.IsNullOrWhiteSpace(value))
 				value = null;
+
 			Settings.StaticContext.ConfigurationName = value;
 		}
 	}
 
-	public ObservableCollection<string> ContextTypes { get; } = new();
+	public ObservableCollection<string> ContextTypes   { get; } = new();
 
 	public ObservableCollection<string> Configurations { get; } = new();
 

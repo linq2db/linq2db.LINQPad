@@ -10,11 +10,11 @@ internal sealed class SettingsModel
 
 	public SettingsModel(ConnectionSettings settings, bool staticConnection)
 	{
-		StaticConnection  = new StaticConnectionModel(settings, staticConnection);
+		StaticConnection  = new StaticConnectionModel (settings, staticConnection );
 		DynamicConnection = new DynamicConnectionModel(settings, !staticConnection);
-		Scaffold          = new ScaffoldModel(settings, !staticConnection);
-		Schema            = new SchemaModel(settings, !staticConnection);
-		LinqToDB          = new LinqToDBModel(settings);
+		Scaffold          = new ScaffoldModel         (settings, !staticConnection);
+		Schema            = new SchemaModel           (settings, !staticConnection);
+		LinqToDB          = new LinqToDBModel         (settings                   );
 	}
 
 	public StaticConnectionModel  StaticConnection  { get; }

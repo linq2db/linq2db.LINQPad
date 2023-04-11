@@ -2,7 +2,7 @@
 using ClickHouse.Client.ADO;
 using LinqToDB.Data;
 using MySqlConnector;
-#if LPX6
+#if !NETFRAMEWORK
 using Octonica.ClickHouseClient;
 #endif
 
@@ -14,7 +14,7 @@ internal sealed class ClickHouseProvider : DatabaseProviderBase
 	{
 		new (ProviderName.ClickHouseClient  , "HTTP(S) Interface"     ),
 		new (ProviderName.ClickHouseMySql   , "MySQL Interface"       ),
-#if LPX6
+#if !NETFRAMEWORK
 		// octonica provider doesn't support NETFX or NESTANDARD
 		new (ProviderName.ClickHouseOctonica, "Binary (TCP) Interface"),
 #endif
@@ -43,7 +43,7 @@ internal sealed class ClickHouseProvider : DatabaseProviderBase
 	{
 		if (providerName == ProviderName.ClickHouseClient)
 			return new ClickHouseConnectionFactory();
-#if LPX6
+#if !NETFRAMEWORK
 		if (providerName == ProviderName.ClickHouseOctonica)
 			return new ClickHouseDbProviderFactory();
 #endif

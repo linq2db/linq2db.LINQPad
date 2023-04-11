@@ -22,7 +22,7 @@ internal static class DatabaseProviders
 		Register(providers, providersByName, new SybaseAseProvider ());
 		Register(providers, providersByName, new SQLiteProvider    ());
 		Register(providers, providersByName, new SqlCeProvider     ());
-#if LPX6
+#if !NETFRAMEWORK
 		if (IntPtr.Size == 8)
 			Register(providers, providersByName, new DB2Provider   ());
 #else
@@ -49,7 +49,7 @@ internal static class DatabaseProviders
 
 	public static void Unload()
 	{
-#if !LPX6
+#if NETFRAMEWORK
 		foreach (var provider in Providers.Values)
 			provider.Unload();
 #endif

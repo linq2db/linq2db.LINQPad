@@ -95,7 +95,7 @@ internal interface IDatabaseProvider
 	/// </summary>
 	IDataProvider GetDataProvider(string providerName, string connectionString);
 
-#if !LPX6
+#if NETFRAMEWORK
 	/// <summary>
 	/// Performs clanup on domain unload.
 	/// </summary>

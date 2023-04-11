@@ -1,8 +1,7 @@
 ﻿using System.Data.Common;
-#if LPX6
+#if !NETFRAMEWORK
 using System.IO;
 #endif
-
 
 namespace LinqToDB.LINQPad;
 
@@ -40,7 +39,7 @@ internal sealed class SqlCeProvider : DatabaseProviderBase
 		return (DbProviderFactory)Type.GetType(typeName, false)?.GetField("Instance", BindingFlags.Public | BindingFlags.Static)?.GetValue(null)!;
 	}
 
-#if LPX6
+#if !NETFRAMEWORK
 	public override bool IsProviderPathSupported(string providerName)
 	{
 		return true;

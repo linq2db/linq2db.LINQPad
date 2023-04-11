@@ -4,15 +4,15 @@
 
 [![Master branch build](https://img.shields.io/azure-devops/build/linq2db/linq2db/8/master?label=build%20(master))](https://dev.azure.com/linq2db/linq2db/_build?definitionId=8&_a=summary) [![Latest build](https://img.shields.io/azure-devops/build/linq2db/linq2db/8?label=build%20(latest))](https://dev.azure.com/linq2db/linq2db/_build?definitionId=8&_a=summary)
 
-linq2db.LINQPad is a driver for [LINQPad 5 (.NET Framework 4.8)](http://www.linqpad.net) and [LINQPad 7 (.NET 6+)](http://www.linqpad.net). For LINQPad 6 you can use older 4.x version of driver.
+linq2db.LINQPad is a driver for [LINQPad 5 (.NET Framework 4.8)](http://www.linqpad.net) and [LINQPad 7 (.NET 6+)](http://www.linqpad.net).
 
-Following databases supported (by all LINQPad versions if other not noted):
+Following databases supported (by all LINQPad versions if other not sppecified):
 
 - **ClickHouse**: using Binary (LINQPad 7), HTTP and MySQL interfaces
-- **DB2** (LUW, z/OS) (LINQPad 7 x64 and LINQPad 5 x86)
+- **DB2** (LUW, z/OS): LINQPad 7 x64 and LINQPad 5 x86
 - **Firebird**
-- **Informix** (LINQPad 7 x64 and LINQPad 5 x86)
-- **Microsoft Access** *(supports both OLE DB and ODBC drivers)*
+- **Informix**: LINQPad 7 x64 and LINQPad 5 x86
+- **Microsoft Access**: both OLE DB and ODBC drivers
 - **Microsoft SQL Server** 2005+ *(including **Microsoft SQL Azure**)*
 - **Microsoft SQL Server Compact (SQL CE)**
 - **MariaDB**

@@ -11,7 +11,7 @@ internal abstract partial class ModelBase : INotifyPropertyChanged
 	#region Sample Simple Property
 
 	private string? _name;
-	public string? Name
+	public string?   Name
 	{
 		get => _name;
 		set

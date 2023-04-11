@@ -1,5 +1,5 @@
 ﻿using System.Data.Common;
-#if !LPX6
+#if NETFRAMEWORK
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -15,7 +15,7 @@ namespace LinqToDB.LINQPad;
 
 internal sealed class SqlServerProvider : DatabaseProviderBase
 {
-#if !LPX6
+#if NETFRAMEWORK
 	static SqlServerProvider()
 	{
 		var oldCurrent = Directory.GetCurrentDirectory();

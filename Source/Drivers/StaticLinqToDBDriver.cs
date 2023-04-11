@@ -77,7 +77,7 @@ public sealed class LinqToDBStaticDriver : StaticDataContextDriver
 		{
 			var settings = ConnectionSettings.Load(cxInfo);
 
-#if !LPX6
+#if NETFRAMEWORK
 			var configurationPath = settings.StaticContext.LocalConfigurationPath ?? settings.StaticContext.ConfigurationPath;
 #else
 			var configurationPath = settings.StaticContext.ConfigurationPath;
@@ -139,7 +139,7 @@ public sealed class LinqToDBStaticDriver : StaticDataContextDriver
 	{
 		if (appConfigPath?.EndsWith(".json", StringComparison.OrdinalIgnoreCase) == true)
 			DataConnection.DefaultSettings = AppConfig.LoadJson(appConfigPath);
-#if LPX6
+#if !NETFRAMEWORK
 		if (appConfigPath?.EndsWith(".config", StringComparison.OrdinalIgnoreCase) == true)
 			DataConnection.DefaultSettings = AppConfig.LoadAppConfig(appConfigPath);
 #endif

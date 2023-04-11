@@ -1,12 +1,12 @@
 ﻿using System.Data;
+using System.Data.Common;
+using System.IO;
 using LINQPad.Extensibility.DataContext;
 using LinqToDB.Data;
 using LinqToDB.Mapping;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using System.IO;
-using System.Data.Common;
-#if !LPX6
+#if NETFRAMEWORK
 using System.Net.NetworkInformation;
 using System.Numerics;
 #else
@@ -53,7 +53,7 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 	/// <inheritdoc/>
 	public override bool ShowConnectionDialog(IConnectionInfo cxInfo, ConnectionDialogOptions dialogOptions) => DriverHelper.ShowConnectionDialog(cxInfo, dialogOptions, true);
 
-#if LPX6
+#if !NETFRAMEWORK
 	// TODO: switch to generator
 	private static readonly Regex _runtimeTokenExtractor = new (@"^.+\\(?<token>[^\\]+)\\[^\\]+$", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
@@ -113,7 +113,7 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 			var (items, text, providerAssemblyLocation) = DynamicSchemaGenerator.GetModel(settings, ref nameSpace, ref typeName);
 			var syntaxTree                              = CSharpSyntaxTree.ParseText(text);
 
-#if LPX6
+#if !NETFRAMEWORK
 			// TODO: find better way to do it
 			// hack to overwrite provider assembly references that target wrong runtime
 			// e.g. referenceAssemblies contains path to net5 MySqlConnector
@@ -123,7 +123,7 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 #endif
 			var references = new List<MetadataReference>()
 			{
-#if !LPX6
+#if NETFRAMEWORK
 				MetadataReference.CreateFromFile(typeof(object).               Assembly.Location),
 				MetadataReference.CreateFromFile(typeof(Enumerable).           Assembly.Location),
 				MetadataReference.CreateFromFile(typeof(IDbConnection).        Assembly.Location),
@@ -139,7 +139,7 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 			foreach (var assembly in DatabaseProviders.GetProvider(settings.Connection.Database).GetAdditionalReferences(settings.Connection.Provider!))
 				references.Add(MetadataReference.CreateFromFile(assembly.Location));
 
-#if LPX6
+#if !NETFRAMEWORK
 			references.Add(MakeReferenceByRuntime(runtimeToken, providerAssemblyLocation));
 			references.AddRange(coreAssemblies.Select(static path => MetadataReference.CreateFromFile(path)));
 #else

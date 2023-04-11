@@ -41,101 +41,101 @@ internal static class ValueFormatter
 		_byTypeNameConverters    = byTypeNameConverters;
 
 		// generic types
-		typeConverters.Add(typeof(BigInteger), ConvertToString);
-		typeConverters.Add(typeof(BitArray), ConvertBitArray);
-		typeConverters.Add(typeof(BitVector32), ConvertToString);
+		typeConverters.Add(typeof(BigInteger)     , ConvertToString);
+		typeConverters.Add(typeof(BitArray)       , ConvertBitArray);
+		typeConverters.Add(typeof(BitVector32)    , ConvertToString);
 		typeConverters.Add(typeof(PhysicalAddress), ConvertToString);
 
 		// base generic types
 		baseTypeConverters.Add(typeof(IPAddress), ConvertToString);
-		//baseTypeConverters.Add(typeof(ITuple), ConvertTuple);
 
 		// provider-specific types
 
 		// SQLCE/SQLSERVER types
-		typeConverters.Add(typeof(SqlXml), ConvertSqlXml);
-		typeConverters.Add(typeof(SqlChars), ConvertSqlChars);
-		typeConverters.Add(typeof(SqlBytes), ConvertSqlBytes);
+		typeConverters.Add(typeof(SqlXml)   , ConvertSqlXml);
+		typeConverters.Add(typeof(SqlChars) , ConvertSqlChars);
+		typeConverters.Add(typeof(SqlBytes) , ConvertSqlBytes);
 		typeConverters.Add(typeof(SqlBinary), ConvertSqlBinary);
 
 		// ClickHouse.Client
 		typeConverters.Add(typeof(ClickHouseDecimal), ConvertToString);
 
 		// Firebird
-		typeConverters.Add(typeof(FbZonedTime), ConvertToString);
+		typeConverters.Add(typeof(FbZonedTime)    , ConvertToString);
 		typeConverters.Add(typeof(FbZonedDateTime), ConvertToString);
-		typeConverters.Add(typeof(FbDecFloat), ConvertFbDecFloat);
+		typeConverters.Add(typeof(FbDecFloat)     , ConvertFbDecFloat);
 
 		// Sybase ASE
 		typeConverters.Add(typeof(AseDecimal), ConvertToString);
 
 		// MySqlConnector
 		typeConverters.Add(typeof(MySqlDateTime), ConvertToString);
-		typeConverters.Add(typeof(MySqlDecimal), ConvertToString);
+		typeConverters.Add(typeof(MySqlDecimal) , ConvertToString);
 		typeConverters.Add(typeof(MySqlGeometry), ConvertMySqlGeometry);
 
 		// sql server spatial types
 		typeConverters.Add(typeof(SqlGeography), ConvertToString);
-		typeConverters.Add(typeof(SqlGeometry), ConvertToString);
+		typeConverters.Add(typeof(SqlGeometry) , ConvertToString);
 
 		// npgsql
-		baseTypeConverters.Add(typeof(NpgsqlTsQuery), ConvertToString);
+		baseTypeConverters.Add(typeof(NpgsqlTsQuery)      , ConvertToString);
 #pragma warning disable CS0618 // Type or member is obsolete
-		typeConverters.Add(typeof(NpgsqlInet), ConvertToString);
+		typeConverters.Add(typeof(NpgsqlInet)             , ConvertToString);
 #pragma warning restore CS0618 // Type or member is obsolete
-		typeConverters.Add(typeof(NpgsqlInterval), ConvertNpgsqlInterval);
+		typeConverters.Add(typeof(NpgsqlInterval)         , ConvertNpgsqlInterval);
 		typeConverters.Add(typeof(NpgsqlLogSequenceNumber), ConvertToString);
-		typeConverters.Add(typeof(NpgsqlTid), ConvertToString);
-		typeConverters.Add(typeof(NpgsqlTsVector), ConvertToString);
-		typeConverters.Add(typeof(NpgsqlLine), ConvertToString);
-		typeConverters.Add(typeof(NpgsqlCircle), ConvertToString);
-		typeConverters.Add(typeof(NpgsqlPolygon), ConvertToString);
-		typeConverters.Add(typeof(NpgsqlPath), ConvertToString);
-		typeConverters.Add(typeof(NpgsqlBox), ConvertToString);
-		typeConverters.Add(typeof(NpgsqlLSeg), ConvertToString);
-		typeConverters.Add(typeof(NpgsqlPoint), ConvertToString);
+		typeConverters.Add(typeof(NpgsqlTid)              , ConvertToString);
+		typeConverters.Add(typeof(NpgsqlTsVector)         , ConvertToString);
+		typeConverters.Add(typeof(NpgsqlLine)             , ConvertToString);
+		typeConverters.Add(typeof(NpgsqlCircle)           , ConvertToString);
+		typeConverters.Add(typeof(NpgsqlPolygon)          , ConvertToString);
+		typeConverters.Add(typeof(NpgsqlPath)             , ConvertToString);
+		typeConverters.Add(typeof(NpgsqlBox)              , ConvertToString);
+		typeConverters.Add(typeof(NpgsqlLSeg)             , ConvertToString);
+		typeConverters.Add(typeof(NpgsqlPoint)            , ConvertToString);
 
 
 		// oracle
-		typeConverters.Add(typeof(OracleClob), ConvertOracleClob);
-		typeConverters.Add(typeof(OracleBinary), ConvertOracleBinary);
-		typeConverters.Add(typeof(OracleBoolean), ConvertOracleBoolean);
-		typeConverters.Add(typeof(OracleDate), ConvertToString);
-		typeConverters.Add(typeof(OracleDecimal), ConvertToString);
-		typeConverters.Add(typeof(OracleIntervalDS), ConvertToString);
-		typeConverters.Add(typeof(OracleIntervalYM), ConvertToString);
-		typeConverters.Add(typeof(OracleString), ConvertToString);
-		typeConverters.Add(typeof(OracleTimeStamp), ConvertToString);
+		typeConverters.Add(typeof(OracleClob)        , ConvertOracleClob);
+		typeConverters.Add(typeof(OracleBinary)      , ConvertOracleBinary);
+		typeConverters.Add(typeof(OracleBoolean)     , ConvertOracleBoolean);
+		typeConverters.Add(typeof(OracleDate)        , ConvertToString);
+		typeConverters.Add(typeof(OracleDecimal)     , ConvertToString);
+		typeConverters.Add(typeof(OracleIntervalDS)  , ConvertToString);
+		typeConverters.Add(typeof(OracleIntervalYM)  , ConvertToString);
+		typeConverters.Add(typeof(OracleString)      , ConvertToString);
+		typeConverters.Add(typeof(OracleTimeStamp)   , ConvertToString);
 		typeConverters.Add(typeof(OracleTimeStampLTZ), ConvertToString);
-		typeConverters.Add(typeof(OracleTimeStampTZ), ConvertToString);
-		typeConverters.Add(typeof(OracleBlob), ConvertOracleBlob);
-		typeConverters.Add(typeof(OracleBFile), ConvertOracleBFile);
-		typeConverters.Add(typeof(OracleXmlType), ConvertOracleXmlType);
+		typeConverters.Add(typeof(OracleTimeStampTZ) , ConvertToString);
+		typeConverters.Add(typeof(OracleBlob)        , ConvertOracleBlob);
+		typeConverters.Add(typeof(OracleBFile)       , ConvertOracleBFile);
+		typeConverters.Add(typeof(OracleXmlType)     , ConvertOracleXmlType);
 
 		// sap hana
 		byTypeNameConverters.Add("Sap.Data.Hana.HanaDecimal", ConvertToString);
 
 		// db2
-		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Binary", ConvertToString);
-		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Blob", ConvertToString);
-		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Clob", ConvertToString);
-		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Date", ConvertToString);
-		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2DateTime", ConvertToString);
-		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Decimal", ConvertToString);
-		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2DecimalFloat", ConvertToString);
-		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Double", ConvertToString);
-		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Int16", ConvertToString);
-		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Int32", ConvertToString);
-		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Int64", ConvertToString);
-		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Real", ConvertToString);
-		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Real370", ConvertToString);
-		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2RowId", ConvertToString);
-		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2String", ConvertToString);
-		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Time", ConvertToString);
-		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2TimeStamp", ConvertToString);
+		// use strings to avoid exceptions when DB2 provider loaded from process with wrong bitness
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Binary"         , ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Blob"           , ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Clob"           , ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Date"           , ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2DateTime"       , ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Decimal"        , ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2DecimalFloat"   , ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Double"         , ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Int16"          , ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Int32"          , ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Int64"          , ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Real"           , ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Real370"        , ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2RowId"          , ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2String"         , ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Time"           , ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2TimeStamp"      , ConvertToString);
 		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2TimeStampOffset", ConvertToString);
-		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2XsrObjectId", ConvertToString);
-		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Xml", ConvertDB2Xml);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2XsrObjectId"    , ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Xml"            , ConvertDB2Xml);
 	}
 
 	public static object Format(object value)
@@ -151,12 +151,14 @@ internal static class ValueFormatter
 		else if (_byTypeNameConverters.TryGetValue(valueType.FullName!, out converter))
 			value = converter(value);
 		else
+		{
 			foreach (var type in _baseTypeConverters.Keys)
 				if (type.IsAssignableFrom(valueType))
 				{
 					value = _baseTypeConverters[type](value);
 					break;
 				}
+		}
 
 		// apply simple values formatting
 		if (value is string strVal)
@@ -192,7 +194,7 @@ internal static class ValueFormatter
 	private static object Format(string str)
 	{
 		var components = new List<object>();
-		var sb = new StringBuilder();
+		var sb         = new StringBuilder();
 
 		// encode invalid characters as C# escape sequence
 		foreach (var chr in str)
@@ -221,7 +223,7 @@ internal static class ValueFormatter
 	private static object Format(char[] chars)
 	{
 		var components = new List<object>();
-		var sb = new StringBuilder();
+		var sb         = new StringBuilder();
 
 		// encode invalid characters as C# escape sequence
 		var first = true;
@@ -274,18 +276,12 @@ internal static class ValueFormatter
 	private static object Format(char chr)
 	{
 		if (!XmlConvert.IsXmlChar(chr) && !char.IsHighSurrogate(chr) && !char.IsLowSurrogate(chr))
-			if (chr <= 255)
-				return new XElement("span", new XElement("i", new XAttribute("style", "font-style: italic"), $"\\x{((short)chr):X2}"));
-			else
-				return new XElement("span", new XElement("i", new XAttribute("style", "font-style: italic"), $"\\u{((short)chr):X4}"));
+			return new XElement("span", new XElement("i", new XAttribute("style", "font-style: italic"), chr <= 255 ? $"\\x{((short)chr):X2}" : $"\\u{((short)chr):X4}"));
 		else
 			return chr.ToString();
 	}
 
-	private static object Format(bool value)
-	{
-		return Util.RawHtml(new XElement("span", value.ToString()));
-	}
+	private static object Format(bool value) => Util.RawHtml(new XElement("span", value.ToString()));
 	#endregion
 
 
@@ -298,7 +294,7 @@ internal static class ValueFormatter
 	private static object ConvertBitArray(object value)
 	{
 		var val = (BitArray)value;
-		var sb = new StringBuilder($" Len:{val.Length} 0b");
+		var sb  = new StringBuilder($" Len:{val.Length} 0b");
 
 		int i;
 
@@ -357,17 +353,17 @@ internal static class ValueFormatter
 	#endregion
 
 	#region Sql*
-	private static object ConvertSqlXml(object value) => ((SqlXml)value).Value;
-	private static object ConvertSqlChars(object value) => ((SqlChars)value).Value;
-	private static object ConvertSqlBytes(object value) => ((SqlBytes)value).Value;
+	private static object ConvertSqlXml   (object value) => ((SqlXml)value).Value;
+	private static object ConvertSqlChars (object value) => ((SqlChars)value).Value;
+	private static object ConvertSqlBytes (object value) => ((SqlBytes)value).Value;
 	private static object ConvertSqlBinary(object value) => ((SqlBinary)value).Value;
 	#endregion
 
 	#region Oracle
-	private static object ConvertOracleClob(object value) => $"OracleClob(Length = {((OracleClob)value).Length})";
-	private static object ConvertOracleBlob(object value) => $"OracleBlob(Length = {((OracleBlob)value).Length})";
-	private static object ConvertOracleBFile(object value) => $"OracleBFile(Directory = {((OracleBFile)value).DirectoryName}, FileName = {((OracleBFile)value).FileName})";
-	private static object ConvertOracleBinary(object value) => ((OracleBinary)value).Value;
+	private static object ConvertOracleClob   (object value) => $"OracleClob(Length = {((OracleClob)value).Length})";
+	private static object ConvertOracleBlob   (object value) => $"OracleBlob(Length = {((OracleBlob)value).Length})";
+	private static object ConvertOracleBFile  (object value) => $"OracleBFile(Directory = {((OracleBFile)value).DirectoryName}, FileName = {((OracleBFile)value).FileName})";
+	private static object ConvertOracleBinary (object value) => ((OracleBinary)value).Value;
 	private static object ConvertOracleBoolean(object value) => ((OracleBoolean)value).Value;
 	private static object ConvertOracleXmlType(object value) => ((OracleXmlType)value).Value;
 	#endregion

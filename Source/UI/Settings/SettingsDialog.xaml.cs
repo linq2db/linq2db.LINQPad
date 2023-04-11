@@ -7,7 +7,7 @@ namespace LinqToDB.LINQPad.UI;
 internal sealed partial class SettingsDialog
 {
 	private readonly Func<SettingsModel, Exception?>? _connectionTester;
-	private readonly string? _testErrorMessage;
+	private readonly string?                          _testErrorMessage;
 
 	public SettingsDialog()
 	{

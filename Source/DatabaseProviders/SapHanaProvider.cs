@@ -2,7 +2,7 @@
 using System.Data.Odbc;
 using LinqToDB.Data;
 using LinqToDB.DataProvider.SapHana;
-#if LPX6
+#if !NETFRAMEWORK
 using System.IO;
 #endif
 
@@ -52,7 +52,7 @@ internal sealed class SapHanaProvider : DatabaseProviderBase
 		return (DbProviderFactory)Type.GetType(typeName, false)?.GetField("Instance", BindingFlags.Public | BindingFlags.Static)?.GetValue(null)!;
 	}
 
-#if LPX6
+#if !NETFRAMEWORK
 	public override bool IsProviderPathSupported(string providerName)
 	{
 		return providerName == ProviderName.SapHanaNative;

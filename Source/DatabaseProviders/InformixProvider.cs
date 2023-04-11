@@ -1,5 +1,5 @@
 ﻿using System.Data.Common;
-#if !LPX6
+#if NETFRAMEWORK
 using IBM.Data.DB2;
 #else
 using IBM.Data.Db2;

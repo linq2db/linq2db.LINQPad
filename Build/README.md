@@ -4,11 +4,11 @@ This nuget package is a driver for [LINQPad 7](http://www.linqpad.net). For LINQ
 
 Following databases supported:
 
-- **ClickHouse** (Binary, HTTP and MySQL interfaces)
-- **DB2** (LUW, z/OS) (only 64-bit version)
+- **ClickHouse**: using Binary, HTTP and MySQL interfaces
+- **DB2** (LUW, z/OS): x64-bit version of LINQPad only
 - **Firebird**
-- **Informix** (only 64-bit version)
-- **Microsoft Access** *(supports both OLE DB and ODBC drivers)*
+- **Informix**: x64-bit version of LINQPad only
+- **Microsoft Access**: both OLE DB and ODBC drivers
 - **Microsoft SQL Server** 2005+ *(including **Microsoft SQL Azure**)*
 - **Microsoft SQL Server Compact (SQL CE)**
 - **MariaDB**

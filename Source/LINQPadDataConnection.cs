@@ -18,7 +18,7 @@ public class LINQPadDataConnection : DataConnection
 	}
 
 	/// <summary>
-	/// Constructor for use from code directly.
+	/// Constructor for use from driver code directly.
 	/// </summary>
 	internal LINQPadDataConnection(ConnectionSettings settings)
 		: this(

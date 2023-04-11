@@ -14,12 +14,14 @@ internal abstract class ConnectionModelBase : OptionalTabModelBase
 		{
 			if (string.IsNullOrWhiteSpace(Settings.Connection.DisplayName))
 				return null;
+
 			return Settings.Connection.DisplayName;
 		}
 		set
 		{
 			if (string.IsNullOrWhiteSpace(value))
 				value = null;
+
 			Settings.Connection.DisplayName = value;
 		}
 	}

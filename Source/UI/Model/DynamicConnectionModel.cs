@@ -25,6 +25,7 @@ internal sealed class DynamicConnectionModel : ConnectionModelBase, INotifyPrope
 		if (db != null)
 		{
 			Providers.Clear();
+
 			foreach (var provider in db.Providers)
 				Providers.Add(provider);
 
@@ -47,16 +48,17 @@ internal sealed class DynamicConnectionModel : ConnectionModelBase, INotifyPrope
 		if (db == null || provider == null || !db.IsProviderPathSupported(provider.Name))
 		{
 			ProviderPathVisibility = Visibility.Collapsed;
-			ProviderPathLabel = null;
-			ProviderPath = null;
+			ProviderPathLabel      = null;
+			ProviderPath           = null;
+
 			OnPropertyChanged(_providerPathVisibilityChangedEventArgs);
 			return;
 		}
 
-		var assemblyName = db.GetProviderAssemblyName(provider.Name);
+		var assemblyName       = db.GetProviderAssemblyName(provider.Name);
 		ProviderPathVisibility = Visibility.Visible;
-		ProviderPath = Settings.Connection.ProviderPath ?? db.TryGetDefaultPath(provider.Name);
-		ProviderPathLabel = $"Specify path to {assemblyName}";
+		ProviderPath           = Settings.Connection.ProviderPath ?? db.TryGetDefaultPath(provider.Name);
+		ProviderPathLabel      = $"Specify path to {assemblyName}";
 
 		OnPropertyChanged(_providerPathVisibilityChangedEventArgs);
 		OnPropertyChanged(_providerPathLabelChangedEventArgs);
@@ -74,7 +76,7 @@ internal sealed class DynamicConnectionModel : ConnectionModelBase, INotifyPrope
 		}
 		else
 		{
-			ProviderDownloadUrl = db.GetProviderDownloadUrl(provider?.Name);
+			ProviderDownloadUrl           = db.GetProviderDownloadUrl(provider?.Name);
 			ProviderDownloadUrlVisibility = ProviderDownloadUrl != null ? Visibility.Visible : Visibility.Collapsed;
 		}
 
@@ -96,6 +98,7 @@ internal sealed class DynamicConnectionModel : ConnectionModelBase, INotifyPrope
 		{
 			if (string.IsNullOrWhiteSpace(Settings.Connection.Database))
 				return null;
+
 			return DatabaseProviders.GetProvider(Settings.Connection.Database);
 		}
 		set
@@ -143,20 +146,24 @@ internal sealed class DynamicConnectionModel : ConnectionModelBase, INotifyPrope
 		{
 			if (string.IsNullOrWhiteSpace(Settings.Connection.ProviderPath))
 				return null;
+
 			return Settings.Connection.ProviderPath;
 		}
 		set
 		{
 			if (string.IsNullOrWhiteSpace(value))
 				value = null;
+
 			Settings.Connection.ProviderPath = value;
 		}
 	}
 
 	private static readonly PropertyChangedEventArgs _providerPathLabelChangedEventArgs = new (nameof(ProviderPathLabel));
 	public string? ProviderPathLabel { get; set; }
+
 	private static readonly PropertyChangedEventArgs _providerDownloadUrlVisibilityChangedEventArgs = new (nameof(ProviderDownloadUrlVisibility));
 	public Visibility ProviderDownloadUrlVisibility { get; set; }
+
 	private static readonly PropertyChangedEventArgs _providerDownloadUrlChangedEventArgs = new (nameof(ProviderDownloadUrl));
 	public string? ProviderDownloadUrl { get; set; }
 
@@ -166,6 +173,7 @@ internal sealed class DynamicConnectionModel : ConnectionModelBase, INotifyPrope
 		{
 			if (string.IsNullOrWhiteSpace(Settings.Connection.ConnectionString))
 				return null;
+
 			return Settings.Connection.ConnectionString;
 		}
 		set
@@ -189,6 +197,7 @@ internal sealed class DynamicConnectionModel : ConnectionModelBase, INotifyPrope
 		{
 			if (string.IsNullOrWhiteSpace(Settings.Connection.SecondaryConnectionString))
 				return null;
+
 			return Settings.Connection.SecondaryConnectionString;
 		}
 		set

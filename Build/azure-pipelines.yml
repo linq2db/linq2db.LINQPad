@@ -98,7 +98,6 @@ stages:
       displayName: Publish to Azure Artifacts feed
       condition: eq(variables['Build.SourceBranchName'], 'master')
 
-# apikey exires Oct/2020
     - task: NuGetCommand@2
       inputs:
         command: 'push'

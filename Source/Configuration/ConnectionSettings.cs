@@ -27,13 +27,13 @@ internal sealed class ConnectionSettings
 		_jsonOptions = new()
 		{
 			// deserialization options: use permissive options
-			AllowTrailingCommas = true,
-			ReadCommentHandling = JsonCommentHandling.Skip,
+			AllowTrailingCommas         = true,
+			ReadCommentHandling         = JsonCommentHandling.Skip,
 			PropertyNameCaseInsensitive = true,
 			// serialization options
-			PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-			WriteIndented = false,
-			DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+			PropertyNamingPolicy        = JsonNamingPolicy.CamelCase,
+			WriteIndented               = false,
+			DefaultIgnoreCondition      = JsonIgnoreCondition.WhenWritingNull
 		};
 
 		// register IReadOnlySet<T> converter factory
@@ -510,7 +510,7 @@ internal sealed class ConnectionSettings
 		[JsonIgnore] // strored in linqpad storage
 		public string? ConfigurationPath { get; set; }
 
-#if !LPX6
+#if NETFRAMEWORK
 		/// <summary>
 		/// Path to appsettings.json configuration file for LINQPad 5.
 		/// We cannot store it in <see cref="IConnectionInfo.AppConfigPath"/> as LINQPad will try to use

@@ -4,7 +4,7 @@ using LinqToDB.Data;
 using LinqToDB.LINQPad.UI;
 using LinqToDB.Mapping;
 
-#if !LPX6
+#if NETFRAMEWORK
 using System.Text.Json;
 using System.Buffers;
 using System.Runtime.CompilerServices;
@@ -38,7 +38,7 @@ internal static class DriverHelper
 	/// </summary>
 	public static void Init()
 	{
-#if !LPX6
+#if NETFRAMEWORK
 		// Dynamically resolve assembly bindings to currently used assembly version for transitive dependencies. Used by.NET Framework build (LINQPad 5).
 		AppDomain.CurrentDomain.AssemblyResolve += static (sender, args) =>
 		{
@@ -272,7 +272,7 @@ internal static class DriverHelper
 
 	public static IEnumerable<string> GetAssembliesToAdd(IConnectionInfo cxInfo)
 	{
-#if LPX6
+#if !NETFRAMEWORK
 		yield return "*";
 #endif
 		yield return typeof(DataConnection).Assembly.Location;

@@ -27,7 +27,7 @@ internal abstract class DatabaseProviderBase : IDatabaseProvider
 	public virtual bool                          IsProviderPathSupported      (string providerName                     ) => false;
 	public virtual void                          RegisterProviderFactory      (string providerName, string providerPath) { }
 	public virtual string?                       TryGetDefaultPath            (string providerName                     ) => null;
-#if !LPX6
+#if NETFRAMEWORK
 	public virtual void                          Unload                       (                                        ) { }
 #endif
 
