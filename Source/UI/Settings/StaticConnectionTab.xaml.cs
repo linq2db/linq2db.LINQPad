@@ -37,6 +37,7 @@ internal sealed partial class StaticConnectionTab
 		{
 			case nameof(Model.ContextAssemblyPath):
 				LoadContextTypes();
+				LoadConfigurations();
 				break;
 			case nameof(Model.ConfigurationPath):
 				LoadConfigurations();
@@ -93,7 +94,7 @@ internal sealed partial class StaticConnectionTab
 			{
 				Mouse.OverrideCursor = Cursors.Wait;
 
-				var config = AppJsonConfig.Load(Model.ConfigurationPath!);
+				var config = AppConfig.LoadJson(Model.ConfigurationPath!);
 
 				if (config.ConnectionStrings.Any())
 					foreach (var cs in config.ConnectionStrings)
@@ -112,7 +113,7 @@ internal sealed partial class StaticConnectionTab
 		}
 
 		// try to load custom app.config
-		if (Model.ConfigurationPath != null)
+		else if (Model.ConfigurationPath != null)
 		{
 			var oldCursor = Cursor;
 
@@ -140,7 +141,7 @@ internal sealed partial class StaticConnectionTab
 		}
 
 		// try to load default app.config
-		if (Model.ContextAssemblyPath != null)
+		else if (Model.ContextAssemblyPath != null)
 		{
 			var oldCursor = Cursor;
 
@@ -153,7 +154,8 @@ internal sealed partial class StaticConnectionTab
 				foreach (var cs in config.ConnectionStrings.ConnectionStrings.Cast<ConnectionStringSettings>())
 					Model.Configurations.Add(cs.Name);
 
-				Mouse.OverrideCursor = oldCursor;
+				Model.ConfigurationPath = config.FilePath;
+				Mouse.OverrideCursor    = oldCursor;
 			}
 			catch (Exception ex)
 			{

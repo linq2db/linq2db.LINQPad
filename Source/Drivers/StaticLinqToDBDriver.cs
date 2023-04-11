@@ -138,7 +138,11 @@ public sealed class LinqToDBStaticDriver : StaticDataContextDriver
 	private void TryLoadAppSettingsJson(string? appConfigPath)
 	{
 		if (appConfigPath?.EndsWith(".json", StringComparison.OrdinalIgnoreCase) == true)
-			DataConnection.DefaultSettings = AppJsonConfig.Load(appConfigPath);
+			DataConnection.DefaultSettings = AppConfig.LoadJson(appConfigPath);
+#if LPX6
+		if (appConfigPath?.EndsWith(".config", StringComparison.OrdinalIgnoreCase) == true)
+			DataConnection.DefaultSettings = AppConfig.LoadAppConfig(appConfigPath);
+#endif
 	}
 
 	/// <inheritdoc/>
@@ -168,7 +172,4 @@ public sealed class LinqToDBStaticDriver : StaticDataContextDriver
 			throw;
 		}
 	}
-
-	/// <inheritdoc/>
-	public override IEnumerable<string> GetAssembliesToAdd(IConnectionInfo cxInfo) => DriverHelper.GetAssembliesToAdd(cxInfo);
 }

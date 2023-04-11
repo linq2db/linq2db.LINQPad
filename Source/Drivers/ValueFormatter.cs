@@ -116,26 +116,26 @@ internal static class ValueFormatter
 		byTypeNameConverters.Add("Sap.Data.Hana.HanaDecimal", ConvertToString);
 
 		// db2
-		typeConverters.Add(typeof(DB2Binary), ConvertToString);
-		typeConverters.Add(typeof(DB2Blob), ConvertToString);
-		typeConverters.Add(typeof(DB2Clob), ConvertToString);
-		typeConverters.Add(typeof(DB2Date), ConvertToString);
-		typeConverters.Add(typeof(DB2DateTime), ConvertToString);
-		typeConverters.Add(typeof(DB2Decimal), ConvertToString);
-		typeConverters.Add(typeof(DB2DecimalFloat), ConvertToString);
-		typeConverters.Add(typeof(DB2Double), ConvertToString);
-		typeConverters.Add(typeof(DB2Int16), ConvertToString);
-		typeConverters.Add(typeof(DB2Int32), ConvertToString);
-		typeConverters.Add(typeof(DB2Int64), ConvertToString);
-		typeConverters.Add(typeof(DB2Real), ConvertToString);
-		typeConverters.Add(typeof(DB2Real370), ConvertToString);
-		typeConverters.Add(typeof(DB2RowId), ConvertToString);
-		typeConverters.Add(typeof(DB2String), ConvertToString);
-		typeConverters.Add(typeof(DB2Time), ConvertToString);
-		typeConverters.Add(typeof(DB2TimeStamp), ConvertToString);
-		typeConverters.Add(typeof(DB2TimeStampOffset), ConvertToString);
-		typeConverters.Add(typeof(DB2XsrObjectId), ConvertToString);
-		typeConverters.Add(typeof(DB2Xml), ConvertDB2Xml);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Binary", ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Blob", ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Clob", ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Date", ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2DateTime", ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Decimal", ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2DecimalFloat", ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Double", ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Int16", ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Int32", ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Int64", ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Real", ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Real370", ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2RowId", ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2String", ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Time", ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2TimeStamp", ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2TimeStampOffset", ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2XsrObjectId", ConvertToString);
+		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Xml", ConvertDB2Xml);
 	}
 
 	public static object Format(object value)
@@ -174,7 +174,7 @@ internal static class ValueFormatter
 		return value;
 	}
 
-	private static bool IsNull(object? value)
+	private static bool IsNull(object value)
 	{
 		// note that linqpad will call formatter only for non-primitive values.
 		// It will not call it for null and DBNull values so we cannot change their formatting (technically we can do it by formatting owner object, but it doesn't make sense)
@@ -182,7 +182,10 @@ internal static class ValueFormatter
 		// INullable implemented by System.Data.SqlTypes.Sql* types
 		return (value is System.Data.SqlTypes.INullable nullable && nullable.IsNull)
 			|| (value is Oracle.ManagedDataAccess.Types.INullable onull && onull.IsNull)
-			|| (value is IBM.Data.DB2Types.INullable db2null && db2null.IsNull);
+			|| (value.GetType().FullName!.StartsWith("IBM.Data.DB2Types.") && IsDB2Null(value));
+
+		// moved to function to avoid assembly load errors when loaded with wrong process bitness
+		static bool IsDB2Null(object value) => value is IBM.Data.DB2Types.INullable db2null && db2null.IsNull;
 	}
 
 	#region Final formatters
