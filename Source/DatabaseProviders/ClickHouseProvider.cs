@@ -12,11 +12,11 @@ internal sealed class ClickHouseProvider : DatabaseProviderBase
 {
 	private static readonly IReadOnlyList<ProviderInfo> _providers = new ProviderInfo[]
 	{
-		new (ProviderName.ClickHouseClient  , "HTTP(S) Interface"     ),
-		new (ProviderName.ClickHouseMySql   , "MySQL Interface"       ),
+		new (ProviderName.ClickHouseClient  , "HTTP(S) Interface (ClickHouse.Client)"             ),
+		new (ProviderName.ClickHouseMySql   , "MySQL Interface (MySqlConnector)"                  ),
 #if !NETFRAMEWORK
 		// octonica provider doesn't support NETFX or NESTANDARD
-		new (ProviderName.ClickHouseOctonica, "Binary (TCP) Interface"),
+		new (ProviderName.ClickHouseOctonica, "Binary (TCP) Interface (Octonica.ClickHouseClient)"),
 #endif
 	};
 
