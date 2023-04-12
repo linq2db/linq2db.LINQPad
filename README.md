@@ -6,7 +6,7 @@
 
 linq2db.LINQPad is a driver for [LINQPad 5 (.NET Framework 4.8)](http://www.linqpad.net) and [LINQPad 7 (.NET 6+)](http://www.linqpad.net).
 
-Following databases supported (by all LINQPad versions if other not sppecified):
+Following databases supported (by all LINQPad versions if other not specified):
 
 - **ClickHouse**: using Binary (LINQPad 7), HTTP and MySQL interfaces
 - **DB2** (LUW, z/OS): LINQPad 7 x64 and LINQPad 5 x86
