@@ -14,7 +14,7 @@ Complete driver rewrite:
 - add nullability information for columns and parameters for both value and reference types
 - add SQL dialog selection for databases for which Linq To DB supports multiple dialects
 - [LINQPAD5] rise required framework version from .NET Framework 4.6.1 to 4.8
-- [LINQPAD7] rise required framework version from `netcoreapp3.1` to `net6.0-windows`
+- [LINQPAD7] raise required framework version from `netcoreapp3.1` to `net6.0-windows`
 - [LINQPAD7] add .NET 7 and 8 support
 - [LINQPAD5] strong name removed from driver. Because LINQPad 5 use fully-qualified assembly name to store connection settings, your old connections will not be visible in LINQPad 5 with new driver and should be recreated (or you could try to edit assembly name in LINQPad settings file for old connections)
 - [LINQPAD5] add support for connection configuration load from json files for static contexts
