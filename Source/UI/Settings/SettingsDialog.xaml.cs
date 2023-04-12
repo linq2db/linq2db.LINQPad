@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -22,6 +23,18 @@ internal sealed partial class SettingsDialog
 		DataContext       = model;
 		_connectionTester = connectionTester;
 		_testErrorMessage = testErrorMessage;
+
+		model.DynamicConnection.PropertyChanged += DynamicConnection_PropertyChanged;
+	}
+
+	private void DynamicConnection_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		switch (e.PropertyName)
+		{
+			case nameof(Model.DynamicConnection.Database):
+				Model.Scaffold.UpdateClickHouseVisibility();
+				break;
+		}
 	}
 
 	public static bool Show(SettingsModel model, Func<SettingsModel, Exception?> connectionTester, string testErrorMessage)

@@ -16,6 +16,7 @@ namespace LinqToDB.LINQPad;
 internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 {
 	private readonly ISqlBuilder _sqlBuilder;
+	private readonly bool        _replaceClickHouseFixedString;
 
 	// stores populated model information:
 	// - FK associations
@@ -23,9 +24,10 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 	private readonly List<AssociationData>          _associations = new ();
 	private readonly Dictionary<string, SchemaData> _schemaItems  = new ();
 
-	public ModelProviderInterceptor(ISqlBuilder sqlBuilder)
+	public ModelProviderInterceptor(ConnectionSettings settings, ISqlBuilder sqlBuilder)
 	{
-		_sqlBuilder = sqlBuilder;
+		_sqlBuilder                   = sqlBuilder;
+		_replaceClickHouseFixedString = settings.Connection.Database == ProviderName.ClickHouse && settings.Scaffold.ClickHouseFixedStringAsString;
 	}
 
 	#region model DTOs
@@ -49,6 +51,16 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 		Out
 	}
 
+	#endregion
+
+	#region Type Mapping
+	public override TypeMapping? GetTypeMapping(DatabaseType databaseType, ITypeParser typeParser, TypeMapping? defaultMapping)
+	{
+		if (_replaceClickHouseFixedString && databaseType.Name?.StartsWith("FixedString(", StringComparison.Ordinal) == true)
+			return new TypeMapping(WellKnownTypes.System.String, DataType.NChar);
+
+		return base.GetTypeMapping(databaseType, typeParser, defaultMapping);
+	}
 	#endregion
 
 	#region Model Population

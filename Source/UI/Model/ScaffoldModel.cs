@@ -1,10 +1,14 @@
-﻿namespace LinqToDB.LINQPad.UI;
+﻿using System.ComponentModel;
+using System.Windows;
 
-internal sealed class ScaffoldModel : OptionalTabModelBase
+namespace LinqToDB.LINQPad.UI;
+
+internal sealed class ScaffoldModel : OptionalTabModelBase, INotifyPropertyChanged
 {
 	public ScaffoldModel(ConnectionSettings settings, bool enabled)
 		: base(settings, enabled)
 	{
+		UpdateClickHouseVisibility();
 	}
 
 	public bool Capitalize
@@ -24,4 +28,25 @@ internal sealed class ScaffoldModel : OptionalTabModelBase
 		get => Settings.Scaffold.UseProviderTypes;
 		set => Settings.Scaffold.UseProviderTypes = value;
 	}
+
+	public bool ClickHouseUseStrings
+	{
+		get => Settings.Scaffold.ClickHouseFixedStringAsString;
+		set => Settings.Scaffold.ClickHouseFixedStringAsString = value;
+	}
+
+	private static readonly PropertyChangedEventArgs _clickHouseVisibilityChangedEventArgs = new (nameof(ClickHouseVisibility));
+	public Visibility ClickHouseVisibility { get; set; }
+
+	internal void UpdateClickHouseVisibility()
+	{
+		ClickHouseVisibility = Settings.Connection.Database == ProviderName.ClickHouse ? Visibility.Visible : Visibility.Collapsed;
+		OnPropertyChanged(_clickHouseVisibilityChangedEventArgs);
+	}
+
+	#region INotifyPropertyChanged
+	public event PropertyChangedEventHandler? PropertyChanged;
+
+	private void OnPropertyChanged(PropertyChangedEventArgs args) => PropertyChanged?.Invoke(this, args);
+	#endregion
 }

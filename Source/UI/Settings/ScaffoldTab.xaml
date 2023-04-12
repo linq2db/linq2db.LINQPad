@@ -19,16 +19,23 @@
 			ToolTip="When option is not set property name generated as-is based on column name. Otherwise we will try to generate name in pascal case, e.g. for column with user_id name property name will be UserId when option enabled and user_id when disabled" />
 
 		<CheckBox
-			 Margin="5"
+			Margin="5"
 			IsChecked="{Binding Pluralize}"
 			Content="Pluralize table and one-to-many association property names in model"
 			ToolTip="When option is set we will try to convert name to plural form when it has singular form" />
 
 		<CheckBox
-			 Margin="5"
+			Margin="5"
 			IsChecked="{Binding UseProviderTypes}"
 			Content="Use ADO.NET provider custom types"
 			ToolTip="Some ADO.NET providers provide own types to store database values of some database types. Usually it is done when standard .NET type precision or range is not enough to store values from database without data loss or overflow." />
+
+		<CheckBox
+			Margin="5"
+			IsChecked="{Binding ClickHouseUseStrings}"
+			Visibility="{Binding ClickHouseVisibility}"
+			Content="[ClickHouse] Use string for FixedString(X) database type"
+			ToolTip="By default byte[] type used in model for columns of FixedString(X) database type." />
 	</StackPanel>
 	</GroupBox>
 </UserControl>

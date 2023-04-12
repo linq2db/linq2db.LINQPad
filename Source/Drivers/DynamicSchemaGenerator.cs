@@ -105,7 +105,7 @@ internal static class DynamicSchemaGenerator
 
 		var sqlBuilder  = db.DataProvider.CreateSqlBuilder(db.MappingSchema, db.Options);
 		var language    = LanguageProviders.CSharp;
-		var interceptor = new ModelProviderInterceptor(sqlBuilder);
+		var interceptor = new ModelProviderInterceptor(settings, sqlBuilder);
 		var generator   = new Scaffolder(language, HumanizerNameConverter.Instance, scaffoldOptions, interceptor);
 
 		var legacySchemaProvider = new LegacySchemaProvider(db, scaffoldOptions.Schema, language);

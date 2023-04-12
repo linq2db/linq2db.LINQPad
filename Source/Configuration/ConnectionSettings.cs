@@ -473,6 +473,11 @@ internal sealed class ConnectionSettings
 		public bool UseProviderTypes { get; set; }
 
 		/// <summary>
+		/// Map FixedString(X) to <see cref="string"/> for ClickHouse.
+		/// </summary>
+		public bool ClickHouseFixedStringAsString { get; set; }
+
+		/// <summary>
 		/// Enables pluralization context table property name and collection-type association property name.
 		/// Stored in <see cref="IDynamicSchemaOptions.NoPluralization"/>.
 		/// </summary>

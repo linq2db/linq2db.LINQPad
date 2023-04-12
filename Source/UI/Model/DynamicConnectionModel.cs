@@ -42,7 +42,7 @@ internal sealed class DynamicConnectionModel : ConnectionModelBase, INotifyPrope
 
 	private void UpdateProviderPathVisibility()
 	{
-		var db = Database;
+		var db       = Database;
 		var provider = Provider;
 
 		if (db == null || provider == null || !db.IsProviderPathSupported(provider.Name))
@@ -67,7 +67,7 @@ internal sealed class DynamicConnectionModel : ConnectionModelBase, INotifyPrope
 
 	private void UpdateProviderDownloadUrl()
 	{
-		var db = Database;
+		var db       = Database;
 		var provider = Provider;
 
 		if (db == null)
@@ -92,6 +92,7 @@ internal sealed class DynamicConnectionModel : ConnectionModelBase, INotifyPrope
 
 	public ObservableCollection<IDatabaseProvider> Databases { get; } = new();
 
+	private static readonly PropertyChangedEventArgs _databaseChangedEventArgs = new (nameof(Database));
 	public IDatabaseProvider? Database
 	{
 		get
@@ -107,6 +108,7 @@ internal sealed class DynamicConnectionModel : ConnectionModelBase, INotifyPrope
 			UpdateProviders();
 			UpdateSecondaryConnection();
 			UpdateProviderDownloadUrl();
+			OnPropertyChanged(_databaseChangedEventArgs);
 		}
 	}
 
