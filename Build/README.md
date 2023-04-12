@@ -1,6 +1,6 @@
 # LINQ to DB LINQPad 7 Driver
 
-This nuget package is a driver for [LINQPad 7](http://www.linqpad.net). For LINQPad 6 you can use older 4.x version of driver.
+This nuget package is a driver for [LINQPad 7](http://www.linqpad.net). Support for LINQPad 6 is available via older 4.x drivers.
 
 Following databases supported:
 
