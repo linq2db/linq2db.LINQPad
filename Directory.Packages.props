@@ -4,6 +4,8 @@
 		<PackageVersion Include="linq2db.Tools"                             Version="5.1.1"                                   />
 
 		<PackageVersion Include="LINQPad.Reference"                         Version="1.3.0"                                   />
+		
+		<PackageVersion Include="PolySharp"                                 Version="1.13.1"                                  />
 
 		<PackageVersion Include="Microsoft.CodeAnalysis.CSharp"             Version="4.5.0"                                   />
 		<PackageVersion Include="System.ValueTuple"                         Version="4.5.0"                                   />

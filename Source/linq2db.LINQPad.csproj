@@ -48,6 +48,7 @@
 		<PackageReference Include="linq2db" />
 		<PackageReference Include="linq2db.Tools" />
 		<PackageReference Include="LINQPad.Reference" />
+		<PackageReference Include="PolySharp" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
 		<PackageReference Include="System.Text.Json" />
 		<PackageReference Include="FirebirdSql.Data.FirebirdClient" />
