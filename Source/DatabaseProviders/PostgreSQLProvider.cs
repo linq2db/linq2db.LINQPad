@@ -7,10 +7,11 @@ internal sealed class PostgreSQLProvider : DatabaseProviderBase
 {
 	private static readonly IReadOnlyList<ProviderInfo> _providers = new ProviderInfo[]
 	{
-		new(ProviderName.PostgreSQL92, "PostgreSQL 9.2 Dialect"),
-		new(ProviderName.PostgreSQL93, "PostgreSQL 9.3 Dialect"),
-		new(ProviderName.PostgreSQL95, "PostgreSQL 9.5 Dialect"),
-		new(ProviderName.PostgreSQL15, "PostgreSQL 15 Dialect" ),
+		new(ProviderName.PostgreSQL  , "Detect Dialect Automatically", true),
+		new(ProviderName.PostgreSQL92, "PostgreSQL 9.2 Dialect"            ),
+		new(ProviderName.PostgreSQL93, "PostgreSQL 9.3 Dialect"            ),
+		new(ProviderName.PostgreSQL95, "PostgreSQL 9.5 Dialect"            ),
+		new(ProviderName.PostgreSQL15, "PostgreSQL 15 Dialect"             ),
 	};
 
 	public PostgreSQLProvider()

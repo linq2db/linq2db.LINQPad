@@ -8,8 +8,9 @@ internal sealed class OracleProvider : DatabaseProviderBase
 {
 	private static readonly IReadOnlyList<ProviderInfo> _providers = new ProviderInfo[]
 	{
-		new (ProviderName.Oracle11Managed, "Oracle 11g Dialect"),
-		new (ProviderName.OracleManaged  , "Oracle 12c Dialect"),
+		new (ProviderName.Oracle         , "Detect Dialect Automatically", true),
+		new (ProviderName.Oracle11Managed, "Oracle 11g Dialect"                ),
+		new (ProviderName.OracleManaged  , "Oracle 12c Dialect"                ),
 	};
 
 	public OracleProvider()

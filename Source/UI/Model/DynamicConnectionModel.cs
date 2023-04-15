@@ -109,6 +109,7 @@ internal sealed class DynamicConnectionModel : ConnectionModelBase, INotifyPrope
 			UpdateSecondaryConnection();
 			UpdateProviderDownloadUrl();
 			OnPropertyChanged(_databaseChangedEventArgs);
+			Provider = GetCurrentProvider();
 		}
 	}
 
@@ -117,25 +118,36 @@ internal sealed class DynamicConnectionModel : ConnectionModelBase, INotifyPrope
 
 	public ObservableCollection<ProviderInfo> Providers { get; } = new();
 
+	private static readonly PropertyChangedEventArgs _providerChangedEventArgs = new (nameof(Provider));
 	public ProviderInfo? Provider
 	{
-		get
-		{
-			if (Database == null || string.IsNullOrWhiteSpace(Settings.Connection.Provider))
-				return null;
-
-			foreach (var provider in Database.Providers)
-				if (provider.Name == Settings.Connection.Provider)
-					return provider;
-
-			return null;
-		}
+		get => GetCurrentProvider();
 		set
 		{
 			Settings.Connection.Provider = value?.Name;
 			UpdateProviderPathVisibility();
 			UpdateProviderDownloadUrl();
+			OnPropertyChanged(_providerChangedEventArgs);
 		}
+	}
+
+	private ProviderInfo? GetCurrentProvider()
+	{
+		if (Database == null)
+			return null;
+
+		if (!string.IsNullOrWhiteSpace(Settings.Connection.Provider))
+		{
+			foreach (var provider in Database.Providers)
+				if (provider.Name == Settings.Connection.Provider)
+					return provider;
+		}
+
+		foreach (var provider in Database.Providers)
+			if (provider.IsDefault)
+				return provider;
+
+		return null;
 	}
 
 	private static readonly PropertyChangedEventArgs _providerPathVisibilityChangedEventArgs = new (nameof(ProviderPathVisibility));
