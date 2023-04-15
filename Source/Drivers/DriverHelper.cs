@@ -131,7 +131,10 @@ internal static class DriverHelper
 							break;
 						case TraceInfoStep.AfterExecute:
 							// log query execution stats
-							executionManager.SqlTranslationWriter.WriteLine($"-- Execution time: {info.ExecutionTime}. Records affected: {info.RecordsAffected}.\r\n");
+							if (info.RecordsAffected != null)
+								executionManager.SqlTranslationWriter.WriteLine($"-- Execution time: {info.ExecutionTime}. Records affected: {info.RecordsAffected}.\r\n");
+							else
+								executionManager.SqlTranslationWriter.WriteLine($"-- Execution time: {info.ExecutionTime}\r\n");
 							break;
 					}
 				};
