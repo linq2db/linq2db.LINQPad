@@ -44,9 +44,9 @@
 	</metadata>
 
 	<files>
-		<file src="..\Source\bin\Release\net6.0-windows\linq2db.LINQPad.dll"  target="lib\net6.0-windows\" />
-		<file src="..\Source\bin\Release\net6.0-windows\Connection.png"       target="lib\net6.0-windows\" />
-		<file src="..\Source\bin\Release\net6.0-windows\FailedConnection.png" target="lib\net6.0-windows\" />
-		<file src="README.md"                                                                              />
+		<file src="..\Source\bin\Release\net6.0-windows\linq2db.LINQPad.dll" target="lib\net6.0-windows\" />
+		<file src="Connection.png"                                           target="lib\net6.0-windows\" />
+		<file src="FailedConnection.png"                                     target="lib\net6.0-windows\" />
+		<file src="README.md"                                                                             />
 	</files>
 </package>
