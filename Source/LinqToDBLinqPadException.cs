@@ -1,11 +1,8 @@
-﻿using System;
+﻿namespace LinqToDB.LINQPad;
 
-namespace LinqToDB.LINQPad
+internal sealed class LinqToDBLinqPadException : Exception
 {
-	internal class LinqToDBLinqPadException : Exception
+	public LinqToDBLinqPadException(string message) : base(message)
 	{
-		public LinqToDBLinqPadException(string message) : base(message)
-		{
-		}
 	}
 }
