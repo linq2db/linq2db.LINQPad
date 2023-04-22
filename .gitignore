@@ -1,6 +1,7 @@
-#Ignore files build by Visual Studio
 .vs/
 bin/
 obj/
+*.zip
 *.lpx
 *.lpx6
+*.csproj.user

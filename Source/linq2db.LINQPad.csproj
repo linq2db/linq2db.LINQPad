@@ -1,64 +1,68 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
 	<PropertyGroup>
-		<!--net6.0-windows used only as additional built target and not released-->
-		<TargetFrameworks>net461;netcoreapp3.1;net6.0-windows</TargetFrameworks>
+		<TargetFrameworks>net48;net6.0-windows</TargetFrameworks>
 		<RootNamespace>LinqToDB.LINQPad</RootNamespace>
 		<Company>linq2db</Company>
 		<Product>linq2db.LINQPad</Product>
 		<AssemblyTitle>$(Product)</AssemblyTitle>
-		<Version>4.2.0.0</Version>
+		<Version>5.0.0.0</Version>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
-		<Copyright>Copyright © 2016-2022 Linq To DB Team</Copyright>
-		<AssemblyOriginatorKeyFile>linq2db.snk</AssemblyOriginatorKeyFile>
+		<Copyright>Copyright © 2016-2023 Linq To DB Team</Copyright>
 		<UseWPF>true</UseWPF>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 
-		<LangVersion>10.0</LangVersion>
+		<LangVersion>preview</LangVersion>
 		<Nullable>enable</Nullable>
 		<!--https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/errors-warnings#warninglevel-->
 		<WarningLevel>9999</WarningLevel>
 		<ErrorReport>prompt</ErrorReport>
 		<Features>strict</Features>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<ImplicitUsings>enable</ImplicitUsings>
 
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+
+		<!--required for SkipLocalsInit-->
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
 		<MSBuildWarningsAsMessages>MSB3270</MSBuildWarningsAsMessages>
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<AnalysisLevel>preview</AnalysisLevel>
-		<EnableNETAnalyzers>true</EnableNETAnalyzers>
-		<RunAnalyzers>true</RunAnalyzers>
-	</PropertyGroup>
+		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+		<RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
 
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
-		<SignAssembly>true</SignAssembly>
-		<DelaySign>false</DelaySign>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)' != 'net461'">
-		<DefineConstants>NETCORE</DefineConstants>
+		<AnalysisLevel>preview-All</AnalysisLevel>
+		<!--enable IDExxxx analyzers during build-->
+		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+		<ReportAnalyzer>false</ReportAnalyzer>
+		<!--workaround for https://github.com/dotnet/roslyn/issues/41640, but also required for xml-doc validation -->
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="LINQPad.Reference" />
-		<PackageReference Include="linq2db" />
-		<PackageReference Include="Humanizer.Core" />
-		<PackageReference Include="CodeJam" />
+		<Using Include="System.Reflection" />
 
+		<PackageReference Include="linq2db" />
+		<PackageReference Include="linq2db.Tools" />
+		<PackageReference Include="LINQPad.Reference" />
+		<PackageReference Include="PolySharp" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+		<PackageReference Include="System.Text.Json" />
 		<PackageReference Include="FirebirdSql.Data.FirebirdClient" />
 		<PackageReference Include="MySqlConnector" />
 		<PackageReference Include="AdoNetCore.AseClient" />
 		<PackageReference Include="System.Data.SQLite.Core" />
-
-		<PackageReference Include="System.Data.SqlClient" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+		<PackageReference Include="Microsoft.Data.SqlClient" />
 		<PackageReference Include="Npgsql" />
+		<PackageReference Include="ClickHouse.Client" />
+		<!--<PackageReference Include="linq2db4iSeries" />-->
+		<PackageReference Include="Microsoft.SqlServer.Types" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net461'">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net48'">
 		<Reference Include="Microsoft.CSharp" />
 		<Reference Include="System.Configuration" />
 
@@ -69,68 +73,69 @@
 		<PackageReference Include="System.Buffers" />
 		<PackageReference Include="Oracle.ManagedDataAccess" />
 		<PackageReference Include="IBM.Data.DB.Provider" GeneratePathProperty="true" />
+
 		<Reference Include="IBM.Data.DB2">
 			<HintPath>$(PkgIBM_Data_DB_Provider)\build\net451\x86\IBM.Data.DB2.dll</HintPath>
 		</Reference>
-
-		<!--<PackageReference Include="linq2db4iSeries" />-->
-		<PackageReference Include="Microsoft.SqlServer.Types" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' != 'net461' ">
+	<ItemGroup Condition=" '$(TargetFramework)' != 'net48' ">
 		<PackageReference Include="System.Configuration.ConfigurationManager" />
-
 		<PackageReference Include="System.Data.Odbc" />
 		<PackageReference Include="System.Data.OleDb" />
 		<PackageReference Include="Oracle.ManagedDataAccess.Core" />
-		<PackageReference Include="IBM.Data.DB2.Core" />
-		<PackageReference Include="dotMorten.Microsoft.SqlServer.Types" />
-		<PackageReference Include="System.Text.Json" />
+		<PackageReference Include="Net.IBM.Data.Db2" />
+		<PackageReference Include="Octonica.ClickHouseClient" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="Connection.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Update="ConnectionViewModel.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>ConnectionViewModel.generated.cs</LastGenOutput>
-		</None>
-		<None Update="FailedConnection.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Update="header.xml">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
+		<Page Update="UI\Settings\DynamicConnectionTab.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="UI\Settings\LinqToDBTab.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="UI\Settings\SchemaTab.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="UI\Settings\ScaffoldTab.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="UI\Settings\UniqueStringListControl.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="UI\Settings\SharedConnectionOptions.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="UI\Settings\StaticConnectionTab.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="UI\Settings\AboutTab.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="UI\Settings\SettingsDialog.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+		</Page>
 	</ItemGroup>
+
+	<Target Name="PostBuild1" AfterTargets="PostBuildEvent" Condition="'$(TargetFramework)' != 'net48'">
+		<Exec Command="$(ProjectDir)..\Build\Pack.bat $(TargetDir) lpx6" />
+	</Target>
+
+	<Target Name="PostBuild2" AfterTargets="CopySQLiteInteropFiles" Condition="'$(TargetFramework)' == 'net48'">
+		<Exec Command="$(ProjectDir)..\Build\Pack.bat $(TargetDir) lpx" />
+	</Target>
 
 	<ItemGroup>
-		<Compile Update="ConnectionViewModel.generated.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>ConnectionViewModel.tt</DependentUpon>
-		</Compile>
+		<Resource Include="..\Build\icon64.png" Link="Resources\Logo.png" />
 	</ItemGroup>
-
-	<ItemGroup>
-		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-	</ItemGroup>
-
-	<Target Name="PostBuild1" AfterTargets="PostBuildEvent" Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-		<Exec Command="$(ProjectDir)Pack.bat $(TargetDir) lpx6" />
-	</Target>
-
-	<Target Name="PostBuild2" AfterTargets="CopySQLiteInteropFiles" Condition="'$(TargetFramework)' == 'net461'">
-		<Exec Command="$(ProjectDir)Pack.bat $(TargetDir) lpx" />
-	</Target>
-
-	<!--disable CodeJam transitive dependency polluting global namespace-->
-	<Target Name="ChangeAliasesOfBNameAssemblies" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
-		<ItemGroup>
-			<ReferencePath Condition="'%(FileName)' == 'Theraot.Core'">
-				<Aliases>unused</Aliases>
-			</ReferencePath>
-		</ItemGroup>
-	</Target>
 
 </Project>

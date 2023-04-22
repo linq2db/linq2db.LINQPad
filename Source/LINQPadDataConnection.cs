@@ -1,41 +1,32 @@
-﻿using CodeJam.Strings;
-using CodeJam.Xml;
-using LINQPad.Extensibility.DataContext;
-using LinqToDB.Data;
+﻿using LinqToDB.Data;
 
-namespace LinqToDB.LINQPad
+namespace LinqToDB.LINQPad;
+
+/// <summary>
+/// Base class for generated contexts and context for direct use.
+/// </summary>
+public class LINQPadDataConnection : DataConnection
 {
-	public class LINQPadDataConnection : DataConnection
+	/// <summary>
+	/// Constructor for inherited context.
+	/// </summary>
+	protected LINQPadDataConnection(string? providerName, string? providerPath, string? connectionString)
+		: base(
+			DatabaseProviders.GetDataProvider(providerName, connectionString, providerPath),
+			connectionString ?? throw new LinqToDBLinqPadException("Connection string missing"))
 	{
-		public LINQPadDataConnection()
-		{
-			Init();
-			InitMappingSchema();
-		}
+	}
 
-		public LINQPadDataConnection(string? providerName, string? providerPath, string connectionString)
-			: base(ProviderHelper.GetProvider(providerName, providerPath).GetDataProvider(connectionString), connectionString)
-		{
-			Init();
-			InitMappingSchema();
-		}
-
-		public LINQPadDataConnection(IConnectionInfo cxInfo)
-			: this(
-				(string?)cxInfo.DriverData.Element(CX.ProviderName),
-				(string?)cxInfo.DriverData.Element(CX.ProviderPath),
-				cxInfo.DatabaseInfo.CustomCxString)
-		{
-			CommandTimeout = cxInfo.DriverData.ElementValueOrDefault(CX.CommandTimeout, str => str.ToInt32() ?? 0, 0);
-		}
-
-		protected virtual void InitMappingSchema()
-		{
-		}
-
-		static void Init()
-		{
-			TurnTraceSwitchOn();
-		}
+	/// <summary>
+	/// Constructor for use from driver code directly.
+	/// </summary>
+	internal LINQPadDataConnection(ConnectionSettings settings)
+		: this(
+			settings.Connection.Provider,
+			settings.Connection.ProviderPath,
+			settings.Connection.ConnectionString)
+	{
+		if (settings.Connection.CommandTimeout != null)
+			CommandTimeout = settings.Connection.CommandTimeout.Value;
 	}
 }
