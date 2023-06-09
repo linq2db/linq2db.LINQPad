@@ -23,6 +23,12 @@ internal sealed class ScaffoldModel : OptionalTabModelBase, INotifyPropertyChang
 		set => Settings.Scaffold.Pluralize = value;
 	}
 
+	public bool AsIsNames
+	{
+		get => Settings.Scaffold.AsIsNames;
+		set => Settings.Scaffold.AsIsNames = value;
+	}
+
 	public bool UseProviderTypes
 	{
 		get => Settings.Scaffold.UseProviderTypes;

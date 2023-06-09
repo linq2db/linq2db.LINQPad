@@ -14,6 +14,12 @@
 	<StackPanel Margin="5">
 		<CheckBox
 			Margin="5"
+			IsChecked="{Binding AsIsNames}"
+			Content="Use table/column names as-is"
+			ToolTip="When option is not set table, view and column names converted to PascalCase" />
+
+		<CheckBox
+			Margin="5"
 			IsChecked="{Binding Capitalize}"
 			Content="Convert column property name to PascalCase"
 			ToolTip="When option is not set property name generated as-is based on column name. Otherwise we will try to generate name in pascal case, e.g. for column with user_id name property name will be UserId when option enabled and user_id when disabled" />

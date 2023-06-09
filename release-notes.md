@@ -1,3 +1,9 @@
+# Release 5.1.0
+
+Issues fixed:
+
+- [#89](https://github.com/linq2db/linq2db.LINQPad/pull/89), [#90](https://github.com/linq2db/linq2db.LINQPad/pull/90): add scaffold option to use database object names as-is
+
 # Release 5.0.0
 
 Complete driver rewrite:
