@@ -166,6 +166,9 @@ internal sealed class ConnectionSettings
 			// old provider name option replaced with two options: database and database provider
 			settings.Connection.Provider = GetString(cxInfo, ProviderName);
 
+			// used to distinguish new connection dialog from migration
+			var isNew = settings.Connection.Provider == null;
+
 			// this native oracle provider was removed long time ago and not supported in v5 too
 			if (settings.Connection.Provider == PN.OracleNative)
 				settings.Connection.Provider = PN.OracleManaged;
@@ -256,6 +259,9 @@ internal sealed class ConnectionSettings
 
 			// 10. CustomConfiguration migration
 			settings.StaticContext.ConfigurationName = GetString(cxInfo, CustomConfiguration);
+
+			// https://github.com/linq2db/linq2db.LINQPad/issues/89
+			settings.Scaffold.AsIsNames = !isNew;
 
 			// ignored options:
 			// UseCustomFormatter - removed in v5
@@ -490,6 +496,12 @@ internal sealed class ConnectionSettings
 		/// </summary>
 		[JsonIgnore]
 		public bool Capitalize { get; set; }
+
+		/// <summary>
+		/// When set, default database object name normalization rules disabled (except modification set
+		/// by <see cref="Pluralize"/> and <see cref="Capitalize"/> options).
+		/// </summary>
+		public bool AsIsNames { get; set; }
 	}
 
 	public sealed class LinqToDbOptions

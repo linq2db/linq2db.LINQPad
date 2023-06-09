@@ -42,12 +42,47 @@ internal static class DynamicSchemaGenerator
 		//options.Schema.EnableSqlServerReturnValue  = true;
 
 		// set data model options
+		if (settings.Scaffold.AsIsNames)
+		{
+			// https://github.com/linq2db/linq2db.LINQPad/issues/89
+			// reset naming options for some objects:
+			// - entities
+			// - context properties
+			// - columns
+			// more could be added later on request
+			options.DataModel.EntityClassNameOptions.Casing                        = NameCasing.None;
+			options.DataModel.EntityClassNameOptions.Pluralization                 = Pluralization.None;
+			options.DataModel.EntityClassNameOptions.Transformation                = NameTransformation.None;
+			options.DataModel.EntityClassNameOptions.DontCaseAllCaps               = true;
+			options.DataModel.EntityClassNameOptions.PluralizeOnlyIfLastWordIsText = false;
+
+			options.DataModel.EntityContextPropertyNameOptions.Casing                        = NameCasing.None;
+			options.DataModel.EntityContextPropertyNameOptions.Pluralization                 = Pluralization.None;
+			options.DataModel.EntityContextPropertyNameOptions.Transformation                = NameTransformation.None;
+			options.DataModel.EntityContextPropertyNameOptions.DontCaseAllCaps               = true;
+			options.DataModel.EntityContextPropertyNameOptions.PluralizeOnlyIfLastWordIsText = false;
+
+			options.DataModel.EntityColumnPropertyNameOptions.Casing                        = NameCasing.None;
+			options.DataModel.EntityColumnPropertyNameOptions.Pluralization                 = Pluralization.None;
+			options.DataModel.EntityColumnPropertyNameOptions.Transformation                = NameTransformation.None;
+			options.DataModel.EntityColumnPropertyNameOptions.DontCaseAllCaps               = true;
+			options.DataModel.EntityColumnPropertyNameOptions.PluralizeOnlyIfLastWordIsText = false;
+		}
+
 		if (!settings.Scaffold.Capitalize)
 			options.DataModel.EntityColumnPropertyNameOptions.Casing = NameCasing.None;
+		else
+			options.DataModel.EntityColumnPropertyNameOptions.Casing = NameCasing.Pascal;
+
 		if (!settings.Scaffold.Pluralize)
 		{
 			options.DataModel.EntityContextPropertyNameOptions.Pluralization             = Pluralization.None;
 			options.DataModel.TargetMultipleAssociationPropertyNameOptions.Pluralization = Pluralization.None;
+		}
+		else
+		{
+			options.DataModel.EntityContextPropertyNameOptions.Pluralization             = Pluralization.PluralIfLongerThanOne;
+			options.DataModel.TargetMultipleAssociationPropertyNameOptions.Pluralization = Pluralization.PluralIfLongerThanOne;
 		}
 
 		options.DataModel.GenerateDefaultSchema              = true;
