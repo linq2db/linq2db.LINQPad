@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using LINQPad.Extensibility.DataContext;
+using LinqToDB.Common.Logging;
 using LinqToDB.Data;
 using LinqToDB.LINQPad.UI;
 using LinqToDB.Mapping;
@@ -94,6 +95,12 @@ internal static class DriverHelper
 			else if (context is DataContext dctx)
 			{
 				dctx.OnTraceConnection = GetSqlLogAction(executionManager);
+				DataConnection.TurnTraceSwitchOn();
+			}
+			else
+			{
+				// Try to find a OnTraceConnection property in the custom context object
+				context.GetType().GetProperty("OnTraceConnection")?.SetValue(context, GetSqlLogAction(executionManager));
 				DataConnection.TurnTraceSwitchOn();
 			}
 
