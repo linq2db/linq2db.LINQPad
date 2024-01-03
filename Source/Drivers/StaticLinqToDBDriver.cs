@@ -105,7 +105,7 @@ public sealed class LinqToDBStaticDriver : StaticDataContextDriver
 	/// <inheritdoc/>
 	public override void InitializeContext(IConnectionInfo cxInfo, object context, QueryExecutionManager executionManager)
 	{
-		_mappingSchema = DriverHelper.InitializeContext(cxInfo, (DataConnection)context, executionManager);
+		_mappingSchema = DriverHelper.InitializeContext(cxInfo, (IDataContext)context, executionManager);
 	}
 
 	/// <inheritdoc/>
