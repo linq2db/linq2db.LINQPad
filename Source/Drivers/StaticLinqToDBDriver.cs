@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Data.Common;
+using System.IO;
 using LINQPad.Extensibility.DataContext;
 using LinqToDB.Data;
 using LinqToDB.Mapping;
@@ -137,6 +138,12 @@ public sealed class LinqToDBStaticDriver : StaticDataContextDriver
 
 	private void TryLoadAppSettingsJson(string? appConfigPath)
 	{
+		if (string.IsNullOrWhiteSpace(appConfigPath))
+			return;
+
+		if (!File.Exists(appConfigPath))
+			return;
+
 		if (appConfigPath?.EndsWith(".json", StringComparison.OrdinalIgnoreCase) == true)
 			DataConnection.DefaultSettings = AppConfig.LoadJson(appConfigPath);
 #if !NETFRAMEWORK
