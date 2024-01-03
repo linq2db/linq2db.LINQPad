@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using LINQPad.Extensibility.DataContext;
-using LinqToDB.Common.Logging;
 using LinqToDB.Data;
 using LinqToDB.LINQPad.UI;
 using LinqToDB.Mapping;
