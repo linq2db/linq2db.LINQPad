@@ -3,7 +3,9 @@ using System.Windows.Controls;
 
 namespace LinqToDB.LINQPad.UI;
 
+#pragma warning disable CA1812 // Remove unused type
 internal sealed partial class SchemaTab
+#pragma warning restore CA1812 // Remove unused type
 {
 	public SchemaTab()
 	{

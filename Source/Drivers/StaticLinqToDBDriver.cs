@@ -46,10 +46,10 @@ public sealed class LinqToDBStaticDriver : StaticDataContextDriver
 		}
 	}
 
-	private static readonly ParameterDescriptor[] _contextParameters = new[]
-	{
+	private static readonly ParameterDescriptor[] _contextParameters =
+	[
 		new ParameterDescriptor("configuration", typeof(string).FullName)
-	};
+	];
 
 	/// <inheritdoc/>
 	public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo cxInfo)
@@ -66,7 +66,7 @@ public sealed class LinqToDBStaticDriver : StaticDataContextDriver
 		catch (Exception ex)
 		{
 			DriverHelper.HandleException(ex, nameof(GetContextConstructorParameters));
-			return Array.Empty<ParameterDescriptor>();
+			return [];
 		}
 	}
 
@@ -85,14 +85,14 @@ public sealed class LinqToDBStaticDriver : StaticDataContextDriver
 			TryLoadAppSettingsJson(configurationPath);
 
 			if (settings.StaticContext.ConfigurationName != null)
-				return new object[] { settings.StaticContext.ConfigurationName };
+				return [settings.StaticContext.ConfigurationName];
 
 			return base.GetContextConstructorArguments(cxInfo);
 		}
 		catch (Exception ex)
 		{
 			DriverHelper.HandleException(ex, nameof(GetContextConstructorArguments));
-			return Array.Empty<object>();
+			return [];
 		}
 	}
 

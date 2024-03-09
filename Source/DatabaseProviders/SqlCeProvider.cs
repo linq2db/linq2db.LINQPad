@@ -7,10 +7,10 @@ namespace LinqToDB.LINQPad;
 
 internal sealed class SqlCeProvider : DatabaseProviderBase
 {
-	private static readonly IReadOnlyList<ProviderInfo> _providers = new ProviderInfo[]
-	{
+	private static readonly IReadOnlyList<ProviderInfo> _providers =
+	[
 		new (ProviderName.SqlCe, "Microsoft SQL Server Compact Edition")
-	};
+	];
 
 	public SqlCeProvider()
 		: base(ProviderName.SqlCe, "Microsoft SQL Server Compact Edition (SQL CE)", _providers)

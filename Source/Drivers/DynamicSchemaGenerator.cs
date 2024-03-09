@@ -17,11 +17,11 @@ internal static class DynamicSchemaGenerator
 
 		// set schema load options
 		options.Schema.IncludeSchemas = settings.Schema.IncludeSchemas;
-		foreach (var schema in (settings.Schema.Schemas ?? (IEnumerable<string>)Array.Empty<string>()))
+		foreach (var schema in (settings.Schema.Schemas ?? (IEnumerable<string>)[]))
 			options.Schema.Schemas.Add(schema);
 
 		options.Schema.IncludeCatalogs = settings.Schema.IncludeCatalogs;
-		foreach (var catalog in (settings.Schema.Catalogs ?? (IEnumerable<string>)Array.Empty<string>()))
+		foreach (var catalog in (settings.Schema.Catalogs ?? (IEnumerable<string>)[]))
 			options.Schema.Catalogs.Add(catalog);
 
 		options.Schema.LoadedObjects = SchemaObjects.Table | SchemaObjects.View;

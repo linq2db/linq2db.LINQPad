@@ -34,6 +34,7 @@ internal sealed class SqlServerProvider : DatabaseProviderBase
 	}
 
 	[DllImport("kernel32", SetLastError = true)]
+	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 	private static extern bool FreeLibrary(IntPtr hModule);
 
 	public static void UnloadModule(string moduleName)
@@ -50,8 +51,8 @@ internal sealed class SqlServerProvider : DatabaseProviderBase
 	}
 #endif
 
-	private static readonly IReadOnlyList<ProviderInfo> _providers = new ProviderInfo[]
-	{
+	private static readonly IReadOnlyList<ProviderInfo> _providers =
+	[
 		new (ProviderName.SqlServer    , "Detect Dialect Automatically", true),
 		new (ProviderName.SqlServer2005, "SQL Server 2005 Dialect"           ),
 		new (ProviderName.SqlServer2008, "SQL Server 2008 Dialect"           ),
@@ -61,14 +62,14 @@ internal sealed class SqlServerProvider : DatabaseProviderBase
 		new (ProviderName.SqlServer2017, "SQL Server 2017 Dialect"           ),
 		new (ProviderName.SqlServer2019, "SQL Server 2019 Dialect"           ),
 		new (ProviderName.SqlServer2022, "SQL Server 2022 Dialect"           ),
-	};
+	];
 
 	public SqlServerProvider()
 		: base(ProviderName.SqlServer, "Microsoft SQL Server", _providers)
 	{
 	}
 
-	private static readonly IReadOnlyList<Assembly> _additionalAssemblies = new[] { typeof(SqlHierarchyId).Assembly };
+	private static readonly IReadOnlyList<Assembly> _additionalAssemblies = [typeof(SqlHierarchyId).Assembly];
 
 	public override void ClearAllPools(string providerName)
 	{

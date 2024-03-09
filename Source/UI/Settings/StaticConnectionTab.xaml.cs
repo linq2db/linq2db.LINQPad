@@ -10,7 +10,9 @@ using Microsoft.Win32;
 
 namespace LinqToDB.LINQPad.UI;
 
+#pragma warning disable CA1812 // Remove unused type
 internal sealed partial class StaticConnectionTab
+#pragma warning restore CA1812 // Remove unused type
 {
 	private const string IDATACONTEXT_NAME = $"{nameof(LinqToDB)}.{nameof(IDataContext)}";
 

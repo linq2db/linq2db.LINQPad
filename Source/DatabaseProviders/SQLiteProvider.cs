@@ -5,10 +5,10 @@ namespace LinqToDB.LINQPad;
 
 internal sealed class SQLiteProvider : DatabaseProviderBase
 {
-	private static readonly IReadOnlyList<ProviderInfo> _providers = new ProviderInfo[]
-	{
+	private static readonly IReadOnlyList<ProviderInfo> _providers =
+	[
 		new(ProviderName.SQLiteClassic, "SQLite")
-	};
+	];
 
 	public SQLiteProvider()
 		: base(ProviderName.SQLite, "SQLite", _providers)

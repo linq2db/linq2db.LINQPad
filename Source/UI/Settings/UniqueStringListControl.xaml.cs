@@ -4,7 +4,9 @@ using System.Windows.Input;
 
 namespace LinqToDB.LINQPad.UI;
 
+#pragma warning disable CA1812 // Remove unused type
 internal sealed partial class UniqueStringListControl
+#pragma warning restore CA1812 // Remove unused type
 {
 	private UniqueStringListModel Model => (UniqueStringListModel)DataContext;
 

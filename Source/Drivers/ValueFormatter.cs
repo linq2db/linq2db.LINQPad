@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Frozen;
 using System.Collections.Specialized;
 using System.Data.SqlTypes;
 using System.Globalization;
@@ -27,18 +28,17 @@ internal static class ValueFormatter
 	// don't use IDatabaseProvider interface as:
 	// 1. some providers used by multiple databases
 	// 2. user could use those types with any database
-	private static readonly IReadOnlyDictionary<Type, Func<object, object>>   _typeConverters;
-	private static readonly IReadOnlyDictionary<Type, Func<object, object>>   _baseTypeConverters;
-	private static readonly IReadOnlyDictionary<string, Func<object, object>> _byTypeNameConverters;
+	private static readonly FrozenDictionary<Type, Func<object, object>>   _typeConverters;
+	private static readonly FrozenDictionary<Type, Func<object, object>>   _baseTypeConverters;
+	private static readonly FrozenDictionary<string, Func<object, object>> _byTypeNameConverters;
 
+#pragma warning disable CA1810 // Initialize reference type static fields inline
 	static ValueFormatter()
+#pragma warning restore CA1810 // Initialize reference type static fields inline
 	{
 		var typeConverters       = new Dictionary<Type, Func<object, object>>();
 		var baseTypeConverters   = new Dictionary<Type, Func<object, object>>();
 		var byTypeNameConverters = new Dictionary<string, Func<object, object>>();
-		_typeConverters          = typeConverters;
-		_baseTypeConverters      = baseTypeConverters;
-		_byTypeNameConverters    = byTypeNameConverters;
 
 		// generic types
 		typeConverters.Add(typeof(BigInteger)     , ConvertToString);
@@ -136,6 +136,10 @@ internal static class ValueFormatter
 		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2TimeStampOffset", ConvertToString);
 		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2XsrObjectId"    , ConvertToString);
 		byTypeNameConverters.Add("IBM.Data.DB2Types.DB2Xml"            , ConvertDB2Xml);
+
+		_typeConverters       = typeConverters.ToFrozenDictionary();
+		_baseTypeConverters   = baseTypeConverters.ToFrozenDictionary();
+		_byTypeNameConverters = byTypeNameConverters.ToFrozenDictionary();
 	}
 
 	public static object Format(object value)
@@ -217,7 +221,7 @@ internal static class ValueFormatter
 		if (sb.Length > 0)
 			components.Add(sb.ToString());
 
-		return Util.RawHtml(new XElement("span", components.ToArray()));
+		return Util.RawHtml(new XElement("span", [.. components]));
 	}
 
 	private static object Format(char[] chars)
@@ -252,7 +256,7 @@ internal static class ValueFormatter
 		if (sb.Length > 0)
 			components.Add(sb.ToString());
 
-		return Util.RawHtml(new XElement("span", components.ToArray()));
+		return Util.RawHtml(new XElement("span", [.. components]));
 	}
 
 	private static object Format(byte[] value)

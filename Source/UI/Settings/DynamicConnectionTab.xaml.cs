@@ -6,7 +6,9 @@ using Microsoft.Win32;
 
 namespace LinqToDB.LINQPad.UI;
 
+#pragma warning disable CA1812 // Remove unused type
 internal sealed partial class DynamicConnectionTab
+#pragma warning restore CA1812 // Remove unused type
 {
 	private DynamicConnectionModel Model => (DynamicConnectionModel)DataContext;
 

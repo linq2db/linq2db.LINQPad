@@ -27,7 +27,7 @@
 				<Label HorizontalAlignment="Center" Content="{Binding Copyright}" />
 			</StackPanel>
 
-			<Image Grid.Column="1" Margin="0 15" HorizontalAlignment="Center" VerticalAlignment="Top" Source="{Binding Logo}" Stretch="None" />
+			<Image Grid.Column="1" Margin="0 15" HorizontalAlignment="Center" VerticalAlignment="Top" Source="{Binding Logo}" StretchDirection="DownOnly" />
 		</Grid>
 
 		<StackPanel Grid.Row="1">

@@ -22,7 +22,9 @@ internal sealed class ConnectionSettings
 
 	private static readonly JsonSerializerOptions _jsonOptions;
 
+#pragma warning disable CA1810 // Initialize reference type static fields inline
 	static ConnectionSettings()
+#pragma warning restore CA1810 // Initialize reference type static fields inline
 	{
 		_jsonOptions = new()
 		{
@@ -133,7 +135,7 @@ internal sealed class ConnectionSettings
 	private static class Legacy
 	{
 		// list item separators for legacy options
-		private static readonly char[] _listSeparators = new[]{ ',', ';' };
+		private static readonly char[] _listSeparators = [',', ';'];
 
 		// legacy options
 		private const string ProviderName             = "providerName";
@@ -147,9 +149,7 @@ internal sealed class ConnectionSettings
 		private const string ExcludeCatalogs          = "excludeCatalogs";
 		private const string OptimizeJoins            = "optimizeJoins";
 		private const string UseProviderSpecificTypes = "useProviderSpecificTypes";
-		private const string UseCustomFormatter       = "useCustomFormatter";
 		private const string CommandTimeout           = "commandTimeout";
-		private const string NormalizeNames           = "normalizeNames";
 		private const string CustomConfiguration      = "customConfiguration";
 
 		public static ConnectionSettings Load(IConnectionInfo cxInfo)
@@ -264,8 +264,8 @@ internal sealed class ConnectionSettings
 			settings.Scaffold.AsIsNames = !isNew;
 
 			// ignored options:
-			// UseCustomFormatter - removed in v5
-			// NormalizeNames - not used in pre-v5 and v5 (never used?)
+			// useCustomFormatter - removed in v5
+			// normalizeNames - not used in pre-v5 and v5 (never used?)
 
 			return settings;
 		}

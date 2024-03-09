@@ -137,9 +137,13 @@ dotnet_diagnostic.CA3076.severity = none # CA3076: Insecure XSLT Script Executio
 dotnet_diagnostic.CA1000.severity = none # CA1000: Do not declare static members on generic types
 dotnet_diagnostic.CA1001.severity = none # CA1001: Types that own disposable fields should be disposable
 dotnet_diagnostic.CA1010.severity = none # CA1010: Collections should implement generic interface
-dotnet_diagnostic.CA1050.severity = none # CA1050: Declare types in namespaces
+dotnet_diagnostic.CA1031.severity = none # CA1031: Catch more specific exception
+dotnet_diagnostic.CA1032.severity = none # CA1032: Add constructors to exception
 dotnet_diagnostic.CA1036.severity = none # CA1036: Override methods on comparable types
+dotnet_diagnostic.CA1050.severity = none # CA1050: Declare types in namespaces
 dotnet_diagnostic.CA1051.severity = none # CA1051: Do not declare visible instance fields
+dotnet_diagnostic.CA1062.severity = none # CA1062: Vaidate aruments of public API
+dotnet_diagnostic.CA1064.severity = none # CA1064: Exception should be public
 dotnet_diagnostic.CA1067.severity = none # CA1067: Override Equals when implementing IEquatable
 dotnet_diagnostic.CA1068.severity = none # CA1068: CancellationToken parameters must come last
 dotnet_diagnostic.CA1069.severity = none # CA1069: Enums should not have duplicate values
@@ -156,6 +160,7 @@ dotnet_diagnostic.CA1720.severity = none # CA1720: Identifiers should not contai
 dotnet_diagnostic.CA1806.severity = none # CA1806: Do not ignore method results
 dotnet_diagnostic.CA1822.severity = none # CA1822: Mark members as static
 dotnet_diagnostic.CA2211.severity = none # CA2211: Non-constant fields should not be visible
+dotnet_diagnostic.CA2237.severity = none # CA2237: add [Serializable] (no way)
 
 ###################################################################################
 # VS analyzers                                                                    #

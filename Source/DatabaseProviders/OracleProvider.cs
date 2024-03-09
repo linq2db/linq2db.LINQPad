@@ -6,12 +6,12 @@ namespace LinqToDB.LINQPad;
 
 internal sealed class OracleProvider : DatabaseProviderBase
 {
-	private static readonly IReadOnlyList<ProviderInfo> _providers = new ProviderInfo[]
-	{
+	private static readonly IReadOnlyList<ProviderInfo> _providers =
+	[
 		new (ProviderName.Oracle         , "Detect Dialect Automatically", true),
 		new (ProviderName.Oracle11Managed, "Oracle 11g Dialect"                ),
 		new (ProviderName.OracleManaged  , "Oracle 12c Dialect"                ),
-	};
+	];
 
 	public OracleProvider()
 		: base(ProviderName.Oracle, "Oracle", _providers)

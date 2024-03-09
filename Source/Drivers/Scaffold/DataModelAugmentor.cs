@@ -8,28 +8,17 @@ namespace LinqToDB.LINQPad;
 /// <item>add custom constructor to generated data context class</item>
 /// </list>
 /// </summary>
-internal sealed class DataModelAugmentor : ConvertCodeModelVisitor
+internal sealed class DataModelAugmentor(
+	ILanguageProvider languageProvider,
+	IType baseContextType,
+	int? commandTimeout) : ConvertCodeModelVisitor
 {
-	private readonly IEqualityComparer<IType> _typeComparer;
-	private readonly IType                    _baseContextType;
-	private readonly CodeBuilder              _ast;
-	private readonly int?                     _commandTimeout;
-
-	public DataModelAugmentor(
-		ILanguageProvider languageProvider,
-		IType             baseContextType,
-		int?              commandTimeout)
-	{
-		_ast             = languageProvider.ASTBuilder;
-		_typeComparer    = languageProvider.TypeEqualityComparerWithoutNRT;
-		_baseContextType = baseContextType;
-		_commandTimeout  = commandTimeout;
-	}
+	private readonly CodeBuilder _ast = languageProvider.ASTBuilder;
 
 	protected override ICodeElement Visit(CodeClass @class)
 	{
 		// identify context class
-		if (@class.Inherits != null && _typeComparer.Equals(@class.Inherits.Type, _baseContextType))
+		if (@class.Inherits != null && languageProvider.TypeEqualityComparerWithoutNRT.Equals(@class.Inherits.Type, baseContextType))
 		{
 			var members      = @class.Members.ToList();
 			var constructors = new ConstructorGroup(@class);
@@ -64,11 +53,11 @@ internal sealed class DataModelAugmentor : ConvertCodeModelVisitor
 				.Base(providerParam.Reference, assemblyPathParam.Reference, connectionStringParam.Reference);
 
 			// set default CommandTimeout from LINQPad connection settings
-			if (_commandTimeout != null)
+			if (commandTimeout != null)
 			{
 				parametrizedCtor
 					.Body()
-					.Append(_ast.Assign(_ast.Member(@class.This, WellKnownTypes.LinqToDB.Data.DataConnection_CommandTimeout), _ast.Constant(_commandTimeout.Value, true)));
+					.Append(_ast.Assign(_ast.Member(@class.This, WellKnownTypes.LinqToDB.Data.DataConnection_CommandTimeout), _ast.Constant(commandTimeout.Value, true)));
 			}
 
 			return @class;

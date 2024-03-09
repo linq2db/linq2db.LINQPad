@@ -10,11 +10,11 @@ namespace LinqToDB.LINQPad;
 
 internal sealed class SapHanaProvider : DatabaseProviderBase
 {
-	private static readonly IReadOnlyList<ProviderInfo> _providers = new ProviderInfo[]
-	{
+	private static readonly IReadOnlyList<ProviderInfo> _providers =
+	[
 		new(ProviderName.SapHanaNative, "Native Provider (Sap.Data.Hana)"),
 		new(ProviderName.SapHanaOdbc  , "ODBC Provider (HANAODBC/HANAODBC32)"),
-	};
+	];
 
 	public SapHanaProvider()
 		: base(ProviderName.SapHana, "SAP HANA", _providers)

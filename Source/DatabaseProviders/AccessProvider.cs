@@ -9,11 +9,11 @@ namespace LinqToDB.LINQPad;
 
 internal sealed class AccessProvider : DatabaseProviderBase
 {
-	private static readonly IReadOnlyList<ProviderInfo> _providers = new ProviderInfo[]
-	{
+	private static readonly IReadOnlyList<ProviderInfo> _providers =
+	[
 		new (ProviderName.Access    , "OLE DB"),
 		new (ProviderName.AccessOdbc, "ODBC"  ),
-	};
+	];
 
 	public AccessProvider()
 		: base(ProviderName.Access, "Microsoft Access", _providers)

@@ -1,12 +1,7 @@
 ﻿namespace LinqToDB.LINQPad.UI;
 
-internal sealed class LinqToDBModel : TabModelBase
+internal sealed class LinqToDBModel(ConnectionSettings settings) : TabModelBase(settings)
 {
-	public LinqToDBModel(ConnectionSettings settings)
-		: base(settings)
-	{
-	}
-
 	public bool OptimizeJoins
 	{
 		get => Settings.LinqToDB.OptimizeJoins;
