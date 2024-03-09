@@ -38,7 +38,7 @@ internal static class ValueFormatter
 	{
 		var typeConverters       = new Dictionary<Type, Func<object, object>>();
 		var baseTypeConverters   = new Dictionary<Type, Func<object, object>>();
-		var byTypeNameConverters = new Dictionary<string, Func<object, object>>();
+		var byTypeNameConverters = new Dictionary<string, Func<object, object>>(StringComparer.Ordinal);
 
 		// generic types
 		typeConverters.Add(typeof(BigInteger)     , ConvertToString);
@@ -188,7 +188,7 @@ internal static class ValueFormatter
 		// INullable implemented by System.Data.SqlTypes.Sql* types
 		return (value is System.Data.SqlTypes.INullable nullable && nullable.IsNull)
 			|| (value is Oracle.ManagedDataAccess.Types.INullable onull && onull.IsNull)
-			|| (value.GetType().FullName!.StartsWith("IBM.Data.DB2Types.") && IsDB2Null(value));
+			|| (value.GetType().FullName!.StartsWith("IBM.Data.DB2Types.", StringComparison.Ordinal) && IsDB2Null(value));
 
 		// moved to function to avoid assembly load errors when loaded with wrong process bitness
 		static bool IsDB2Null(object value) => value is IBM.Data.DB2Types.INullable db2null && db2null.IsNull;
@@ -266,7 +266,7 @@ internal static class ValueFormatter
 		int i;
 
 		for (i = 0; i < value.Length && i < 10; i++)
-			sb.Append($"{value[i]:X2}:");
+			sb.Append(CultureInfo.InvariantCulture, $"{value[i]:X2}:");
 
 		if (i > 0)
 			sb.Length--;
@@ -280,9 +280,9 @@ internal static class ValueFormatter
 	private static object Format(char chr)
 	{
 		if (!XmlConvert.IsXmlChar(chr) && !char.IsHighSurrogate(chr) && !char.IsLowSurrogate(chr))
-			return new XElement("span", new XElement("i", new XAttribute("style", "font-style: italic"), chr <= 255 ? $"\\x{((short)chr):X2}" : $"\\u{((short)chr):X4}"));
-		else
-			return chr.ToString();
+			return new XElement("span", new XElement("i", new XAttribute("style", "font-style: italic"), chr <= 255 ? FormattableString.Invariant($"\\x{((short)chr):X2}") : FormattableString.Invariant($"\\u{((short)chr):X4}")));
+
+		return chr.ToString();
 	}
 
 	private static object Format(bool value) => Util.RawHtml(new XElement("span", value.ToString()));
@@ -318,7 +318,7 @@ internal static class ValueFormatter
 		var val = (NpgsqlInterval)value;
 		// let's use ISO8601 duration format
 		// Time is microseconds
-		return $"P{val.Months}M{val.Days}DT{((decimal)val.Time) / 1_000_000}S";
+		return FormattableString.Invariant($"P{val.Months}M{val.Days}DT{((decimal)val.Time) / 1_000_000}S");
 	}
 	#endregion
 

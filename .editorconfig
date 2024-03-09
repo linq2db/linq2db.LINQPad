@@ -238,3 +238,28 @@ dotnet_diagnostic.IDE1006.severity = none # IDE1006: Naming rule violation
 dotnet_diagnostic.CS1998.severity = error # CS1998: Async method lacks 'await' operators and will run synchronously
 dotnet_diagnostic.CS8618.severity = error # CS8618: Non-nullable field is uninitialized. Consider declaring as nullable.
 dotnet_diagnostic.CS4014.severity = error # CS4014: Because this call is not awaited, execution of the current method continues before the call is completed
+
+# MA0002: IEqualityComparer<string> or IComparer<string> is missing
+dotnet_diagnostic.MA0002.severity = none
+# MA0003: Add parameter name to improve readability
+dotnet_diagnostic.MA0003.severity = none
+# MA0006: Use String.Equals instead of equality operator
+dotnet_diagnostic.MA0006.severity = none
+# MA0007: Add a comma after the last value
+dotnet_diagnostic.MA0007.severity = none
+# MA0009: Add regex evaluation timeout
+dotnet_diagnostic.MA0009.severity = none
+# MA0026: Fix TODO comment
+dotnet_diagnostic.MA0026.severity = none
+# MA0038: Make method static (deprecated, use CA1822 instead)
+dotnet_diagnostic.MA0038.severity = none
+# MA0041: Make property static (deprecated, use CA1822 instead)
+dotnet_diagnostic.MA0041.severity = none
+# MA0048: File name must match type name
+dotnet_diagnostic.MA0048.severity = none
+# MA0051: Method is too long
+dotnet_diagnostic.MA0051.severity = none
+# MA0111: Use string.Create instead of FormattableString
+dotnet_diagnostic.MA0111.severity = none
+# MA0144: Use System.OperatingSystem to check the current OS
+dotnet_diagnostic.MA0144.severity = none

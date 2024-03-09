@@ -20,7 +20,7 @@ internal static class StaticSchemaGenerator
 			Type         = propertyInfo.PropertyType.GetItemType()!;
 			TypeAccessor = TypeAccessor.GetAccessor(Type);
 
-			var tableAttr = Type.GetCustomAttribute<TableAttribute>();
+			var tableAttr = Type.GetAttribute<TableAttribute>();
 
 			if (tableAttr != null)
 			{
@@ -63,7 +63,7 @@ internal static class StaticSchemaGenerator
 		// tables discovered using table access properties in context:
 		// ITable<TableRecord> Prop or // IQueryable<TableRecord> Prop
 		var tables = customContextType.GetProperties()
-			.Where(static p => p.GetCustomAttribute<ObsoleteAttribute>() == null && typeof(IQueryable<>).IsSameOrParentOf(p.PropertyType))
+			.Where(static p => !p.HasAttribute<ObsoleteAttribute>() && typeof(IQueryable<>).IsSameOrParentOf(p.PropertyType))
 			.OrderBy(static p => p.Name)
 			.Select(static p => new TableInfo(p));
 
@@ -80,9 +80,7 @@ internal static class StaticSchemaGenerator
 			// add association nodes
 			foreach (var ma in table.TypeAccessor.Members)
 			{
-				var aa = ma.MemberInfo.GetCustomAttribute<AssociationAttribute>();
-
-				if (aa != null)
+				if (ma.MemberInfo.HasAttribute<AssociationAttribute>())
 				{
 					var isToMany   = ma.Type is IEnumerable;
 					// TODO: try to infer this information?
@@ -132,11 +130,10 @@ internal static class StaticSchemaGenerator
 		var columns =
 		(
 			from ma in table.TypeAccessor.Members
-			let aa = ma.MemberInfo.GetCustomAttribute<AssociationAttribute>()
-			where aa == null
-			let ca = ma.MemberInfo.GetCustomAttribute<ColumnAttribute>()
-			let id = ma.MemberInfo.GetCustomAttribute<IdentityAttribute>()
-			let pk = ma.MemberInfo.GetCustomAttribute<PrimaryKeyAttribute>()
+			where !ma.MemberInfo.HasAttribute<AssociationAttribute>()
+			let ca = ma.MemberInfo.GetAttribute<ColumnAttribute>()
+			let id = ma.MemberInfo.GetAttribute<IdentityAttribute>()
+			let pk = ma.MemberInfo.GetAttribute<PrimaryKeyAttribute>()
 			orderby
 				ca == null ? 1 : ca.Order >= 0 ? 0 : 2,
 				ca?.Order,

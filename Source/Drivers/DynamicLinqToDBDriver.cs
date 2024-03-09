@@ -126,7 +126,9 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 #if NETFRAMEWORK
 				MetadataReference.CreateFromFile(typeof(object).               Assembly.Location),
 				MetadataReference.CreateFromFile(typeof(Enumerable).           Assembly.Location),
+#pragma warning disable RS0030 // Do not use banned APIs
 				MetadataReference.CreateFromFile(typeof(IDbConnection).        Assembly.Location),
+#pragma warning restore RS0030 // Do not use banned APIs
 				MetadataReference.CreateFromFile(typeof(PhysicalAddress)      .Assembly.Location),
 				MetadataReference.CreateFromFile(typeof(BigInteger)           .Assembly.Location),
 				MetadataReference.CreateFromFile(typeof(IAsyncDisposable)     .Assembly.Location),
