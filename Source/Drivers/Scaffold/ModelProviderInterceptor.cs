@@ -355,7 +355,7 @@ internal sealed class ModelProviderInterceptor(ConnectionSettings settings, ISql
 
 			items.Add(new ExplorerItem(func.MethodName, ExplorerItemKind.QueryableObject, ExplorerIcon.StoredProc)
 			{
-				DragText     = $"this.{func.MethodName}({string.Join(", ", func.Parameters.Select(GetParameterName))})",
+				DragText     = $"this.{CSharpUtils.EscapeIdentifier(func.MethodName)}({string.Join(", ", func.Parameters.Select(GetParameterNameEscaped))})",
 				Children     = children,
 				IsEnumerable = func.Result != null,
 				SqlName      = func.DbName
@@ -380,7 +380,7 @@ internal sealed class ModelProviderInterceptor(ConnectionSettings settings, ISql
 			columns.Add(new ExplorerItem($"{column.MemberName} : {SimpleBuildTypeName(column.Type)}", ExplorerItemKind.Property, ExplorerIcon.Column)
 			{
 				ToolTipText        = $"{dbName} {dbType}",
-				DragText           = column.MemberName,
+				DragText           = CSharpUtils.EscapeIdentifier(column.MemberName),
 				SqlName            = dbName,
 				SqlTypeDeclaration = dbType,
 			});
@@ -403,6 +403,11 @@ internal sealed class ModelProviderInterceptor(ConnectionSettings settings, ISql
 		return $"{(param.Direction == ParameterDirection.Out ? "out " : param.Direction == ParameterDirection.Ref ? "ref " : null)}{param.Name}";
 	}
 
+	private static string GetParameterNameEscaped(ParameterData param)
+	{
+		return $"{(param.Direction == ParameterDirection.Out ? "out " : param.Direction == ParameterDirection.Ref ? "ref " : null)}{CSharpUtils.EscapeIdentifier(param.Name)}";
+	}
+
 	private ExplorerItem PopulateTableFunctions(List<TableFunctionData> functions)
 	{
 		var items = new List<ExplorerItem>(functions.Count);
@@ -417,7 +422,7 @@ internal sealed class ModelProviderInterceptor(ConnectionSettings settings, ISql
 
 			items.Add(new ExplorerItem(func.MethodName, ExplorerItemKind.QueryableObject, ExplorerIcon.TableFunction)
 			{
-				DragText     = $"{func.MethodName}({string.Join(", ", func.Parameters.Select(GetParameterName))})",
+				DragText     = $"{CSharpUtils.EscapeIdentifier(func.MethodName)}({string.Join(", ", func.Parameters.Select(GetParameterNameEscaped))})",
 				Children     = children,
 				IsEnumerable = true,
 				SqlName      = func.DbName
@@ -445,7 +450,7 @@ internal sealed class ModelProviderInterceptor(ConnectionSettings settings, ISql
 
 			items.Add(new ExplorerItem(func.MethodName, ExplorerItemKind.QueryableObject, ExplorerIcon.TableFunction)
 			{
-				DragText     = $"ExtensionMethods.{func.MethodName}({string.Join(", ", func.Parameters.Select(GetParameterName))})",
+				DragText     = $"ExtensionMethods.{CSharpUtils.EscapeIdentifier(func.MethodName)}({string.Join(", ", func.Parameters.Select(GetParameterNameEscaped))})",
 				Children     = children,
 				IsEnumerable = false,
 				SqlName      = func.DbName
@@ -478,7 +483,7 @@ internal sealed class ModelProviderInterceptor(ConnectionSettings settings, ISql
 						column.IsPrimaryKey ? ExplorerIcon.Key : ExplorerIcon.Column)
 					{
 						ToolTipText        = $"{dbName} {dbType}",
-						DragText           = column.MemberName,
+						DragText           = CSharpUtils.EscapeIdentifier(column.MemberName),
 						SqlName            = dbName,
 						SqlTypeDeclaration = dbType,
 					});
@@ -486,7 +491,7 @@ internal sealed class ModelProviderInterceptor(ConnectionSettings settings, ISql
 
 			var tableNode = new ExplorerItem(table.ContextName, ExplorerItemKind.QueryableObject, icon)
 			{
-				DragText     = table.ContextName,
+				DragText     = CSharpUtils.EscapeIdentifier(table.ContextName),
 				ToolTipText  = SimpleBuildTypeName(table.ContextType),
 				SqlName      = table.DbName,
 				IsEnumerable = true,
@@ -524,7 +529,7 @@ internal sealed class ModelProviderInterceptor(ConnectionSettings settings, ISql
 									? ExplorerIcon.ManyToOne
 									: ExplorerIcon.OneToOne)
 					{
-						DragText        = association.MemberName,
+						DragText        = CSharpUtils.EscapeIdentifier(association.MemberName),
 						ToolTipText     = $"{SimpleBuildTypeName(association.Type)}{(!association.FromSide ? " // Back Reference" : null)}",
 						SqlName         = association.KeyName,
 						IsEnumerable    = association.OneToMany && association.FromSide,

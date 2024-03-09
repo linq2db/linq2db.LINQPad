@@ -2,8 +2,9 @@
 
 Issues fixed:
 
-- [#97](https://github.com/linq2db/linq2db.LINQPad/pull/97), [#103](https://github.com/linq2db/linq2db.LINQPad/pull/103): update dependencies to get rid of vulnerable transient dependencies
-- [#102](https://github.com/linq2db/linq2db.LINQPad/pull/102): support custom `IDataContext`-based contexts; don't try to load missing connection configuration files
+- [#97](https://github.com/linq2db/linq2db.LINQPad/issues/97), [#103](https://github.com/linq2db/linq2db.LINQPad/issues/103): update dependencies to get rid of vulnerable transient dependencies
+- [#101](https://github.com/linq2db/linq2db.LINQPad/issues/101): fix snippets generation from object names matching C# keywords
+- [#102](https://github.com/linq2db/linq2db.LINQPad/pull/102): support custom `IDataContext`-based contexts; don't try to load missing connection configuration files. Thanks to [@cal-tlabwest](https://github.com/cal-tlabwest) for fix
 
 # Release 5.1.0
 
