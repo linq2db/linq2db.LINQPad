@@ -59,6 +59,12 @@
 		<PackageReference Include="ClickHouse.Client" />
 		<!--<PackageReference Include="linq2db4iSeries" />-->
 		<PackageReference Include="Microsoft.SqlServer.Types" />
+
+		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" />
+		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" />
+		<PackageReference Include="Meziantou.Analyzer" />
+
+		<AdditionalFiles Include="$(MSBuildThisFileDirectory)\BannedSymbols.txt" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net48'">

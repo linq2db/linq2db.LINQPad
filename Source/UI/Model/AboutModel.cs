@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Media.Imaging;
+using LinqToDB.Extensions;
 
 namespace LinqToDB.LINQPad.UI;
 
@@ -17,7 +18,7 @@ internal sealed class AboutModel
 		var assembly = typeof(AboutModel).Assembly;
 		Logo         = new BitmapImage(new Uri($"pack://application:,,,/{assembly.FullName};component/resources/logo.png"));
 		Project      = $"Linq To DB LINQPad Driver v{assembly.GetName().Version!.ToString(3)}";
-		Copyright    = assembly.GetCustomAttribute<AssemblyCopyrightAttribute>()!.Copyright;
+		Copyright    = assembly.GetAttribute<AssemblyCopyrightAttribute>()!.Copyright;
 	}
 
 	public BitmapImage Logo          { get; }

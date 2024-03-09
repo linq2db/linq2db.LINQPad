@@ -149,14 +149,14 @@ internal static class DriverHelper
 							break;
 						case TraceInfoStep.Completed:
 							// log data reader execution stats
-							executionManager.SqlTranslationWriter.WriteLine($"-- Data read time: {info.ExecutionTime}. Records fetched: {info.RecordsAffected}.\r\n");
+							executionManager.SqlTranslationWriter.WriteLine(FormattableString.Invariant($"-- Data read time: {info.ExecutionTime}. Records fetched: {info.RecordsAffected}.\r\n"));
 							break;
 						case TraceInfoStep.AfterExecute:
 							// log query execution stats
 							if (info.RecordsAffected != null)
-								executionManager.SqlTranslationWriter.WriteLine($"-- Execution time: {info.ExecutionTime}. Records affected: {info.RecordsAffected}.\r\n");
+								executionManager.SqlTranslationWriter.WriteLine(FormattableString.Invariant($"-- Execution time: {info.ExecutionTime}. Records affected: {info.RecordsAffected}.\r\n"));
 							else
-								executionManager.SqlTranslationWriter.WriteLine($"-- Execution time: {info.ExecutionTime}\r\n");
+								executionManager.SqlTranslationWriter.WriteLine(FormattableString.Invariant($"-- Execution time: {info.ExecutionTime}\r\n"));
 							break;
 					}
 				};
