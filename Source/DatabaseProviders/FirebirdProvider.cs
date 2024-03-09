@@ -5,10 +5,10 @@ namespace LinqToDB.LINQPad;
 
 internal sealed class FirebirdProvider : DatabaseProviderBase
 {
-	private static readonly IReadOnlyList<ProviderInfo> _providers = new ProviderInfo[]
-	{
+	private static readonly IReadOnlyList<ProviderInfo> _providers =
+	[
 		new (ProviderName.Firebird, "Firebird"),
-	};
+	];
 
 	public FirebirdProvider()
 		: base(ProviderName.Firebird, "Firebird", _providers)

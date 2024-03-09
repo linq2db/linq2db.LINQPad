@@ -85,7 +85,7 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 		yield return forToken;
 	}
 
-	private MetadataReference MakeReferenceByRuntime(string runtimeToken, string reference)
+	private PortableExecutableReference MakeReferenceByRuntime(string runtimeToken, string reference)
 	{
 		var token = _runtimeTokenExtractor.Match(reference).Groups["token"].Value;
 
@@ -94,7 +94,7 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 			if (token == fallback)
 				return MetadataReference.CreateFromFile(reference);
 
-			var newReference = reference.Replace($"\\{token}\\", $"\\{fallback}\\");
+			var newReference = reference.Replace($"\\{token}\\", $"\\{fallback}\\", StringComparison.Ordinal);
 
 			if (File.Exists(newReference))
 				return MetadataReference.CreateFromFile(newReference);
@@ -148,7 +148,7 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 
 			var compilation = CSharpCompilation.Create(
 				assemblyToBuild.Name!,
-				syntaxTrees : new[] { syntaxTree },
+				syntaxTrees : [syntaxTree],
 				references  : references,
 				options     : new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
@@ -174,12 +174,12 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 		}
 	}
 
-	private static readonly ParameterDescriptor[] _contextParameters = new[]
-	{
+	private static readonly ParameterDescriptor[] _contextParameters =
+	[
 		new ParameterDescriptor("provider",         typeof(string).FullName),
 		new ParameterDescriptor("providerPath",     typeof(string).FullName),
 		new ParameterDescriptor("connectionString", typeof(string).FullName),
-	};
+	];
 
 	/// <inheritdoc/>
 	public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo cxInfo) => _contextParameters;
@@ -191,12 +191,12 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 		{
 			var settings = ConnectionSettings.Load(cxInfo);
 
-			return new object?[]
-			{
+			return
+			[
 				settings.Connection.Provider,
 				settings.Connection.ProviderPath,
 				settings.Connection.ConnectionString
-			};
+			];
 		}
 		catch (Exception ex)
 		{

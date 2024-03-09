@@ -26,12 +26,12 @@ internal static class DriverHelper
 	/// <summary>
 	/// Returned by <see cref="DataContextDriver.GetNamespacesToAdd(IConnectionInfo)"/> method implementation.
 	/// </summary>
-	public static readonly IReadOnlyCollection<string> DefaultImports = new[]
-	{
+	public static readonly IReadOnlyCollection<string> DefaultImports =
+	[
 		"LinqToDB",
 		"LinqToDB.Data",
 		"LinqToDB.Mapping"
-	};
+	];
 
 	/// <summary>
 	/// Initialization method, called from driver's static constructor.
@@ -40,6 +40,19 @@ internal static class DriverHelper
 	{
 #if NETFRAMEWORK
 		// Dynamically resolve assembly bindings to currently used assembly version for transitive dependencies. Used by.NET Framework build (LINQPad 5).
+
+		// Yes, two handlers to resolve dependencies in dependency resolver
+		// Dll Hell is real. Submit, puny mortal!
+		AppDomain.CurrentDomain.AssemblyResolve += static (sender, args) =>
+		{
+			var requestedAssembly = new AssemblyName(args.Name!);
+
+			if (requestedAssembly.Name == "Microsoft.Bcl.AsyncInterfaces")
+				return typeof(IAsyncDisposable).Assembly;
+
+			return null;
+		};
+
 		AppDomain.CurrentDomain.AssemblyResolve += static (sender, args) =>
 		{
 			var requestedAssembly = new AssemblyName(args.Name!);

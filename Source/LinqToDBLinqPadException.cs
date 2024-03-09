@@ -1,8 +1,5 @@
 ﻿namespace LinqToDB.LINQPad;
 
-internal sealed class LinqToDBLinqPadException : Exception
+internal sealed class LinqToDBLinqPadException(string message) : Exception(message)
 {
-	public LinqToDBLinqPadException(string message) : base(message)
-	{
-	}
 }

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿#pragma warning disable CA1002 // Do not expose generic lists
+using System.Text;
 using LINQPad.Extensibility.DataContext;
 using LinqToDB.CodeModel;
 using LinqToDB.Common;
@@ -13,22 +14,15 @@ namespace LinqToDB.LINQPad;
 /// <summary>
 /// Scaffold interceptor used to populate generated data model for dynamic context (with proper type/member identifiers).
 /// </summary>
-internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
+internal sealed class ModelProviderInterceptor(ConnectionSettings settings, ISqlBuilder sqlBuilder) : ScaffoldInterceptors
 {
-	private readonly ISqlBuilder _sqlBuilder;
-	private readonly bool        _replaceClickHouseFixedString;
+	private readonly bool        _replaceClickHouseFixedString = settings.Connection.Database == ProviderName.ClickHouse && settings.Scaffold.ClickHouseFixedStringAsString;
 
 	// stores populated model information:
 	// - FK associations
 	// - schema-scoped objects (views, tables, routines)
 	private readonly List<AssociationData>          _associations = new ();
 	private readonly Dictionary<string, SchemaData> _schemaItems  = new ();
-
-	public ModelProviderInterceptor(ConnectionSettings settings, ISqlBuilder sqlBuilder)
-	{
-		_sqlBuilder                   = sqlBuilder;
-		_replaceClickHouseFixedString = settings.Connection.Database == ProviderName.ClickHouse && settings.Scaffold.ClickHouseFixedStringAsString;
-	}
 
 	#region model DTOs
 
@@ -544,7 +538,7 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 
 	private string GetDbName(string name, string? schema = null)
 	{
-		return _sqlBuilder!.BuildObjectName(
+		return sqlBuilder.BuildObjectName(
 				new StringBuilder(),
 				new SqlObjectName(Name: name, Schema: schema),
 				tableOptions: TableOptions.NotSet)
@@ -553,7 +547,7 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 
 	private string GetTypeName(DataType? dataType, DatabaseType type)
 	{
-		return _sqlBuilder!.BuildDataType(
+		return sqlBuilder.BuildDataType(
 				new StringBuilder(),
 				new SqlDataType(new DbDataType(typeof(object),
 					dataType : dataType ?? DataType.Undefined,

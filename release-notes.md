@@ -1,3 +1,9 @@
+# Release 5.2.0
+
+Issues fixed:
+
+- [#97](https://github.com/linq2db/linq2db.LINQPad/pull/97), [#103](https://github.com/linq2db/linq2db.LINQPad/pull/103): update dependencies to get rid of vulnerable transient dependencies
+
 # Release 5.1.0
 
 Issues fixed:

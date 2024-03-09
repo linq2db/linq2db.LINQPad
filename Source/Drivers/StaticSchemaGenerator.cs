@@ -51,7 +51,9 @@ internal static class StaticSchemaGenerator
 		public readonly bool         IsView;
 	}
 
+#pragma warning disable CA1002 // Do not expose generic lists
 	public static List<ExplorerItem> GetSchema(Type customContextType)
+#pragma warning restore CA1002 // Do not expose generic lists
 	{
 		var items = new List<ExplorerItem>();
 

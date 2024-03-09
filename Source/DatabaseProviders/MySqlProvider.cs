@@ -6,10 +6,10 @@ namespace LinqToDB.LINQPad;
 
 internal sealed class MySqlProvider : DatabaseProviderBase
 {
-	private static readonly IReadOnlyList<ProviderInfo> _providers = new ProviderInfo[]
-	{
+	private static readonly IReadOnlyList<ProviderInfo> _providers =
+	[
 		new (ProviderName.MySqlConnector, "MySql/MariaDB"),
-	};
+	];
 
 	public MySqlProvider()
 		: base(ProviderName.MySql, "MySql/MariaDB", _providers)

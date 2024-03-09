@@ -1,13 +1,7 @@
 ﻿namespace LinqToDB.LINQPad.UI;
 
-internal abstract class ConnectionModelBase : OptionalTabModelBase
+internal abstract class ConnectionModelBase(ConnectionSettings settings, bool enabled) : OptionalTabModelBase(settings, enabled)
 {
-	protected ConnectionModelBase(ConnectionSettings settings, bool enabled)
-		: base(settings, enabled)
-	{
-		IsSelected = enabled;
-	}
-
 	public string? Name
 	{
 		get
@@ -26,7 +20,7 @@ internal abstract class ConnectionModelBase : OptionalTabModelBase
 		}
 	}
 
-	public bool IsSelected { get; set; }
+	public bool IsSelected { get; set; } = enabled;
 
 	public bool Persistent
 	{

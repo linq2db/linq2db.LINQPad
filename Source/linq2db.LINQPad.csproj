@@ -6,10 +6,10 @@
 		<Company>linq2db</Company>
 		<Product>linq2db.LINQPad</Product>
 		<AssemblyTitle>$(Product)</AssemblyTitle>
-		<Version>5.1.0.0</Version>
+		<Version>5.2.0.0</Version>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
-		<Copyright>Copyright © 2016-2023 Linq To DB Team</Copyright>
+		<Copyright>Copyright © 2016-2024 Linq To DB Team</Copyright>
 		<UseWPF>true</UseWPF>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 
@@ -50,7 +50,6 @@
 		<PackageReference Include="LINQPad.Reference" />
 		<PackageReference Include="PolySharp" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
-		<PackageReference Include="System.Text.Json" />
 		<PackageReference Include="FirebirdSql.Data.FirebirdClient" />
 		<PackageReference Include="MySqlConnector" />
 		<PackageReference Include="AdoNetCore.AseClient" />
@@ -71,6 +70,8 @@
 		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
 		<PackageReference Include="System.Memory" />
 		<PackageReference Include="System.Buffers" />
+		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
+		<PackageReference Include="System.Text.Json" />
 		<PackageReference Include="Oracle.ManagedDataAccess" />
 		<PackageReference Include="IBM.Data.DB.Provider" GeneratePathProperty="true" />
 
@@ -135,7 +136,7 @@
 	</Target>
 
 	<ItemGroup>
-		<Resource Include="..\Build\icon64.png" Link="Resources\Logo.png" />
+		<Resource Include="..\Build\icon.png" Link="Resources\Logo.png" />
 	</ItemGroup>
 
 </Project>

@@ -9,14 +9,16 @@ namespace LinqToDB.LINQPad;
 /// Implements Linq To DB connection settings provider, which use data from JSON config.
 /// Used as settings source for static data context.
 /// </summary>
-internal sealed class AppConfig : ILinqToDBSettings
+internal sealed class AppConfig(IConnectionStringSettings[] connectionStrings) : ILinqToDBSettings
 {
+#pragma warning disable CA1859 // change return type
 	public static ILinqToDBSettings LoadJson(string configPath)
+#pragma warning restore CA1859 // change return type
 	{
 		var config = JsonSerializer.Deserialize<JsonConfig>(File.ReadAllText(configPath));
 
 		if (config?.ConnectionStrings?.Count is null or 0)
-			return new AppConfig(Array.Empty<IConnectionStringSettings>());
+			return new AppConfig([]);
 
 		var connections = new Dictionary<string, ConnectionStringSettings>(StringComparer.InvariantCultureIgnoreCase);
 		foreach (var cn in config.ConnectionStrings)
@@ -40,15 +42,18 @@ internal sealed class AppConfig : ILinqToDBSettings
 		return new AppConfig(connections.Values.ToArray());
 	}
 
+#pragma warning disable CA1859 // change return type
 	public static ILinqToDBSettings LoadAppConfig(string configPath)
+#pragma warning restore CA1859 // change return type
 	{
 		var xml = new XmlDocument() { XmlResolver = null };
-		xml.Load(XmlReader.Create(new StringReader(File.ReadAllText(configPath)), new XmlReaderSettings() { XmlResolver = null }));
+		using var reader = XmlReader.Create(new StringReader(File.ReadAllText(configPath)), new XmlReaderSettings() { XmlResolver = null });
+		xml.Load(reader);
 		
 		var connections = xml.SelectNodes("/configuration/connectionStrings/add");
 
 		if (connections?.Count is null or 0)
-			return new AppConfig(Array.Empty<IConnectionStringSettings>());
+			return new AppConfig([]);
 
 		var settings = new List<ConnectionStringSettings>();
 
@@ -65,36 +70,22 @@ internal sealed class AppConfig : ILinqToDBSettings
 		return new AppConfig(settings.ToArray());
 	}
 
-	private readonly IConnectionStringSettings[] _connectionStrings;
-
-	public AppConfig(IConnectionStringSettings[] connectionStrings)
-	{
-		_connectionStrings = connectionStrings;
-	}
-
-	IEnumerable<IDataProviderSettings>     ILinqToDBSettings.DataProviders        => Array.Empty<IDataProviderSettings>();
+	IEnumerable<IDataProviderSettings>     ILinqToDBSettings.DataProviders        => [];
 	string?                                ILinqToDBSettings.DefaultConfiguration => null;
 	string?                                ILinqToDBSettings.DefaultDataProvider  => null;
-	IEnumerable<IConnectionStringSettings> ILinqToDBSettings.ConnectionStrings    => _connectionStrings;
+	IEnumerable<IConnectionStringSettings> ILinqToDBSettings.ConnectionStrings    => connectionStrings;
 
+#pragma warning disable CA1812 // Remove unused type
 	private sealed class JsonConfig
+#pragma warning restore CA1812 // Remove unused type
 	{
 		public IDictionary<string, string>? ConnectionStrings { get; set; }
 	}
 
-	private sealed class ConnectionStringSettings : IConnectionStringSettings
+	private sealed class ConnectionStringSettings(string name, string connectionString) : IConnectionStringSettings
 	{
-		private readonly string _name;
-		private readonly string _connectionString;
-
-		public ConnectionStringSettings(string name, string connectionString)
-		{
-			_name             = name;
-			_connectionString = connectionString;
-		}
-
-		string  IConnectionStringSettings.ConnectionString => _connectionString;
-		string  IConnectionStringSettings.Name             => _name;
+		string IConnectionStringSettings.ConnectionString => connectionString;
+		string  IConnectionStringSettings.Name             => name;
 		bool    IConnectionStringSettings.IsGlobal         => false;
 
 		public string? ProviderName { get; set; }

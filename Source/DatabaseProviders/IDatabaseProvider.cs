@@ -69,7 +69,9 @@ internal interface IDatabaseProvider
 	/// <summary>
 	/// If provider supports assembly path configuration, method could return URL to provider download page.
 	/// </summary>
+#pragma warning disable CA1055 // URI-like return values should not be strings
 	string? GetProviderDownloadUrl(string? providerName);
+#pragma warning restore CA1055 // URI-like return values should not be strings
 
 	/// <summary>
 	/// If provider supports assembly path configuration (<see cref="IsProviderPathSupported(string)"/>), method tries to return default path to provider assembly,
