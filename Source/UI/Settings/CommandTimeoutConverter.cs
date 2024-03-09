@@ -3,7 +3,9 @@ using System.Windows.Data;
 
 namespace LinqToDB.LINQPad.UI;
 
+#pragma warning disable CA1812 // Remove unused type
 sealed class CommandTimeoutConverter : IValueConverter
+#pragma warning restore CA1812 // Remove unused type
 {
 	public object? Convert(object? value, Type targetType, object parameter, CultureInfo culture)
 	{

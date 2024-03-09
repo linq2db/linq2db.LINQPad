@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿#pragma warning disable CA1002 // Do not expose generic lists
+using System.Text;
 using LINQPad.Extensibility.DataContext;
 using LinqToDB.CodeModel;
 using LinqToDB.Common;
@@ -13,22 +14,15 @@ namespace LinqToDB.LINQPad;
 /// <summary>
 /// Scaffold interceptor used to populate generated data model for dynamic context (with proper type/member identifiers).
 /// </summary>
-internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
+internal sealed class ModelProviderInterceptor(ConnectionSettings settings, ISqlBuilder sqlBuilder) : ScaffoldInterceptors
 {
-	private readonly ISqlBuilder _sqlBuilder;
-	private readonly bool        _replaceClickHouseFixedString;
+	private readonly bool        _replaceClickHouseFixedString = settings.Connection.Database == ProviderName.ClickHouse && settings.Scaffold.ClickHouseFixedStringAsString;
 
 	// stores populated model information:
 	// - FK associations
 	// - schema-scoped objects (views, tables, routines)
 	private readonly List<AssociationData>          _associations = new ();
 	private readonly Dictionary<string, SchemaData> _schemaItems  = new ();
-
-	public ModelProviderInterceptor(ConnectionSettings settings, ISqlBuilder sqlBuilder)
-	{
-		_sqlBuilder                   = sqlBuilder;
-		_replaceClickHouseFixedString = settings.Connection.Database == ProviderName.ClickHouse && settings.Scaffold.ClickHouseFixedStringAsString;
-	}
 
 	#region model DTOs
 
@@ -361,7 +355,7 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 
 			items.Add(new ExplorerItem(func.MethodName, ExplorerItemKind.QueryableObject, ExplorerIcon.StoredProc)
 			{
-				DragText     = $"this.{func.MethodName}({string.Join(", ", func.Parameters.Select(GetParameterName))})",
+				DragText     = $"this.{CSharpUtils.EscapeIdentifier(func.MethodName)}({string.Join(", ", func.Parameters.Select(GetParameterNameEscaped))})",
 				Children     = children,
 				IsEnumerable = func.Result != null,
 				SqlName      = func.DbName
@@ -386,7 +380,7 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 			columns.Add(new ExplorerItem($"{column.MemberName} : {SimpleBuildTypeName(column.Type)}", ExplorerItemKind.Property, ExplorerIcon.Column)
 			{
 				ToolTipText        = $"{dbName} {dbType}",
-				DragText           = column.MemberName,
+				DragText           = CSharpUtils.EscapeIdentifier(column.MemberName),
 				SqlName            = dbName,
 				SqlTypeDeclaration = dbType,
 			});
@@ -409,6 +403,11 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 		return $"{(param.Direction == ParameterDirection.Out ? "out " : param.Direction == ParameterDirection.Ref ? "ref " : null)}{param.Name}";
 	}
 
+	private static string GetParameterNameEscaped(ParameterData param)
+	{
+		return $"{(param.Direction == ParameterDirection.Out ? "out " : param.Direction == ParameterDirection.Ref ? "ref " : null)}{CSharpUtils.EscapeIdentifier(param.Name)}";
+	}
+
 	private ExplorerItem PopulateTableFunctions(List<TableFunctionData> functions)
 	{
 		var items = new List<ExplorerItem>(functions.Count);
@@ -423,7 +422,7 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 
 			items.Add(new ExplorerItem(func.MethodName, ExplorerItemKind.QueryableObject, ExplorerIcon.TableFunction)
 			{
-				DragText     = $"{func.MethodName}({string.Join(", ", func.Parameters.Select(GetParameterName))})",
+				DragText     = $"{CSharpUtils.EscapeIdentifier(func.MethodName)}({string.Join(", ", func.Parameters.Select(GetParameterNameEscaped))})",
 				Children     = children,
 				IsEnumerable = true,
 				SqlName      = func.DbName
@@ -451,7 +450,7 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 
 			items.Add(new ExplorerItem(func.MethodName, ExplorerItemKind.QueryableObject, ExplorerIcon.TableFunction)
 			{
-				DragText     = $"ExtensionMethods.{func.MethodName}({string.Join(", ", func.Parameters.Select(GetParameterName))})",
+				DragText     = $"ExtensionMethods.{CSharpUtils.EscapeIdentifier(func.MethodName)}({string.Join(", ", func.Parameters.Select(GetParameterNameEscaped))})",
 				Children     = children,
 				IsEnumerable = false,
 				SqlName      = func.DbName
@@ -484,7 +483,7 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 						column.IsPrimaryKey ? ExplorerIcon.Key : ExplorerIcon.Column)
 					{
 						ToolTipText        = $"{dbName} {dbType}",
-						DragText           = column.MemberName,
+						DragText           = CSharpUtils.EscapeIdentifier(column.MemberName),
 						SqlName            = dbName,
 						SqlTypeDeclaration = dbType,
 					});
@@ -492,7 +491,7 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 
 			var tableNode = new ExplorerItem(table.ContextName, ExplorerItemKind.QueryableObject, icon)
 			{
-				DragText     = table.ContextName,
+				DragText     = CSharpUtils.EscapeIdentifier(table.ContextName),
 				ToolTipText  = SimpleBuildTypeName(table.ContextType),
 				SqlName      = table.DbName,
 				IsEnumerable = true,
@@ -530,7 +529,7 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 									? ExplorerIcon.ManyToOne
 									: ExplorerIcon.OneToOne)
 					{
-						DragText        = association.MemberName,
+						DragText        = CSharpUtils.EscapeIdentifier(association.MemberName),
 						ToolTipText     = $"{SimpleBuildTypeName(association.Type)}{(!association.FromSide ? " // Back Reference" : null)}",
 						SqlName         = association.KeyName,
 						IsEnumerable    = association.OneToMany && association.FromSide,
@@ -544,7 +543,7 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 
 	private string GetDbName(string name, string? schema = null)
 	{
-		return _sqlBuilder!.BuildObjectName(
+		return sqlBuilder.BuildObjectName(
 				new StringBuilder(),
 				new SqlObjectName(Name: name, Schema: schema),
 				tableOptions: TableOptions.NotSet)
@@ -553,7 +552,7 @@ internal sealed class ModelProviderInterceptor : ScaffoldInterceptors
 
 	private string GetTypeName(DataType? dataType, DatabaseType type)
 	{
-		return _sqlBuilder!.BuildDataType(
+		return sqlBuilder.BuildDataType(
 				new StringBuilder(),
 				new SqlDataType(new DbDataType(typeof(object),
 					dataType : dataType ?? DataType.Undefined,

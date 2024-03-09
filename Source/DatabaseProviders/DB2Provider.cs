@@ -10,13 +10,13 @@ namespace LinqToDB.LINQPad;
 
 internal sealed class DB2Provider : DatabaseProviderBase
 {
-	private static readonly IReadOnlyList<ProviderInfo> _providers = new ProviderInfo[]
-	{
+	private static readonly IReadOnlyList<ProviderInfo> _providers =
+	[
 		new (ProviderName.DB2LUW       , "DB2 for Linux, UNIX and Windows (LUW)"),
 		// zOS provider not tested at all as we don't have access to database instance
 		new (ProviderName.DB2zOS       , "DB2 for z/OS"                         ),
 		//new (DB2iSeriesProviderName.DB2, "DB2 for i (iSeries)"                  ),
-	};
+	];
 
 	public DB2Provider()
 		//: base(ProviderName.DB2, "IBM DB2 (LUW, z/OS or iSeries)", _providers)

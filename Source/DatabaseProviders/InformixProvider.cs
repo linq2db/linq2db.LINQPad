@@ -9,10 +9,10 @@ namespace LinqToDB.LINQPad;
 
 internal sealed class InformixProvider : DatabaseProviderBase
 {
-	private static readonly IReadOnlyList<ProviderInfo> _providers = new ProviderInfo[]
-	{
+	private static readonly IReadOnlyList<ProviderInfo> _providers =
+	[
 		new (ProviderName.InformixDB2, "Informix")
-	};
+	];
 
 	public InformixProvider()
 		: base(ProviderName.Informix, "IBM Informix", _providers)

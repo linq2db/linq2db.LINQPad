@@ -1,34 +1,27 @@
 ﻿#if !NET5_0_OR_GREATER
 namespace System.Collections.Generic;
 
-internal sealed class ReadOnlyHashSet<T> : IReadOnlySet<T>
+internal sealed class ReadOnlyHashSet<T>(ISet<T> set) : IReadOnlySet<T>
 {
-	private readonly ISet<T> _set;
+	int IReadOnlyCollection<T>.Count => set.Count;
 
-	public ReadOnlyHashSet(ISet<T> set)
-	{
-		_set = set;
-	}
+	bool IReadOnlySet<T>.Contains(T item) => set.Contains(item);
 
-	int IReadOnlyCollection<T>.Count => _set.Count;
+	IEnumerator<T> IEnumerable<T>.GetEnumerator() => set.GetEnumerator();
 
-	bool IReadOnlySet<T>.Contains(T item) => _set.Contains(item);
+	IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)set).GetEnumerator();
 
-	IEnumerator<T> IEnumerable<T>.GetEnumerator() => _set.GetEnumerator();
+	bool IReadOnlySet<T>.IsProperSubsetOf(IEnumerable<T> other) => set.IsProperSubsetOf(other);
 
-	IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_set).GetEnumerator();
+	bool IReadOnlySet<T>.IsProperSupersetOf(IEnumerable<T> other) => set.IsProperSupersetOf(other);
 
-	bool IReadOnlySet<T>.IsProperSubsetOf(IEnumerable<T> other) => _set.IsProperSubsetOf(other);
+	bool IReadOnlySet<T>.IsSubsetOf(IEnumerable<T> other) => set.IsSubsetOf(other);
 
-	bool IReadOnlySet<T>.IsProperSupersetOf(IEnumerable<T> other) => _set.IsProperSupersetOf(other);
+	bool IReadOnlySet<T>.IsSupersetOf(IEnumerable<T> other) => set.IsSupersetOf(other);
 
-	bool IReadOnlySet<T>.IsSubsetOf(IEnumerable<T> other) => _set.IsSubsetOf(other);
+	bool IReadOnlySet<T>.Overlaps(IEnumerable<T> other) => set.Overlaps(other);
 
-	bool IReadOnlySet<T>.IsSupersetOf(IEnumerable<T> other) => _set.IsSupersetOf(other);
-
-	bool IReadOnlySet<T>.Overlaps(IEnumerable<T> other) => _set.Overlaps(other);
-
-	bool IReadOnlySet<T>.SetEquals(IEnumerable<T> other) => _set.SetEquals(other);
+	bool IReadOnlySet<T>.SetEquals(IEnumerable<T> other) => set.SetEquals(other);
 
 	
 }

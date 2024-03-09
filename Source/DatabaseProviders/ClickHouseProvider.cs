@@ -10,15 +10,15 @@ namespace LinqToDB.LINQPad;
 
 internal sealed class ClickHouseProvider : DatabaseProviderBase
 {
-	private static readonly IReadOnlyList<ProviderInfo> _providers = new ProviderInfo[]
-	{
+	private static readonly IReadOnlyList<ProviderInfo> _providers =
+	[
 		new (ProviderName.ClickHouseClient  , "HTTP(S) Interface (ClickHouse.Client)"             ),
 		new (ProviderName.ClickHouseMySql   , "MySQL Interface (MySqlConnector)"                  ),
 #if !NETFRAMEWORK
 		// octonica provider doesn't support NETFX or NESTANDARD
 		new (ProviderName.ClickHouseOctonica, "Binary (TCP) Interface (Octonica.ClickHouseClient)"),
 #endif
-	};
+	];
 
 	public ClickHouseProvider()
 		: base(ProviderName.ClickHouse, "ClickHouse", _providers)

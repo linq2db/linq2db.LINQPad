@@ -53,6 +53,8 @@ internal interface IDatabaseProvider
 	/// <summary>
 	/// Tries to infer provider by database connection string.
 	/// </summary>
+	/// <param name="connectionString">Connection string could contain password manager tokens.</param>
+	/// <returns></returns>
 	ProviderInfo? GetProviderByConnectionString(string connectionString);
 
 	/// <summary>
@@ -69,7 +71,9 @@ internal interface IDatabaseProvider
 	/// <summary>
 	/// If provider supports assembly path configuration, method could return URL to provider download page.
 	/// </summary>
+#pragma warning disable CA1055 // URI-like return values should not be strings
 	string? GetProviderDownloadUrl(string? providerName);
+#pragma warning restore CA1055 // URI-like return values should not be strings
 
 	/// <summary>
 	/// If provider supports assembly path configuration (<see cref="IsProviderPathSupported(string)"/>), method tries to return default path to provider assembly,
@@ -93,6 +97,8 @@ internal interface IDatabaseProvider
 	/// <summary>
 	/// Returns linq2db data provider.
 	/// </summary>
+	/// <param name="providerName">Provider name.</param>
+	/// <param name="connectionString">Connection string must be already resolved against password manager.</param>
 	IDataProvider GetDataProvider(string providerName, string connectionString);
 
 #if NETFRAMEWORK

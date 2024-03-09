@@ -26,12 +26,12 @@ internal static class DriverHelper
 	/// <summary>
 	/// Returned by <see cref="DataContextDriver.GetNamespacesToAdd(IConnectionInfo)"/> method implementation.
 	/// </summary>
-	public static readonly IReadOnlyCollection<string> DefaultImports = new[]
-	{
+	public static readonly IReadOnlyCollection<string> DefaultImports =
+	[
 		"LinqToDB",
 		"LinqToDB.Data",
 		"LinqToDB.Mapping"
-	};
+	];
 
 	/// <summary>
 	/// Initialization method, called from driver's static constructor.
@@ -40,6 +40,19 @@ internal static class DriverHelper
 	{
 #if NETFRAMEWORK
 		// Dynamically resolve assembly bindings to currently used assembly version for transitive dependencies. Used by.NET Framework build (LINQPad 5).
+
+		// Yes, two handlers to resolve dependencies in dependency resolver
+		// Dll Hell is real. Submit, puny mortal!
+		AppDomain.CurrentDomain.AssemblyResolve += static (sender, args) =>
+		{
+			var requestedAssembly = new AssemblyName(args.Name!);
+
+			if (requestedAssembly.Name == "Microsoft.Bcl.AsyncInterfaces")
+				return typeof(IAsyncDisposable).Assembly;
+
+			return null;
+		};
+
 		AppDomain.CurrentDomain.AssemblyResolve += static (sender, args) =>
 		{
 			var requestedAssembly = new AssemblyName(args.Name!);
@@ -86,16 +99,25 @@ internal static class DriverHelper
 			// apply context-specific Linq To DB options
 			Common.Configuration.Linq.OptimizeJoins = settings.LinqToDB.OptimizeJoins;
 
+			// TODO: add OnTraceConnection to IDataContext
 			if (context is DataConnection dc)
-			{
 				dc.OnTraceConnection = GetSqlLogAction(executionManager);
-				DataConnection.TurnTraceSwitchOn();
-			}
 			else if (context is DataContext dctx)
-			{
 				dctx.OnTraceConnection = GetSqlLogAction(executionManager);
-				DataConnection.TurnTraceSwitchOn();
+			else
+			{
+				// Try to find a OnTraceConnection property in the custom context object
+				try
+				{
+					context.GetType().GetProperty("OnTraceConnection")?.SetValue(context, GetSqlLogAction(executionManager));
+				}
+				catch
+				{
+					// not our problem
+				}
 			}
+
+			DataConnection.TurnTraceSwitchOn();
 
 			return context.MappingSchema;
 
@@ -127,14 +149,14 @@ internal static class DriverHelper
 							break;
 						case TraceInfoStep.Completed:
 							// log data reader execution stats
-							executionManager.SqlTranslationWriter.WriteLine($"-- Data read time: {info.ExecutionTime}. Records fetched: {info.RecordsAffected}.\r\n");
+							executionManager.SqlTranslationWriter.WriteLine(FormattableString.Invariant($"-- Data read time: {info.ExecutionTime}. Records fetched: {info.RecordsAffected}.\r\n"));
 							break;
 						case TraceInfoStep.AfterExecute:
 							// log query execution stats
 							if (info.RecordsAffected != null)
-								executionManager.SqlTranslationWriter.WriteLine($"-- Execution time: {info.ExecutionTime}. Records affected: {info.RecordsAffected}.\r\n");
+								executionManager.SqlTranslationWriter.WriteLine(FormattableString.Invariant($"-- Execution time: {info.ExecutionTime}. Records affected: {info.RecordsAffected}.\r\n"));
 							else
-								executionManager.SqlTranslationWriter.WriteLine($"-- Execution time: {info.ExecutionTime}\r\n");
+								executionManager.SqlTranslationWriter.WriteLine(FormattableString.Invariant($"-- Execution time: {info.ExecutionTime}\r\n"));
 							break;
 					}
 				};
@@ -244,17 +266,18 @@ internal static class DriverHelper
 						throw new LinqToDBLinqPadException($"Cannot access provider assembly at {model.DynamicConnection.ProviderPath}");
 				}
 
-				var provider = DatabaseProviders.GetDataProvider(model.DynamicConnection.Provider.Name, model.DynamicConnection.ConnectionString, model.DynamicConnection.ProviderPath);
-
-				using (var con = provider.CreateConnection(model.DynamicConnection.ConnectionString))
+				var connectionString = PasswordManager.ResolvePasswordManagerFields(model.DynamicConnection.ConnectionString);
+				var provider         = DatabaseProviders.GetDataProvider(model.DynamicConnection.Provider.Name, connectionString, model.DynamicConnection.ProviderPath);
+				using (var con       = provider.CreateConnection(connectionString))
 					con.Open();
 
 				if (model.DynamicConnection.Database.SupportsSecondaryConnection
 					&& model.DynamicConnection.SecondaryProvider != null
 					&& model.DynamicConnection.SecondaryConnectionString != null)
 				{
-					var secondaryProvider = DatabaseProviders.GetDataProvider(model.DynamicConnection.SecondaryProvider.Name, model.DynamicConnection.SecondaryConnectionString, null);
-					using var con = secondaryProvider.CreateConnection(model.DynamicConnection.SecondaryConnectionString);
+					var secondaryConnectionString = PasswordManager.ResolvePasswordManagerFields(model.DynamicConnection.SecondaryConnectionString);
+					var secondaryProvider         = DatabaseProviders.GetDataProvider(model.DynamicConnection.SecondaryProvider.Name, secondaryConnectionString, null);
+					using var con                 = secondaryProvider.CreateConnection(secondaryConnectionString);
 					con.Open();
 				}
 

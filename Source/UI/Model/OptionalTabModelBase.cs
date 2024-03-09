@@ -2,13 +2,7 @@
 
 namespace LinqToDB.LINQPad.UI;
 
-internal abstract class OptionalTabModelBase : TabModelBase
+internal abstract class OptionalTabModelBase(ConnectionSettings settings, bool enabled) : TabModelBase(settings)
 {
-	protected OptionalTabModelBase(ConnectionSettings settings, bool enabled)
-		: base(settings)
-	{
-		Visibility = enabled ? Visibility.Visible : Visibility.Collapsed;
-	}
-
-	public Visibility Visibility { get; }
+	public Visibility Visibility { get; } = enabled ? Visibility.Visible : Visibility.Collapsed;
 }

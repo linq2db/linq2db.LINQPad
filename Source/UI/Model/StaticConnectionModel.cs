@@ -3,14 +3,10 @@ using System.ComponentModel;
 
 namespace LinqToDB.LINQPad.UI;
 
-internal sealed class StaticConnectionModel : ConnectionModelBase, INotifyPropertyChanged
+internal sealed class StaticConnectionModel(ConnectionSettings settings, bool enabled) : ConnectionModelBase(settings, enabled), INotifyPropertyChanged
 {
-	public StaticConnectionModel(ConnectionSettings settings, bool enabled)
-		: base(settings, enabled)
-	{
-	}
-
 	private static readonly PropertyChangedEventArgs _contextAssemblyPathChangedEventArgs = new (nameof(ContextAssemblyPath));
+
 	public string? ContextAssemblyPath
 	{
 		get

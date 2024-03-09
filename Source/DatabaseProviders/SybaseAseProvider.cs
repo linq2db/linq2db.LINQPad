@@ -6,10 +6,10 @@ namespace LinqToDB.LINQPad;
 
 internal sealed class SybaseAseProvider : DatabaseProviderBase
 {
-	private static readonly IReadOnlyList<ProviderInfo> _providers = new ProviderInfo[]
-	{
+	private static readonly IReadOnlyList<ProviderInfo> _providers =
+	[
 		new(ProviderName.SybaseManaged, "SAP/Sybase ASE")
-	};
+	];
 
 	public SybaseAseProvider()
 		: base(ProviderName.Sybase, "SAP/Sybase ASE", _providers)

@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Data.Common;
+using System.IO;
 using LINQPad.Extensibility.DataContext;
 using LinqToDB.Data;
 using LinqToDB.Mapping;
@@ -46,10 +47,10 @@ public sealed class LinqToDBStaticDriver : StaticDataContextDriver
 		}
 	}
 
-	private static readonly ParameterDescriptor[] _contextParameters = new[]
-	{
+	private static readonly ParameterDescriptor[] _contextParameters =
+	[
 		new ParameterDescriptor("configuration", typeof(string).FullName)
-	};
+	];
 
 	/// <inheritdoc/>
 	public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo cxInfo)
@@ -66,7 +67,7 @@ public sealed class LinqToDBStaticDriver : StaticDataContextDriver
 		catch (Exception ex)
 		{
 			DriverHelper.HandleException(ex, nameof(GetContextConstructorParameters));
-			return Array.Empty<ParameterDescriptor>();
+			return [];
 		}
 	}
 
@@ -85,14 +86,14 @@ public sealed class LinqToDBStaticDriver : StaticDataContextDriver
 			TryLoadAppSettingsJson(configurationPath);
 
 			if (settings.StaticContext.ConfigurationName != null)
-				return new object[] { settings.StaticContext.ConfigurationName };
+				return [settings.StaticContext.ConfigurationName];
 
 			return base.GetContextConstructorArguments(cxInfo);
 		}
 		catch (Exception ex)
 		{
 			DriverHelper.HandleException(ex, nameof(GetContextConstructorArguments));
-			return Array.Empty<object>();
+			return [];
 		}
 	}
 
@@ -105,7 +106,7 @@ public sealed class LinqToDBStaticDriver : StaticDataContextDriver
 	/// <inheritdoc/>
 	public override void InitializeContext(IConnectionInfo cxInfo, object context, QueryExecutionManager executionManager)
 	{
-		_mappingSchema = DriverHelper.InitializeContext(cxInfo, (DataConnection)context, executionManager);
+		_mappingSchema = DriverHelper.InitializeContext(cxInfo, (IDataContext)context, executionManager);
 	}
 
 	/// <inheritdoc/>
@@ -137,10 +138,13 @@ public sealed class LinqToDBStaticDriver : StaticDataContextDriver
 
 	private void TryLoadAppSettingsJson(string? appConfigPath)
 	{
-		if (appConfigPath?.EndsWith(".json", StringComparison.OrdinalIgnoreCase) == true)
+		if (string.IsNullOrWhiteSpace(appConfigPath) || !File.Exists(appConfigPath))
+			return;
+
+		if (appConfigPath!.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
 			DataConnection.DefaultSettings = AppConfig.LoadJson(appConfigPath);
 #if !NETFRAMEWORK
-		if (appConfigPath?.EndsWith(".config", StringComparison.OrdinalIgnoreCase) == true)
+		if (appConfigPath.EndsWith(".config", StringComparison.OrdinalIgnoreCase))
 			DataConnection.DefaultSettings = AppConfig.LoadAppConfig(appConfigPath);
 #endif
 	}

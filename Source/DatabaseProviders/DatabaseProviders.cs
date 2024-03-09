@@ -1,19 +1,20 @@
-﻿using System.Data.Common;
+﻿using System.Collections.Frozen;
+using System.Data.Common;
 using LinqToDB.DataProvider;
 
 namespace LinqToDB.LINQPad;
 
 internal static class DatabaseProviders
 {
-	public static readonly IReadOnlyDictionary<string, IDatabaseProvider> Providers;
-	public static readonly IReadOnlyDictionary<string, IDatabaseProvider> ProvidersByProviderName;
+	public static readonly FrozenDictionary<string, IDatabaseProvider> Providers;
+	public static readonly FrozenDictionary<string, IDatabaseProvider> ProvidersByProviderName;
 
+#pragma warning disable CA1810 // Initialize reference type static fields inline
 	static DatabaseProviders()
+#pragma warning restore CA1810 // Initialize reference type static fields inline
 	{
 		var providers           = new Dictionary<string, IDatabaseProvider  >();
 		var providersByName     = new Dictionary<string, IDatabaseProvider  >();
-		Providers               = providers;
-		ProvidersByProviderName = providersByName;
 
 		Register(providers, providersByName, new AccessProvider    ());
 		Register(providers, providersByName, new FirebirdProvider  ());
@@ -34,6 +35,9 @@ internal static class DatabaseProviders
 		Register(providers, providersByName, new OracleProvider    ());
 		Register(providers, providersByName, new SqlServerProvider ());
 		Register(providers, providersByName, new ClickHouseProvider());
+
+		Providers               = providers.ToFrozenDictionary();
+		ProvidersByProviderName = providersByName.ToFrozenDictionary();
 
 		static void Register(
 			Dictionary<string, IDatabaseProvider> providers,
@@ -60,12 +64,21 @@ internal static class DatabaseProviders
 		// trigger .cctors
 	}
 
-	public static DbConnection CreateConnection (ConnectionSettings settings) => GetDataProvider(settings).CreateConnection(settings.Connection.ConnectionString!);
+	public static DbConnection CreateConnection(ConnectionSettings settings)
+	{
+		return GetDataProvider(settings).CreateConnection(settings.Connection.GetFullConnectionString()!);
+	}
 
 	public static DbProviderFactory GetProviderFactory(ConnectionSettings settings) => GetProviderByName(settings.Connection.Provider!).GetProviderFactory(settings.Connection.Provider!);
 
-	public static IDataProvider GetDataProvider(ConnectionSettings settings) => GetDataProvider(settings.Connection.Provider, settings.Connection.ConnectionString, settings.Connection.ProviderPath);
+	public static IDataProvider GetDataProvider(ConnectionSettings settings)
+	{
+		return GetDataProvider(settings.Connection.Provider, settings.Connection.GetFullConnectionString(), settings.Connection.ProviderPath);
+	}
 
+	/// <param name="providerName">Provider name.</param>
+	/// <param name="connectionString">Connection string must be already resolved against password manager.</param>
+	/// <param name="providerPath">Optional path to provider assembly.</param>
 	public static IDataProvider GetDataProvider(string? providerName, string? connectionString, string? providerPath)
 	{
 		if (string.IsNullOrWhiteSpace(providerName))

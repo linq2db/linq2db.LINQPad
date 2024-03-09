@@ -4,26 +4,21 @@ using LinqToDB.DataProvider;
 
 namespace LinqToDB.LINQPad;
 
-internal abstract class DatabaseProviderBase : IDatabaseProvider
+internal abstract class DatabaseProviderBase(string database, string description, IReadOnlyList<ProviderInfo> providers) : IDatabaseProvider
 {
-	protected DatabaseProviderBase(string database, string description, IReadOnlyList<ProviderInfo> providers)
-	{
-		Database    = database;
-		Description = description;
-		Providers   = providers;
-	}
-
-	public string                      Database                    { get; }
-	public string                      Description                 { get; }
-	public IReadOnlyList<ProviderInfo> Providers                   { get; }
+	public string Database { get; } = database;
+	public string Description { get; } = description;
+	public IReadOnlyList<ProviderInfo> Providers { get; } = providers;
 
 	public virtual bool SupportsSecondaryConnection { get; }
 	public virtual bool AutomaticProviderSelection  { get; }
 
-	public virtual IReadOnlyCollection<Assembly> GetAdditionalReferences      (string providerName                     ) => Array.Empty<Assembly>();
+	public virtual IReadOnlyCollection<Assembly> GetAdditionalReferences      (string providerName                     ) => [];
 	public virtual string?                       GetProviderAssemblyName      (string providerName                     ) => null;
 	public virtual ProviderInfo?                 GetProviderByConnectionString(string connectionString                 ) => null;
+#pragma warning disable CA1055 // URI-like return values should not be strings
 	public virtual string?                       GetProviderDownloadUrl       (string? providerName                    ) => null;
+#pragma warning restore CA1055 // URI-like return values should not be strings
 	public virtual bool                          IsProviderPathSupported      (string providerName                     ) => false;
 	public virtual void                          RegisterProviderFactory      (string providerName, string providerPath) { }
 	public virtual string?                       TryGetDefaultPath            (string providerName                     ) => null;
@@ -35,6 +30,9 @@ internal abstract class DatabaseProviderBase : IDatabaseProvider
 	public abstract DateTime?         GetLastSchemaUpdate(ConnectionSettings settings);
 	public abstract DbProviderFactory GetProviderFactory (string providerName        );
 
+	/// <param name="providerName">Provider name.</param>
+	/// <param name="connectionString">Connection string must be resolved against password manager already.</param>
+	/// <returns></returns>
 	public virtual IDataProvider GetDataProvider(string providerName, string connectionString)
 	{
 		return DataConnection.GetDataProvider(providerName, connectionString)

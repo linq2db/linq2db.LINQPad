@@ -179,7 +179,9 @@ internal sealed class DynamicConnectionModel : ConnectionModelBase, INotifyPrope
 	public Visibility ProviderDownloadUrlVisibility { get; set; }
 
 	private static readonly PropertyChangedEventArgs _providerDownloadUrlChangedEventArgs = new (nameof(ProviderDownloadUrl));
+#pragma warning disable CA1056 // URI-like properties should not be strings
 	public string? ProviderDownloadUrl { get; set; }
+#pragma warning restore CA1056 // URI-like properties should not be strings
 
 	public string? ConnectionString
 	{
@@ -239,10 +241,7 @@ internal sealed class DynamicConnectionModel : ConnectionModelBase, INotifyPrope
 
 			return null;
 		}
-		set
-		{
-			Settings.Connection.SecondaryProvider = value?.Name;
-		}
+		set => Settings.Connection.SecondaryProvider = value?.Name;
 	}
 
 	public bool EncryptConnectionString
