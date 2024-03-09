@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Data.Common;
+using System.IO;
 using LINQPad.Extensibility.DataContext;
 using LinqToDB.Data;
 using LinqToDB.Mapping;
@@ -105,7 +106,7 @@ public sealed class LinqToDBStaticDriver : StaticDataContextDriver
 	/// <inheritdoc/>
 	public override void InitializeContext(IConnectionInfo cxInfo, object context, QueryExecutionManager executionManager)
 	{
-		_mappingSchema = DriverHelper.InitializeContext(cxInfo, (DataConnection)context, executionManager);
+		_mappingSchema = DriverHelper.InitializeContext(cxInfo, (IDataContext)context, executionManager);
 	}
 
 	/// <inheritdoc/>
@@ -137,10 +138,13 @@ public sealed class LinqToDBStaticDriver : StaticDataContextDriver
 
 	private void TryLoadAppSettingsJson(string? appConfigPath)
 	{
-		if (appConfigPath?.EndsWith(".json", StringComparison.OrdinalIgnoreCase) == true)
+		if (string.IsNullOrWhiteSpace(appConfigPath) || !File.Exists(appConfigPath))
+			return;
+
+		if (appConfigPath!.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
 			DataConnection.DefaultSettings = AppConfig.LoadJson(appConfigPath);
 #if !NETFRAMEWORK
-		if (appConfigPath?.EndsWith(".config", StringComparison.OrdinalIgnoreCase) == true)
+		if (appConfigPath.EndsWith(".config", StringComparison.OrdinalIgnoreCase))
 			DataConnection.DefaultSettings = AppConfig.LoadAppConfig(appConfigPath);
 #endif
 	}

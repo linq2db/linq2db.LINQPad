@@ -3,6 +3,7 @@
 Issues fixed:
 
 - [#97](https://github.com/linq2db/linq2db.LINQPad/pull/97), [#103](https://github.com/linq2db/linq2db.LINQPad/pull/103): update dependencies to get rid of vulnerable transient dependencies
+- [#102](https://github.com/linq2db/linq2db.LINQPad/pull/102): support custom `IDataContext`-based contexts; don't try to load missing connection configuration files
 
 # Release 5.1.0
 

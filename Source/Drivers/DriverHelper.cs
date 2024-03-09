@@ -99,16 +99,25 @@ internal static class DriverHelper
 			// apply context-specific Linq To DB options
 			Common.Configuration.Linq.OptimizeJoins = settings.LinqToDB.OptimizeJoins;
 
+			// TODO: add OnTraceConnection to IDataContext
 			if (context is DataConnection dc)
-			{
 				dc.OnTraceConnection = GetSqlLogAction(executionManager);
-				DataConnection.TurnTraceSwitchOn();
-			}
 			else if (context is DataContext dctx)
-			{
 				dctx.OnTraceConnection = GetSqlLogAction(executionManager);
-				DataConnection.TurnTraceSwitchOn();
+			else
+			{
+				// Try to find a OnTraceConnection property in the custom context object
+				try
+				{
+					context.GetType().GetProperty("OnTraceConnection")?.SetValue(context, GetSqlLogAction(executionManager));
+				}
+				catch
+				{
+					// not our problem
+				}
 			}
+
+			DataConnection.TurnTraceSwitchOn();
 
 			return context.MappingSchema;
 
