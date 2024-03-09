@@ -103,7 +103,7 @@ internal static class StaticSchemaGenerator
 									? ExplorerIcon.ManyToOne
 									: ExplorerIcon.OneToOne)
 						{
-							DragText        = ma.Name,
+							DragText        = CSharpUtils.EscapeIdentifier(ma.Name),
 							ToolTipText     = GetTypeName(ma.Type),
 							IsEnumerable    = isToMany,
 							HyperlinkTarget = otherItem
@@ -152,13 +152,13 @@ internal static class StaticSchemaGenerator
 				pk != null || ca != null && ca.IsPrimaryKey ? ExplorerIcon.Key : ExplorerIcon.Column)
 			{
 				Text     = $"{ma.Name} : {GetTypeName(ma.Type)}",
-				DragText = ma.Name,
+				DragText = CSharpUtils.EscapeIdentifier(ma.Name),
 			}
 		).ToList();
 
 		var ret = new ExplorerItem(table.Name, ExplorerItemKind.QueryableObject, icon)
 		{
-			DragText     = table.Name,
+			DragText     = CSharpUtils.EscapeIdentifier(table.Name),
 			IsEnumerable = true,
 			Children     = columns
 		};
