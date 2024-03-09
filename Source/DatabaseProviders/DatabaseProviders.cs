@@ -64,12 +64,21 @@ internal static class DatabaseProviders
 		// trigger .cctors
 	}
 
-	public static DbConnection CreateConnection (ConnectionSettings settings) => GetDataProvider(settings).CreateConnection(settings.Connection.ConnectionString!);
+	public static DbConnection CreateConnection(ConnectionSettings settings)
+	{
+		return GetDataProvider(settings).CreateConnection(settings.Connection.GetFullConnectionString()!);
+	}
 
 	public static DbProviderFactory GetProviderFactory(ConnectionSettings settings) => GetProviderByName(settings.Connection.Provider!).GetProviderFactory(settings.Connection.Provider!);
 
-	public static IDataProvider GetDataProvider(ConnectionSettings settings) => GetDataProvider(settings.Connection.Provider, settings.Connection.ConnectionString, settings.Connection.ProviderPath);
+	public static IDataProvider GetDataProvider(ConnectionSettings settings)
+	{
+		return GetDataProvider(settings.Connection.Provider, settings.Connection.GetFullConnectionString(), settings.Connection.ProviderPath);
+	}
 
+	/// <param name="providerName">Provider name.</param>
+	/// <param name="connectionString">Connection string must be already resolved against password manager.</param>
+	/// <param name="providerPath">Optional path to provider assembly.</param>
 	public static IDataProvider GetDataProvider(string? providerName, string? connectionString, string? providerPath)
 	{
 		if (string.IsNullOrWhiteSpace(providerName))

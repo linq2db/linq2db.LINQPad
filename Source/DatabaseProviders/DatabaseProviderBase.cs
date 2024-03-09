@@ -30,6 +30,9 @@ internal abstract class DatabaseProviderBase(string database, string description
 	public abstract DateTime?         GetLastSchemaUpdate(ConnectionSettings settings);
 	public abstract DbProviderFactory GetProviderFactory (string providerName        );
 
+	/// <param name="providerName">Provider name.</param>
+	/// <param name="connectionString">Connection string must be resolved against password manager already.</param>
+	/// <returns></returns>
 	public virtual IDataProvider GetDataProvider(string providerName, string connectionString)
 	{
 		return DataConnection.GetDataProvider(providerName, connectionString)

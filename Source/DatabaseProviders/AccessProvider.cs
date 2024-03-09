@@ -40,9 +40,9 @@ internal sealed class AccessProvider : DatabaseProviderBase
 	public override DateTime? GetLastSchemaUpdate(ConnectionSettings settings)
 	{
 		var connectionString = settings.Connection.Provider == ProviderName.Access
-			? settings.Connection.ConnectionString
+			? settings.Connection.GetFullConnectionString()
 			: settings.Connection.SecondaryProvider == ProviderName.Access
-				? settings.Connection.SecondaryConnectionString
+				? settings.Connection.GetFullSecondaryConnectionString()
 				: null;
 
 		if (connectionString == null || !RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -53,7 +53,7 @@ internal sealed class AccessProvider : DatabaseProviderBase
 		if (settings.Connection.Provider == ProviderName.Access)
 			provider = DatabaseProviders.GetDataProvider(settings);
 		else
-			provider = DatabaseProviders.GetDataProvider(settings.Connection.SecondaryProvider, settings.Connection.SecondaryConnectionString, null);
+			provider = DatabaseProviders.GetDataProvider(settings.Connection.SecondaryProvider, connectionString, null);
 
 		using var cn = (OleDbConnection)provider.CreateConnection(connectionString);
 		cn.Open();
@@ -65,6 +65,8 @@ internal sealed class AccessProvider : DatabaseProviderBase
 
 	public override ProviderInfo? GetProviderByConnectionString(string connectionString)
 	{
+		connectionString = PasswordManager.ResolvePasswordManagerFields(connectionString);
+
 		var isOleDb = connectionString.IndexOf("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase) != -1
 			|| connectionString.IndexOf("Microsoft.ACE.OLEDB", StringComparison.OrdinalIgnoreCase) != -1;
 

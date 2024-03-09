@@ -197,7 +197,7 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 			[
 				settings.Connection.Provider,
 				settings.Connection.ProviderPath,
-				settings.Connection.ConnectionString
+				settings.Connection.GetFullConnectionString()
 			];
 		}
 		catch (Exception ex)

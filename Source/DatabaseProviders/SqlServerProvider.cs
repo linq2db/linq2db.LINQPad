@@ -92,7 +92,6 @@ internal sealed class SqlServerProvider : DatabaseProviderBase
 		return SqlClientFactory.Instance;
 	}
 
-
 	public override IDataProvider GetDataProvider(string providerName, string connectionString)
 	{
 		// provider detector fails to detect Microsoft.Data.SqlClient

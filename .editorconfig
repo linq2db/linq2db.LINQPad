@@ -249,6 +249,8 @@ dotnet_diagnostic.MA0006.severity = none
 dotnet_diagnostic.MA0007.severity = none
 # MA0009: Add regex evaluation timeout
 dotnet_diagnostic.MA0009.severity = none
+# MA0023: Add RegexOptions.ExplicitCapture
+dotnet_diagnostic.MA0023.severity = none
 # MA0026: Fix TODO comment
 dotnet_diagnostic.MA0026.severity = none
 # MA0038: Make method static (deprecated, use CA1822 instead)

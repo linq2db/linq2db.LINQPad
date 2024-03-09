@@ -10,6 +10,9 @@ public class LINQPadDataConnection : DataConnection
 	/// <summary>
 	/// Constructor for inherited context.
 	/// </summary>
+	/// <param name="providerName">Provider name.</param>
+	/// <param name="providerPath">Optional provider assembly path.</param>
+	/// <param name="connectionString">Connection string must have password manager tokens replaced already.</param>
 	protected LINQPadDataConnection(string? providerName, string? providerPath, string? connectionString)
 		: base(
 			DatabaseProviders.GetDataProvider(providerName, connectionString, providerPath),
@@ -24,7 +27,7 @@ public class LINQPadDataConnection : DataConnection
 		: this(
 			settings.Connection.Provider,
 			settings.Connection.ProviderPath,
-			settings.Connection.ConnectionString)
+			settings.Connection.GetFullConnectionString())
 	{
 		if (settings.Connection.CommandTimeout != null)
 			CommandTimeout = settings.Connection.CommandTimeout.Value;

@@ -266,17 +266,18 @@ internal static class DriverHelper
 						throw new LinqToDBLinqPadException($"Cannot access provider assembly at {model.DynamicConnection.ProviderPath}");
 				}
 
-				var provider = DatabaseProviders.GetDataProvider(model.DynamicConnection.Provider.Name, model.DynamicConnection.ConnectionString, model.DynamicConnection.ProviderPath);
-
-				using (var con = provider.CreateConnection(model.DynamicConnection.ConnectionString))
+				var connectionString = PasswordManager.ResolvePasswordManagerFields(model.DynamicConnection.ConnectionString);
+				var provider         = DatabaseProviders.GetDataProvider(model.DynamicConnection.Provider.Name, connectionString, model.DynamicConnection.ProviderPath);
+				using (var con       = provider.CreateConnection(connectionString))
 					con.Open();
 
 				if (model.DynamicConnection.Database.SupportsSecondaryConnection
 					&& model.DynamicConnection.SecondaryProvider != null
 					&& model.DynamicConnection.SecondaryConnectionString != null)
 				{
-					var secondaryProvider = DatabaseProviders.GetDataProvider(model.DynamicConnection.SecondaryProvider.Name, model.DynamicConnection.SecondaryConnectionString, null);
-					using var con = secondaryProvider.CreateConnection(model.DynamicConnection.SecondaryConnectionString);
+					var secondaryConnectionString = PasswordManager.ResolvePasswordManagerFields(model.DynamicConnection.SecondaryConnectionString);
+					var secondaryProvider         = DatabaseProviders.GetDataProvider(model.DynamicConnection.SecondaryProvider.Name, secondaryConnectionString, null);
+					using var con                 = secondaryProvider.CreateConnection(secondaryConnectionString);
 					con.Open();
 				}
 
