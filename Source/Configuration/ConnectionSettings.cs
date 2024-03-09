@@ -388,6 +388,18 @@ internal sealed class ConnectionSettings
 		public string? ConnectionString { get; set; }
 
 		/// <summary>
+		/// Returns <see cref="ConnectionString"/> property value with resolved LINQPad password manager tokens.
+		/// </summary>
+		/// <returns></returns>
+		public string? GetFullConnectionString         () => PasswordManager.ResolvePasswordManagerFields(ConnectionString);
+
+		/// <summary>
+		/// Returns <see cref="SecondaryConnectionString"/> property value with resolved LINQPad password manager tokens.
+		/// </summary>
+		/// <returns></returns>
+		public string? GetFullSecondaryConnectionString() => PasswordManager.ResolvePasswordManagerFields(SecondaryConnectionString);
+
+		/// <summary>
 		/// Stored in <see cref="IDatabaseInfo.Provider"/>.
 		/// </summary>
 		[JsonIgnore]

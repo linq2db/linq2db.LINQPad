@@ -39,7 +39,7 @@
 					<TextBox Padding="5" Text="{Binding ProviderPath}" />
 				</DockPanel>
 
-				<StackPanel Margin="0 5 0 0" ToolTip="Specify database connection string">
+				<StackPanel Margin="0 5 0 0" ToolTip="Specify database connection string. Connection string could reference values from LINPad Password Manager (see File -> Password Manager) using following format: {pm:name}, e.g. &quot;Server=.;Database=DB;User Id=user;Password={pm:my-password}&quot;">
 					<Label>Connection string</Label>
 					<TextBox Padding="5" Text="{Binding ConnectionString}" TextWrapping="Wrap" Height="60" VerticalScrollBarVisibility="Auto" />
 				</StackPanel>

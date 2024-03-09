@@ -26,7 +26,7 @@ internal sealed class AppConfig(IConnectionStringSettings[] connectionStrings) :
 			if (cn.Key.EndsWith("_ProviderName", StringComparison.InvariantCultureIgnoreCase))
 				continue;
 
-			connections.Add(cn.Key, new ConnectionStringSettings(cn.Key, cn.Value));
+			connections.Add(cn.Key, new ConnectionStringSettings(cn.Key, PasswordManager.ResolvePasswordManagerFields(cn.Value)));
 		}
 
 		foreach (var cn in config.ConnectionStrings)
@@ -64,7 +64,7 @@ internal sealed class AppConfig(IConnectionStringSettings[] connectionStrings) :
 			var providerName     = node.Attributes["providerName"    ]?.Value;
 
 			if (name != null && connectionString != null)
-				settings.Add(new ConnectionStringSettings(name, connectionString) { ProviderName = providerName });
+				settings.Add(new ConnectionStringSettings(name, PasswordManager.ResolvePasswordManagerFields(connectionString)) { ProviderName = providerName });
 		}
 
 		return new AppConfig(settings.ToArray());
@@ -82,11 +82,13 @@ internal sealed class AppConfig(IConnectionStringSettings[] connectionStrings) :
 		public IDictionary<string, string>? ConnectionStrings { get; set; }
 	}
 
+	/// <param name="name">Connection name.</param>
+	/// <param name="connectionString">Must be connection string without password manager tokens.</param>
 	private sealed class ConnectionStringSettings(string name, string connectionString) : IConnectionStringSettings
 	{
 		string IConnectionStringSettings.ConnectionString => connectionString;
-		string  IConnectionStringSettings.Name             => name;
-		bool    IConnectionStringSettings.IsGlobal         => false;
+		string IConnectionStringSettings.Name             => name;
+		bool   IConnectionStringSettings.IsGlobal         => false;
 
 		public string? ProviderName { get; set; }
 	}

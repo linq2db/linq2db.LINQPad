@@ -132,7 +132,7 @@ internal static class DynamicSchemaGenerator
 
 		var provider         = DatabaseProviders.GetDataProvider(settings);
 
-		using var db         = new DataConnection(provider, settings.Connection.ConnectionString!);
+		using var db         = new DataConnection(provider, settings.Connection.GetFullConnectionString()!);
 		if (settings.Connection.CommandTimeout != null)
 			db.CommandTimeout = settings.Connection.CommandTimeout.Value;
 
@@ -150,8 +150,9 @@ internal static class DynamicSchemaGenerator
 		DatabaseModel dataModel;
 		if (settings.Connection.Database == ProviderName.Access && settings.Connection.SecondaryConnectionString != null)
 		{
-			var secondaryProvider = DatabaseProviders.GetDataProvider(settings.Connection.SecondaryProvider, settings.Connection.SecondaryConnectionString, null);
-			using var sdc         = new DataConnection(secondaryProvider, settings.Connection.SecondaryConnectionString);
+			var secondaryConnectionString = settings.Connection.GetFullSecondaryConnectionString()!;
+			var secondaryProvider         = DatabaseProviders.GetDataProvider(settings.Connection.SecondaryProvider, secondaryConnectionString, null);
+			using var sdc                 = new DataConnection(secondaryProvider, secondaryConnectionString);
 
 			if (settings.Connection.CommandTimeout != null)
 				sdc.CommandTimeout = settings.Connection.CommandTimeout.Value;
