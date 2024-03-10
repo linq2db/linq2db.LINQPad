@@ -2,7 +2,7 @@
 
 Issues fixed:
 
-- [#?](https://github.com/linq2db/linq2db.LINQPad/pull/?): fix dependency issues in 5.2.0 release
+- [#109](https://github.com/linq2db/linq2db.LINQPad/pull/109): fix dependency issues in 5.2.0 release
 
 # Release 5.2.0
 
