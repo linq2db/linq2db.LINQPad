@@ -185,3 +185,4 @@ internal static class DynamicSchemaGenerator
 		return (interceptor.GetTree(), sourceCode, providerAssemblyLocation);
 	}
 }
+

@@ -261,7 +261,13 @@ dotnet_diagnostic.MA0041.severity = none
 dotnet_diagnostic.MA0048.severity = none
 # MA0051: Method is too long
 dotnet_diagnostic.MA0051.severity = none
+# MA0053: Make class sealed
+dotnet_diagnostic.MA0053.severity = none
+# MA0101: String contains an implicit end of line character
+dotnet_diagnostic.MA0101.severity = none
 # MA0111: Use string.Create instead of FormattableString
 dotnet_diagnostic.MA0111.severity = none
 # MA0144: Use System.OperatingSystem to check the current OS
 dotnet_diagnostic.MA0144.severity = none
+# MA0154: Use langword in XML comment
+dotnet_diagnostic.MA0154.severity = none
