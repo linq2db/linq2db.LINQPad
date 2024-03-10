@@ -1,10 +1,18 @@
+# Release 5.2.2
+
+Fix nuget dependencies
+
 # Release 5.2.1
+
+*DELISTED*
 
 Issues fixed:
 
 - [#109](https://github.com/linq2db/linq2db.LINQPad/pull/109): fix dependency issues in 5.2.0 release
 
 # Release 5.2.0
+
+*DELISTED*
 
 Issues fixed:
 
