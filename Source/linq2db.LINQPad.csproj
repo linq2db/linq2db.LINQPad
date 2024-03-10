@@ -6,7 +6,7 @@
 		<Company>linq2db</Company>
 		<Product>linq2db.LINQPad</Product>
 		<AssemblyTitle>$(Product)</AssemblyTitle>
-		<Version>5.2.0.0</Version>
+		<Version>5.2.1.0</Version>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
 		<Copyright>Copyright © 2016-2024 Linq To DB Team</Copyright>
@@ -40,6 +40,10 @@
 		<ReportAnalyzer>false</ReportAnalyzer>
 		<!--workaround for https://github.com/dotnet/roslyn/issues/41640, but also required for xml-doc validation -->
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<PropertyGroup Label="NETFX DLL HELL workaround" Condition=" '$(TargetFramework)' == 'net48' ">
+		<MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);MSB3277</MSBuildWarningsAsMessages>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -76,8 +80,8 @@
 		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
 		<PackageReference Include="System.Memory" />
 		<PackageReference Include="System.Buffers" />
-		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
-		<PackageReference Include="System.Text.Json" />
+		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" NoWarn="NU1605" />
+		<PackageReference Include="System.Text.Json" NoWarn="NU1605" />
 		<PackageReference Include="Oracle.ManagedDataAccess" />
 		<PackageReference Include="IBM.Data.DB.Provider" GeneratePathProperty="true" />
 
@@ -134,11 +138,11 @@
 	</ItemGroup>
 
 	<Target Name="PostBuild1" AfterTargets="PostBuildEvent" Condition="'$(TargetFramework)' != 'net48'">
-		<Exec Command="$(ProjectDir)..\Build\Pack.bat $(TargetDir) lpx6" />
+		<Exec Command="$(ProjectDir)..\Build\Pack.cmd $(TargetDir) lpx6" />
 	</Target>
 
 	<Target Name="PostBuild2" AfterTargets="CopySQLiteInteropFiles" Condition="'$(TargetFramework)' == 'net48'">
-		<Exec Command="$(ProjectDir)..\Build\Pack.bat $(TargetDir) lpx" />
+		<Exec Command="$(ProjectDir)..\Build\Pack.cmd $(TargetDir) lpx" />
 	</Target>
 
 	<ItemGroup>

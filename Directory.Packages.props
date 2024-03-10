@@ -7,7 +7,7 @@
 		
 		<PackageVersion Include="PolySharp"                                 Version="1.14.1"                                  />
 
-		<PackageVersion Include="Meziantou.Analyzer"                        Version="2.0.139"                                 />
+		<PackageVersion Include="Meziantou.Analyzer"                        Version="2.0.145"                                 />
 		<PackageVersion Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.11.0-beta1.23525.2"                    />
 		<PackageVersion Include="Microsoft.CodeAnalysis.NetAnalyzers"       Version="8.0.0"                                   />
 
@@ -18,8 +18,9 @@
 		<PackageVersion Include="System.Memory"                             Version="4.5.5"                                   />
 		<PackageVersion Include="System.Buffers"                            Version="4.5.1"                                   />
 		<PackageVersion Include="System.Configuration.ConfigurationManager" Version="8.0.0"                                   />
-		<PackageVersion Include="System.Text.Json"                          Version="8.0.2"                                   />
-		<PackageVersion Include="Microsoft.Bcl.AsyncInterfaces"             Version="8.0.0"                                   />
+		<!--don't update those two to 8+ till linq2db reference Microsoft.Bcl.AsyncInterfaces v7 in netfx build-->
+		<PackageVersion Include="System.Text.Json"                          Version="7.0.4"                                   />
+		<PackageVersion Include="Microsoft.Bcl.AsyncInterfaces"             Version="7.0.0"                                   />
 
 		<PackageVersion Include="System.Data.SQLite.Core"                   Version="1.0.118"                                 />
 		<PackageVersion Include="System.Data.Odbc"                          Version="8.0.0"                                   />
