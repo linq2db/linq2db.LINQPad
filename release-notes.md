@@ -1,3 +1,8 @@
+# Release 5.4.1
+
+Update dependencies ([#113](https://github.com/linq2db/linq2db.LINQPad/pull/113), [#114](https://github.com/linq2db/linq2db.LINQPad/issues/114))
+
+
 # Release 5.2.2
 
 Fix nuget dependencies
