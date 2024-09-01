@@ -39,7 +39,7 @@ internal sealed class AppConfig(IConnectionStringSettings[] connectionStrings) :
 				cs.ProviderName = cn.Value;
 		}
 
-		return new AppConfig(connections.Values.ToArray());
+		return new AppConfig([.. connections.Values]);
 	}
 
 #pragma warning disable CA1859 // change return type
@@ -67,7 +67,7 @@ internal sealed class AppConfig(IConnectionStringSettings[] connectionStrings) :
 				settings.Add(new ConnectionStringSettings(name, PasswordManager.ResolvePasswordManagerFields(connectionString)) { ProviderName = providerName });
 		}
 
-		return new AppConfig(settings.ToArray());
+		return new AppConfig([.. settings]);
 	}
 
 	IEnumerable<IDataProviderSettings>     ILinqToDBSettings.DataProviders        => [];
