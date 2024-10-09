@@ -61,7 +61,7 @@
 		<PackageReference Include="Microsoft.Data.SqlClient" />
 		<PackageReference Include="Npgsql" />
 		<PackageReference Include="ClickHouse.Client" />
-		<!--<PackageReference Include="linq2db4iSeries" />-->
+		<PackageReference Include="linq2db4iSeries" />
 		<PackageReference Include="Microsoft.SqlServer.Types" />
 
 		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" />
