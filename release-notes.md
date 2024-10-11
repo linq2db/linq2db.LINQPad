@@ -1,7 +1,13 @@
+# Release 5.4.2
+
+Changes:
+
+- update dependencies
+- [#120](https://github.com/linq2db/linq2db.LINQPad/pull/120): re-enable DB2 iSeries provider support. Thanks to [Marcus Hellsten](https://github.com/mhellsten) for PR
+
 # Release 5.4.1
 
 Update dependencies ([#113](https://github.com/linq2db/linq2db.LINQPad/pull/113), [#114](https://github.com/linq2db/linq2db.LINQPad/issues/114))
-
 
 # Release 5.2.2
 
