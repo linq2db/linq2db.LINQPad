@@ -6,7 +6,7 @@
 		<Company>linq2db</Company>
 		<Product>linq2db.LINQPad</Product>
 		<AssemblyTitle>$(Product)</AssemblyTitle>
-		<Version>5.4.1.0</Version>
+		<Version>5.4.2.0</Version>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
 		<Copyright>Copyright © 2016-2024 Linq To DB Team</Copyright>
@@ -61,7 +61,7 @@
 		<PackageReference Include="Microsoft.Data.SqlClient" />
 		<PackageReference Include="Npgsql" />
 		<PackageReference Include="ClickHouse.Client" />
-		<!--<PackageReference Include="linq2db4iSeries" />-->
+		<PackageReference Include="linq2db4iSeries" />
 		<PackageReference Include="Microsoft.SqlServer.Types" />
 
 		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" />

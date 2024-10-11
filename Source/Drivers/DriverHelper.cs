@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection.Metadata;
+using Microsoft.Extensions.Logging;
 #endif
 
 namespace LinqToDB.LINQPad;
@@ -77,6 +78,8 @@ internal static class DriverHelper
 				return typeof(Blob).Assembly;
 			if (requestedAssembly.Name == "System.Text.Json")
 				return typeof(JsonDocument).Assembly;
+			if (requestedAssembly.Name == "Microsoft.Extensions.Logging.Abstractions")
+				return typeof(ILogger).Assembly;
 
 			return null;
 		};
