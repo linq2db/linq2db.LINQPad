@@ -44,7 +44,7 @@ stages:
       inputs:
         command: build
         projects: '$(solution)'
-        configuration: '$(build_configuration)'
+        arguments: '--configuration $(build_configuration)'
       displayName: Build Solution
 
     - task: PublishPipelineArtifact@1
@@ -64,7 +64,7 @@ stages:
 ############################
 
     - powershell: echo "##vso[task.setvariable variable=packageVersion]$(packageVersion)-rc.$(Build.BuildId)"
-      condition: eq(variables['Build.SourceBranchName'], 'master')
+      condition: ne(variables['Build.SourceBranchName'], 'release')
       displayName: Update nuget version
 
     - task: PowerShell@2
@@ -72,21 +72,18 @@ stages:
         filePath: '$(Build.SourcesDirectory)/Build/BuildNuspecs.ps1'
         workingDirectory: '$(Build.SourcesDirectory)'
         arguments: -path $(Build.SourcesDirectory)/Build/linq2db.LINQPad.nuspec -version $(packageVersion) -branch $(Build.SourceBranchName)
-      condition: or (eq(variables['Build.SourceBranchName'], 'master'), eq(variables['Build.SourceBranchName'], 'release'))
       displayName: Update .nuspec
 
     - task: NuGetCommand@2
       inputs:
         command: 'custom'
         arguments: 'pack "$(Build.SourcesDirectory)/Build/linq2db.LINQPad.nuspec" -OutputDirectory "$(Build.SourcesDirectory)/.build/nugets"'
-      condition: or (eq(variables['Build.SourceBranchName'], 'master'), eq(variables['Build.SourceBranchName'], 'release'))
       displayName: Generate linq2db.LINQPad.nupkg
 
     - task: PublishPipelineArtifact@1
       inputs:
         path: '$(Build.SourcesDirectory)/.build/nugets/'
         artifact: '$(artifact_nuget)'
-      condition: or (eq(variables['Build.SourceBranchName'], 'master'), eq(variables['Build.SourceBranchName'], 'release'))
       displayName: Publish nuget to Artifacts
 
     - task: NuGetCommand@2
