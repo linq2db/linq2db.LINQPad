@@ -1,10 +1,10 @@
 variables:
   solution: 'linq2db.LINQPad.sln'
   build_configuration: 'Release'
-  assemblyVersion: 5.4.2.0
-  nugetVersion: 5.4.2
-  nugetDevVersion: 5.4.3
-  nugetPRVersion: 5.4.3
+  assemblyVersion: 6.0.0
+  nugetVersion: 6.0.0-preview.3
+  nugetDevVersion: 6.0.0
+  nugetPRVersion: 6.0.0
   artifact_lpx: 'lpx'
   artifact_lpx6: 'lpx6'
   artifact_nuget: 'nuget'
@@ -40,22 +40,22 @@ stages:
         arguments: -path $(Build.SourcesDirectory)/Source/linq2db.LINQPad.csproj -version $(assemblyVersion)
       displayName: Update Assembly Version
 
-    - task: MSBuild@1
+    - task: DotNetCoreCLI@2
       inputs:
-        solution: '$(solution)'
-        configuration: '$(build_configuration)'
-        msbuildArguments: '/t:Restore;Rebuild -m'
+        command: build
+        projects: '$(solution)'
+        arguments: '--configuration $(build_configuration)'
       displayName: Build Solution
 
     - task: PublishPipelineArtifact@1
       inputs:
-        path: '$(Build.SourcesDirectory)/Source/linq2db.LINQPad.lpx'
+        path: '$(Build.SourcesDirectory)/.build/releases/linq2db.LINQPad.lpx'
         artifact: '$(artifact_lpx)'
       displayName: Publish .LPX to Artifacts
 
     - task: PublishPipelineArtifact@1
       inputs:
-        path: '$(Build.SourcesDirectory)/Source/linq2db.LINQPad.lpx6'
+        path: '$(Build.SourcesDirectory)/.build/releases/linq2db.LINQPad.lpx6'
         artifact: '$(artifact_lpx6)'
       displayName: Publish .LPX6 to Artifacts
 
@@ -64,7 +64,7 @@ stages:
 ############################
 
     - powershell: echo "##vso[task.setvariable variable=packageVersion]$(packageVersion)-rc.$(Build.BuildId)"
-      condition: eq(variables['Build.SourceBranchName'], 'master')
+      condition: ne(variables['Build.SourceBranchName'], 'release')
       displayName: Update nuget version
 
     - task: PowerShell@2
@@ -72,27 +72,24 @@ stages:
         filePath: '$(Build.SourcesDirectory)/Build/BuildNuspecs.ps1'
         workingDirectory: '$(Build.SourcesDirectory)'
         arguments: -path $(Build.SourcesDirectory)/Build/linq2db.LINQPad.nuspec -version $(packageVersion) -branch $(Build.SourceBranchName)
-      condition: or (eq(variables['Build.SourceBranchName'], 'master'), eq(variables['Build.SourceBranchName'], 'release'))
       displayName: Update .nuspec
 
     - task: NuGetCommand@2
       inputs:
         command: 'custom'
-        arguments: 'pack "$(Build.SourcesDirectory)/Build/linq2db.LINQPad.nuspec" -OutputDirectory "$(Build.SourcesDirectory)/Build/built"'
-      condition: or (eq(variables['Build.SourceBranchName'], 'master'), eq(variables['Build.SourceBranchName'], 'release'))
+        arguments: 'pack "$(Build.SourcesDirectory)/Build/linq2db.LINQPad.nuspec" -OutputDirectory "$(Build.SourcesDirectory)/.build/nugets"'
       displayName: Generate linq2db.LINQPad.nupkg
 
     - task: PublishPipelineArtifact@1
       inputs:
-        path: '$(Build.SourcesDirectory)/Build/built/'
+        path: '$(Build.SourcesDirectory)/.build/nugets/'
         artifact: '$(artifact_nuget)'
-      condition: or (eq(variables['Build.SourceBranchName'], 'master'), eq(variables['Build.SourceBranchName'], 'release'))
       displayName: Publish nuget to Artifacts
 
     - task: NuGetCommand@2
       inputs:
         command: 'push'
-        packagesToPush: '$(Build.SourcesDirectory)/Build/built/*.nupkg'
+        packagesToPush: '$(Build.SourcesDirectory)/.build/nugets/*.nupkg'
         nuGetFeedType: 'internal'
         publishVstsFeed: '0dcc414b-ea54-451e-a54f-d63f05367c4b/967a4107-9788-41a4-9f6d-a2318aab1410'
       displayName: Publish to Azure Artifacts feed
@@ -101,7 +98,7 @@ stages:
     - task: NuGetCommand@2
       inputs:
         command: 'push'
-        packagesToPush: '$(Build.SourcesDirectory)/Build/built/*.nupkg'
+        packagesToPush: '$(Build.SourcesDirectory)/.build/nugets/*.nupkg'
         nuGetFeedType: 'external'
         publishFeedCredentials: 'linq2db nuget.org feed'
       displayName: Publish to Nuget.org

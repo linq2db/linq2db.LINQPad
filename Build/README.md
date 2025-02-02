@@ -1,11 +1,12 @@
-# LINQ to DB LINQPad 7 Driver
+# LINQ to DB LINQPad 8 Driver
 
-This nuget package is a driver for [LINQPad 7](http://www.linqpad.net). Support for LINQPad 6 is available via older 4.x drivers.
+This nuget package is a driver for [LINQPad 8](http://www.linqpad.net). Support for older versions of LINQPad is available via older versions drivers.
 
 Following databases supported:
 
 - **ClickHouse**: using Binary, HTTP and MySQL interfaces
-- **DB2** (LUW, z/OS): x64-bit version of LINQPad only
+- **DB2** (LUW, z/OS, iSeries): x64-bit version of LINQPad only
+- **DB2 iSeries**: check release notes to see which version supports this database
 - **Firebird**
 - **Informix**: x64-bit version of LINQPad only
 - **Microsoft Access**: both OLE DB and ODBC drivers

@@ -1,17 +1,18 @@
 # LINQ to DB LINQPad Driver
 
-[![NuGet Version and Downloads count](https://buildstats.info/nuget/linq2db.LINQPad?includePreReleases=true)](https://www.nuget.org/packages/linq2db.LINQPad) [![License](https://img.shields.io/github/license/linq2db/linq2db.LINQPad)](MIT-LICENSE.txt)
+[![NuGet Version](https://img.shields.io/nuget/vpre/linq2db.linqpad)](https://www.nuget.org/profiles/LinqToDB.LINQPad) [![License](https://img.shields.io/github/license/linq2db/linq2db.LINQPad)](MIT-LICENSE.txt)
 
 [![Master branch build](https://img.shields.io/azure-devops/build/linq2db/linq2db/8/master?label=build%20(master))](https://dev.azure.com/linq2db/linq2db/_build?definitionId=8&_a=summary) [![Latest build](https://img.shields.io/azure-devops/build/linq2db/linq2db/8?label=build%20(latest))](https://dev.azure.com/linq2db/linq2db/_build?definitionId=8&_a=summary)
 
-linq2db.LINQPad is a driver for [LINQPad 5 (.NET Framework 4.8)](http://www.linqpad.net) and [LINQPad 7 (.NET 6+)](http://www.linqpad.net).
+linq2db.LINQPad is a driver for [LINQPad 5 (.NET Framework 4.8)](http://www.linqpad.net) and [LINQPad 8 (.NET 8+)](http://www.linqpad.net).
 
 Following databases supported (by all LINQPad versions if other not specified):
 
-- **ClickHouse**: using Binary (LINQPad 7), HTTP and MySQL interfaces
-- **DB2** (LUW, z/OS): LINQPad 7 x64 and LINQPad 5 x86
+- **ClickHouse**: using Binary (LINQPad 8), HTTP and MySQL interfaces
+- **DB2** (LUW, z/OS): LINQPad 8 x64 and LINQPad 5)
+- **DB2 iSeries**: LINQPad 8 and LINQPad 5 (check release notes to see which version supports this database)
 - **Firebird**
-- **Informix**: LINQPad 7 x64 and LINQPad 5 x86
+- **Informix**: LINQPad 8 x64 and LINQPad 5
 - **Microsoft Access**: both OLE DB and ODBC drivers
 - **Microsoft SQL Server** 2005+ *(including **Microsoft SQL Azure**)*
 - **Microsoft SQL Server Compact (SQL CE)**
@@ -25,13 +26,13 @@ Following databases supported (by all LINQPad versions if other not specified):
 
 ## Download
 
-Releases are hosted on [Github](https://github.com/linq2db/linq2db.LINQPad/releases) and on [nuget.org](https://www.nuget.org/packages/linq2db.LINQPad) for LINQPad 7 driver.
+Releases are hosted on [Github](https://github.com/linq2db/linq2db.LINQPad/releases) and on [nuget.org](https://www.nuget.org/packages/linq2db.LINQPad) for LINQPad 8 driver.
 
 Latest build is hosted on [Azure Artifacts](https://dev.azure.com/linq2db/linq2db/_packaging?_a=package&feed=linq2db%40Local&package=linq2db.LINQPad&protocolType=NuGet). Feed [URL](https://pkgs.dev.azure.com/linq2db/linq2db/_packaging/linq2db/nuget/v3/index.json) ([how to use](https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio#package-sources)).
 
 ## Installation
 
-### LINQPad 7 (NuGet)
+### LINQPad 8 (NuGet)
 
 - Click "Add connection" in LINQPad.
 - In the "Choose Data Context" dialog, press the "View more drivers..." button.
@@ -41,7 +42,7 @@ Latest build is hosted on [Azure Artifacts](https://dev.azure.com/linq2db/linq2d
 - In the "LINQ to DB connection" dialog, supply your connection information.
 - You're done.
 
-### LINQPad 7 (Manual)
+### LINQPad 8 (Manual)
 
 - Download latest **.lpx6** file from the link provided above.
 - Click "Add connection" in LINQPad.

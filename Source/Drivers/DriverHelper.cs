@@ -4,13 +4,15 @@ using LinqToDB.Data;
 using LinqToDB.LINQPad.UI;
 using LinqToDB.Mapping;
 
+
 #if NETFRAMEWORK
 using System.Text.Json;
+using System.Numerics;
 using System.Buffers;
 using System.Runtime.CompilerServices;
-using System.Collections.Immutable;
+//using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Reflection.Metadata;
+//using System.Reflection.Metadata;
 using Microsoft.Extensions.Logging;
 #endif
 
@@ -42,49 +44,42 @@ internal static class DriverHelper
 #if NETFRAMEWORK
 		// Dynamically resolve assembly bindings to currently used assembly version for transitive dependencies. Used by.NET Framework build (LINQPad 5).
 
-		// Yes, two handlers to resolve dependencies in dependency resolver
-		// Dll Hell is real. Submit, puny mortal!
-		AppDomain.CurrentDomain.AssemblyResolve += static (sender, args) =>
-		{
-			var requestedAssembly = new AssemblyName(args.Name!);
+		// manage transitive dependencies dll hell
+		// separate resolvers registered to avoid resolve errors from resolvers itself
 
-			if (requestedAssembly.Name == "Microsoft.Bcl.AsyncInterfaces")
-				return typeof(IAsyncDisposable).Assembly;
+		// linq2db version resolver could be needed for:
+		// - iSeries provider
+		// - static contexts
+		RegisterResolver("linq2db", static () => typeof(DataContext).Assembly);
 
-			return null;
-		};
+		RegisterResolver("System.Threading.Tasks.Extensions", static () => typeof(ValueTask).Assembly);
+		RegisterResolver("System.Runtime.CompilerServices.Unsafe", static () => typeof(Unsafe).Assembly);
+		RegisterResolver("System.Numerics.Vectors", static () => typeof(Vector).Assembly);
+		RegisterResolver("System.Memory", static () => typeof(Span<>).Assembly);
+		RegisterResolver("System.Buffers", static () => typeof(ArrayPool<>).Assembly);
+		RegisterResolver("System.Text.Json", static () => typeof(JsonDocument).Assembly);
+		RegisterResolver("System.Diagnostics.DiagnosticSource", static () => typeof(DiagnosticSource).Assembly);
+		RegisterResolver("Microsoft.Bcl.AsyncInterfaces", static () => typeof(IAsyncDisposable).Assembly);
+		RegisterResolver("Microsoft.Extensions.Logging.Abstractions", static () => typeof(ILogger).Assembly);
 
-		AppDomain.CurrentDomain.AssemblyResolve += static (sender, args) =>
-		{
-			var requestedAssembly = new AssemblyName(args.Name!);
-
-			if (requestedAssembly.Name == "linq2db")
-				return typeof(DataContext).Assembly;
-
-			// manage transitive dependencies dll hell
-			if (requestedAssembly.Name == "System.Threading.Tasks.Extensions")
-				return typeof(ValueTask).Assembly;
-			if (requestedAssembly.Name == "System.Runtime.CompilerServices.Unsafe")
-				return typeof(Unsafe).Assembly;
-			if (requestedAssembly.Name == "System.Memory")
-				return typeof(Span<>).Assembly;
-			if (requestedAssembly.Name == "System.Buffers")
-				return typeof(ArrayPool<>).Assembly;
-			if (requestedAssembly.Name == "System.Collections.Immutable")
-				return typeof(ImmutableArray).Assembly;
-			if (requestedAssembly.Name == "System.Diagnostics.DiagnosticSource")
-				return typeof(DiagnosticSource).Assembly;
-			if (requestedAssembly.Name == "System.Reflection.Metadata")
-				return typeof(Blob).Assembly;
-			if (requestedAssembly.Name == "System.Text.Json")
-				return typeof(JsonDocument).Assembly;
-			if (requestedAssembly.Name == "Microsoft.Extensions.Logging.Abstractions")
-				return typeof(ILogger).Assembly;
-
-			return null;
-		};
+		// not needed anymore?
+		//RegisterResolver("System.Collections.Immutable", static () => typeof(ImmutableArray).Assembly);
+		//RegisterResolver("System.Reflection.Metadata", static () => typeof(Blob).Assembly);
 
 		AppDomain.CurrentDomain.DomainUnload += static (_, _) => DatabaseProviders.Unload();
+
+		static void RegisterResolver(string asemblyName, Func<Assembly> resolver)
+		{
+			AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
+			{
+				var requestedAssembly = new AssemblyName(args.Name!);
+
+				if (requestedAssembly.Name == asemblyName)
+					return resolver();
+
+				return null;
+			};
+		}
 #endif
 
 		DatabaseProviders.Init();

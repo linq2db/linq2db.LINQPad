@@ -58,8 +58,8 @@ internal sealed class AccessProvider : DatabaseProviderBase
 		using var cn = (OleDbConnection)provider.CreateConnection(connectionString);
 		cn.Open();
 
-		var dt1 = cn.GetSchema("Tables"    ).Rows.Cast<DataRow>().Max(static r => (DateTime)r["DATE_MODIFIED"]);
-		var dt2 = cn.GetSchema("Procedures").Rows.Cast<DataRow>().Max(static r => (DateTime)r["DATE_MODIFIED"]);
+		var dt1 = cn.GetSchema("Tables"    ).Rows.Cast<DataRow>().Select(static r => (DateTime)r["DATE_MODIFIED"]).Concat([default]).Max();
+		var dt2 = cn.GetSchema("Procedures").Rows.Cast<DataRow>().Select(static r => (DateTime)r["DATE_MODIFIED"]).Concat([default]).Max();
 		return dt1 > dt2 ? dt1 : dt2;
 	}
 

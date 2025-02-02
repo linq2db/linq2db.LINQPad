@@ -554,12 +554,12 @@ internal sealed class ModelProviderInterceptor(ConnectionSettings settings, ISql
 	{
 		return sqlBuilder.BuildDataType(
 				new StringBuilder(),
-				new SqlDataType(new DbDataType(typeof(object),
+				new DbDataType(typeof(object),
 					dataType : dataType ?? DataType.Undefined,
 					dbType   : type.Name,
 					length   : type.Length,
 					precision: type.Precision,
-					scale    : type.Scale)))
+					scale    : type.Scale))
 			.ToString();
 	}
 

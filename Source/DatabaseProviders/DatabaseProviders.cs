@@ -25,12 +25,14 @@ internal static class DatabaseProviders
 		Register(providers, providersByName, new SqlCeProvider     ());
 #if !NETFRAMEWORK
 		if (IntPtr.Size == 8)
-			Register(providers, providersByName, new DB2Provider   ());
+		{
+			Register(providers, providersByName, new DB2Provider     ());
+			Register(providers, providersByName, new InformixProvider());
+		}
 #else
-		if (IntPtr.Size == 4)
-			Register(providers, providersByName, new DB2Provider   ());
-#endif
 		Register(providers, providersByName, new InformixProvider  ());
+		Register(providers, providersByName, new DB2Provider       ());
+#endif
 		Register(providers, providersByName, new SapHanaProvider   ());
 		Register(providers, providersByName, new OracleProvider    ());
 		Register(providers, providersByName, new SqlServerProvider ());
@@ -62,6 +64,11 @@ internal static class DatabaseProviders
 	public static void Init()
 	{
 		// trigger .cctors
+
+#if NETFRAMEWORK
+		// no harm in loading it here unconditionally instead of trying to detect all places where we really need it
+		DB2Provider.LoadAssembly();
+#endif
 	}
 
 	public static DbConnection CreateConnection(ConnectionSettings settings)

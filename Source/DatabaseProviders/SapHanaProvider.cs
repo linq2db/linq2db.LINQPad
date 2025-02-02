@@ -1,7 +1,6 @@
 ﻿using System.Data.Common;
 using System.Data.Odbc;
 using LinqToDB.Data;
-using LinqToDB.DataProvider.SapHana;
 #if !NETFRAMEWORK
 using System.IO;
 #endif
@@ -26,13 +25,21 @@ internal sealed class SapHanaProvider : DatabaseProviderBase
 		return "https://tools.hana.ondemand.com/#hanatools";
 	}
 
+#if NETFRAMEWORK
+	private const string UnmanagedAssemblyName       = "Sap.Data.Hana.v4.5";
+#else
+	private const string UnmanagedAssemblyName       = "Sap.Data.Hana.Core.v2.1";
+#endif
+
 	public override void ClearAllPools(string providerName)
 	{
 		if (providerName == ProviderName.SapHanaOdbc)
 			OdbcConnection.ReleaseObjectPool();
 		else if (providerName == ProviderName.SapHanaNative)
 		{
-			var typeName = $"{SapHanaProviderAdapter.ClientNamespace}.HanaConnection, {SapHanaProviderAdapter.AssemblyName}";
+			// TODO: restore in next version
+			//var typeName = $"{SapHanaProviderAdapter.UnmanagedClientNamespace}.HanaConnection, {SapHanaProviderAdapter.UnmanagedAssemblyName}";
+			var typeName = $"Sap.Data.Hana.HanaConnection, {UnmanagedAssemblyName}";
 			Type.GetType(typeName, false)?.GetMethod("ClearAllPools", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, null);
 		}
 	}
@@ -48,7 +55,9 @@ internal sealed class SapHanaProvider : DatabaseProviderBase
 		if (providerName == ProviderName.SapHanaOdbc)
 			return OdbcFactory.Instance;
 
-		var typeName = $"{SapHanaProviderAdapter.ClientNamespace}.HanaFactory, {SapHanaProviderAdapter.AssemblyName}";
+		// TODO: restore in next version
+		//var typeName = $"{SapHanaProviderAdapter.UnmanagedClientNamespace}.HanaFactory, {SapHanaProviderAdapter.UnmanagedAssemblyName}";
+		var typeName = $"Sap.Data.Hana.HanaFactory, {UnmanagedAssemblyName}";
 		return (DbProviderFactory)Type.GetType(typeName, false)?.GetField("Instance", BindingFlags.Public | BindingFlags.Static)?.GetValue(null)!;
 	}
 
