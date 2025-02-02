@@ -8,7 +8,11 @@ internal sealed class MySqlProvider : DatabaseProviderBase
 {
 	private static readonly IReadOnlyList<ProviderInfo> _providers =
 	[
-		new (ProviderName.MySqlConnector, "MySql/MariaDB"),
+		new (ProviderName.MySql                  , "Detect Dialect Automatically", true),
+		new (ProviderName.MySql57MySqlConnector  , "MySql 5.7"),
+		new (ProviderName.MySql80MySqlConnector  , "MySql 8 & 9"),
+		new (ProviderName.MariaDB10MySqlConnector, "MariaDB"),
+		new ("MySqlConnector"                    , "removed since v6", IsHidden: true),
 	];
 
 	public MySqlProvider()

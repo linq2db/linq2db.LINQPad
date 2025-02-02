@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
 	<PropertyGroup>
-		<TargetFrameworks>net48;net6.0-windows</TargetFrameworks>
+		<TargetFrameworks>net48;net8.0-windows</TargetFrameworks>
 		<RootNamespace>LinqToDB.LINQPad</RootNamespace>
 		<Company>linq2db</Company>
 		<Product>linq2db.LINQPad</Product>
 		<AssemblyTitle>$(Product)</AssemblyTitle>
-		<Version>5.4.2.0</Version>
+		<Version>6.0.0.0</Version>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
-		<Copyright>Copyright © 2016-2024 Linq To DB Team</Copyright>
+		<Copyright>Copyright © 2016-2025 Linq To DB Team</Copyright>
 		<UseWPF>true</UseWPF>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 
@@ -27,7 +27,11 @@
 		<!--required for SkipLocalsInit-->
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
+		<!--disable DB2 provider arch warnings-->
 		<MSBuildWarningsAsMessages>MSB3270</MSBuildWarningsAsMessages>
+
+		<!--don't forget to (un)comment reference in nuspec file!-->
+		<!--<DefineConstants>WITH_ISERIES;$(DefineConstants)</DefineConstants>-->
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -40,17 +44,14 @@
 		<ReportAnalyzer>false</ReportAnalyzer>
 		<!--workaround for https://github.com/dotnet/roslyn/issues/41640, but also required for xml-doc validation -->
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	</PropertyGroup>
 
-	<PropertyGroup Label="NETFX DLL HELL workaround" Condition=" '$(TargetFramework)' == 'net48' ">
-		<MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);MSB3277</MSBuildWarningsAsMessages>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<Using Include="System.Reflection" />
 
-		<PackageReference Include="linq2db" />
 		<PackageReference Include="linq2db.Tools" />
+		<PackageReference Include="linq2db.Scaffold" />
 		<PackageReference Include="LINQPad.Reference" />
 		<PackageReference Include="PolySharp" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
@@ -61,7 +62,7 @@
 		<PackageReference Include="Microsoft.Data.SqlClient" />
 		<PackageReference Include="Npgsql" />
 		<PackageReference Include="ClickHouse.Client" />
-		<PackageReference Include="linq2db4iSeries" />
+		<PackageReference Include="linq2db4iSeries" Condition="$(DefineConstants.Contains('WITH_ISERIES'))" />
 		<PackageReference Include="Microsoft.SqlServer.Types" />
 
 		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" />
@@ -75,19 +76,22 @@
 		<Reference Include="Microsoft.CSharp" />
 		<Reference Include="System.Configuration" />
 
-		<PackageReference Include="System.ValueTuple" />
 		<PackageReference Include="System.Threading.Tasks.Extensions" />
 		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
 		<PackageReference Include="System.Memory" />
 		<PackageReference Include="System.Buffers" />
-		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" NoWarn="NU1605" />
-		<PackageReference Include="System.Text.Json" NoWarn="NU1605;NU1903" />
+		<PackageReference Include="System.Text.Json" />
 		<PackageReference Include="Oracle.ManagedDataAccess" />
-		<PackageReference Include="IBM.Data.DB.Provider" GeneratePathProperty="true" />
 
-		<Reference Include="IBM.Data.DB2">
-			<HintPath>$(PkgIBM_Data_DB_Provider)\build\net451\x86\IBM.Data.DB2.dll</HintPath>
+		<!--PackageReference + Reference beelongs to same nuget-->
+		<PackageReference Include="IBM.Data.DB.Provider" GeneratePathProperty="true" />
+		<Reference Include="IBM.Data.DB2" Condition=" $(PlatformTarget) != 'x86' ">
+			<HintPath>$(PkgIBM_Data_DB_Provider)\build\net451\x64\IBM.Data.DB2.dll</HintPath>
 		</Reference>
+		<Reference Include="IBM.Data.DB2" Condition=" $(PlatformTarget) == 'x86' ">
+			<HintPath>$(PkgIBM_Data_DB_Provider)\build\net451\x86\IBM.Data.DB2.DLL</HintPath>
+		</Reference>
+
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' != 'net48' ">
@@ -142,6 +146,12 @@
 	</Target>
 
 	<Target Name="PostBuild2" AfterTargets="CopySQLiteInteropFiles" Condition="'$(TargetFramework)' == 'net48'">
+		<!--we are trying to deceive DB2 provider here, see UnsafeNativeMethods.DB2Interop.Init() method logic-->
+		<Delete Files="$(TargetDir)\IBM.Data.DB2.dll" />
+		<MakeDir Directories="$(TargetDir)\IBM.Data.DB2.DLL_provider" />
+		<Copy SourceFiles="$(PkgIBM_Data_DB_Provider)\build\net451\x64\IBM.Data.DB2.dll" DestinationFiles="$(TargetDir)\IBM.Data.DB2.DLL_provider\x64\IBM.Data.DB2.dll" />
+		<Copy SourceFiles="$(PkgIBM_Data_DB_Provider)\build\net451\x86\IBM.Data.DB2.dll" DestinationFiles="$(TargetDir)\IBM.Data.DB2.DLL_provider\x86\IBM.Data.DB2.dll" />
+
 		<Exec Command="$(ProjectDir)..\Build\Pack.cmd $(TargetDir) lpx" />
 	</Target>
 

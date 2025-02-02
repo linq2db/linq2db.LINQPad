@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".root", ".root", "{B05A0C36
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
+		Directory.Build.props = Directory.Build.props
 		Directory.Packages.props = Directory.Packages.props
 		MIT-LICENSE.txt = MIT-LICENSE.txt
 		nuget.config = nuget.config
@@ -26,8 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{A26F7937
 		Build\icon64.png = Build\icon64.png
 		Build\linq2db.LINQPad.nuspec = Build\linq2db.LINQPad.nuspec
 		Build\nuget-vars.yml = Build\nuget-vars.yml
-		Build\README.md = Build\README.md
 		Build\Pack.cmd = Build\Pack.cmd
+		Build\README.md = Build\README.md
 		Build\SetVersion.ps1 = Build\SetVersion.ps1
 	EndProjectSection
 EndProject

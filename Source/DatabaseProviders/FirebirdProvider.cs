@@ -7,7 +7,11 @@ internal sealed class FirebirdProvider : DatabaseProviderBase
 {
 	private static readonly IReadOnlyList<ProviderInfo> _providers =
 	[
-		new (ProviderName.Firebird, "Firebird"),
+		new (ProviderName.Firebird  , "Detect Dialect Automatically", true),
+		new (ProviderName.Firebird25, "Firebird 2.5"                      ),
+		new (ProviderName.Firebird3 , "Firebird 3"                        ),
+		new (ProviderName.Firebird4 , "Firebird 4"                        ),
+		new (ProviderName.Firebird5 , "Firebird 5"                        ),
 	];
 
 	public FirebirdProvider()

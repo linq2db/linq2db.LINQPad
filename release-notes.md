@@ -1,3 +1,21 @@
+Latest version with DB2 iSeries support: 5.4.2
+
+# Release 6.0.0-preview.3
+
+Changes:
+
+- update to linq2db 6.0.0-preview.3
+- update dependencies
+- bump lowest supported .NET runtime version to `net8.0` from `net6.0`
+- supported LinqPad versions for this release are 5 (for .NET Framework) and 8+ (for .NET)
+- added .NET 9 support
+- added support for DB2 provider for LinqPad 5 x64
+- following providers now allow you to select SQL dialect in settings: MySQL/MariaDB, Firebird
+- hide Informix provider from x86 version of LinqPad 8 (there is no x86 driver for .NET available)
+- [#125](https://github.com/linq2db/linq2db.LINQPad/issues/125): fix exception thrown for Access database without tables or procedures
+
+DB2 iSeries provider disabled in this version (use 5.4.2 if you need this provider), because it doesn't support Linq To DB 6 yet.
+
 # Release 5.4.2
 
 Changes:
