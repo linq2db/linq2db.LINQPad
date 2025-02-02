@@ -21,7 +21,7 @@ namespace LinqToDB.LINQPad;
 /// <summary>
 /// Implements LINQPad driver for synamic (scaffolded from DB schema) model.
 /// </summary>
-public sealed class LinqToDBDriver : DynamicDataContextDriver
+public sealed partial class LinqToDBDriver : DynamicDataContextDriver
 {
 	private MappingSchema? _mappingSchema;
 
@@ -54,13 +54,16 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 	public override bool ShowConnectionDialog(IConnectionInfo cxInfo, ConnectionDialogOptions dialogOptions) => DriverHelper.ShowConnectionDialog(cxInfo, dialogOptions, true);
 
 #if !NETFRAMEWORK
-	// TODO: switch to generator
-	private static readonly Regex _runtimeTokenExtractor = new (@"^.+\\(?<token>[^\\]+)\\[^\\]+$", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+	[GeneratedRegex(@"^.+\\(?<token>[^\\]+)\\[^\\]+$", RegexOptions.ExplicitCapture | RegexOptions.Compiled)]
+	private static partial Regex RuntimeTokenExtractor();
 
 	private static IEnumerable<string> GetFallbackTokens(string forToken)
 	{
 		switch (forToken)
 		{
+			case "net9.0":
+				yield return "net9.0";
+				goto case "net8.0";
 			case "net8.0":
 				yield return "net8.0";
 				goto case "net7.0";
@@ -87,7 +90,7 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 
 	private PortableExecutableReference MakeReferenceByRuntime(string runtimeToken, string reference)
 	{
-		var token = _runtimeTokenExtractor.Match(reference).Groups["token"].Value;
+		var token = RuntimeTokenExtractor().Match(reference).Groups["token"].Value;
 
 		foreach (var fallback in GetFallbackTokens(runtimeToken))
 		{
@@ -119,7 +122,7 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 			// e.g. referenceAssemblies contains path to net5 MySqlConnector
 			// but GetCoreFxReferenceAssemblies returns netcoreapp3.1 runtime references
 			var coreAssemblies = GetCoreFxReferenceAssemblies(cxInfo);
-			var runtimeToken   = _runtimeTokenExtractor.Match(coreAssemblies[0]).Groups["token"].Value;
+			var runtimeToken   = RuntimeTokenExtractor().Match(coreAssemblies[0]).Groups["token"].Value;
 #endif
 			var references = new List<MetadataReference>()
 			{
@@ -134,7 +137,11 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 				MetadataReference.CreateFromFile(typeof(IAsyncDisposable)     .Assembly.Location),
 				MetadataReference.CreateFromFile(Path.Combine(Path.GetDirectoryName(typeof(string).Assembly.Location), "netstandard.dll")),
 #endif
+#if NETFRAMEWORK
 				MetadataReference.CreateFromFile(typeof(DataConnection).       Assembly.Location),
+#else
+				MakeReferenceByRuntime(runtimeToken, typeof(DataConnection).Assembly.Location),
+#endif
 				MetadataReference.CreateFromFile(typeof(LINQPadDataConnection).Assembly.Location),
 			};
 
@@ -154,7 +161,9 @@ public sealed class LinqToDBDriver : DynamicDataContextDriver
 				references  : references,
 				options     : new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
+#pragma warning disable SYSLIB0044 // Type or member is obsolete
 			using (var stream = new FileStream(assemblyToBuild.CodeBase!, FileMode.Create))
+#pragma warning restore SYSLIB0044 // Type or member is obsolete
 			{
 				var result = compilation.Emit(stream);
 

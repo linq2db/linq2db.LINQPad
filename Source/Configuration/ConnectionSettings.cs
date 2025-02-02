@@ -6,6 +6,11 @@ using System.Text.Json.Serialization;
 using System.Xml.Linq;
 using LINQPad.Extensibility.DataContext;
 using LinqToDB.LINQPad.Json;
+
+#if WITH_ISERIES
+using LinqToDB.DataProvider.DB2iSeries;
+#endif
+
 using PN = LinqToDB.ProviderName;
 
 namespace LinqToDB.LINQPad;
@@ -178,7 +183,7 @@ internal sealed class ConnectionSettings
 			{
 
 				PN.AccessOdbc         => PN.Access,
-				PN.MySqlConnector     => PN.MySql,
+				"MySqlConnector"      => PN.MySql,
 				PN.SybaseManaged      => PN.Sybase,
 				PN.SQLiteClassic      => PN.SQLite,
 				PN.InformixDB2        => PN.Informix,
@@ -192,7 +197,9 @@ internal sealed class ConnectionSettings
 					or PN.DB2LUW
 					or PN.DB2zOS
 					or PN.SqlServer
-					//or DB2iSeriesProviderName.DB2
+#if WITH_ISERIES
+					or DB2iSeriesProviderName.DB2
+#endif
 					or PN.SqlCe       => settings.Connection.Provider,
 				_                     => null
 			};
@@ -207,7 +214,7 @@ internal sealed class ConnectionSettings
 			else
 			{
 				strValue = GetString(cxInfo, IncludeSchemas);
-				schemas = strValue == null ? null : new HashSet<string>(strValue.Split(_listSeparators, StringSplitOptions.RemoveEmptyEntries));
+				schemas = strValue == null ? null : [.. strValue.Split(_listSeparators, StringSplitOptions.RemoveEmptyEntries)];
 				if (schemas != null && schemas.Count > 0)
 					settings.Schema.IncludeSchemas = true;
 			}
@@ -221,7 +228,7 @@ internal sealed class ConnectionSettings
 			else
 			{
 				strValue = GetString(cxInfo, IncludeCatalogs);
-				catalogs = strValue == null ? null : new HashSet<string>(strValue.Split(_listSeparators, StringSplitOptions.RemoveEmptyEntries));
+				catalogs = strValue == null ? null : [.. strValue.Split(_listSeparators, StringSplitOptions.RemoveEmptyEntries)];
 				if (catalogs != null && catalogs.Count > 0)
 					settings.Schema.IncludeCatalogs = true;
 			}
@@ -299,7 +306,7 @@ internal sealed class ConnectionSettings
 		else
 			cxInfo.DriverData.Element(name)?.Remove();
 	}
-	#endregion
+#endregion
 
 	public ConnectionOptions     Connection    { get; set; } = null!;
 	public SchemaOptions         Schema        { get; set; } = null!;

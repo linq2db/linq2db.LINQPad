@@ -26,15 +26,15 @@ internal sealed class DynamicConnectionModel : ConnectionModelBase, INotifyPrope
 		{
 			Providers.Clear();
 
-			foreach (var provider in db.Providers)
+			foreach (var provider in db.Providers.Where(p => !p.IsHidden))
 				Providers.Add(provider);
 
-			if (db.Providers.Count == 1)
-				Settings.Connection.Provider = db.Providers[0].Name;
+			if (Providers.Count == 1)
+				Settings.Connection.Provider = Providers[0].Name;
 		}
 
 		var old = ProviderVisibility;
-		ProviderVisibility = db?.Providers.Count > 1 && db?.AutomaticProviderSelection == false ? Visibility.Visible : Visibility.Collapsed;
+		ProviderVisibility = Providers.Count > 1 && db?.AutomaticProviderSelection == false ? Visibility.Visible : Visibility.Collapsed;
 
 		if (ProviderVisibility != old)
 			OnPropertyChanged(_providerVisibilityChangedEventArgs);
