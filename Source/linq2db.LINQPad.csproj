@@ -13,7 +13,7 @@
 		<UseWPF>true</UseWPF>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 
-		<LangVersion>preview</LangVersion>
+		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<!--https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/errors-warnings#warninglevel-->
 		<WarningLevel>9999</WarningLevel>
@@ -145,7 +145,7 @@
 		<Exec Command="$(ProjectDir)..\Build\Pack.cmd $(TargetDir) lpx6" />
 	</Target>
 
-	<Target Name="PostBuild2" AfterTargets="CopySQLiteInteropFiles;PostBuild1" Condition="'$(TargetFramework)' == 'net48'">
+	<Target Name="PostBuild2" AfterTargets="CopySQLiteInteropFiles" Condition="'$(TargetFramework)' == 'net48'">
 		<!--we are trying to deceive DB2 provider here, see UnsafeNativeMethods.DB2Interop.Init() method logic-->
 		<Delete Files="$(TargetDir)\IBM.Data.DB2.dll" />
 		<MakeDir Directories="$(TargetDir)\IBM.Data.DB2.DLL_provider" />

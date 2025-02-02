@@ -214,7 +214,7 @@ internal sealed class ConnectionSettings
 			else
 			{
 				strValue = GetString(cxInfo, IncludeSchemas);
-				schemas = strValue == null ? null : new HashSet<string>(strValue.Split(_listSeparators, StringSplitOptions.RemoveEmptyEntries));
+				schemas = strValue == null ? null : [.. strValue.Split(_listSeparators, StringSplitOptions.RemoveEmptyEntries)];
 				if (schemas != null && schemas.Count > 0)
 					settings.Schema.IncludeSchemas = true;
 			}
@@ -228,7 +228,7 @@ internal sealed class ConnectionSettings
 			else
 			{
 				strValue = GetString(cxInfo, IncludeCatalogs);
-				catalogs = strValue == null ? null : new HashSet<string>(strValue.Split(_listSeparators, StringSplitOptions.RemoveEmptyEntries));
+				catalogs = strValue == null ? null : [.. strValue.Split(_listSeparators, StringSplitOptions.RemoveEmptyEntries)];
 				if (catalogs != null && catalogs.Count > 0)
 					settings.Schema.IncludeCatalogs = true;
 			}
